@@ -91,7 +91,8 @@ A server event's state is JSON, and these event types are reserved:
   for any [channel](/game-api/channels).
 - **Blocks between players do not filter them.** An event your code emits has no sending player,
   so it reaches everyone it is addressed to. When it carries one player's words to others, check
-  [`players.blocked`](players-and-safety#blocks) first.
+  [`players.blocked`](players-and-safety#blocks) first, and never send one player's direct
+  message to a minor as your own (`Spatial::ActorMessage` included).
 
 ## Limits
 

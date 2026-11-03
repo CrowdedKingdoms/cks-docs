@@ -14,6 +14,8 @@ crowd as avatars on the client, the people on another server and the others shar
 a crowd can stand close together on that ground. Walk into the next server's part of the map and
 the vanilla game connects you there.
 
+![Two Minecraft windows at the server line: each player sees the other across the shared ice](/img/minecraft/two-servers-one-world.png)
+
 Made and published by Crowded Kingdom Studios. Contact: hello@crowdedkingdoms.com.
 
 A Fabric server running the Crowded Kingdoms server mod hosts a shared world that vanilla
@@ -34,6 +36,8 @@ You need Java 25, Fabric Loader `0.19.5`, a Fabric server for Minecraft Java 26.
 `crowdedkingdoms-server-<version>.jar` and put it in the server's `mods/` folder next to Fabric
 API. The other jar on that release, `crowdedkingdoms-<version>.jar`, is the client mod. It belongs
 in a player's own `mods` folder. A server that hosts this world does not use it.
+
+![A server mods folder with crowdedkingdoms-server and Fabric API jars](/img/minecraft/server-mods.png)
 
 1. Accept the [Minecraft EULA](https://aka.ms/MinecraftEULA) in `eula.txt` (`eula=true`). Only the
    account holder may do that.
@@ -90,6 +94,8 @@ Minecraft name and the Minecraft UUID are not the Crowded Kingdoms player.
 On joining, a vanilla client is offered a resource pack of the avatar skins. Other people appear
 as those avatars. The menus are chest menus, and the commands are the ones the client mod uses.
 
+![A player on the east server seeing another player's Crowded Kingdoms gamertag across the ice](/img/minecraft/remote-player.png)
+
 A player who also has the client mod installed gets voice and video through this server, and that
 client does not sign in a second time. Video is granted per player by the app's admin.
 
@@ -123,9 +129,11 @@ The month and year stay on that server. Crowded Kingdoms is told the age in whol
 A player under 13 is disconnected with "You can't play on this server." and turned away each time
 they return. The server does not keep the month they gave.
 
-A player from 13 to 17 is turned away from the shared world. Crowded Kingdoms does not yet take an
-age at sign-in, and the organization still answers for its players being 18 or older. The server
-tells them "You can't enter the shared world from this server."
+A player from 13 to 17 is turned away from the shared world. Crowded Kingdoms takes each player's
+age and country at sign-in and applies its own minimum ages, but until it opens to players 13 and
+over the organization still answers for its players being 18 or older, so this server keeps them
+out itself. The server tells them "You can't enter the shared world from this server." See
+[Players under 18 and player safety](/overview/player-safety).
 
 Put a country database at `geoip.countryDatabase`, as in the file above. The path is relative to
 the server folder, or absolute. A replaced file is read again within a minute. Either
@@ -185,6 +193,8 @@ eight blocks. The change is Minecraft's own transfer: a short reconnect, about t
 that server's `address`. They keep their inventory, health, experience, advancements, statistics,
 and position, including a horse or boat they are riding and the pets and leashed mobs with them.
 A player record over 1 MiB cannot cross until they put things away.
+
+![After a transfer: the vanilla client lands on the west server of the local cluster](/img/minecraft/transfer-arrival.png)
 
 Animals, villagers, dropped items, experience orbs, empty boats and minecarts, and armor stands
 cross on their own. Monsters, projectiles, and TNT stay on the server that was ticking them.

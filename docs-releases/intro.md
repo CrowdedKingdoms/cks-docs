@@ -55,6 +55,41 @@ nothing deprecated.
 - **`MIGRATION.md`** ships at the plugin root: for each release from 2.24.0, what changed and the exact
   steps to migrate.
 
+## 2026-11-02 (dev: the safety baseline completed; the realtime rules; the SDKs)
+
+On the dev environment: Game API v2.61.0, replication server v0.43.0, CrowdyJS 18.24.0, CrowdyCPP
+0.75.0 and CrowdyPy 0.23.0. See [Players under 18 and player safety](/overview/player-safety).
+
+- **The realtime servers enforce players' settings, contacts and blocks** (v0.43.0), on the
+  sending and the receiving side. **Behaviour change:** a player now needs `use_voice_chat`,
+  `use_video_chat`, `use_text_chat` or `use_direct_messages` to receive that medium too, not only
+  to send it. A block stops communication between two players (voice, video, text, direct and
+  channel messages, a player's events and app-defined messages); movement and world edits still
+  pass. New `UNAUTHORIZED` refusals: voice or video with its send setting off, a minor's direct
+  message, a send under another player's actor. Each voice and video switch of the safety log now
+  records only its medium. See [Voice, video, contacts and blocks](/game-api/communication).
+- **Age refusals name no age** (`AGE_REQUIREMENT_NOT_MET` carries no extensions), and after one
+  the same client, Minecraft account or managed player is refused for 24 hours. An account that
+  declares an age under 13 is deleted and erased. See
+  [Age, country and who may play](/management-api/age-and-territory).
+- **Countries checked by region**: `territoryPolicies` lists regions (`regionCode`), a managed
+  player there needs `region`, and `TERRITORY_NOT_SUPPORTED` carries `extensions.region`. Crowded
+  Kingdoms staff pass the country check at the mint.
+- **`SAFETY_MODERATOR_REQUIRED`**: a player under 18 is admitted only to an app whose organization
+  has appointed a moderator, a member holding a role with `moderate_safety` (the admin role alone
+  does not count); `App.hasSafetyModerator` says whether it has. See
+  [Moderators](/game-api/safety-reports#moderators).
+- **Who reads the safety log** on an app that admits players under 18: moderators, only the
+  sessions a report covers; each player their own; every read audited. A minor's sessions stay
+  out of `manage_apps` reads on any app. See [the safety log](/replication-api/input-logging#the-safety-log).
+- **Crowded Kingdoms receives every `CHILD_SAFETY` report**, across all games.
+- **The SDKs wrap the program:** CrowdyJS `client.safety`, `client.moderation`, `apps.recording`,
+  the age and document calls and the refusal readers; CrowdyCPP the same, and
+  `crowdy::startGameSession(token, options)` to start a session from any app token; CrowdyPy
+  `client.safety` and `client.moderation`.
+- **Coming in the next Game API release:** `PARENTAL_CONSENT_UNAVAILABLE` says why in
+  `extensions.reason` (`not_configured`, `provider_refused`, `provider_unavailable`).
+
 ## 2026-10-31 (Unreal SDK v2.23.0: nearby text chat; how far voice reaches)
 
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-31-sdk-v2230).
@@ -113,7 +148,7 @@ live in production; until then every player is 18 or older. See
 - **Minecraft sign-in** for Crowded Kingdoms' own apps: `minecraftChallenge` and
   `signInWithMinecraft`, with `MINECRAFT_VERIFICATION_FAILED` and
   `MINECRAFT_VERIFICATION_UNAVAILABLE`.
-- The SDKs do not wrap the new fields yet; call them as GraphQL from any of them.
+- The SDKs did not wrap the new fields yet: CrowdyJS 18.24.0, CrowdyCPP 0.75.0 and CrowdyPy 0.23.0 do (2026-11-02).
 - Every new code is on [Error codes](/overview/error-codes).
 
 ## 2026-10-30 (Unreal SDK v2.22.0: voice chat on the shared voice format; no flicks after a hitch; UX fixes)

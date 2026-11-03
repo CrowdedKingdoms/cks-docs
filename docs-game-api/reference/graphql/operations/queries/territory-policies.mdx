@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-The countries Crowded Kingdoms lists, by code: those it does not serve ('blocked': sign-up and play refused with TERRITORY&#x005F;NOT&#x005F;SUPPORTED, by the country a player gives or connects from) and those with a minimum age above 13. A country not listed is open at the platform's minimum. Public, so a sign-up form can say so before an account exists.
+The countries Crowded Kingdoms lists, by code, then the regions it lists (regionCode, ISO 3166-2): those it does not serve ('blocked': sign-up and play refused with TERRITORY&#x005F;NOT&#x005F;SUPPORTED, by the country a player gives or the country and region it connects from) and those with a minimum age above 13. A country not listed is open at the platform's minimum. A country with a region listed is checked by region, and a connection from it whose region cannot be told is refused. Public, so a sign-up form can say so before an account exists.
 
 
 ```graphql
@@ -26,4 +26,4 @@ territoryPolicies: [TerritoryPolicy!]!
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>TerritoryPolicy</b></code>](/reference/graphql/types/objects/territory-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A country Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY&#x005F;NOT&#x005F;SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum.
+A country, or a region of one, that Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY&#x005F;NOT&#x005F;SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum. A country with a region listed is checked by region: a connection from it whose region cannot be told is refused, and so is an organization's player there sent without a region.

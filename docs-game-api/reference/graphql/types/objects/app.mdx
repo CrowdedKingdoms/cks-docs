@@ -57,6 +57,7 @@ type App {
   createdAt: DateTime!
   updatedAt: DateTime!
   org: Organization
+  hasSafetyModerator: Boolean
   managedPlayerModsEnabled: Boolean!
 }
 ```
@@ -216,6 +217,10 @@ Timestamp when the app was last updated.
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>org</b></code>](#org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Organization</b></code>](/reference/graphql/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="object"/> {/* #org */} 
 The organization that owns this app. Null if the owning org cannot be found.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>hasSafetyModerator</b></code>](#has-safety-moderator)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #has-safety-moderator */} 
+Whether the app's organization has a safety moderator: a member one of whose roles grants moderate&#x005F;safety itself (the admin role alone does not count; the moderator is appointed) and who is not deleted, blocked, banned from the organization or a minor. An app that admits players under 18 needs one, or its minors' sign-ins are refused SAFETY&#x005F;MODERATOR&#x005F;REQUIRED (the same check). Null unless you are a member of the app's organization (or a super admin).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>managedPlayerModsEnabled</b></code>](#managed-player-mods-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #managed-player-mods-enabled */} 

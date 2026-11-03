@@ -164,6 +164,7 @@ mutation {
 | `gamertag` | optional; used when the player is created |
 | `ageYears` | the player's age in whole years ([below](#age-country-and-minors)); optional until the opening to players 13 and over, required from it |
 | `country` | where the player lives, ISO 3166-1 alpha-2; the same |
+| `region` | the player's region, ISO 3166-2, in a country Crowded Kingdoms checks by region; required there (Game API v2.61.0) |
 
 ```ts
 // Your sign-in service (Node), with an Ed25519 key
@@ -281,14 +282,21 @@ the age of majority where they live if that is older: your organization warrants
 addendum (§2.3). The addendum's new version, which comes with the opening, changes that.
 
 At every sign-in, send the player's age and country: `ageYears` and `country` on
-`mintManagedPlayerToken`, or as claims of the assertion (Game API v2.60.0).
+`mintManagedPlayerToken`, or as claims of the assertion (Game API v2.60.0). In a country Crowded
+Kingdoms checks by region (`territoryPolicies` lists its regions), send `region` too, ISO 3166-2
+(Game API v2.61.0); it is checked at each sign-in and not stored.
 
 - Crowded Kingdoms keeps the age as a bracket (`under_13`, `13_15`, `16_17` or `18_plus`), never
-  the age itself, and the country on the player, and checks them against its own rules. A country
-  it does not serve is refused `TERRITORY_NOT_SUPPORTED`; a player under 13, or under the app's or
-  the country's minimum age (18 for everyone until the opening), `AGE_REQUIREMENT_NOT_MET`; both
-  before the player is created or signed in. A refresh is refused once the stored bracket is wholly
-  below the app's minimum.
+  the age itself, and the country on the player, and checks them against its own rules. A place
+  it does not serve, or a missing `region` where one is needed, is refused
+  `TERRITORY_NOT_SUPPORTED`; a player under 13, or under the app's or the country's minimum age
+  (18 for everyone until the opening), `AGE_REQUIREMENT_NOT_MET`, which names no age; both before
+  the player is created or signed in. A refresh is refused once the stored bracket is wholly below
+  the app's minimum.
+- After an age refusal, the same player (your organization and its `externalId`) is refused
+  again for 24 hours, in any of your organization's apps, whatever age you send. A player that
+  already exists and is now said to be under 13 is deleted, as `deleteManagedPlayer` does (a legal
+  hold refuses that).
 - The country checked is the one you send, not your server's address.
 - Until the opening both are optional, and a player signed in without an age counts as 18 or
   older. From the opening both are required: no age is `AGE_REQUIRED`, no country `BAD_REQUEST`.
@@ -303,12 +311,14 @@ grants:
   contacts only ([Voice, video, contacts and blocks](/game-api/communication));
 - no direct messages;
 - the app keeps its [safety log](/replication-api/input-logging#the-safety-log) on, or the player
-  is refused `SAFETY_LOG_REQUIRED`.
+  is refused `SAFETY_LOG_REQUIRED`;
+- your organization has appointed a [moderator](/game-api/safety-reports#moderators), or the
+  player is refused `SAFETY_MODERATOR_REQUIRED`.
 
 To limit what any player may do, give it an access tier (`grantAppAccess` with a tier) that leaves
 out what it may not use. The realtime servers check `use_voice_chat` (voice), `use_video_chat`
 (webcam video), `use_text_chat` (nearby text and channel messages) and `use_direct_messages`
-(messages to one player) on every send, and from the replication server release after v0.42.0
+(messages to one player) on every send, and from replication server v0.43.0
 on every receiving player too. A tier that grants `access` has the last two unless you leave them
 out: pass `applyCommunicationDefaults: false` with the tier's `permissionKeys`. See
 [Permissions](/game-api/permissions).
@@ -370,10 +380,11 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 | `MANAGED_PLAYER_NOT_ALLOWED` | A managed player asked for a wallet, or for mods where your organization has not switched them on. |
 | `ACCOUNT_BLOCKED` | The player is disabled. |
 | `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. An open or escalated [safety report](/game-api/safety-reports) about the player sets one. |
-| `TERRITORY_NOT_SUPPORTED` | The country you sent (`extensions.country`) is one Crowded Kingdoms does not serve. |
-| `AGE_REQUIREMENT_NOT_MET` | The player is under 13, or under the app's or the country's minimum age. Tell the player, naming no age. |
+| `TERRITORY_NOT_SUPPORTED` | The country or region you sent (`extensions.country`, `extensions.region`) is one Crowded Kingdoms does not serve, or the country is checked by region and you sent no `region`. |
+| `AGE_REQUIREMENT_NOT_MET` | The player is under 13, or under the app's or the country's minimum age, or was refused so in the last 24 hours. Tell the player, without a reason or an age; do not retry with another age. |
 | `AGE_REQUIRED` | From the opening to players 13 and over: the sign-in carried no `ageYears`. |
 | `SAFETY_LOG_REQUIRED` | A player under 18, in an app whose safety log is off. |
+| `SAFETY_MODERATOR_REQUIRED` | A player under 18, in an app whose organization has no appointed moderator. |
 | `BAD_REQUEST` | `ageYears` outside 0 to 130, a `country` that is not a two-letter code, or, from the opening, no `country`. |
 | `TIER_ACCESS_REQUIRED` | Only on `dev` and `test`, Crowded Kingdoms' internal environments: none of your organization's members may use that environment. A managed player's own requests there also answer it while your organization's managed players are switched off. Production never returns it. |
 

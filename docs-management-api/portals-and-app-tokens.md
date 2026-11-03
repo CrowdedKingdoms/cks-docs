@@ -180,7 +180,9 @@ The official SDK wraps all of this in `client.portal`: `signIn` /
 page (it throws `PortalConsentRequiredError` for an untrusted app until you
 approve) — see [CrowdyJS](/crowdyjs/intro). A player who presses **Cancel** on
 Studio's consent card is returned to `redirect_uri` with `error=access_denied`
-and no code.
+and no code, when its origin is one of the app's registered redirect URIs or its
+launch URL (the rule a code's `redirect_uri` meets, below). Otherwise Studio keeps
+the player on its page and asks them to go back to the game.
 
 ## Consent and the OAuth client registry
 
@@ -294,6 +296,8 @@ requires the identity session token and returns `SCOPE_MISSING` for an app token
   [Age, country and who may play](/management-api/age-and-territory).
 - `SAFETY_LOG_REQUIRED` — a player under 18, in an app whose safety log is off. See
   [the safety log](/replication-api/input-logging#the-safety-log).
+- `SAFETY_MODERATOR_REQUIRED` — a player under 18, in an app whose organization has no appointed
+  moderator. See [Moderators](/game-api/safety-reports#moderators).
 - `ACCESS_NOT_GRANTED`, `ACCESS_REVOKED`, `ACCESS_SUSPENDED` (with
   `extensions.suspendedUntil`) on `mintAppToken`, `refreshAppToken` or
   `exchangePortalCode` — the player has no access, the app revoked it, or the app

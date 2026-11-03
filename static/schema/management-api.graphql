@@ -556,11 +556,15 @@ type LegalDocument {
 }
 
 """
-A country Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY_NOT_SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum.
+A country, or a region of one, that Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY_NOT_SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum. A country with a region listed is checked by region: a connection from it whose region cannot be told is refused, and so is an organization's player there sent without a region.
 """
 type TerritoryPolicy {
   """ISO 3166-1 alpha-2 country code, such as KR."""
   countryCode: String!
+  """
+  ISO 3166-2 code of the region this rule is for, such as UA-43; null for the country's own rule.
+  """
+  regionCode: String
   """'open' or 'blocked'."""
   status: String!
   """
@@ -874,6 +878,10 @@ type App {
   The organization that owns this app. Null if the owning org cannot be found.
   """
   org: Organization
+  """
+  Whether the app's organization has a safety moderator: a member one of whose roles grants moderate_safety itself (the admin role alone does not count; the moderator is appointed) and who is not deleted, blocked, banned from the organization or a minor. An app that admits players under 18 needs one, or its minors' sign-ins are refused SAFETY_MODERATOR_REQUIRED (the same check). Null unless you are a member of the app's organization (or a super admin).
+  """
+  hasSafetyModerator: Boolean
   """
   Whether the organization lets its org-managed players build and run mods (and use the Studio agent) in this app, paying for their mod compute, egress, storage and model tokens itself. False by default, and false on a tier that does not serve org-managed players. Set with setAppManagedPlayerMods (manage_billing). Players with a Crowded Kingdoms account are unaffected.
   """
@@ -3242,7 +3250,7 @@ type Query {
   """
   developerLegalAcceptance: Boolean!
   """
-  The countries Crowded Kingdoms lists, by code: those it does not serve ('blocked': sign-up and play refused with TERRITORY_NOT_SUPPORTED, by the country a player gives or connects from) and those with a minimum age above 13. A country not listed is open at the platform's minimum. Public, so a sign-up form can say so before an account exists.
+  The countries Crowded Kingdoms lists, by code, then the regions it lists (regionCode, ISO 3166-2): those it does not serve ('blocked': sign-up and play refused with TERRITORY_NOT_SUPPORTED, by the country a player gives or the country and region it connects from) and those with a minimum age above 13. A country not listed is open at the platform's minimum. A country with a region listed is checked by region, and a connection from it whose region cannot be told is refused. Public, so a sign-up form can say so before an account exists.
   """
   territoryPolicies: [TerritoryPolicy!]!
   """
@@ -4096,7 +4104,7 @@ type Mutation {
     method: LegalAcceptanceMethod
   ): Boolean!
   """
-  Record the signed-in player's birth date and country, and under 18 that a parent or guardian agreed, for an account whose age is not known yet (me.ageBracket is 'unknown'). Only the year and month are kept. Refused with CONFLICT when the account already has an age, TERRITORY_NOT_SUPPORTED for a country Crowded Kingdoms does not serve (the declared one or the network's), and AGE_REQUIREMENT_NOT_MET under 13, in which case the account keeps the bracket under_13 and the answer cannot be changed by asking again. Whether the player may play a given app (its minimum age, the country's) is decided at the mint. Returns the account; read ageBracket and country. Requires a session token.
+  Record the signed-in player's birth date and country, and under 18 that a parent or guardian agreed, for an account whose age is not known yet (me.ageBracket is 'unknown'). Only the year and month are kept. Refused with CONFLICT when the account already has an age, TERRITORY_NOT_SUPPORTED where Crowded Kingdoms does not serve (the declared country, or the network's country or region; not for Crowded Kingdoms staff), and AGE_REQUIREMENT_NOT_MET under 13, in which case the account is deleted and erased as deleteMyAccount does. That refusal names no age, and for 24 hours afterwards the same client (address and user agent) is refused AGE_REQUIREMENT_NOT_MET here and at register whatever it sends. Whether the player may play a given app (its minimum age, the country's) is decided at the mint. Returns the account; read ageBracket and country. Requires a session token.
   """
   recordPlayerAge(input: RecordPlayerAgeInput!): User!
   """
@@ -4411,7 +4419,7 @@ type Mutation {
   """
   setAppClientSettings(input: SetAppClientSettingsInput!): PortalConsentState!
   """
-  ORG TOKEN ONLY. Sign one of your organization's own players in and get its app-scoped gameplay token, the same token mintAppToken returns: hand `token` (and the URLs) to the player's device, which plays with it exactly as with any app token and refreshes it with refreshAppToken. Call from your server with `Authorization: Bearer cko_...` (scope players:mint); a request with an Origin header is refused. The player is created on its first sign-in (no email, password or wallet), and each sign-in lasts `sessionTtlSeconds` (default and maximum: the org's settings): after it the device comes back to you. The app must be one of your organization's apps (and in the token's app list, if it has one). Free tiers grant access automatically; a paid tier needs grantAppAccess. Refused with ORG_LEGAL_ACCEPTANCE_REQUIRED until an admin of the organization has accepted the current Org-Managed Players Addendum. Pass the player's ageYears and country: the player is refused TERRITORY_NOT_SUPPORTED in a country Crowded Kingdoms does not serve, AGE_REQUIREMENT_NOT_MET under 13 or under the app's or the country's minimum age (before it is created), and AGE_REQUIRED without an age once players 13 and over are admitted; its bracket and country are stored on it, and a refresh is refused once its bracket is wholly below the app's minimum.
+  ORG TOKEN ONLY. Sign one of your organization's own players in and get its app-scoped gameplay token, the same token mintAppToken returns: hand `token` (and the URLs) to the player's device, which plays with it exactly as with any app token and refreshes it with refreshAppToken. Call from your server with `Authorization: Bearer cko_...` (scope players:mint); a request with an Origin header is refused. The player is created on its first sign-in (no email, password or wallet), and each sign-in lasts `sessionTtlSeconds` (default and maximum: the org's settings): after it the device comes back to you. The app must be one of your organization's apps (and in the token's app list, if it has one). Free tiers grant access automatically; a paid tier needs grantAppAccess. Refused with ORG_LEGAL_ACCEPTANCE_REQUIRED until an admin of the organization has accepted the current Org-Managed Players Addendum. Pass the player's ageYears and country, and its region where the country is checked by region: the player is refused TERRITORY_NOT_SUPPORTED in a country or region Crowded Kingdoms does not serve (or without a region it needs), AGE_REQUIRED without an age once players 13 and over are admitted, and AGE_REQUIREMENT_NOT_MET under 13 or under the app's or the country's minimum age (before it is created); that refusal names no age, the same player is refused it for 24 hours whatever is sent, and a player that exists and is said to be under 13 is deleted as deleteManagedPlayer does; its bracket and country are stored on it, and a refresh is refused once its bracket is wholly below the app's minimum.
   """
   mintManagedPlayerToken(input: MintManagedPlayerTokenInput!): AppTokenResponse!
   """
@@ -4469,7 +4477,7 @@ type Mutation {
     keyId: BigInt!
   ): Boolean!
   """
-  Exchange an assertion your organization signed for one of its players for that player's app-scoped gameplay token (the same token mintManagedPlayerToken returns). Public: the signature is the credential, so a game client calls it directly, from a browser on your registered origin or natively. The assertion must name a registered, active key (header kid) and carry iss and aud as registered (aud defaults to ck:app:<appId>), sub (your id for the player), iat, exp at most 300 seconds after iat, and a jti never used before for this app; optionally gamertag, and ageYears (the player's age in whole years) and country (ISO 3166-1 alpha-2), which mintManagedPlayerToken describes and which are required once players 13 and over are admitted. The player is created on its first sign-in. Refusals are ASSERTION_REJECTED with extensions.reason; a valid assertion is refused with ORG_LEGAL_ACCEPTANCE_REQUIRED until an admin of the organization has accepted the current Org-Managed Players Addendum, and with TERRITORY_NOT_SUPPORTED, AGE_REQUIRED or AGE_REQUIREMENT_NOT_MET as mintManagedPlayerToken is.
+  Exchange an assertion your organization signed for one of its players for that player's app-scoped gameplay token (the same token mintManagedPlayerToken returns). Public: the signature is the credential, so a game client calls it directly, from a browser on your registered origin or natively. The assertion must name a registered, active key (header kid) and carry iss and aud as registered (aud defaults to ck:app:<appId>), sub (your id for the player), iat, exp at most 300 seconds after iat, and a jti never used before for this app; optionally gamertag, and ageYears (the player's age in whole years) and country (ISO 3166-1 alpha-2), which mintManagedPlayerToken describes and which are required once players 13 and over are admitted, and region (ISO 3166-2), required where the country is checked by region. The player is created on its first sign-in. Refusals are ASSERTION_REJECTED with extensions.reason; a valid assertion is refused with ORG_LEGAL_ACCEPTANCE_REQUIRED until an admin of the organization has accepted the current Org-Managed Players Addendum, and with TERRITORY_NOT_SUPPORTED, AGE_REQUIRED or AGE_REQUIREMENT_NOT_MET as mintManagedPlayerToken is.
   """
   exchangeManagedPlayerAssertion(input: ExchangeManagedPlayerAssertionInput!): AppTokenResponse!
   """
@@ -4941,7 +4949,7 @@ input RegisterUserInput {
   """
   attestAgeOfMajority: Boolean
   """
-  Birth date, YYYY-MM-DD (YYYY-MM is accepted too); only the year and month are kept, and the age is counted from the last day of that month. Sent with country. Required on a browser signup once the platform admits players under 18 (AGE_REQUIRED without it); a request with no Origin may omit it and gives it later with recordPlayerAge. Under 13, or under the minimum age where the player is, the signup is refused with AGE_REQUIREMENT_NOT_MET and no account is made.
+  Birth date, YYYY-MM-DD (YYYY-MM is accepted too); only the year and month are kept, and the age is counted from the last day of that month. Sent with country. Required on a browser signup once the platform admits players under 18 (AGE_REQUIRED without it); a request with no Origin may omit it and gives it later with recordPlayerAge. Under 13, or under the minimum age where the player is, the signup is refused with AGE_REQUIREMENT_NOT_MET (it names no age) and no account is made; for 24 hours afterwards the same client (address and user agent) is refused AGE_REQUIREMENT_NOT_MET whatever it sends.
   """
   birthDate: String
   """
@@ -5244,13 +5252,17 @@ input MintManagedPlayerTokenInput {
   """
   sessionTtlSeconds: Int
   """
-  The player's age in whole years, as your organization knows it. Stored as a bracket (under_13, 13_15, 16_17, 18_plus), which hubs read and which sets a minor's defaults; a player under 13, or under the app's or the country's minimum, is refused AGE_REQUIREMENT_NOT_MET before it is created or signed in. Optional while every player is 18 or older under the Org-Managed Players Addendum (omitted, the player counts as 18_plus); required once players 13 and over are admitted (AGE_REQUIRED without it).
+  The player's age in whole years, as your organization knows it. Stored as a bracket (under_13, 13_15, 16_17, 18_plus), which hubs read and which sets a minor's defaults; a player under 13, or under the app's or the country's minimum, is refused AGE_REQUIREMENT_NOT_MET before it is created or signed in, and then refused again, whatever the age, for 24 hours. A player that exists and is asserted under 13 is deleted, as deleteManagedPlayer does. Optional while every player is 18 or older under the Org-Managed Players Addendum (omitted, the player counts as 18_plus); required once players 13 and over are admitted (AGE_REQUIRED without it).
   """
   ageYears: Int
   """
   The country the player lives in, ISO 3166-1 alpha-2 (such as US). A country Crowded Kingdoms does not serve is refused TERRITORY_NOT_SUPPORTED, and a country's own minimum age applies. Stored on the player; optional until players 13 and over are admitted, required after.
   """
   country: String
+  """
+  The region the player lives in, ISO 3166-2 within country (such as UA-30). Required in a country Crowded Kingdoms checks by region (territoryPolicies lists its regions): without it, or in a blocked region, the player is refused TERRITORY_NOT_SUPPORTED. Checked at each sign-in, not stored.
+  """
+  region: String
 }
 
 input ProvisionManagedPlayersInput {

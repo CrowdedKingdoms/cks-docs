@@ -13,13 +13,12 @@ stay off.
 
 :::info[What is switched on]
 
-- **Live** (Game API v2.60.0): the settings, contacts, blocks and parental consent fields on this
-  page. The API stores what players choose and tells the realtime servers at once.
-- **Not released yet:** the replication servers that enforce them (the release after v0.42.0).
-  Until it, delivery is as before: the sender's permission keys are checked, and scopes, contacts,
-  blocks and the receiver's keys are not.
+- **Live** (Game API v2.60.0 and replication server v0.43.0): the settings, contacts, blocks and
+  parental consent fields on this page, and the realtime servers that enforce them on both sides.
 - **At the opening**, when Crowded Kingdoms opens to players 13 and over: players under 18, and so
   the minors' defaults. Until then every player is an adult.
+- **Being built:** `PARENTAL_CONSENT_UNAVAILABLE` saying why, from the Game API release after
+  v2.61.0 ([below](#parental-consent-for-voice-and-video)).
 
 :::
 
@@ -60,9 +59,10 @@ admits.
 
 ## Blocks
 
-A block stops everything between two players in the app, in both directions, while it stands:
-voice, video, text, direct messages and channel messages, and each other's movement, voxel edits
-and events, so their avatars stop updating for each other. Either player's block is enough. The
+A block stops communication between two players in the app, in both directions, while it stands:
+voice, video, text, direct messages, channel messages and voice, a player's events and the
+app-defined messages one player sends another. Movement, avatar and actor state and voxel edits
+still pass, so both players go on seeing the same world. Either player's block is enough. The
 blocked player is not told, and gets no error when something they send is dropped. Blocking also
 removes every contact and request between the two, and unblocking does not bring them back.
 
@@ -74,29 +74,35 @@ Muting a player stays on the device.
 ## Direct messages and players under 18
 
 A player under 18 holds no `use_direct_messages`: their direct message is refused `UNAUTHORIZED`,
-and a direct message to them is dropped.
+and a direct message from a player to them is dropped. A direct message your app's code sends
+passes, so a hub must never pass one player's direct message to a minor as its own
+([players' data, blocks and reports](/exec/players-and-safety#blocks)).
 
 ## What the realtime servers do
 
-From the replication server release after v0.42.0:
+From replication server v0.43.0:
 
 | What | The sender gets |
 |---|---|
 | Voice or video with the matching send setting `OFF` | `UNAUTHORIZED` (error 7) |
 | A direct message from a player under 18 | `UNAUTHORIZED` |
 | Any send under an actor id that belongs to another player | `UNAUTHORIZED` |
-| Anything between two players when either has blocked the other | nothing: dropped |
+| Communication between two players when either has blocked the other: voice, video, text, direct messages, channel messages and voice, a player's events and app-defined messages | nothing: dropped |
 | Voice, video, text or a direct message to a player who lacks `use_voice_chat`, `use_video_chat`, `use_text_chat` or `use_direct_messages` in the app | nothing: dropped for that player |
 | Voice or video that the two players' settings do not admit | nothing: dropped for that player |
-| A direct message to a player under 18 | nothing: dropped |
+| A direct message from a player to a player under 18 | nothing: dropped |
 
-- **Receiving needs the permission key too.** Until this release only the sender's keys were
-  checked, so a tier without `use_voice_chat` still heard voice. From it, that player hears none.
-  Check your tiers ([Permissions](permissions)).
+- **Receiving needs the permission key too.** Before v0.43.0 only the sender's keys were checked,
+  so a tier without `use_voice_chat` still heard voice. Now that player hears none. Check your
+  tiers ([Permissions](permissions)).
+- **A player under 18's settings never go above `CONTACTS`**, whatever is stored.
 - **An actor belongs to its player.** A send under an actor id that another player created, or that
   another player is using, is refused.
+- **What passes:** what your app's code and the platform send (they have no sending player), and a
+  player's own traffic to their own sessions.
 - **Changes apply within a second** to the live sessions of every player they concern, both
-  players for a contact or a block. A player does not reconnect.
+  players for a contact or a block, without a reconnect. A change of the player's access tier
+  applies when their token is next refreshed.
 
 ## The API
 
@@ -155,9 +161,13 @@ mutation AskParent($appId: BigInt!, $email: String!) {
   (the player is 18 or over; nothing sent).
 - The parent's address goes to Kids Web Services and is not stored by Crowded Kingdoms.
 - Consent is per app and per medium. `voiceConsent` and `videoConsent` in `myCommSettings` say
-  whether it is given. When a parent withdraws it, the medium turns off again.
-- `PARENTAL_CONSENT_UNAVAILABLE` (503) where the consent service is not configured; voice and video
-  then stay off for players under 18. `RATE_LIMITED` after three requests in an hour.
+  whether it is given. When a parent withdraws it, through Kids Web Services or by writing to
+  Crowded Kingdoms, the medium turns off again within a second.
+- `PARENTAL_CONSENT_UNAVAILABLE` (503) when consent cannot be asked; voice and video then stay off
+  for players under 18. From the Game API release after v2.61.0 it says why in
+  `extensions.reason`: `not_configured` (the service is not set up on this deployment),
+  `provider_refused` or `provider_unavailable` (the service turned the request down or did not
+  answer). `RATE_LIMITED` after three requests in an hour.
 
 ## What your game shows
 
@@ -173,13 +183,23 @@ For a game that offers voice, video or chat:
 - **The recording notice and indicator**, when the app's safety log records voice or video:
   [the safety log](/replication-api/input-logging#the-safety-log). This one is required.
 
+## In the SDKs
+
+The player's own controls, with the app token: CrowdyJS 18.24.0 `client.safety` (`commSettings`,
+`setCommSettings`, `requestParentalConsent`, `contacts`, `contactRequests`, `requestContact`,
+`acceptContact`, `removeContact`, `blocks`, `block`, `unblock`); CrowdyCPP 0.75.0
+`client.safety()`, the same names, each with an `Async` twin; CrowdyPy 0.23.0 `client.safety`,
+in snake case (`comm_settings`, `set_comm_settings`, `request_parental_consent`, …). The refusals
+read with `socialLimitReachedOf` and `parentalConsentUnavailableOf` (`social_limit_reached_of`,
+`parental_consent_unavailable_of` in CrowdyPy).
+
 ## Errors
 
 | Code | When |
 |---|---|
 | `UNAUTHORIZED` (UDP error 7) | A send the rules above refuse. |
 | `SOCIAL_LIMIT_REACHED` | 409: the player has as many contacts, waiting requests or blocks in the app as allowed. Remove some first. |
-| `PARENTAL_CONSENT_UNAVAILABLE` | 503: the consent service is not configured on this deployment. Do not retry. |
+| `PARENTAL_CONSENT_UNAVAILABLE` | 503: consent cannot be asked here now; `extensions.reason` says why from the release after v2.61.0. Do not retry in a loop. |
 | `RATE_LIMITED` | 429: a fourth parental consent request within an hour. |
 | `NOT_FOUND` | The other player is not one of the app's players, or (`acceptContact`) has not asked. |
 | `BAD_REQUEST` | A contact request to a player the caller has blocked. |

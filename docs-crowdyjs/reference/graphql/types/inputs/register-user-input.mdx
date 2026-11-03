@@ -25,6 +25,9 @@ input RegisterUserInput {
   gamertag: String
   acceptLegal: Boolean
   attestAgeOfMajority: Boolean
+  birthDate: String
+  country: String
+  parentalConfirmation: Boolean
 }
 ```
 
@@ -44,11 +47,23 @@ Optional initial public gamertag (3 to 64 characters, none of them control, line
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RegisterUserInput.<b>acceptLegal</b></code>](#accept-legal)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #accept-legal */} 
-True when the player has agreed to the current required legal documents (Game Terms, API Terms, SDK Developer Terms, Free Tier and Billing Basis, Overworld Privacy Policy). A browser signup that omits this, or sends false, is refused with LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED. Calls with no Origin header may omit it; gameplay tokens stay refused until the documents are stored.
+True when the player has agreed to the platform's current player documents (playerLegalDocuments). A browser signup that omits this, or sends false, is refused with LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED. Calls with no Origin header may omit it; gameplay tokens stay refused until the documents are stored.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RegisterUserInput.<b>attestAgeOfMajority</b></code>](#attest-age-of-majority)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #attest-age-of-majority */} 
-True when the player attests they are at least 18, or the age of majority where they live if that is higher. Same requirement as acceptLegal: required on a browser signup, optional when the request has no Origin.
+True when the player attests they are at least 18, or the age of majority where they live if that is higher. Same requirement as acceptLegal while the platform uses the attestation: required on a browser signup, optional when the request has no Origin. Ignored once the platform asks for birthDate instead.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterUserInput.<b>birthDate</b></code>](#birth-date)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #birth-date */} 
+Birth date, YYYY-MM-DD (YYYY-MM is accepted too); only the year and month are kept, and the age is counted from the last day of that month. Sent with country. Required on a browser signup once the platform admits players under 18 (AGE&#x005F;REQUIRED without it); a request with no Origin may omit it and gives it later with recordPlayerAge. Under 13, or under the minimum age where the player is, the signup is refused with AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET and no account is made.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterUserInput.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #country */} 
+The country the player lives in, ISO 3166-1 alpha-2 (such as US); required with birthDate. A country Crowded Kingdoms does not serve, declared or detected from the network address, is refused with TERRITORY&#x005F;NOT&#x005F;SUPPORTED before an account exists.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterUserInput.<b>parentalConfirmation</b></code>](#parental-confirmation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #parental-confirmation */} 
+True when a player under 18 confirms that a parent or guardian agreed to their account. Required true under 18; ignored at 18 or over.
 
 
 

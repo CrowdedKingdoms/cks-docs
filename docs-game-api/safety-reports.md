@@ -17,11 +17,10 @@ account.
 - **Live** (Game API v2.60.0): filing (`fileSafetyReport`, and the hub node call `safety.report`),
   moderators (`moderate_safety`), reviewing, resolving and escalating, the preserved evidence, and
   the legal hold on a reported account that is deleted.
-- **Being built:** an app that admits players under 18 needs at least one moderator in its
-  organization; without one, its players under 18 are refused sign-in and Studio warns its
-  developers. And every report with the reason `CHILD_SAFETY` also reaches Crowded Kingdoms'
-  own moderators, across all games, with an alert to `abuse@crowdedkingdoms.com`; reports with
-  other reasons stay with each game's moderators.
+- **Live** (Game API v2.61.0): an app that admits players under 18 needs an appointed moderator,
+  or its players under 18 are refused `SAFETY_MODERATOR_REQUIRED` and Studio warns its
+  developers. Crowded Kingdoms receives every report with the reason `CHILD_SAFETY`, across all
+  games; reports with other reasons stay with each game's moderators.
 
 :::
 
@@ -88,6 +87,14 @@ mutation Moderators($orgId: BigInt!) {
 organization's apps, and read the recorded sessions a report covers, and nothing else of the safety
 log. Every such read is audited.
 
+**An app that admits players under 18 needs an appointed moderator** (Game API v2.61.0): a member
+of its organization holding a role that grants `moderate_safety` itself. The admin role alone does
+not count, although admins can still review and decide reports; an admin who should be the
+moderator takes such a role too. The member's account must not be deleted, blocked, banned from
+the organization or a minor's. Without one, a player under 18 is refused a token in the app with
+`SAFETY_MODERATOR_REQUIRED`, which names no age; adults are not affected. `App.hasSafetyModerator`
+answers the same check for the organization's members, and Studio warns when it is false.
+
 In Studio, a role with **Moderate safety reports** is made under the organization's **Team &
 Access**, and a member who holds it sees the app's **Safety reports** tab: the reports, each
 reported session's recorded inputs (read one at a time, on request), resolving with an outcome and
@@ -113,7 +120,9 @@ query Open($appId: BigInt!) {
 - `sessions` are the recorded sessions the report covers. Read one with
   [`inputLogMessages`](/replication-api/input-logging#read-it)`(appId, gameTokenId)` and an
   app-scoped token for the app (a moderator may mint one for the app, as an app admin may), while
-  the report is open or escalated.
+  the report is open or escalated. On an app that admits players under 18 those are the only other
+  players' sessions anyone reads, and `inputLogSessions` lists them for a moderator
+  ([who reads the safety log](/replication-api/input-logging#the-safety-log)).
 - `capture.status` says where the preserved copy stands: `PENDING` (nothing copied yet; it is
   retried every minute), `PARTIAL`, `COMPLETE`, or `DISCARDED` (resolved, and deleted).
 
@@ -144,6 +153,8 @@ mutation Escalate($appId: BigInt!, $reportId: BigInt!) {
 - **Act on the player** with the app's own tools: [suspend or revoke](/management-api/game-setup#revoking-suspending-and-banning)
   their access, or take away a permission key.
 
+**Child safety.** Crowded Kingdoms receives every report filed with the reason `CHILD_SAFETY`, in
+any game, as soon as it is filed (Game API v2.61.0); your moderators still review and decide it.
 Crowded Kingdoms reports apparent child sexual exploitation to NCMEC and keeps what the law
 requires for that report; its [Safety](https://crowdedkingdoms.com/safety.html) page tells players
 and parents where to go, `abuse@crowdedkingdoms.com` included.
@@ -166,6 +177,16 @@ filed about an account already deleted holds it at once.
 - **The [Safety](https://crowdedkingdoms.com/safety.html) page**, for what a game cannot handle: a
   child in danger, or an intimate image shared without consent.
 
+## In the SDKs
+
+- **Filing**, with the player's app token: CrowdyJS 18.24.0
+  `client.safety.fileReport({ appId, reportedUserId, reason, details, occurredAt })`, CrowdyCPP
+  0.75.0 `client.safety().fileReport(…)`, CrowdyPy 0.23.0 `client.safety.file_report(…)`.
+- **Moderating**, with the moderator's identity session: CrowdyJS `client.moderation.reports(appId,
+  { status })`, `resolveReport(appId, reportId, outcome)` and `escalateReport(appId, reportId,
+  ncmecReportId)`; CrowdyCPP `client.moderation()` (also `admin().moderation()`), the same names;
+  CrowdyPy `client.moderation.reports`, `resolve_report` and `escalate_report`.
+
 ## Errors
 
 | Code | When |
@@ -177,5 +198,6 @@ filed about an account already deleted holds it at once.
 | `BAD_REQUEST` | Resolving an escalated report, or escalating a resolved one. |
 | `CONFLICT` | Escalating a report again under a different CyberTipline id. |
 | `LEGAL_HOLD` | `deleteManagedPlayer` for a player an open or escalated report is about. |
+| `SAFETY_MODERATOR_REQUIRED` | A player under 18 asked for a token in an app whose organization has no appointed moderator. |
 
 All codes are on [Error codes](/overview/error-codes).

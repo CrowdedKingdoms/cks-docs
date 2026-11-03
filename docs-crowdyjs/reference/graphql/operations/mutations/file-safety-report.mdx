@@ -1,0 +1,39 @@
+---
+id: file-safety-report
+title: fileSafetyReport
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Report another player of the app, with the reporter's app token for the app (game plane: send it to the app's datacenter). The report covers both players' recorded sessions (the app's safety log) from 15 minutes before occurredAt to now, and their copy, both players' identities and the reported player's last-known address are preserved for moderators. The reported player is not told. Errors: NOT&#x005F;FOUND for a player the app does not know; BAD&#x005F;USER&#x005F;INPUT for yourself, an unknown reason, details over 1,000 characters or an occurredAt outside the past year; RATE&#x005F;LIMITED after 20 reports in an hour.
+
+
+```graphql
+fileSafetyReport(
+  input: FileSafetyReportInput!
+): SafetyReportReceipt!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>fileSafetyReport.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>FileSafetyReportInput!</b></code>](/reference/graphql/types/inputs/file-safety-report-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+The report.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SafetyReportReceipt</b></code>](/reference/graphql/types/objects/safety-report-receipt.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A filed safety report, as its reporter sees it.

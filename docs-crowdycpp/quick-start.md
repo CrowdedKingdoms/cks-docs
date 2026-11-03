@@ -39,21 +39,32 @@ CrowdyClient identity(std::move(identityCfg));
 auto login = identity.auth().login("player@example.com", password);
 ```
 
-**Then the terms and age of majority** (ck-api v2.35.0, CrowdyCPP 0.57.0). No
+**Then the age and the terms** (ck-api v2.35.0 and v2.60.0, CrowdyCPP 0.57.0 and 0.75.0). No
 gameplay token is issued until the player has agreed to the current required legal
-documents and attested that they are at least 18, or the age of majority where they
-live if that is higher; the mint in step 2 answers `LEGAL_ACCEPTANCE_REQUIRED` until
-then. Show your own two checkboxes, linking each document, and record the player's
-answer with the session token:
+documents and, until Crowded Kingdoms opens to players 13 and over, attested that they are at
+least 18, or the age of majority where they live if that is higher; the mint in step 2 answers
+`LEGAL_ACCEPTANCE_REQUIRED` until then. Show your own checkboxes, linking each document
+(`auth().playerLegalDocuments()`, and the app's own `auth().appRequiredDocuments(appId)`), and
+record the player's answer with the session token:
 
 ```cpp
-if (!identity.auth().playerLegalAcceptance()) {
-  // Only after the player ticked both boxes: this records their agreement.
-  identity.auth().recordPlayerConsents(/*acceptLegal=*/true, /*attestAgeOfMajority=*/true);
+if (!identity.auth().playerLegalAcceptance(appId)) {
+  // Only after the player ticked the boxes: this records their agreement.
+  domains::PlayerConsents consents;
+  consents.acceptLegal = true;
+  consents.attestAgeOfMajority = true;  // ignored once the platform asks for a birth date
+  consents.appId = appId;               // the app's own documents too
+  identity.auth().recordPlayerConsents(consents);
 }
 ```
 
-See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-age-and-country).
+An account with no age (`users().me()` reports `ageBracket` `"unknown"`) gives its birth date and
+country once, from a [neutral age screen](/management-api/age-and-territory#the-age-screen), with
+`auth().recordPlayerAge(PlayerAgeInput{birthDate, country, parentalConfirmation})`;
+`auth().registerUser(RegisterUserInput)` takes the same answers at sign-up. The gate's refusals
+read with `graphql::territoryNotSupportedOf`, `ageRequiredOf`, `ageRequirementNotMetOf` (it
+surfaces no age), `legalAcceptanceRequiredOf` (with `missingDocuments`) and `safetyLogRequiredOf`.
+See [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
 
 ## 2. App token and per-game client
 
@@ -75,6 +86,29 @@ This is the platform's **two-client pattern**: one identity client (session
 token) for account and studio work, one client per game (app token) for all
 world and UDP calls. See
 [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
+
+**Or start the session from the token in one call** (CrowdyCPP 0.75.0), whichever way the game
+got it: a mint, a portal exchange, an organization's sign-in of its own player handed to the
+device, or `signInWithMinecraft`. `crowdy::startGameSession` builds the per-game client on the
+token's endpoints, stores the token, and opens the replication connection of step 3, waiting until
+it is connected:
+
+```cpp
+#include <crowdy/game_session.hpp>
+
+crowdy::GameSessionOptions options;
+crowdy::GameSession session = crowdy::startGameSession(minted, std::move(options));
+if (!session.ok()) { /* session.status says why */ }
+crowdy::CrowdyClient& game = *session.client;  // the app token's calls
+auto conn = session.connection;                 // build the WorldSession of step 4 on it
+```
+
+With the app token, `game.safety()` holds the player's own controls (voice and video settings,
+a parent's consent, contacts, blocks and `fileReport`, each with an `Async` twin) and
+`game.admin().apps().recording(appId)` what the safety log records, for the notice and the
+indicator; a moderator's identity client uses `client.moderation()`. See
+[Voice, video, contacts and blocks](/game-api/communication) and
+[Safety reports and moderation](/game-api/safety-reports).
 
 ## 3. Connect the native replication client
 
