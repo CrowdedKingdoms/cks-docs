@@ -39,6 +39,22 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-02 (Unreal SDK v2.24.0: spawned entities appear once; MIGRATION.md)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-11-02-sdk-v2240). No breaking change and
+nothing deprecated.
+
+- **Spawned entities appear once** on every client, keep their spawn data in either arrival order, and
+  reach players who join later: a Static entity's owner repeats its spawn every 4 seconds. The owner no
+  longer draws a pooled copy of its own entity unless **Render Local Owner** is set, and **Destroy Crowdy
+  Entity** stops sending at once. See [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning).
+- **No phantom host after sign-out**: **Is Host Set** is false and **Get Host ID** is invalid once the
+  player signs out. See [Host Election](/unreal-sdk/services/host-election#after-sign-out).
+- **Packaged installs**: the plugin zip carries the SDK's `Config/` folder and its CoreRedirects, and the
+  plugin builds with UAT BuildPlugin again.
+- **`MIGRATION.md`** ships at the plugin root: for each release from 2.24.0, what changed and the exact
+  steps to migrate.
+
 ## 2026-11-02 (dev: the safety baseline completed; the realtime rules; the SDKs)
 
 On the dev environment: Game API v2.61.0, replication server v0.43.0, CrowdyJS 18.24.0, CrowdyCPP

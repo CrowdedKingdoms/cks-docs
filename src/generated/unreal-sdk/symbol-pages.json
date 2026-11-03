@@ -282,7 +282,7 @@
     "UCrowdyGameSession::OnHostIDUpdated": "services/authentication",
     "UCrowdyGameSession::OnOwnerUUIDUpdated": "services/authentication",
     "UCrowdyHostSubsystem": "services/host-election",
-    "UCrowdyHostSubsystem::OnHostElected": "concepts/host-is-a-convention",
+    "UCrowdyHostSubsystem::OnHostElected": "services/host-election",
     "UCrowdyIsEntityHostServer": "concepts/host-is-a-convention",
     "UCrowdyIsEntityHostServer::OnFailed": "concepts/host-is-a-convention",
     "UCrowdyIsEntityHostServer::OnIsHost": "services/host-election",

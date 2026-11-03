@@ -1472,7 +1472,7 @@
       "type": "FOnCrowdyHostElected",
       "category": "Crowdy SDK|Host|Events",
       "module": "CrowdyServices",
-      "page": "concepts/host-is-a-convention",
+      "page": "services/host-election",
       "editor": false,
       "allowlist": ""
     },
