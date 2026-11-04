@@ -72,8 +72,8 @@ are namespaced by audience:
 
 | Audience | Sub-clients | Notes |
 |---|---|---|
-| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `exec`, `inputLog`, `serverStatus`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
-| **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `managedPlayers`, `apps`, `appAccess`, `billing`, `payments`, `quotas`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. Dedicated `environments` were removed in v13. `managedPlayers` (18.16.0, `manage_players`) administers an organization's [org-managed players](/management-api/org-managed-players); its `settings` say whether the organization has accepted the Org-Managed Players Addendum. |
+| **Game-client** (browser-safe) | `auth`, `users`, `safety`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `exec`, `inputLog`, `serverStatus`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
+| **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `managedPlayers`, `moderation` (a `moderate_safety` holder), `apps`, `appAccess`, `billing`, `payments`, `quotas`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. Dedicated `environments` were removed in v13. `managedPlayers` (18.16.0, `manage_players`) administers an organization's [org-managed players](/management-api/org-managed-players); its `settings` say whether the organization has accepted the Org-Managed Players Addendum. |
 
 The SDK never relaxes server-side authorization — exposing an operation just
 gives you a typed wrapper; the caller still needs the right token and permission.
@@ -149,15 +149,23 @@ from a phishing page. The player signs in on Studio and your game receives a
 token confined to itself. See [Sign-in with `client.auth`](#sign-in-with-clientauth)
 for the other two rows.
 
-**Every row needs the player's terms and age attestation before a gameplay token**
-(ck-api v2.35.0, CrowdyJS 18.4.0). Until they are stored, `portal.mintAppToken`,
-`portal.createAuthorizationCode` and `portal.refresh` answer `LEGAL_ACCEPTANCE_REQUIRED`
-(`isLegalAcceptanceRequiredError`). On the first row Studio's `/authorize` asks, so
-your game only sends the player back through `portal.signIn` when a refresh is
-refused that way. On the other two, show your own two checkboxes, then call
-`client.auth.recordPlayerConsents({ acceptLegal: true, attestAgeOfMajority: true })`
-before minting; `client.auth.playerLegalAcceptance()` says whether that is still
-needed. See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+**Every row needs the player's terms, and an age and a country, before a gameplay token**
+(ck-api v2.35.0 and v2.60.0, CrowdyJS 18.4.0 and 18.24.0). Until the documents are stored,
+`portal.mintAppToken`, `portal.createAuthorizationCode` and `portal.refresh` answer
+`LEGAL_ACCEPTANCE_REQUIRED` (`isLegalAcceptanceRequiredError`;
+`legalAcceptanceRequiredOf(err).missingDocuments` names what is missing). On the first row
+Studio's `/authorize` asks, so your game only sends the player back through `portal.signIn` when
+a refresh is refused that way. On the other two, show your own checkboxes, each document linked
+(`client.auth.playerLegalDocuments()` and the app's own `client.auth.appRequiredDocuments(appId)`),
+then call `client.auth.recordPlayerConsents({ acceptLegal: true, appId })`
+before minting; `client.auth.playerLegalAcceptance({ appId })` says whether that is still
+needed. Ask the date of birth and the country on [a neutral screen](/management-api/age-and-territory#the-age-screen)
+and send them with `auth.register({ …, birthDate, country, parentalConfirmation })`, or
+`auth.recordPlayerAge({ birthDate, country, parentalConfirmation })` for an account with none.
+The gate's other refusals read with `territoryNotSupportedOf`, `ageRequiredOf`,
+`ageRequirementNotMetOf` (it surfaces no age), `safetyLogRequiredOf` and, from 18.25.0,
+`safetyModeratorRequiredOf`. See
+[Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
 
 `client.portal` wraps hosted sign-in, minting, **and consent**:
 
@@ -528,6 +536,23 @@ client.udp.subscribe(
 
 See **[Game API → Permissions overview](/game-api/permissions)** for tiers,
 grids, and how to grant or restrict access.
+
+## Player safety
+
+CrowdyJS 18.24.0 wraps the teen safety program (ck-api v2.60.0), and 18.25.0 its additions
+(ck-api v2.61.0): `safetyModeratorRequiredOf`, the `reason` on `parentalConsentUnavailableOf(err)`,
+`hasSafetyModerator` on app reads, `regionCode` on `platform.territoryPolicies()` rows, and
+`region` in an organization's assertion claims. With the player's app token,
+`client.safety` holds their own controls in the app: voice and video settings (`commSettings`,
+`setCommSettings`), a parent's consent (`requestParentalConsent`), contacts (`contacts`,
+`contactRequests`, `requestContact`, `acceptContact`, `removeContact`), blocks (`blocks`, `block`,
+`unblock`) and reports (`fileReport`). `client.apps.recording(appId)` says what the safety log
+records, for the notice and the indicator your game shows. Moderators use `client.moderation`
+(`reports`, `resolveReport`, `escalateReport`) with their identity session. The realtime servers
+enforce the settings, contacts and blocks (replication server v0.43.0); your game shows the
+controls. See [Voice, video, contacts and blocks](/game-api/communication),
+[Safety reports and moderation](/game-api/safety-reports) and
+[Players under 18 and player safety](/overview/player-safety).
 
 ## World helpers
 

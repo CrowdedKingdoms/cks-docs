@@ -21,6 +21,9 @@ other.
 session reports how many of its inputs were accepted but never recorded
 ([`missingRecords`](#read-it)).
 
+On an app that admits players under 18 the input log is required, and is called the
+**[safety log](#the-safety-log)**.
+
 ## Turn it on
 
 Replay logging is **off** for every app until you turn it on ("No replication logging").
@@ -47,29 +50,89 @@ Recording starts shortly after you turn it on and stops shortly after you turn i
 Turning it off deletes nothing already recorded: those inputs stay readable, and **go on being
 billed**, until their [retention](#retention) ends.
 
-### Leave voice and video out
+### Voice and video
 
-An app that records can leave its players' voice and video out of the recording and keep
-everything else: proximity voice (`sendAudioPacket`), webcam video (`sendVideoPacket`) and
-channel voice (`sendChannelAudio`). In Crowdy Studio it is the **Record voice and video** switch
-under **Replay logging**; with GraphQL:
+An app that records can leave its players' voice or video out of the recording and keep
+everything else. Each medium has its own switch, and both are on (`true`) by default:
+
+- `replayLoggingRecordsVoice`: proximity voice (`sendAudioPacket`) and channel voice
+  (`sendChannelAudio`);
+- `replayLoggingRecordsVideo`: webcam video (`sendVideoPacket`).
 
 ```graphql
-mutation LeaveOutVoiceAndVideo($appId: BigInt!) {
-  updateApp(appId: $appId, input: { replayLoggingRecordsMedia: false }) {
-    appId
-    replayLoggingRecordsMedia
+mutation TextOnly($appId: BigInt!) {
+  updateApp(appId: $appId, input: { replayLoggingRecordsVoice: false, replayLoggingRecordsVideo: false }) {
+    replayLoggingRecordsVoice
+    replayLoggingRecordsVideo
+    recording { voice video }
   }
 }
 ```
 
-It is on (`true`) by default, takes effect shortly after you change it, and deletes nothing
-already recorded. Voice and video are usually most of what an app records, so leaving them out
-also cuts what recording costs.
+- `replayLoggingRecordsMedia`, the older switch, sets both, and reads `true` while either is on.
+  In Crowdy Studio it is the **Record voice and video** switch under **Replay logging**. An
+  explicit voice or video switch in the same update wins for its medium. (Game API v2.60.0.)
+- **From replication server v0.43.0 each switch records its own medium** (before it, either
+  switch on recorded both). `App.recording` still reads a medium as recorded while either switch
+  is on (Game API v2.61.0), so it never says less than is recorded: show the notice for what it
+  reports.
+
+A change takes effect shortly after you make it and deletes nothing already recorded. Voice and
+video are usually most of what an app records, so leaving them out also cuts what recording costs.
 
 **Tell your players first.** Recorded inputs can contain personal data: chat, voice and
 video (unless you leave them out), as well as movement and actions. Before you turn recording on, give your players any
 notice, and get any consent, that the law where they live requires.
+
+## The safety log
+
+On an app that admits players under 18, the input log is the **safety log**: the evidence a
+[safety report](/game-api/safety-reports) is reviewed with. An app admits players under 18 when
+its [minimum age](/management-api/age-and-territory#minimum-ages) is under 18: since Crowded
+Kingdoms opened to players 13 and over on 2026-11-04, every app does unless it set `minPlayerAge`
+to 18.
+
+:::info[What is switched on]
+
+- **Live** (Game API v2.60.0): the requirement below, the separate voice and video switches,
+  `App.recording`, moderators' reads, and the copies reports preserve.
+- **Live** (Game API v2.61.0): on an app that admits players under 18, only moderators read other
+  players' records, only those a report covers, and every read is audited, a player's reads of
+  their own included.
+
+:::
+
+- **It stays on.** On such an app, turning replay logging off is refused `SAFETY_LOG_REQUIRED`;
+  raise the app's minimum age to 18 first. While it is off, a player under 18 is refused a token
+  in the app, also `SAFETY_LOG_REQUIRED`. Adults are not.
+- **What it records** is what this page describes: every message a player's client sends, text
+  chat, channel messages and direct messages included. Voice and video are recorded only where the
+  app's admins leave them on, each on its own ([Voice and video](#voice-and-video)).
+- **The notice and the indicator.** While the app records voice or video, your game tells players
+  before they speak or appear on camera, and shows them while it records. This is required.
+  `App.recording` says what is recorded now; read it with the player's app-scoped token:
+
+  ```graphql
+  query Recording($appId: BigInt!) { app(appId: $appId) { recording { enabled voice video } } }
+  ```
+
+  `enabled` is the safety log itself, which always includes text; `voice` and `video` are each
+  medium.
+- **Who reads it** (Game API v2.61.0). A player lists and reads their own sessions, which hold
+  only what their client sent; in Crowdy Studio that is **Account > Safety-log records**. A
+  holder of `moderate_safety` (an appointed moderator, or the organization's admins) lists and
+  reads only the sessions an open or escalated report covers.
+  `manage_apps` gives nothing more: another player's list is `FORBIDDEN` and their session
+  `NOT_FOUND`. Every list and read is audited before it is served, a player's own included.
+- **A minor's session stays covered.** On an app for adults, `manage_apps` lists and reads every
+  session but a player under 18's, so raising a minimum age opens no recording made while minors
+  played.
+- **How long.** The input log's [retention](#retention), 7 days. A report copies the records
+  around it into a secure store until it is resolved, or for a year after a CyberTipline report
+  ([What a report preserves](/game-api/safety-reports#what-a-report-preserves)).
+- **Who pays.** The app's organization, as for any input log ([Billing](#billing)). Turning it on
+  needs a funded wallet or a billing exemption (`INPUT_LOG_FUNDS_NEEDED`), and when the wallet can
+  no longer pay, the whole app pauses, adults included (`APP_PAUSED`): nothing runs unrecorded.
 
 ## What is recorded
 
@@ -122,8 +185,12 @@ Both queries are game plane. Send them with an **app-scoped token** for the app 
 datacenter ([Datacenter routing](/game-api/datacenter-routing); the SDKs follow a
 `WRONG_DATACENTER` refusal for you). An identity session token is refused.
 
-**Who sees what.** A player sees only their own sessions and inputs. A holder of
-`manage_apps` on the app sees every session and can filter by player.
+**Who sees what.** A player sees only their own sessions and inputs. On an app for adults, a
+holder of `manage_apps` on the app sees every session but a player under 18's and can filter by
+player. A moderator (`moderate_safety`) reads the inputs of the sessions an open or escalated
+safety report covers, which the report lists (`SafetyReport.sessions`), and no others. Each read
+of another player's session is audited. On an app that admits players under 18, `manage_apps`
+gives nothing more and every read is audited: see [who reads the safety log](#the-safety-log).
 
 List the recorded sessions, newest first:
 
@@ -183,7 +250,8 @@ query RecordedInputs($appId: BigInt!, $gameTokenId: BigInt!, $after: String) {
 ```
 
 `body` is the message in standard base64. `filter` takes `from` / `to` and `messageTypes` (at
-most 64). Without `manage_apps`, another player's session answers `NOT_FOUND`.
+most 64). Without `manage_apps`, another player's session answers `NOT_FOUND`, unless a
+moderator reads one a report covers.
 
 **Keep paging while `pageInfo.hasNextPage` is true**, not while `endCursor` is set. A page of
 inputs can hold fewer than `first` inputs, or none, when it reached the server's time or scan
@@ -277,12 +345,13 @@ app's byte-hours and the bytes it holds now; the full basis is in
 | Code | Meaning |
 |---|---|
 | `INPUT_LOG_FUNDS_NEEDED` | `updateApp` was asked to turn replay logging on, and the organization's wallet cannot spend the projected cost of keeping one retention period of the app's recent traffic (and the organization is not exempt from billing). `extensions.requiredMicrousd` and `spendableMicrousd` say how much. Fund the wallet, then try again. 402. |
+| `SAFETY_LOG_REQUIRED` | `updateApp` was asked to turn replay logging off on an app that admits players under 18, or a player under 18 asked for a token in an app whose safety log is off. Keep it on, or raise the app's minimum age to 18 first. 403. See [the safety log](#the-safety-log). |
 | `INPUT_LOG_UNAVAILABLE` | Input logging is not available on this deployment, or the deployment cannot read its log. Do not retry. 503. |
 | `INPUT_LOG_TEMPORARILY_UNAVAILABLE` | `inputLogMessages` could not read the log just now (its readers were busy, or the store was briefly unreachable). Retryable: retry shortly with the same cursor; nothing is lost. 503. |
 | `INPUT_LOG_RATE_LIMITED` | An earlier `inputLogMessages` read was still running when this one's wait ran out, or freed its share with too little of this read's deadline left to read: each server runs one read per user, and two per app and per organization, at a time. Retryable: retry shortly with the same cursor. 429. |
 | `INPUT_LOG_READ_ABORTED` | An `inputLogMessages` read stopped because its HTTP request closed (you aborted it). Nobody receives this answer: your request has already ended with your own abort. It shows in usage figures as a client error. 499. |
-| `FORBIDDEN` | `inputLogSessions` was asked for another player's sessions without `manage_apps`. |
-| `NOT_FOUND` | `inputLogMessages` was asked for a session that is not yours, without `manage_apps`, or that does not exist. |
+| `FORBIDDEN` | `inputLogSessions` was asked for another player's sessions without `manage_apps` (on an app that admits players under 18, by anyone but a moderator narrowing the reported sessions). |
+| `NOT_FOUND` | `inputLogMessages` was asked for a session that is not yours, without `manage_apps` (or, for a moderator, one no open or escalated report covers; on an app that admits players under 18, or for a minor's session, `manage_apps` does not count), or that does not exist. |
 | `BAD_USER_INPUT` | `inputLogMessages` was given a malformed cursor or one from another session; a connection cursor points past 10,000,000 rows; or a filter is out of range. (`inputLogSessions` treats a malformed cursor as the first page.) |
 
 All error codes are on [Error codes](/overview/error-codes).

@@ -1,0 +1,53 @@
+---
+id: safety-capture-status
+title: SafetyCaptureStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where the report’s copy into the preservation store stands. PENDING: nothing copied yet (it is retried every minute; the store may not be configured on this deployment). PARTIAL: some parts copied, the rest retried. COMPLETE: every part copied. DISCARDED: the report was resolved and its copy deleted.
+
+
+```graphql
+enum SafetyCaptureStatus {
+  PENDING
+  PARTIAL
+  COMPLETE
+  DISCARDED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyCaptureStatus.<b>PENDING</b></code>](#pending) {/* #pending */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyCaptureStatus.<b>PARTIAL</b></code>](#partial) {/* #partial */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyCaptureStatus.<b>COMPLETE</b></code>](#complete) {/* #complete */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyCaptureStatus.<b>DISCARDED</b></code>](#discarded) {/* #discarded */} 
+
+
+
+
+
+### Member Of
+
+[`SafetyReportCapture`](/reference/graphql/types/objects/safety-report-capture.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -47,8 +47,8 @@ Any Actor Blueprint can spawn; nothing on the spawner needs a component. In the 
 A plain `SpawnActor` never broadcasts the spawn event. The component still registers locally, so the actor looks like an entity on the spawning client and exists nowhere else.
 :::
 
-:::caution[The spawn event is a one-shot spatial send. A late joiner or a distant client never sees a runtime-spawned Static entity.]
-It reaches the clients within eight chunks of the spawn point at that moment and is never replayed. A client that joins afterwards, or stands further away, has no copy unless you re-announce the spawn yourself; a Dynamic entity is rebuilt from its position updates instead (below), and anything that must exist for everyone from the start is level-placed.
+:::caution[A Dynamic entity's spawn event is a one-shot spatial send, so a client that joins later never receives its `InitialState`.]
+It reaches the clients within eight chunks of the spawn point at that moment and is never replayed. A client that joins afterwards, or comes into range later, still draws a Dynamic entity from its position updates, but with no spawn event `OnCrowdySpawned` does not fire there. A Static entity is different: its owner repeats the spawn event every 4 seconds (below), so a late joiner gets the actor, its owner, and `OnCrowdySpawned` with the `InitialState`. Anything a late joiner must see on a Dynamic entity belongs in class defaults or in replicated state, and anything that must exist for everyone from the start is level-placed.
 :::
 
 **Success signal.** On a second client the proxy appears and its `OnCrowdySpawned` fires with `bIsLocallyOwned` false. A single client can only confirm the send: `crowdy.entity.trace 1` logs the registration and the spawn event; `crowdy.rpc.loopback` replays RPC calls, not spawn events, so no proxy appears.
@@ -63,7 +63,7 @@ Three calls converge on the same path: broadcast a destroy event, then destroy t
 | `UCrowdyUtilities::DestroyCrowdyEntity(WorldContextObject, TargetEntity)` | The static form with a world context pin; the Blueprint node. `TargetEntity` defaults to self. |
 | `UCrowdyEntityComponent::DestroyEntity()` | The component, on itself. See [Entity component](./entity-component.md). |
 
-On every client `OnCrowdyDestroyed` fires first, with `bIsLocallyOwned` true on the client that called the destroy and false everywhere else; nothing stops a non-owner from destroying an entity. The actor goes after the delay. A `DestroyDelay` above zero is for a dissolve or a fade the actor plays out before it disappears.
+On every client `OnCrowdyDestroyed` fires first, with `bIsLocallyOwned` true on the client that called the destroy and false everywhere else; nothing stops a non-owner from destroying an entity. The actor goes after the delay. A `DestroyDelay` above zero is for a dissolve or a fade the actor plays out before it disappears. The entity stops sending updates when the destroy is called, not when the actor goes, and other clients do not draw updates that arrive in the half second after the destroy event, so an update already on its way does not bring the entity back.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -84,13 +84,17 @@ The player picks up a lantern of their own that has gone out: in C++ the charact
 
 A remote client that receives the spawn event spawns the named class, injects the identity as `RemoteProxy`, finishes spawning, and broadcasts `OnCrowdySpawned` with the `InitialState` from the event. The event carries the class path, so a class that is not loaded yet is streamed in and spawned when it arrives; a destroy event that lands during the load cancels the spawn. If the class ships without a `UCrowdyEntityComponent`, the SDK adds one so the lifecycle callbacks have a home.
 
+That actor is the one players see: the actor pool draws it rather than a pooled copy, so whatever your `OnCrowdySpawned` handler set on it stays. When the entity's first update arrives before its spawn event, the pool draws it at once and the spawn event then hands its `InitialState` to that actor instead of spawning a second one. Either way `OnCrowdySpawned` fires once per entity on each client.
+
 :::note[The spawn and destroy payloads are wire format, not something you build.]
 `FCrowdyEntitySpawnEvent`, `FCrowdyEntityDestroyEvent`, and the registry's `FCrowdyEntityRecord` are Blueprint-visible types because they cross a delegate, but you never construct one. `InitialState` is the only payload you author.
 :::
 
 ### A Dynamic entity can appear with no spawn event at all
 
-A Dynamic-mode entity (see [Continuous state](./continuous-state.md)) streams position updates, and each update carries the class id and the state struct type. The `UCrowdyActorManager` resolves the class from that (`RegisterStateClass` is filled in for you by each entity component's `BeginPlay`) and asks the rendering backend to draw a proxy, so a moving entity shows up on a client that joined late without any spawn round trip. A Static entity has no updates to be found by, so it always needs the spawn event.
+A Dynamic-mode entity (see [Continuous state](./continuous-state.md)) streams position updates, and each update carries the class id and the state struct type. The `UCrowdyActorManager` resolves the class from that (`RegisterStateClass` is filled in for you by each entity component's `BeginPlay`) and asks the rendering backend to draw a proxy, so a moving entity shows up on a client that joined late without any spawn round trip.
+
+A Static entity spawned with `SpawnEntity` sends no updates, so its owner repeats the spawn event instead: every 4 seconds while a client owns it, that client sends the spawn event again, from where the entity is now, naming its owner and carrying its `InitialState`. A client that joins later builds the entity from a repeat exactly as if it had seen the spawn, and its `OnCrowdySpawned` fires there. A client that already has the entity ignores repeats, and `OnCrowdySpawned` never fires twice. A repeat costs about 280 bytes plus your `InitialState`: about 70 bytes per second of upload per entity on its owner, and the same in download for each client within eight chunks. A spawn event for an entity destroyed less than 10 seconds earlier is ignored, so a repeat already on its way cannot bring it back; an owner that never received the destroy keeps repeating, and the entity reappears after those 10 seconds. A Static entity placed in the level, or registered with `RegisterStaticEntity`, sends nothing.
 
 :::warning[Preloaded Entity Classes is empty by default, and an observer on this path needs it.]
 This path resolves the class by id against loaded classes; a spawn event carries the class path and loads it for you, this does not. The startup scan walks loaded classes, and a Blueprint entity class that nobody on this client has spawned yet is not loaded, so an observer that meets it first over the network cannot name it. The actor manager warns `cannot resolve to a loaded class ... Preload the entity class or give it a ClassIDOverride` and the entity stays undrawn. List every Blueprint entity class a client can be shown before it spawns one itself under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes** (`PreloadedEntityClasses` on `UCrowdySDKDeveloperSettings`). Classes already loaded for another reason need no entry, and a duplicate costs nothing.
@@ -123,7 +127,7 @@ The tracker's events, all on the game thread: `OnRemoteEntityAppeared` (an id se
 
 - `IsLocallyOwned` means two different things: on the subsystem it takes a NetID and asks the record; on the component it takes nothing and asks whether this client is the entity's authority, host-owned included. See [Entity component](./entity-component.md).
 - A spawned entity is owned by its spawner, full stop. To hand it over, use [Ownership transfer](./ownership-transfer.md).
-- `InitialState` reaches `OnCrowdySpawned` on the actor the spawn event creates. On the actor-pool backend a Dynamic entity's pooled proxy replaces that actor and never sees the payload; see [Rendering backends](./rendering-backends.md).
+- `InitialState` reaches `OnCrowdySpawned` once on each client that receives the spawn event, on the actor that client draws. A late joiner receives it for a Static entity (from a repeat) but not for a Dynamic one.
 - Two unrelated participants can derive the same NetID (a NetID has 32 bits of real entropy). The incumbent keeps it and the newcomer is refused with a log line; a system that binds state to an id should register through `TryRegisterEntity` and give up its claim when the `ECrowdyEntityRegistration` it returns is `RefusedIdHeldByLiveParticipant` (or `RefusedInvalidNetID` for a record with no usable id) rather than `Registered`.
 - `UHelperFunctions` has the id helpers a custom identity scheme would reach for: `GetDeterministicID(Seed)` turns a seed into the same `FGuid` on every client, with those same 32 bits of entropy, and `GetNewID` and `GetNewUUID` mint random ones. Prefer the component's identity policies; these exist for code that already has a seed.
 

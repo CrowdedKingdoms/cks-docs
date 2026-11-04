@@ -39,6 +39,167 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-02 (Unreal SDK v2.24.0: spawned entities appear once; MIGRATION.md)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-11-02-sdk-v2240). No breaking change and
+nothing deprecated.
+
+- **Spawned entities appear once** on every client, keep their spawn data in either arrival order, and
+  reach players who join later: a Static entity's owner repeats its spawn every 4 seconds. The owner no
+  longer draws a pooled copy of its own entity unless **Render Local Owner** is set, and **Destroy Crowdy
+  Entity** stops sending at once. See [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning).
+- **No phantom host after sign-out**: **Is Host Set** is false and **Get Host ID** is invalid once the
+  player signs out. See [Host Election](/unreal-sdk/services/host-election#after-sign-out).
+- **Packaged installs**: the plugin zip carries the SDK's `Config/` folder and its CoreRedirects, and the
+  plugin builds with UAT BuildPlugin again.
+- **`MIGRATION.md`** ships at the plugin root: for each release from 2.24.0, what changed and the exact
+  steps to migrate.
+
+## 2026-11-04 (Crowded Kingdoms admits players from 13)
+
+Production opened to players aged 13 to 17 on 2026-11-04: Game API v2.61.1, replication server
+v0.43.0 and ck-exec 0.20.0, with CrowdyJS 18.25.0, CrowdyCPP 0.76.0 and CrowdyPy 0.24.0. See
+[Players under 18 and player safety](/overview/player-safety).
+
+- **Documents:** the platform's player documents are the
+  [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
+  [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html)
+  (`player-terms-2026-11-04`, `player-privacy-2026-11-04`), which every player accepts at their
+  next mint; the age-of-majority attestation is ignored. Developers accept the developer documents
+  before creating or administering an organization, and only adults may. Organizations accept the
+  new [Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html).
+  See [Legal documents](/management-api/legal-documents).
+- **Age:** the youngest player is 13. A browser sign-up gives a birth date and a country
+  (`AGE_REQUIRED` without), and an organization gives each player's `ageYears` and `country`. See
+  [Age, country and who may play](/management-api/age-and-territory).
+- **Players under 18** get the minors' defaults (voice and video off until a parent consents,
+  then contacts only; no direct messages), in apps that keep the safety log and have appointed a
+  moderator.
+- **Not yet in production: parental consent.** Kids Web Services is not available there yet:
+  `requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason`
+  `not_configured`, so a player under 18 cannot turn voice or video on there yet.
+- **Game API v2.61.1:** `PARENTAL_CONSENT_UNAVAILABLE` carries `extensions.reason`
+  (`not_configured`, `provider_refused`, `provider_unavailable`); after an age refusal, a client
+  that sends `x-ck-device-id` is locked by that device for 24 hours, and one that sends none by
+  its address and browser for an hour; a player under 18 is refused `SAFETY_LOG_REQUIRED` or
+  `SAFETY_MODERATOR_REQUIRED` when Studio's hosted sign-in issues the code, as at the mint.
+- **SDKs:** CrowdyJS 18.25.0 adds `safetyModeratorRequiredOf`, the `reason` on
+  `parentalConsentUnavailableOf(err)`, `hasSafetyModerator` on app reads, `regionCode` on the
+  territory list and `region` in an organization's assertion claims; CrowdyCPP 0.76.0 and CrowdyPy
+  0.24.0 the same, their consent readers returning the refusal with its reason instead of a
+  boolean.
+- **The Minecraft server page is unpublished** until the server mod's release is public.
+
+## 2026-11-02 (dev: the safety baseline completed; the realtime rules; the SDKs)
+
+On the dev environment: Game API v2.61.0, replication server v0.43.0, CrowdyJS 18.24.0, CrowdyCPP
+0.75.0 and CrowdyPy 0.23.0. See [Players under 18 and player safety](/overview/player-safety).
+
+- **The realtime servers enforce players' settings, contacts and blocks** (v0.43.0), on the
+  sending and the receiving side. **Behaviour change:** a player now needs `use_voice_chat`,
+  `use_video_chat`, `use_text_chat` or `use_direct_messages` to receive that medium too, not only
+  to send it. A block stops communication between two players (voice, video, text, direct and
+  channel messages, a player's events and app-defined messages); movement and world edits still
+  pass. New `UNAUTHORIZED` refusals: voice or video with its send setting off, a minor's direct
+  message, a send under another player's actor. Each voice and video switch of the safety log now
+  records only its medium. See [Voice, video, contacts and blocks](/game-api/communication).
+- **Age refusals name no age** (`AGE_REQUIREMENT_NOT_MET` carries no extensions), and after one
+  the same client, Minecraft account or managed player is refused for 24 hours. An account that
+  declares an age under 13 is deleted and erased. See
+  [Age, country and who may play](/management-api/age-and-territory).
+- **Countries checked by region**: `territoryPolicies` lists regions (`regionCode`), a managed
+  player there needs `region`, and `TERRITORY_NOT_SUPPORTED` carries `extensions.region`. Crowded
+  Kingdoms staff pass the country check at the mint.
+- **`SAFETY_MODERATOR_REQUIRED`**: a player under 18 is admitted only to an app whose organization
+  has appointed a moderator, a member holding a role with `moderate_safety` (the admin role alone
+  does not count); `App.hasSafetyModerator` says whether it has. See
+  [Moderators](/game-api/safety-reports#moderators).
+- **Who reads the safety log** on an app that admits players under 18: moderators, only the
+  sessions a report covers; each player their own; every read audited. A minor's sessions stay
+  out of `manage_apps` reads on any app. See [the safety log](/replication-api/input-logging#the-safety-log).
+- **Crowded Kingdoms receives every `CHILD_SAFETY` report**, across all games.
+- **The SDKs wrap the program:** CrowdyJS `client.safety`, `client.moderation`, `apps.recording`,
+  the age and document calls and the refusal readers; CrowdyCPP the same, and
+  `crowdy::startGameSession(token, options)` to start a session from any app token; CrowdyPy
+  `client.safety` and `client.moderation`.
+- **Coming in the next Game API release:** `PARENTAL_CONSENT_UNAVAILABLE` says why in
+  `extensions.reason` (`not_configured`, `provider_refused`, `provider_unavailable`).
+
+## 2026-10-31 (Unreal SDK v2.23.0: nearby text chat; how far voice reaches)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-31-sdk-v2230).
+
+- **Nearby text chat**: **Send Proximity Text** reaches the players within a distance of your pawn's
+  chunk, and **On Proximity Text Received** hands you their lines. Lines are plain UTF-8, shared with
+  CrowdyJS and CrowdyCPP players. See [Nearby Text Chat](/unreal-sdk/services/nearby-text-chat).
+- **Set Voice Chat Distance** keeps voice local, from 0 to 8 chunks; the default stays 8. Voice and
+  text are now addressed to the chunk your pawn stands in. See [Voice
+  Chat](/unreal-sdk/services/voice-chat#how-far-your-voice-reaches).
+- **Audio that is not the microphone**, for C++: `FeedVoicePcm` sends it through the microphone's own
+  gate and encoder.
+
+## 2026-10-30 (dev: players under 18 and player safety)
+
+On the dev environment: Game API v2.60.0, and ck-exec 0.20.0 with `ckx-sdk` 0.13.0 and the dev
+kit 0.6.0. Crowded Kingdoms opens to players aged 13 to 17 at one moment, once this baseline is
+live in production; until then every player is 18 or older. See
+[Players under 18 and player safety](/overview/player-safety).
+
+- **Breaking, for every player: countries Crowded Kingdoms does not serve are refused.** Every
+  sign-up, mint and refresh checks the country the player gave, the one their connection comes
+  from, or the one their organization sends, and answers `TERRITORY_NOT_SUPPORTED`.
+  `territoryPolicies` lists them. See [Countries](/management-api/age-and-territory#countries).
+- **Age:** `register` takes `birthDate`, `country` and `parentalConfirmation`; `recordPlayerAge`
+  gives an account its age once; `me { ageBracket country }`; managed players carry `ageYears` and
+  `country`, on `mintManagedPlayerToken` and as assertion claims; `App.minPlayerAge` and
+  `effectiveMinPlayerAge`. New codes `AGE_REQUIRED` and `AGE_REQUIREMENT_NOT_MET`. See
+  [Age, country and who may play](/management-api/age-and-territory).
+- **Documents:** an app's own required documents (`setAppRequiredDocuments`,
+  `appRequiredDocuments`); `playerLegalDocuments`; `recordPlayerConsents` takes `appId` and
+  `method`, and `attestAgeOfMajority` is optional in the schema (still required until the
+  opening); `playerLegalAcceptance(appId)`; `LEGAL_ACCEPTANCE_REQUIRED` lists
+  `extensions.missingDocuments`; the developer documents (`developerLegalDocuments`,
+  `recordDeveloperConsents`, `developerLegalAcceptance`), empty until the opening. See
+  [Legal documents](/management-api/legal-documents).
+- **Communication:** voice and video settings per player and app (`myCommSettings`,
+  `setMyCommSettings`), contacts, blocks, and `requestParentalConsent` through Kids Web Services;
+  `SOCIAL_LIMIT_REACHED` and `PARENTAL_CONSENT_UNAVAILABLE`. The replication server release after
+  v0.42.0, not released yet, enforces them, and checks every receiving player's permission keys
+  too: a tier without `use_voice_chat` will no longer hear voice. See
+  [Voice, video, contacts and blocks](/game-api/communication).
+- **The safety log:** `replayLoggingRecordsVoice` and `replayLoggingRecordsVideo` (the media switch
+  sets both), `App.recording` for the notice and the indicator, and `SAFETY_LOG_REQUIRED` on an app
+  that admits players under 18. See [the safety log](/replication-api/input-logging#the-safety-log).
+- **Reports:** `fileSafetyReport`; the organization permission `moderate_safety`; `safetyReports`,
+  `resolveSafetyReport` and `escalateSafetyReport`; each report preserves both players' recorded
+  sessions, accounts and hub data; deleting a reported account sets a legal hold. See
+  [Safety reports and moderation](/game-api/safety-reports).
+- **Account deletion** also erases the player's communication settings, contacts and blocks, and
+  what the app's ck-exec hubs hold of them.
+- **ck-exec 0.20.0, `ckx-sdk` 0.13.0:** `Hub::on_player_erased` and `Hub::on_player_export`,
+  `ctx.players().blocked`, `ctx.safety().report` with the scope `safety.write`, `age_bracket` on
+  `players.get`, and `TestHub::erase` and `export`, in the dev kit from 0.6.0. See
+  [Players' data, blocks and reports](/exec/players-and-safety).
+- **Minecraft sign-in** for Crowded Kingdoms' own apps: `minecraftChallenge` and
+  `signInWithMinecraft`, with `MINECRAFT_VERIFICATION_FAILED` and
+  `MINECRAFT_VERIFICATION_UNAVAILABLE`.
+- The SDKs did not wrap the new fields yet: CrowdyJS 18.24.0, CrowdyCPP 0.75.0 and CrowdyPy 0.23.0 do (2026-11-02).
+- Every new code is on [Error codes](/overview/error-codes).
+
+## 2026-10-30 (Unreal SDK v2.22.0: voice chat on the shared voice format; no flicks after a hitch; UX fixes)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-30-sdk-v2220).
+
+- **Voice chat rebuilt** on the voice format the CrowdyJS and CrowdyCPP SDKs share: Opus with
+  reordering and loss concealment, no pawn needed, settings kept across maps. **Every player needs
+  2.22.0 or later for voice**: earlier versions cannot hear this one. New: **Get Voice Mic State**,
+  **On Voice Mic State Changed**, **On Voice Speaker Talking**. See [Voice
+  Chat](/unreal-sdk/services/voice-chat).
+- **Remote copies no longer flick away** for a frame after their sender hitches.
+- **Warnings where mistakes used to fail silently**, fewer noisy logs, clearer messages, one
+  **Crowdy SDK** palette category, Studio confirmations, two deprecations, and
+  `-run=CrowdyStudio -op=registry` for checking markers from a shell.
+
 ## 2026-10-29 (Crowdy Games retired: host your game yourself)
 
 **Crowded Kingdoms no longer hosts games. Breaking, with no deprecation window, on every
@@ -1003,7 +1164,7 @@ Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-07-sd
     `playerLegalAcceptance` says whether that is still needed.
   - A browser `register` must send `acceptLegal` and `attestAgeOfMajority`.
 
-  See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+  See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-age-and-country).
 - **CrowdyJS 18.4.0** (dev): `client.auth.recordPlayerConsents`,
   `client.auth.playerLegalAcceptance`, the two fields on `auth.register`, and
   `isLegalAcceptanceRequiredError`.

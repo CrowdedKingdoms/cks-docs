@@ -1,0 +1,672 @@
+# Target an entity
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/from-cpp/target-an-entity
+
+# Target an entity
+
+This page has a Blueprint twin: [Target an entity, from Blueprint](../from-blueprint/target-an-entity.md).
+
+On a Mass map you draw every other player as a crowd row, so there is no actor to hold a pointer to. An `FCrowdyMassEntityTarget` names one of those players instead: which entity (an `FMassEntityHandle`), and which world it lives in. You get one by tracing at the crowd, by overlapping it, or from an event, and every function on the pages after this one takes it. This page shows how to get a target and how to check it is still good.
+
+Your module needs `CrowdyMass` in its dependencies. It brings in the Mass modules it uses.
+
+```csharp
+PublicDependencyModuleNames.Add("CrowdyMass");
+```
+
+| You need | Include |
+|---|---|
+| `FCrowdyMassEntityTarget` | `Target/CrowdyMassEntityTarget.h` |
+| `UCrowdyMassTraceBlueprintLibrary`, `FCrowdyMassTraceHit`, `FCrowdyMassOverlapResult` | `Trace/CrowdyMassTraceBlueprintLibrary.h` |
+| `UCrowdyMassTargetLibrary` | `Target/CrowdyMassTargetLibrary.h` |
+
+## When you need a target
+
+- To play an animation on a player you are looking at: [`SendEntityAction`](./call-an-event-on-it.md#send-a-one-shot-action-by-name).
+- To send a Crowdy event to them: [`SendEventToMassTarget`](./call-an-event-on-it.md#call-a-crowdy-event-on-an-entity).
+- To read or write a field of their row: [Read and write its fields](./read-and-write-its-fields.md).
+- To read a value the server keeps about them, such as a raider's health: [Read its server values](./read-its-server-values.md).
+
+## The three ways to get one
+
+1. `FCrowdyMassTraceHit::Target` from a Crowdy Mass trace.
+2. `FCrowdyMassOverlapResult::Target` from a Crowdy Mass overlap.
+3. The first parameter of a function you bind with `UCrowdyMassEntitySubsystem::RegisterObjectEventHandler`, and of one you bind for a server values change. See [Receive its events](./receive-its-events.md) and [Read its server values](./read-its-server-values.md).
+
+The two members, `Entity` and `World`, are public. Code that already holds a live entity handle, in a Mass processor for example, can fill them in. The usual way is still a trace.
+
+A target dies with the entity. Mass bumps a slot's serial when it is reused, so a target you stored before a player left does not name whoever respawns into the same slot. Check it with `IsTargetLive` before you use it, as [below](#check-it-before-you-use-it).
+
+## Trace for it
+
+A Crowdy Mass trace works like the engine's trace functions, and it also tests the crowd. It reports a hit on a crowd row and a hit on a near tier actor the same way. You do not branch on how the player is drawn. The functions are static members of `UCrowdyMassTraceBlueprintLibrary`.
+
+A handler for an inspect key, with the target kept on the pawn:
+
+```cpp
+// LanternPlayer.h
+#include "Target/CrowdyMassEntityTarget.h"
+
+FCrowdyMassEntityTarget TracedTarget;
+
+// LanternPlayer.cpp
+#include "LanternPlayer.h"
+#include "Engine/EngineTypes.h"
+#include "GameFramework/Controller.h"
+#include "Trace/CrowdyMassTraceBlueprintLibrary.h"
+
+void ALanternPlayer::OnInspect()
+{
+	const AController* ViewController = GetController();
+	if (!ViewController)
+	{
+		return;
+	}
+	FVector Eye;
+	FRotator Look;
+	ViewController->GetPlayerViewPoint(Eye, Look);
+	FCrowdyMassTraceHit Hit;
+	UCrowdyMassTraceBlueprintLibrary::CrowdyMassLineTraceSingle(this, Eye, Eye + Look.Vector() * 3000.f,
+		UEngineTypes::ConvertToTraceType(ECC_Visibility), false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, Hit);
+	if (!Hit.bHitMassEntity)
+	{
+		return;
+	}
+	TracedTarget = Hit.Target;
+}
+```
+
+`UEngineTypes::ConvertToTraceType` turns the collision channel into the `ETraceTypeQuery` the function takes. Branch on `bHitMassEntity`: it is true for a crowd row and for a near tier actor alike, and `Target` is set only then.
+
+### The shapes and modes
+
+There are 24 trace functions. A name is built from three choices, in this order:
+
+`CrowdyMass` + shape + `Trace` + `Single` or `Multi` + how the trace picks what it hits.
+
+| How it picks | The end of the name | The parameter that picks |
+|---|---|---|
+| By channel | nothing | `ETraceTypeQuery TraceChannel` |
+| By object type | `ForObjects` | `const TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes` |
+| By collision profile | `ByProfile` | `FName ProfileName` |
+
+| Shape | Its own parameters, after `Start` and `End` |
+|---|---|
+| `Line` | none |
+| `Sphere` | `float Radius` |
+| `Box` | `FVector HalfSize`, `FRotator Orientation` |
+| `Capsule` | `float Radius`, `float HalfHeight` |
+
+So `CrowdyMassSphereTraceMultiForObjects` and `CrowdyMassCapsuleTraceSingleByProfile` are both real functions, and `CrowdyMassLineTraceSingle` is the plain form. In the Blueprint palette the same functions read **Crowdy Mass Line Trace Single**, **Crowdy Mass Sphere Trace Multi For Objects** and so on. These are all 24:
+
+| Function | By channel | For objects | By profile |
+|---|---|---|---|
+| Line, first hit | `CrowdyMassLineTraceSingle` | `CrowdyMassLineTraceSingleForObjects` | `CrowdyMassLineTraceSingleByProfile` |
+| Line, every hit | `CrowdyMassLineTraceMulti` | `CrowdyMassLineTraceMultiForObjects` | `CrowdyMassLineTraceMultiByProfile` |
+| Sphere, first hit | `CrowdyMassSphereTraceSingle` | `CrowdyMassSphereTraceSingleForObjects` | `CrowdyMassSphereTraceSingleByProfile` |
+| Sphere, every hit | `CrowdyMassSphereTraceMulti` | `CrowdyMassSphereTraceMultiForObjects` | `CrowdyMassSphereTraceMultiByProfile` |
+| Box, first hit | `CrowdyMassBoxTraceSingle` | `CrowdyMassBoxTraceSingleForObjects` | `CrowdyMassBoxTraceSingleByProfile` |
+| Box, every hit | `CrowdyMassBoxTraceMulti` | `CrowdyMassBoxTraceMultiForObjects` | `CrowdyMassBoxTraceMultiByProfile` |
+| Capsule, first hit | `CrowdyMassCapsuleTraceSingle` | `CrowdyMassCapsuleTraceSingleForObjects` | `CrowdyMassCapsuleTraceSingleByProfile` |
+| Capsule, every hit | `CrowdyMassCapsuleTraceMulti` | `CrowdyMassCapsuleTraceMultiForObjects` | `CrowdyMassCapsuleTraceMultiByProfile` |
+
+- Every function takes a world context object first, then `Start`, `End`, the shape parameters and the picker from the tables, then `bTraceComplex`, `const TArray<AActor*>& ActorsToIgnore` and an `EDrawDebugTrace::Type`, then the output, then the defaulted debug parameters.
+- `Single` fills one `FCrowdyMassTraceHit& OutHit`. `Multi` fills a `TArray<FCrowdyMassTraceHit>& OutHits`. Every function returns a bool.
+- The defaulted parameters are `bIgnoreSelf` (true), `TraceColor`, `TraceHitColor`, `DrawTime` (5 seconds), `bDrawMassCandidateShapes` and `bDrawSpatialGridCells`. The last two draw the crowd's broad-phase shapes and grid cells for debugging.
+
+## Overlap for it
+
+An overlap function finds the entities inside a volume. Each returns a bool and fills `TArray<FCrowdyMassOverlapResult>& OutOverlaps`.
+
+| Shape | Actors | Components |
+|---|---|---|
+| Sphere | `CrowdyMassSphereOverlapActors` | `CrowdyMassSphereOverlapComponents` |
+| Box | `CrowdyMassBoxOverlapActors`, `CrowdyMassBoxOverlapActorsWithOrientation` | `CrowdyMassBoxOverlapComponents`, `CrowdyMassBoxOverlapComponentsWithOrientation` |
+| Capsule | `CrowdyMassCapsuleOverlapActors`, `CrowdyMassCapsuleOverlapActorsWithOrientation` | `CrowdyMassCapsuleOverlapComponents`, `CrowdyMassCapsuleOverlapComponentsWithOrientation` |
+
+The shape parameters are `SpherePos` and `SphereRadius`, `BoxPos` and `BoxExtent`, or `CapsulePos`, `Radius` and `HalfHeight`. The `WithOrientation` forms add `FRotator Orientation`. All of them take `ObjectTypes`, then a `UClass*` filter (`ActorClassFilter` for the Actors forms, `ComponentClassFilter` for the Components forms), then `ActorsToIgnore`, then the output. Each overlapping entity is reported once, whichever way it is drawn.
+
+:::caution[A class filter applies to actors only, never to crowd entities.]
+Every crowd entity inside the volume that passes `ObjectTypes` is reported whatever `ActorClassFilter` or `ComponentClassFilter` says, including a close player whose near tier actor the filter rejected. Branch on `bOverlapMassEntity` rather than relying on the filter to exclude the crowd.
+:::
+
+## Read the hit
+
+An `FCrowdyMassTraceHit` has these fields, all read-only in Blueprint.
+
+| Field | What it holds |
+|---|---|
+| `bBlockingHit` | The trace hit something that blocks. |
+| `bHitMassEntity` | The hit landed on a Crowdy Mass entity, drawn as a crowd row or as a near tier actor. Branch on this. |
+| `bHitCrowdyEntity` | The hit landed on a Crowdy entity. |
+| `HitResult`, `Actor`, `Component` | The engine's hit result and the actor and component it hit. |
+| `UUID` | Who was hit. It is read from the entity, never from the near tier actor drawing it. |
+| `Entity` | The `FMassEntityHandle`. |
+| `Target` | The same hit as a send target. Set only when `bHitMassEntity` is true. |
+| `BoneName` | The bone that was hit. |
+| `HitZoneName` | The zone the bone belongs to in the active hit zone table, or the table's default zone. |
+| `DamageMultiplier` | The hit zone's multiplier. For a flourish only; see below. |
+| `InstanceIndex` | Which crowd row was hit, or `INDEX_NONE` for a hit on a near tier actor. |
+
+An `FCrowdyMassOverlapResult` has `bOverlapMassEntity`, `bOverlapCrowdyEntity`, `Actor`, `Component`, `UUID`, `Entity`, `Target` and `InstanceIndex`, with the same meanings, except that `InstanceIndex` is always `INDEX_NONE` on an overlap.
+
+`UCrowdyMassTraceBlueprintLibrary::GetEntity(Hit)` returns the `UCrowdyMassEntity` avatar object for a hit, or null if the hit was not a Crowdy Mass entity. The template form `GetEntity<T>(Hit)` casts it to `T`. Reading `Target` does not create the avatar and `GetEntity` does, so do not call it on every hit, and do not keep the pointer across frames. On the object, `GetUUID()` returns the entity's id and `IsValid()` (the Blueprint node **Is Entity Valid**) is true while the entity still exists, and false once it is gone or its world has gone away.
+
+:::caution[Never work out damage from DamageMultiplier.]
+The multiplier comes from a table on the machine that ran the trace. The server never reads it. Use it for a hit marker or a damage number that the server's own result will replace.
+:::
+
+## Check it before you use it
+
+`FCrowdyMassEntityTarget::IsSet()` only says both members are filled in. `UCrowdyMassTargetLibrary::IsTargetLive(Target)` asks the entity manager, so it also answers false for an entity that has gone and for a handle whose slot another entity now holds. Call it on a stored target each time you use it, and do nothing when it is false. The snippets on the next pages do.
+
+## Hit zones
+
+Assign a hit zone table once, and every Crowdy Mass trace fills `HitZoneName` and `DamageMultiplier` from it.
+
+1. Create a **Crowdy Mass Hit Zone Table** data asset (`UCrowdyMassHitZoneTable`). Each row of **Entries** is an `FCrowdyMassHitZoneEntry` with a **Bone Name**, a **Zone Name** and a **Damage Multiplier**. **Default Zone Name** (`Default`) and **Default Damage Multiplier** (1.0) answer for a bone with no row.
+2. At startup, call `UCrowdyMassTraceBlueprintLibrary::SetHitZoneTable(WorldContextObject, HitZoneTable)`. Call it once for the world, not on every pawn's `BeginPlay`. A table lasts for that world only, and null goes back to the built-in default zone.
+
+`UCrowdyMassTraceBlueprintLibrary::SetEntityTraceCollisionEnabled(WorldContextObject, Entity, bEnabled)` switches one entity in or out of traces at run time. It returns false for an entity that was never given a trace collision.
+
+## Gotchas
+
+- **Nothing is traceable without the trace collision trait.** An entity with no `FCrowdyMassTraceCollisionFragment` never blocks a trace and never passes a filter. A config the SDK derives for you has it. A config you author yourself must include the **Crowdy Mass Trace Collision** trait, or the whole crowd stays untraceable and looks like a trace that is aimed wrong. The log names the fix once.
+- **A very long or malformed trace is slower, not wrong.** A trace whose sweep radius or end points are not finite or are out of range, or a straight trace longer than the grid's `SpatialGridMaxRayCells` (see [Turn Mass on for a map](../turn-mass-on-for-a-map.md)), is no longer answered partly from the grid. It tests every tracked entity, which costs more but finds far entities the grid used to miss.
+- **Targets exist in a play session only.** The Mass subsystem is created in Play In Editor and in a game, not in the editor world, and only when the map profile selects the **Crowdy Mass Rendering Backend**. On an actor pool map the trace and target calls find nothing.
+
+## Related
+
+- [Call an event on it](./call-an-event-on-it.md): send an action or an event to a target
+- [Read and write its fields](./read-and-write-its-fields.md): fields of a row
+- [Read its server values](./read-its-server-values.md): values the server keeps per entity
+- [Target an entity, from Blueprint](../from-blueprint/target-an-entity.md): the same nodes in a graph
+- [Make a character draw as a crowd row](../make-a-character-draw-as-a-crowd-row.md): what gives a class a crowd row and trace collision
+
+# Call an event on it
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/from-cpp/call-an-event-on-it
+
+# Call an event on it
+
+This page has a Blueprint twin: [Call an event on it, from Blueprint](../from-blueprint/call-an-event-on-it.md).
+
+Once you have a [target](./target-an-entity.md), two calls act on the player it names. `SendEntityAction` plays a one-shot animation by name, with nothing declared. `CROWDY_MASS_SEND_EVENT` sends any Crowdy event of your own, so your own code runs on the machines that receive it. Both work whether the player is drawn as a crowd row or as a near tier actor. Both are game thread only.
+
+| You need | Include |
+|---|---|
+| `UCrowdyMassTargetLibrary` | `Target/CrowdyMassTargetLibrary.h` |
+| `UCrowdyMassEventLibrary` | `Events/CrowdyMassEventLibrary.h` |
+
+## Choose between the two calls
+
+| | `SendEntityAction` | `CROWDY_MASS_SEND_EVENT` |
+|---|---|---|
+| Use it for | "Everyone sees this player cheer" | An event of your own that also runs your code |
+| What you declare | Nothing | A Crowdy event on the entity's actor class |
+| What you pass | An action name from the class's anim set | The class, the event, and its arguments |
+| Who it reaches | Everyone drawing the entity as a row or a near tier actor | The recipients the event's own setting names |
+
+## Send a one-shot action by name
+
+`static bool SendEntityAction(const FCrowdyMassEntityTarget& Target, FName ActionName, int32 Variant = 0, float PlayRate = 1.0f)` looks the name up in the anim set of the target's class, and everyone drawing that entity as a crowd row or as a near tier actor sees the action, including you. The cheer in the Oakford square, the reasons the call returns false and the rules around it are on [Play poses and one-shot actions](../play-poses-and-one-shot-actions.md).
+
+## Call a Crowdy event on an entity
+
+Use this for an event you declared on the entity's actor class, in C++ with `CROWDY_EVENT` or in Blueprint with **Crowdy Replicates** ticked on a custom event. See [RPC Events in C++](../../runtime/rpc-events-cpp.md).
+
+In the Oakford square, `ALanternPlayer` declares `WaveTorch` (`ActionId`, `Variant`, `PlayRate`), a `SpatialMulticast` event marked an action. `ALanternPlayer` keeps a `TracedTarget` from [Target an entity](./target-an-entity.md#trace-for-it). To make the traced player wave their torch:
+
+```cpp
+// LanternPlayer.cpp
+#include "LanternPlayer.h"
+#include "Events/CrowdyMassEventLibrary.h"
+#include "Target/CrowdyMassTargetLibrary.h"
+
+void ALanternPlayer::OnSignal()
+{
+	if (!UCrowdyMassTargetLibrary::IsTargetLive(TracedTarget))
+	{
+		return;
+	}
+	// ActionId, Variant, PlayRate: checked against WaveTorch's parameters when this compiles.
+	CROWDY_MASS_SEND_EVENT(TracedTarget, ALanternPlayer, WaveTorch, 1, 0, 1.0f);
+}
+```
+
+`CROWDY_MASS_SEND_EVENT(Target, Class, Event, Args...)` calls the `CROWDY_EVENT` called `Event` that is declared on `Class`, for the row that `Target` names. The arguments are checked against the event's parameters when your code compiles, so a wrong count or type is a compile error, and each one is placed by the event's reflected parameters. It expands to a call of `UCrowdyMassEventLibrary::SendEventToMassTarget(Target, TEXT("Event_Implementation"), &Class::Event_Implementation, Args...)`.
+
+:::note[The untyped call still exists.]
+`SendEventToMassTarget(const FCrowdyMassEntityTarget& Target, UFunction* Fn, const void* Frame)` is still there for code that already holds the event's `UFunction` and a frame it built. The frame holds the event's input parameters in declaration order, laid out as the reflected function lays them out, and the call does not construct or destroy anything in it. Nothing checks it against the function, so prefer the macro.
+:::
+
+The event goes out as if it had been called on that player's actor, so its recipient setting decides who runs it. A `SpatialMulticast` event reaches everyone near the entity. See [Recipients and Routing](../../runtime/recipients-and-routing.md). On a machine that draws the player as a crowd row or as a near tier actor, the event's body runs on the per-class stand-in, and a near tier actor only draws the entity and plays its actions; see [Run your code on a crowd row](../run-your-code-on-a-crowd-row.md).
+
+The return value is not a delivery receipt. It is false only when the target's world is gone, since then there is nothing to route through. A target that cannot be resolved, a function that is not a Crowdy event and a class mismatch all return true, with a line in the log. Check `IsTargetLive` first.
+
+### When a call is refused
+
+The macro and `SendEventToMassTarget` log a refusal and return true when:
+
+- the function is null or is not a Crowdy event;
+- the target does not resolve to a live entity with an identity;
+- this client cannot resolve the entity's class yet: add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**, as [Entities and Spawning](../../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) describes;
+- the declaring class of the function is not the entity's class or one of its bases.
+
+## Gotchas
+
+- **The event must be on the entity's own class.** An event declared on a component cannot run on a crowd row; see [Run your code on a crowd row](../run-your-code-on-a-crowd-row.md).
+- **Anyone can call it.** Any client can send an event at any entity. Treat what arrives as a request to draw something, and keep anything that must be true on the server.
+
+## Related
+
+- [Target an entity](./target-an-entity.md): get the target these calls take
+- [Receive its events](./receive-its-events.md): react to an event on the machines that draw the entity
+- [Play poses and one-shot actions](../play-poses-and-one-shot-actions.md): author the actions `SendEntityAction` plays
+- [Set up the animation set](../set-up-the-animation-set.md): where the action names come from
+- [Call an event on it, from Blueprint](../from-blueprint/call-an-event-on-it.md): the same calls as nodes
+
+# Receive its events
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/from-cpp/receive-its-events
+
+# Receive its events
+
+This page has a Blueprint twin: [Receive its events, from Blueprint](../from-blueprint/receive-its-events.md).
+
+When a Crowdy event arrives for a player you draw as a crowd row or a near tier actor, the SDK already runs the event's own body for you on the per-class stand-in; see [Run your code on a crowd row](../run-your-code-on-a-crowd-row.md). `UCrowdyMassEntitySubsystem::RegisterEventHandler` lets your own code take that event instead: you get the event's parameters and the entity, and you write what the row does. It is the receiving half of [`SendEventToMassTarget`](./call-an-event-on-it.md#call-a-crowdy-event-on-an-entity).
+
+| You need | Include |
+|---|---|
+| `UCrowdyMassEntitySubsystem`, `FCrowdyMassEventIngestor`, `FCrowdyMassViewStateContext` | `Subsystems/CrowdyMassEntitySubsystem.h` |
+| `CrowdyMassWriteAction`, `CrowdyMassMakeActionEventHandler` | `Mass/CrowdyMassActionEvents.h` |
+| `FCrowdyMassActionFragment` | `Fragments/CrowdyMassAnimFragments.h` |
+
+## When you need this
+
+- To drive a crowd row yourself when an event arrives: write an action, set a field, count something.
+- To handle an event from code that is not on the entity's own class, such as a subsystem.
+
+If the event's own body already does what you want, or the event is marked an action and uses the names `ActionId`, `Variant` and `PlayRate`, you do not need a handler. Registering one changes what runs; see [what a bound function replaces](#what-a-bound-function-replaces).
+
+## Bind a function to an event
+
+In the Oakford square, `WaveTorch` is a `SpatialMulticast` event marked an action. `ULanternCrowdSubsystem` is a world subsystem that registers a handler for it when the world begins play. The handler does two things. It flares the row's torch by setting `TargetBrightness` on `FLanternTorchFragment` to 1, and it writes the wave into the row's action fragment itself with `CrowdyMassWriteAction` (action id 1, the first action of the anim set).
+
+```cpp
+// LanternCrowd.h
+#include "CoreMinimal.h"
+#include "Subsystems/WorldSubsystem.h"
+#include "LanternCrowd.generated.h"
+
+// LanternCrowd.cpp
+#include "LanternCrowd.h"
+#include "Fragments/CrowdyMassAnimFragments.h"
+#include "LanternPlayer.h"
+#include "Mass/CrowdyMassActionEvents.h"
+#include "Subsystems/CrowdyMassEntitySubsystem.h"
+
+void ULanternCrowdSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	Super::OnWorldBeginPlay(InWorld);
+	UCrowdyMassEntitySubsystem* Mass = InWorld.GetSubsystem<UCrowdyMassEntitySubsystem>();
+	const UFunction* WaveFunction = ALanternPlayer::StaticClass()->FindFunctionByName(TEXT("WaveTorch_Implementation"));
+	if (!Mass || !WaveFunction)
+	{
+		return;
+	}
+	// A registered handler replaces the event body and the automatic action write on a crowd row, so it writes the action itself.
+	Mass->RegisterEventHandler(WaveFunction,
+		[](const FCrowdyEventParams&, const FCrowdyMassViewStateContext& Context)
+		{
+			if (FLanternTorchFragment* Torch = Context.GetFragment<FLanternTorchFragment>())
+			{
+				Torch->TargetBrightness = 1.f;
+			}
+			FCrowdyMassActionFragment* Action = Context.GetFragment<FCrowdyMassActionFragment>();
+			if (!Action)
+			{
+				return;
+			}
+			CrowdyMassWriteAction(*Action, 1, 0, 1.f);
+		});
+}
+```
+
+It writes the wave itself because a registered handler replaces the event's body and the automatic action write; see [what a bound function replaces](#what-a-bound-function-replaces).
+
+`RegisterEventHandler(const UFunction* Function, FCrowdyMassEventIngestor Ingestor)` takes the reflected receiver, which for a `CROWDY_EVENT` is the `_Implementation` function on the declaring class. The ingestor is `TFunction<void(const FCrowdyEventParams&, const FCrowdyMassViewStateContext&)>`. It returns an `FCrowdyMassEventHandlerHandle`, whose `IsValid()` is false only for a null function or a null ingestor. `UnregisterEventHandler(Handle)` takes the handler off again, and is safe to call from inside the handler.
+
+- Register where the world exists. `UCrowdyMassEntitySubsystem` is created in Play In Editor and game worlds only, and only when the map profile selects the **Crowdy Mass Rendering Backend**, so a world subsystem's `OnWorldBeginPlay` is a good place. On an actor pool map there is no subsystem, and a registration made through the Blueprint node logs once and receives nothing.
+- A registration is per exact `UFunction` and per world. A Blueprint class that is recompiled in the editor makes a new function object, so register it again.
+- Registering the same function twice adds a second handler. Both run, in registration order, and neither may depend on that order.
+- `IsEventHandlerRegistered(Function)` and `NumEventHandlersRegistered(Function)` let a startup check notice that your registration never ran.
+
+`RegisterObjectEventHandler(Function, HandlerObject, HandlerFunctionName)` is the call the Blueprint node **Receive Crowdy Event on Entity** compiles to. The handler function's first parameter must be an `FCrowdyMassEntityTarget`, and its other parameters are matched to the event's parameters by name, and only where the types are exactly the same. It may have no output parameter and no return value. The object is held weakly, and binding the same object and function name again is the same binding. `UnregisterObjectEventHandler(Function, Object, FunctionName)` removes it.
+
+## What the parameters give you
+
+The ingestor receives two things.
+
+- `const FCrowdyEventParams&` holds the event's parameters, which you read by name. See [RPC Events in C++](../../runtime/rpc-events-cpp.md#what-happens-on-the-wire).
+- `const FCrowdyMassViewStateContext&` holds `EntityManager`, the `Entity` handle and `EntityClass`. `EntityClass` is always null for an event handler, because it is set only for state fields; call `GetEntityClass` on the subsystem with the entity's UUID if you need the class. `Context.GetFragment<T>()` returns a pointer to one of the entity's fragments, or null if it has none. The pointer is good for this call only.
+
+`CrowdyMassWriteAction(Action, ActionId, Variant, PlayRate)` is the one write behind every one-shot action. It clamps the play rate to 0.1 to 4.0 and the variant to 0 to 63, and it returns false and writes nothing for an `ActionId` of zero or less.
+
+If your action event uses other names for its parameters, you do not need a handler of your own. `CrowdyMassMakeActionEventHandler(ActionIdParam, VariantParam, PlayRateParam)` returns a ready-made ingestor that reads the names you give it.
+
+An ingestor may change what the row looks like and nothing else. It must not add or remove a fragment or tag, destroy the entity, or touch its trace collision.
+
+:::caution[Everything the ingestor receives came from the player being watched.]
+The parameters were chosen by the client you are observing and can be anything at all. Use them to decide what is drawn, never what is true. Keep health, loot and the like in a Server Object (see [Keep a record per entity](../../exec/keep-a-record-per-entity.md)) and read it with [`GetServerValueAs`](./read-its-server-values.md).
+:::
+
+## What a bound function replaces
+
+A registered handler counts as the game having said what the event means for a row. While one is registered for an event, a crowd row does not run the event's own body. It also skips the automatic action write that an event marked an action would do. The stand-in body is the fallback for an event nothing took.
+
+A bound **Receive Crowdy Event on Entity** node counts as a handler for the body only. It replaces the event's body on a row, but the declared action is still written, so the row still plays the action.
+
+That is why the handler in the snippet writes the action itself. Without `CrowdyMassWriteAction`, registering a handler for `WaveTorch` would stop the row waving.
+
+An event marked an action with no handler registered gets both: the action write, and the body running on the stand-in.
+
+## Which events you can receive
+
+Any Crowdy event declared on your own actor class, with a recipient that reaches rows. Only the two multicast recipients reach a machine that draws the player as a crowd row or a near tier actor. An `OwningClient` or `Host` event lands on one machine, which holds the player as a real actor. See [Recipients and Routing](../../runtime/recipients-and-routing.md).
+
+The events the SDK declares on `UCrowdyMassEntity`, such as `PlayCrowdyAction`, run their own body on every observer and are not offered to a handler. A handler registered for one never runs.
+
+## Gotchas
+
+- **Inbound events are rate limited.** A target can receive 30 events a second, with a burst of 60. See [Run your code on a crowd row](../run-your-code-on-a-crowd-row.md) for what the limit is for.
+- **A handler is world scoped.** Two worlds can be alive at once during travel. Register in each world that needs one.
+
+## Related
+
+- [Call an event on it](./call-an-event-on-it.md): the sending half
+- [Run your code on a crowd row](../run-your-code-on-a-crowd-row.md): what the event's own body does on a crowd row
+- [Read and write its fields](./read-and-write-its-fields.md): fields an ingestor can set
+- [Receive its events, from Blueprint](../from-blueprint/receive-its-events.md): the same binding as a node
+
+# Read and write its fields
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/from-cpp/read-and-write-its-fields
+
+# Read and write its fields
+
+This page has a Blueprint twin: [Read and write its fields, from Blueprint](../from-blueprint/read-and-write-its-fields.md).
+
+A crowd row keeps the values your game draws it with, such as the brightness of a torch, in fragments, which are small records of data that Mass owns. A field is a name that points at one `UPROPERTY` of one fragment. You register it once, and then `UCrowdyMassTargetLibrary` reads and writes it by name for an `FCrowdyMassEntityTarget`. The same calls are Blueprint nodes. A field is a visual: it holds what this machine draws, and it can differ from machine to machine.
+
+| You need | Include |
+|---|---|
+| `CrowdyMassFields::RegisterField`, `EAccessResult` | `Target/CrowdyMassFieldAccess.h` |
+| `UCrowdyMassTargetLibrary` | `Target/CrowdyMassTargetLibrary.h` |
+| `UCrowdyMassEntitySubsystem::RegisterStateFragmentField` | `Subsystems/CrowdyMassEntitySubsystem.h` |
+
+## When you need this
+
+- To show something on the screen about the player you are looking at, from a value the row already holds.
+- To make a row do something visible from code that has a target, such as flaring its torch.
+
+For a value that has to be true, such as health, use [Read its server values](./read-its-server-values.md).
+
+## Before you start: the name must be registered
+
+No field is registered for you. Registering is two calls under one name: what an arriving property does, and where it lives. In the Oakford square, `ULanternCrowdSubsystem` registers both when the world's subsystems initialize. It lands the `TorchBrightness` property of `ALanternPlayer` on `TargetBrightness` of `FLanternTorchFragment`, and it makes the name `TorchBrightness` read and write that same member. A read returns the target. A write sets a new target, which `ULanternTorchFadeProcessor` eases the torch toward until the next replicated value replaces it.
+
+```cpp
+// LanternCrowd.h
+#include "CoreMinimal.h"
+#include "Subsystems/WorldSubsystem.h"
+#include "LanternCrowd.generated.h"
+
+UCLASS()
+class ULanternCrowdSubsystem : public UWorldSubsystem
+{
+	GENERATED_BODY()
+
+public:
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+};
+
+// LanternPlayer.h
+UPROPERTY(BlueprintReadOnly, Category = "Lantern", meta = (CrowdyState, CrowdyHeartbeat))
+float TorchBrightness = 1.f;
+
+// LanternCrowd.cpp
+#include "LanternCrowd.h"
+#include "Subsystems/CrowdyMassEntitySubsystem.h"
+#include "Target/CrowdyMassFieldAccess.h"
+
+bool ULanternCrowdSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	// Only where the Mass subsystem is created: a play world whose map profile selects the Mass backend.
+	return Super::ShouldCreateSubsystem(Outer) && GetDefault<UCrowdyMassEntitySubsystem>()->ShouldCreateSubsystem(Outer);
+}
+
+void ULanternCrowdSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	// The transient world at engine start has no game instance yet.
+	if (!GetWorld()->GetGameInstance())
+	{
+		return;
+	}
+	UCrowdyMassEntitySubsystem* Mass = Collection.InitializeDependency<UCrowdyMassEntitySubsystem>();
+	if (!Mass || Mass->IsStateFragmentFieldRegistered(TEXT("TorchBrightness")))
+	{
+		return;
+	}
+	Mass->RegisterStateFragmentField(TEXT("TorchBrightness"), ECrowdyMassStateFieldType::Float,
+		[](const void* PropertyValuePtr, const FCrowdyMassViewStateContext& Context)
+		{
+			FLanternTorchFragment* Torch = Context.GetFragment<FLanternTorchFragment>();
+			if (!Torch || !PropertyValuePtr)
+			{
+				return;
+			}
+			Torch->TargetBrightness = *static_cast<const float*>(PropertyValuePtr);
+		});
+	CrowdyMassFields::RegisterField<FLanternTorchFragment>(TEXT("TorchBrightness"), TEXT("TargetBrightness"));
+}
+```
+
+- `RegisterStateFragmentField` says what an arriving `CrowdyState` property does to the row. See [Add your own crowd data](../add-your-own-crowd-data.md).
+- `CrowdyMassFields::RegisterField<FLanternTorchFragment>(TEXT("TorchBrightness"), TEXT("TargetBrightness"))` says which `UPROPERTY` of which fragment the name reads and writes. The non-template form takes the `UScriptStruct*` instead. Use the same name as the matching `RegisterStateFragmentField`, so a graph asking for the name and the ingestor landing it cannot drift apart.
+- `IsStateFragmentFieldRegistered` and `CrowdyMassFields::IsFieldRegistered` answer whether each registration ran. An unregistered name fails every read and write, and the log warns `Nothing is registered as '<name>'` at most once every five seconds, so check once at startup.
+
+The rules for `RegisterField`:
+
+- The property must be a `UPROPERTY`. A plain C++ member has no reflection entry and is refused.
+- The fragment must derive from `FMassFragment`.
+- `FCrowdyRemoteIdentityFragment` is always refused. It carries the entity's id, owner and role.
+- Registering the same name with the same binding again succeeds and does nothing, which is what makes it safe to call once per world. The same name with a different binding is refused, and the first one is kept.
+- A name from `RegisterField` is claimed across the whole process. A name from `RegisterStateFragmentField` is claimed per world, across every class.
+- Registering grants a graph write access to the field, so register only fields that are yours and safe to draw from.
+- In editor builds a native recompile re-resolves the bindings by itself. `CrowdyMassFields::RebindRegisteredFields()` does it by hand.
+
+## The functions
+
+All of them are static members of `UCrowdyMassTargetLibrary`, game thread only, and return a bool.
+
+| Function | The field's type |
+|---|---|
+| `GetFieldByte`, `SetFieldByte` | `uint8`, and an enum member that is one byte wide |
+| `GetFieldInt`, `SetFieldInt` | `int32` exactly |
+| `GetFieldFloat`, `SetFieldFloat` | `float` or `double`; the value is a `double` |
+| `GetFieldBool`, `SetFieldBool` | `bool`, including a bitfield |
+| `GetFieldVector`, `SetFieldVector` | `FVector` |
+| `IsFieldRegistered` | takes a name only |
+| `IsTargetLive` | takes a target only |
+
+Their Blueprint display names are **Get Crowdy Mass Field (Float)**, **Set Crowdy Mass Field (Float)** and so on, with **Is Crowdy Mass Field Registered** and **Is Crowdy Mass Target Live**.
+
+## Read a field
+
+A getter takes the target, the field name and an out value: `static bool GetFieldFloat(const FCrowdyMassEntityTarget& Target, FName FieldName, double& OutValue)`. Check the target with `IsTargetLive` first, and use the out value only when the call returns true.
+
+## Write a field
+
+A setter takes the target, the field name and the value: `static bool SetFieldFloat(const FCrowdyMassEntityTarget& Target, FName FieldName, double Value)`. It returns true when the write happened.
+
+## When a read answers false
+
+The call returns false for any of these:
+
+- The name is not registered.
+- The entity is gone, or its target is stale.
+- The entity has no fragment of the registered type. An entity built from a different config can lack a fragment another one has.
+- The field is not of the type the call reads.
+- Mass is processing right now.
+
+`CrowdyMassFields::AccessField(Target, FieldName, bWrite, Visitor)` is the lower-level door, and it says which reason it was. It returns an `EAccessResult`: `Ok`, `NoWorld`, `InvalidEntity`, `UnknownField`, `NoFragment`, `TypeMismatch`, `DuringMassProcessing` or `OffGameThread`. `CrowdyMassFields::DescribeAccessResult` turns one into text. The visitor gets the field's `FProperty` and a pointer to its value, and the pointer is valid only during the call.
+
+## What a write means
+
+:::caution[A write is a visual, and it is local.]
+The same field on the same entity holds different values on two machines. Nothing mechanical may be decided from one. Anything a peer must not be able to influence belongs in a Server Object; see [Keep a record per entity](../../exec/keep-a-record-per-entity.md).
+:::
+
+If an ingestor or a processor writes the same member, your write lasts only until it next runs. In the Oakford square the ingestor writes `TargetBrightness` whenever a `TorchBrightness` arrives from the player, so a write there holds until the next value lands.
+
+:::caution[An access made while Mass is processing is refused.]
+Code reached from a delegate broadcast inside a Mass chunk loop would race the processors that read the same fragment. So would an ordinary tick that overlaps a Mass phase, because Mass phases run alongside the game thread. The access is refused and logged: an error for a write, a warning for a read, at most once every five seconds for a field name. Doing the work from a phase-end delegate, or from a broadcast deferred to the end of the frame, puts it outside the schedule and takes the refusal away.
+:::
+
+## Set a pose by name
+
+The pose of a row has its own call, because the pose fragment is not a plain field. `UCrowdyMassTargetLibrary::SetEntityPose(Target, PoseName)` puts the row in the pose of that name from its class's anim set.
+
+- `NAME_None` clears the pose.
+- A name the anim set does not author also clears the pose, and says so in the log.
+- It returns false, and does nothing, if the entity is gone, has no pose fragment, Mass is processing, or you named a pose for an entity whose class this client cannot resolve yet. Add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**; see [Entities and Spawning](../../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all).
+- The pose is a visual. An arriving pose replaces one you set.
+
+See [Play poses and one-shot actions](../play-poses-and-one-shot-actions.md).
+
+## Gotchas
+
+- **A name is claimed once.** Two different fragment fields cannot share a name.
+- **Reads are values, not references.** A function hands back a copy, never a pointer into the row, because Mass moves an entity's data when its archetype changes.
+
+## Related
+
+- [Target an entity](./target-an-entity.md): get the target these functions take
+- [Add your own crowd data](../add-your-own-crowd-data.md): the fragment, trait and processor behind a field
+- [Read its server values](./read-its-server-values.md): the values that decide what is true
+- [Read and write its fields, from Blueprint](../from-blueprint/read-and-write-its-fields.md): the same calls as nodes
+
+# Read its server values
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/from-cpp/read-its-server-values
+
+# Read its server values
+
+This page has a Blueprint twin: [Read its server values, from Blueprint](../from-blueprint/read-its-server-values.md).
+
+The values the server owns about a player or a creature, such as health, loot or a team's orders, are what is true. They cannot live on an actor for a crowd row, because a crowd row has no actor. They live in a Server Object that keeps **a record per entity**, and a row reads its own record in place. Nothing is copied into a fragment, and nothing runs per row per frame: the work is one pass over a batch of changed records.
+
+The Server Object type and its server code are on [Keep a record per entity](../../exec/keep-a-record-per-entity.md), and this page does not repeat them. It covers what a crowd adds: the setup on the entity's class, and the calls a row uses.
+
+| You need | Include |
+|---|---|
+| `UCrowdyMassServerValuesLibrary` | `Target/CrowdyMassServerValuesLibrary.h` |
+| `UCrowdyMassServerRecordsSubsystem`, `FOnCrowdyMassServerValuesChanged` | `Subsystems/CrowdyMassServerRecordsSubsystem.h` |
+| `UCrowdyMassNearTierComponent` | `Components/CrowdyMassNearTierComponent.h` |
+
+## When you need this
+
+- To show a value on a player or creature you are looking at: a health bar over a raider.
+- To react when a value changes: a bar that moves, a marker that appears.
+
+The pose, the torch and the wave are view state. A modified client can lie about them, and the worst it can do is change what you see. A server value is the truth, and a player may only read what the server chose to send them.
+
+## Set up the class
+
+On the Oakford north road, the raiders are `BP_Raider`, keeping a record each in `CSO_Raider` (see [Raiders on the north road](../../exec/examples/raiders-on-the-north-road.md)). On a Mass map the players who watch the road draw each raider as a crowd row, and a row reads the same record.
+
+1. **Make the type.** A Server Object definition with **Holds** set to **A Record per Entity**, whose server code adds a record for each entity, keyed by the entity's id. Each variable is **Server Only**, **Everyone**, **Owner Only** or **Team Only**. `CSO_Raider` has `Health` for **Everyone**, `Loot` for **Owner Only** and `Hideout` for **Team Only**.
+2. **Put the component on the class.** The entity's actor class carries a `UCrowdyServerObjectComponent` whose **Definition** is that type. It can be native, in the Blueprint, or inherited. The SDK reads it once for the class, from the class default object. `BP_Raider` has one with **Definition** `CSO_Raider`. See [One object per area](../../exec/from-cpp/get-a-server-object.md#one-object-per-area).
+3. **Pick the object with the component's Instance Mode.** Rows follow only a mode that is the same for the whole class:
+
+   | Instance Mode | What the rows read |
+   |---|---|
+   | **Only One Instance** (a setting of the type) | The type's one object. It wins over every Instance Mode. |
+   | **Instance Id**, with an id typed | The object with that id. |
+   | **This Actor's Area** (`ECrowdyServerObjectInstanceMode::ThisActorsArea`) | The objects of the areas around the local view. |
+
+   With **Signed-In Player**, **This Actor**, **Player's Team** or **From Server Value**, the rows get no server values, and the log says why once for the class.
+4. **Use the entity's id as the record id.** A row's record is the one whose id is the entity's UUID as 32 hex digits, the form a census of the world reports as `uuid`.
+
+`UCrowdyMassServerValuesLibrary::ClassGetsServerValues(const UClass*)` answers whether rows of a class can get server values at all: whether it carries such a component, reading a record per entity, in a mode rows can follow. Use it in a startup check.
+
+With **This Actor's Area**, the game follows the areas within the type's **Areas Followed Around a Player** of the local player's pawn or camera, and moves them as the view moves. A value of 1 means the 3 by 3 areas around the view. It lets go of an area only when the view is more than that radius plus one away, so a border does not flap. With no pawn or camera to follow, no area is followed and the rows read nothing.
+
+## Read a value
+
+`UCrowdyMassServerValuesLibrary::GetServerValueAs<T>(const FCrowdyMassEntityTarget& Target, FName Name, T& Out)` reads the variable called `Name` into `Out`. `T` must be exactly the type of the variable: a number of the same width, a `bool`, an `FString`, `FName` or `FText`, a `UENUM`, or a `USTRUCT`. The Blueprint node is **Get Server Value**.
+
+The call returns false, and resets `Out` to `T()`, when the value has not arrived yet, when the variable does not exist, or when `T` is not the variable's type. The snippet reads a raider's health into an `int32` and uses the player's torch to show it: a raider on its last legs turns the torch red.
+
+```cpp
+// LanternPlayer.cpp
+#include "LanternPlayer.h"
+#include "Target/CrowdyMassServerValuesLibrary.h"
+
+void ALanternPlayer::OnCheckHealth()
+{
+	int32 Health = 0;
+	if (!UCrowdyMassServerValuesLibrary::GetServerValueAs(TracedTarget, TEXT("Health"), Health))
+	{
+		return;
+	}
+	// A raider on its last legs turns the torch red.
+	Torch->SetLightColor(Health <= 10 ? FLinearColor::Red : FLinearColor::White);
+}
+```
+
+The server never sends a value the player may not receive, such as an **Owner Only** value of an entity they do not own. The call returns false for it.
+
+:::note[The property-based calls still exist.]
+`GetServerValueInto(Target, Name, const FProperty* DestProperty, void* Dest)` reads into a property you already hold and returns true only for a value that fits it. `FindServerValueProperty(Target, Name)` gives you the variable's property, and `PropertyHolds<T>(Property)` tells you whether a `T` fits it. Use them when the type is only known at run time.
+:::
+
+`UCrowdyMassServerValuesLibrary::FindServerValues(Target)` gives the whole record at once: a `const FInstancedStruct*` holding the record's value struct, or null when the entity has no record. Read it with `GetPtr<T>()` for the struct your type uses, and do not keep the pointer.
+
+## React to a change
+
+`UCrowdyMassServerRecordsSubsystem` is a world subsystem, created in Play In Editor and game worlds only, and only when the map profile selects the Crowdy Mass Rendering Backend. Get it with `World->GetSubsystem<UCrowdyMassServerRecordsSubsystem>()`. The delegate type is `FOnCrowdyMassServerValuesChanged`, a multicast delegate of `(const FCrowdyMassEntityTarget& Target, TConstArrayView<FString> Changed)`. `Changed` names the variables that changed, as `GetServerValueAs` takes them, and is empty when the entity's record was removed.
+
+| Call | What it does |
+|---|---|
+| `AddClassHandler(const UClass*, FOnCrowdyMassServerValuesChanged::FDelegate)` | Runs the listener after each change of the values of a row of that class or a subclass. Returns an `FDelegateHandle`. |
+| `RemoveClassHandler(FDelegateHandle)` | Takes it off. |
+| `BindObjectHandler(const UClass*, UObject*, FName FunctionName)` | The same, for a function that takes the entity target and a `TArray<FString>`. This is what **Receive Server Values Changed on Entity** compiles to. Binding again changes nothing. |
+| `UnbindObjectHandler(const UClass*, const UObject*, FName)` | Takes it off. |
+| `WatchEntity(FMassEntityHandle, FOnCrowdyMassServerValuesChanged::FDelegate)` | Follows one row. It also runs once at the next flush if the record is already there. |
+| `UnwatchEntity(FMassEntityHandle, FDelegateHandle)` | Stops following it. |
+
+A record can arrive before its row exists. The record is kept, and the event runs once, with the current values, when the row appears. A row that moves from one followed area into the next does not see its record removed and added again.
+
+## A near tier actor
+
+A class that promotes to the near tier (see [Promote close entities to actors](../promote-close-entities-to-actors.md)) reads and hears the same values through its `UCrowdyMassNearTierComponent`. Both answer for the entity the near tier actor stands in for, so the actor and its row never disagree.
+
+- `ReadServerValueInto(FName Name, const FProperty* DestProperty, void* Dest) const` reads the bound entity's variable. The Blueprint node is **Get Server Value**.
+- `OnServerValuesChanged` is a dynamic multicast delegate, `FCrowdyMassNearTierServerValuesChanged`, with one parameter, `const TArray<FString>& Changed`. Bind it with `AddDynamic`.
+
+## Gotchas
+
+- **Read to draw.** The values are the server's. Change them by calling a Server Function, not from here.
+- **Owner Only and Team Only values arrive later** than **Everyone** values, because they are fetched, at most once a second for each followed area.
+- **The first values are not instant.** A row drawn the moment a player enters an area reads nothing until the object has been read.
+- **A class stays followed for the life of the world** once a row of it has been seen.
+- **A row gets no values.** Work through the checklist on [Fix a crowd that does not look right](../troubleshooting.md).
+
+## Related
+
+- [Keep a record per entity](../../exec/keep-a-record-per-entity.md): the type, the audience of a variable and the server code
+- [Raiders on the north road](../../exec/examples/raiders-on-the-north-road.md): the record per raider this page reads
+- [Target an entity](./target-an-entity.md): get the target `GetServerValueAs` takes
+- [Promote close entities to actors](../promote-close-entities-to-actors.md): the near tier
+- [Fix a crowd that does not look right](../troubleshooting.md): the checklist for a row that gets no values
+- [Read its server values, from Blueprint](../from-blueprint/read-its-server-values.md): the same reads as nodes

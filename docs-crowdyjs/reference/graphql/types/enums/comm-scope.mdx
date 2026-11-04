@@ -1,0 +1,48 @@
+---
+id: comm-scope
+title: CommScope
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Who a medium reaches (send) or is heard from (receive): OFF nobody; CONTACTS only the player’s accepted contacts in the app (myContacts), and on the send side only players who have the sender as a contact too; EVERYONE anyone the app’s own rules allow.
+
+
+```graphql
+enum CommScope {
+  OFF
+  CONTACTS
+  EVERYONE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CommScope.<b>OFF</b></code>](#off) {/* #off */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommScope.<b>CONTACTS</b></code>](#contacts) {/* #contacts */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommScope.<b>EVERYONE</b></code>](#everyone) {/* #everyone */} 
+
+
+
+
+
+### Member Of
+
+[`CommChoices`](/reference/graphql/types/objects/comm-choices.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CommSettings`](/reference/graphql/types/objects/comm-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SetCommSettingsInput`](/reference/graphql/types/inputs/set-comm-settings-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

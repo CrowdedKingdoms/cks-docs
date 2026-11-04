@@ -1,0 +1,687 @@
+# Get a Server Object
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-cpp/get-a-server-object
+
+# Get a Server Object
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+A game never creates a `UCrowdyServerObject` itself. It asks `UCrowdyServerObjectSubsystem`, a game instance subsystem, for the one matching a [definition asset](../create-a-type.md) and an Instance Id, and names an owner: the object that needs it. The subsystem keeps the Server Object connected for as long as it has an owner, and shares it between every owner that asks for the same one.
+
+## Acquire it
+
+The beacon acquires its Server Object in `BeginPlay`, with itself as the owner and the village's name as the Instance Id. `BeaconDefinition` is the asset from [Create a Server Object type](../create-a-type.md), picked in the Details panel.
+
+```cpp
+// VillageBeacon.h
+#include "Components/PointLightComponent.h"
+#include "Components/SphereComponent.h"
+#include "CrowdyServerObject.h"
+#include "VillageBeacon.generated.h"
+
+UCLASS()
+class AVillageBeacon : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	AVillageBeacon();
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, Category = "Lantern")
+	TObjectPtr<USphereComponent> Trigger;
+
+	UPROPERTY(VisibleAnywhere, Category = "Lantern")
+	TObjectPtr<UPointLightComponent> Light;
+
+	UPROPERTY(EditAnywhere, Category = "Crowdy")
+	TObjectPtr<UCrowdyServerObjectDefinition> BeaconDefinition;
+
+	UPROPERTY(EditAnywhere, Category = "Crowdy")
+	FString VillageName = TEXT("oakford");
+
+	UPROPERTY()
+	TObjectPtr<UCrowdyServerObject> Beacon;
+};
+
+// VillageBeacon.cpp
+#include "VillageBeacon.h"
+
+#include "CrowdyServerObjectDefinition.h"
+#include "CrowdyServerObjectSubsystem.h"
+#include "Engine/GameInstance.h"
+
+void AVillageBeacon::BeginPlay()
+{
+	Super::BeginPlay();
+	FString Error;
+	Beacon = GetGameInstance()->GetSubsystem<UCrowdyServerObjectSubsystem>()->Acquire(BeaconDefinition, VillageName, this, Error);
+	if (!Beacon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("The village beacon cannot be used: %s"), *Error);
+		return;
+	}
+}
+```
+
+`Acquire(Definition, InstanceId, Owner, OutError)` returns the Server Object, or null with `OutError` saying why:
+
+- The definition cannot be used: it is missing, it has a problem the editor reported when you saved it, or a struct changed since it was saved.
+- The Instance Id is not valid. It must be 1 to 256 bytes of UTF-8 with no control characters (`An Instance Id must be 1 to 256 bytes with no control characters`).
+- There is no owner (`Acquire needs an owner`).
+
+Instance Ids are case-sensitive: `oakford` and `Oakford` are two Server Objects.
+
+A [Server Function Library](../server-function-libraries.md) has no Instance Id and no values to follow, so a game does not acquire it: it calls its functions with `CallLibraryFunction`, which holds the library for you. See [Call a Server Function Library](./call-a-library.md).
+
+You can acquire before the player has signed in. The Server Object waits in **Connecting** until the connection opens, and the subsystem keeps trying to open it while any Server Object needs one.
+
+## One object, many owners
+
+Every owner that acquires the same definition and Instance Id gets the same `UCrowdyServerObject`: one set of values, one stream of changes, and one connection to the server between them. Two beacons in the same village, or a beacon and a HUD widget showing its oil, share it.
+
+The subsystem holds owners weakly. You do not have to give a Server Object back: when every owner has been destroyed, a grace period starts, `UCrowdyServerObjectSubsystem::GracePeriodSeconds` (10 seconds). An owner that acquires it again inside that time gets the same object back, values and all. When the grace period runs out, the Server Object is **Released** and forgotten; the next `Acquire` starts a fresh one.
+
+- **Map travel.** The grace period does not run while the game instance is loading a map, or during a seamless travel. A beacon destroyed by leaving one map and acquired again by a beacon in the next reuses the same Server Object, with no gap in its values.
+- **Giving it back early.** `Release(Object, Owner)` stops one owner holding it, as if that owner had been destroyed. Use it for an owner that lives on after it stops needing the Server Object, such as a pooled widget.
+
+## One object per area
+
+A type used for a crowd can keep one Server Object for each area of the ground; see [Keep a record per entity](../keep-a-record-per-entity.md#pick-the-object). The Instance Id is the area's `x,y`. The session's chunk size places a location in a chunk the way actor updates do: `UCrowdyServerObjectSubsystem::FindGroundChunk` gives the chunk of a location, Unreal's X and Y over the chunk size, rounded down, and `GetAreaKey` on the definition turns a chunk into the Instance Id, using the definition's **Area Size**:
+
+```cpp
+int64 ChunkX = 0;
+int64 ChunkY = 0;
+if (Subsystem->FindGroundChunk(GetActorLocation(), ChunkX, ChunkY))
+{
+	const FString AreaId = RaiderDefinition->GetAreaKey(ChunkX, ChunkY);
+	Area = Subsystem->Acquire(RaiderDefinition, AreaId, this, Error);
+}
+```
+
+Look again when the location moves into another area, and `Release` the old one. In Blueprint, or on an actor with a `UCrowdyServerObjectComponent`, the component's **This Actor's Area** instance mode does all of this. `FindGroundChunk` returns false without a game session.
+
+## Status
+
+A Server Object is always in one of four statuses, `ECrowdyServerObjectStatus`. Read the current one with `GetStatus()`; `OnStatusChanged`, an `FOnCrowdyServerObjectStatusChanged`, runs on every change after you acquire. `GetDefinition()` and `GetInstanceId()` return what it was acquired with.
+
+| Status | Meaning |
+|---|---|
+| Connecting | Joining the Server Object and reading its variables for the first time, or waiting until the server can answer. |
+| Ready | Its variables are current and its functions can be called. |
+| Failed | It cannot be used. `GetFailureReason()` says why. Acquiring it again tries afresh. |
+| Released | Given back. Nothing on it works any more. |
+
+The beacon goes dark when its Server Object fails, rather than show oil it can no longer vouch for:
+
+```cpp
+// VillageBeacon.h
+void HandleBeaconStatus(UCrowdyServerObject* Object, ECrowdyServerObjectStatus Status);
+
+// VillageBeacon.cpp
+void AVillageBeacon::BeginPlay()
+{
+	Super::BeginPlay();
+	FString Error;
+	Beacon = GetGameInstance()->GetSubsystem<UCrowdyServerObjectSubsystem>()->Acquire(BeaconDefinition, VillageName, this, Error);
+	if (!Beacon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("The village beacon cannot be used: %s"), *Error);
+		return;
+	}
+	Beacon->OnStatusChanged.AddUObject(this, &AVillageBeacon::HandleBeaconStatus);
+}
+
+void AVillageBeacon::HandleBeaconStatus(UCrowdyServerObject* Object, ECrowdyServerObjectStatus Status)
+{
+	// A failed beacon goes dark instead of showing oil the server no longer vouches for.
+	if (Status == ECrowdyServerObjectStatus::Failed)
+	{
+		Light->SetVisibility(false);
+		UE_LOG(LogTemp, Warning, TEXT("The village beacon failed: %s"), *Object->GetFailureReason());
+	}
+}
+```
+
+A Server Object that waits in Connecting, or one that fails, says why in `GetFailureReason()`; see [A Server Object does not become Ready](../troubleshooting.md#a-server-object-does-not-become-ready). To see what one is doing, turn on [`crowdy.exec.trace`](../troubleshooting.md#seeing-what-a-server-object-is-doing).
+
+## Owner Only types
+
+A definition whose **Visibility** is **Owner Only** describes a Server Object that belongs to one player, such as a player's own stash. Its Instance Id must be the owning player's user id in decimal, which you get from `UCrowdyGameSession`: `LexToString(Session->GetUserID())`. Only that player can read its values or call its functions; for anyone else it fails as soon as the server refuses to show them.
+
+For a group's shared object that only its members read, see **Members** under [Readable By](../access-members-and-timers.md#readable-by). Everything else works the same way. Each change reaches the owner a moment later than on a Public type, because the SDK fetches the new values when the server says they changed, instead of receiving them with the notice.
+
+## Sign-out, shutdown and dropped connections
+
+- **Sign-out.** When the player signs out, every Server Object fails with `The player signed out`, and every call still waiting finishes as `Canceled`. After the player signs in again, acquire them again.
+- **Access ended.** When the player's access to the game ends (suspended, revoked, expired, signed out by the platform, or the account blocked), every Server Object fails with `Your access ended: ` followed by the reason, every call in flight or made later finishes as `AccessEnded`, and nothing reconnects. Show the reason from `UCrowdyGameSession::OnAccessEnded` and return the player to sign in; after a successful sign-in, acquire them again. See [When access ends](../troubleshooting.md#when-access-ends).
+- **Shutdown.** When the game instance shuts down, every Server Object is released quietly: no status change, no value change, and calls still waiting do not run their completion.
+- **A dropped connection.** The SDK reconnects by itself and starts watching again. Changes made while it was gone are not replayed, so it reads the variables again and reports whatever differs as one change. Your code sees at most one extra change event.
+
+## Related
+
+- [Read and follow its variables](./read-and-follow-variables.md)
+- [Call its functions](./call-functions.md)
+- [Get a Server Object, from Blueprint](../from-blueprint/get-a-server-object.md): the same thing without C++
+- [Troubleshooting](../troubleshooting.md): why a Server Object waits or fails, and `crowdy.exec.trace`
+- [Player sign-in](../../runtime/player-sign-in.md)
+
+# Read and follow its variables
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-cpp/read-and-follow-variables
+
+# Read and follow its variables
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+The variables a [definition](../create-a-type.md) marks **Visible to Players** are a Server Object's public face. The SDK keeps a copy of them current on every client that has the Server Object, and tells your code each time the server changes them.
+
+## React to changes
+
+`WatchValues`, a function of `UCrowdyServerObject`, takes a listener and returns an `FDelegateHandle`. The beacon watches its Server Object right after acquiring it, and sets its light from the oil and the lit flag:
+
+```cpp
+// VillageBeacon.h
+void HandleBeaconChanged(UCrowdyServerObject* Object, TConstArrayView<FString> Fields);
+
+// VillageBeacon.cpp
+void AVillageBeacon::BeginPlay()
+{
+	Super::BeginPlay();
+	FString Error;
+	Beacon = GetGameInstance()->GetSubsystem<UCrowdyServerObjectSubsystem>()->Acquire(BeaconDefinition, VillageName, this, Error);
+	if (!Beacon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("The village beacon cannot be used: %s"), *Error);
+		return;
+	}
+	Beacon->WatchValues(FOnCrowdyServerValuesChanged::FDelegate::CreateUObject(this, &AVillageBeacon::HandleBeaconChanged));
+}
+
+void AVillageBeacon::HandleBeaconChanged(UCrowdyServerObject* Object, TConstArrayView<FString> Fields)
+{
+	const FVillageBeaconState* State = Object->GetState().GetPtr<FVillageBeaconState>();
+	if (!State)
+	{
+		return;
+	}
+	// Fields names what changed by server name; the state holds every watched value.
+	Light->SetVisibility(State->bLit);
+	if (Fields.Contains(TEXT("Oil")))
+	{
+		Light->SetIntensity(State->Oil * 100.f);
+	}
+}
+```
+
+The listener, an `FOnCrowdyServerValuesChanged` delegate, receives the Server Object and the names of the fields that changed. It runs:
+
+- **once when the values first arrive**, naming every variable players can see. This comes just before `OnStatusChanged` reports Ready, so by the time a status handler sees Ready the values are already applied;
+- **once when you start watching, if the values are already current**, naming every variable players can see. A second beacon that acquires a Server Object the first one already made Ready is set up at once, with no special case in your code. A listener added from inside a Ready status handler is called once, not twice;
+- **once per change on the server**, naming every field that change touched. A Server Function that changes both `Oil` and `bLit` produces one call naming both, never two calls or a moment where one is new and the other old.
+
+`UnwatchValues(Handle)` removes a listener. A listener bound to a `UObject`, as above, is skipped once that object is gone, so the beacon does not need to remove its own; a lambda or raw binding does.
+
+## Read the values
+
+`GetState()` returns an `FInstancedStruct` holding the definition's State struct. Read it with `GetPtr` and the struct type, as the beacon does, at any time, not only inside the listener.
+
+- The variables **Visible to Players** hold what the server last sent. Before the first values arrive they hold the struct's defaults.
+- The other fields, the **Server Only** variables, hold the struct's defaults, always. They never leave the server, so `LastFedBy` reads `0` on every client.
+- The copy belongs to the SDK. Changing it changes nothing on the server, and the next change from the server overwrites it. To change a value, [call a Server Function](./call-functions.md).
+
+When the definition's variables are [added in the asset](../create-a-type.md#variables-inputs-and-outputs-or-a-struct) rather than taken from a struct, there is no struct to read them into. `GetStateList()` returns them as an `FInstancedPropertyBag` to read by name; it is empty when the variables come from a struct:
+
+```cpp
+const FInstancedPropertyBag State = Beacon->GetStateList();
+const TValueOrError<int32, EPropertyBagResult> Oil = State.GetValueInt32(TEXT("Oil"));
+const TValueOrError<bool, EPropertyBagResult> bLit = State.GetValueBool(TEXT("bLit"));
+if (Oil.HasValue() && bLit.HasValue())
+{
+	Light->SetIntensity(bLit.GetValue() ? Oil.GetValue() * 100.f : 0.f);
+}
+```
+
+The same rules hold: the variables players do not see keep their default values on every client. The typed Blueprint **Get** and **On Changed** nodes read and follow these variables too.
+
+## How many players are online
+
+Every app has one root Server Object, which Server Compute deploys along with your types. It counts the players in the app's world: the number the platform's realtime servers report for your app, in which a player who leaves is still counted for a few minutes, until their session ends.
+
+`UCrowdyServerObjectLibrary::GetPlayersOnline(Owner, Count)` reads it. It returns false, with `Count` 0, until the count first arrives. The first call starts following the root for `Owner`, which keeps it followed until it is destroyed, so calling it every frame is fine:
+
+```cpp
+int32 PlayersOnline = 0;
+if (UCrowdyServerObjectLibrary::GetPlayersOnline(this, PlayersOnline))
+{
+	PlayersText->SetText(FText::AsNumber(PlayersOnline));
+}
+```
+
+To react to each change instead, acquire the root and watch it. `GetPlayersOnlineDefinition()` gives its definition, `CSO_PlayersOnline` in the Crowdy SDK's content, and its State struct is `FCrowdyPlayersOnlineState`. The root has only one instance, so the Instance Id is ignored:
+
+```cpp
+FString Error;
+UCrowdyServerObject* Root = UCrowdyServerObjectLibrary::GetServerObject(this, UCrowdyServerObjectLibrary::GetPlayersOnlineDefinition(), FString(), this, Error);
+```
+
+A project with the Game Kit's `world` starter has `world` as its root instead. `GetPlayersOnline` then reads the `Online` field of the world's `FCrowdyKitWorldConditions`, from the definition the **Game Kit World** project setting names; `UCrowdyServerObjectLibrary::GetGameKitWorldDefinition()` gives that definition, or null when the setting is empty or names no Game Kit starter. `FCrowdyKitWorldConditions` has a `bHasOnline` flag beside `Online`: when the world's snapshot carries no player count, as a world deployed from the platform's own starter pack does not, `GetPlayersOnline` returns false, with 0, for good, and the log says why once. See [The world becomes the app's root](../use-game-kit-starters.md#the-world-becomes-the-apps-root).
+
+An app last deployed with an older Crowdy SDK, or never deployed from Server Compute, has no Crowdy SDK root. Deploy once from Server Compute. Until then `GetPlayersOnline` returns false, and the log says why once for each reason in each game instance (so once per Play In Editor client): "This app has no Crowdy SDK root, so Players Online has no count: deploy the app from Server Compute (an app last deployed with an older Crowdy SDK, or by another tool, has none). It is asked again every minute." The root waits and asks again once a minute instead of every few seconds, and once the app is deployed the count arrives without restarting the game.
+
+## Records
+
+A type whose **Holds** is **A Record per Entity** keeps the variables once for each entity; see [Keep a record per entity](../keep-a-record-per-entity.md). `WatchValues` and `GetState()` on its Server Object give the type's defaults, not a record. Use the records instead:
+
+- `HoldsRecords()` says whether the definition keeps records, `NumRecords()` counts them and `GetRecordIds()` lists their ids, in no particular order.
+- `GetRecord(Id)` returns an `FCrowdyServerRecord`, or null when there is no such record. Its `Values` is an `FInstancedStruct` holding the State struct, its `Owner` is the owning player's user id (0 for none) and its `Team` is the team. A variable the player may not receive holds its default. Ids are compared with capitals significant.
+- `OnRecordsChanged`, an `FOnCrowdyServerRecordsChanged`, runs after every read, batch or fetch that changed records. It gives the Server Object, the ids that are new or changed, the ids that were removed, and for each changed id the State fields that changed, one bit per field. `GetFieldVariableNames` names the fields by index.
+- `WatchRecord(Id, Listener)` follows one record with an `FOnCrowdyServerValuesChanged` listener that names the variables on each change and when the record is removed, and `UnwatchRecord(Id, Handle)` stops it.
+
+```cpp
+const FCrowdyServerRecord* Record = Area->GetRecord(RaiderId);
+const FRaiderState* Raider = Record ? Record->Values.GetPtr<FRaiderState>() : nullptr;
+```
+
+The component on an actor reads the actor's own record: `GetVariables()` and `OnVariablesChanged` give it.
+
+## Field names
+
+The names the listener receives are the fields' names on the server: the C++ member name (`Oil`, `bLit`), the name of a variable added in the asset, a Blueprint struct field's name with the spaces and other characters removed, or the Server Name you set under **Field Names** on the definition. Compare them exactly as they are spelled there.
+
+## Related
+
+- [Create a Server Object type](../create-a-type.md): choosing which variables players see
+- [Hear its messages](./hear-server-messages.md): the next page, the messages a type sends to everyone listening
+- [Call its functions](./call-functions.md)
+- [Keep a record per entity](../keep-a-record-per-entity.md): a Server Object with a record for each entity of a crowd
+- [Read and follow its variables, from Blueprint](../from-blueprint/read-and-follow-variables.md): **On Changed**, **Watch Variables** and **On Variables Changed**
+- [Troubleshooting](../troubleshooting.md#a-value-is-not-what-you-expect): when a value is not what you expect
+- [The Two Planes](../../concepts/two-planes.md): why these values are the server's, not the client's
+
+# Hear its messages
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-cpp/hear-server-messages
+
+# Hear its messages
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+A message is the server telling everyone listening that something happened, such as the Hollow Giant falling. The [definition](../create-a-type.md#server-messages) lists a type's messages and its [server code](../write-server-logic.md#send-a-message) sends them. A message is an event and not a value: it reaches a game once, when it is sent, and nothing keeps it. To show what is true now, such as whether the boss is defeated, read a variable; see [Read and follow its variables](./read-and-follow-variables.md).
+
+## Listen for a message
+
+`WatchMessage`, a function of `UCrowdyServerObject`, takes the message's **Name** from the definition and a listener, and returns an `FDelegateHandle`. The boss watches its Server Object right after acquiring it, and announces the fall:
+
+```cpp
+// HollowGiant.h
+USTRUCT(BlueprintType)
+struct FBossDefeated
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int64 Winner = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 Hits = 0;
+};
+
+void HandleBossMessage(UCrowdyServerObject* Object, FName Message, const FInstancedStruct& Payload);
+
+UPROPERTY(EditAnywhere, Category = "Crowdy")
+TObjectPtr<UCrowdyServerObjectDefinition> BossDefinition;
+
+UPROPERTY(EditAnywhere, Category = "Crowdy")
+FString BossId = TEXT("boss-1");
+
+UPROPERTY()
+TObjectPtr<UCrowdyServerObject> Boss;
+
+FDelegateHandle MessageHandle;
+
+// HollowGiant.cpp
+void AHollowGiant::BeginPlay()
+{
+	Super::BeginPlay();
+	FString Error;
+	Boss = GetGameInstance()->GetSubsystem<UCrowdyServerObjectSubsystem>()->Acquire(BossDefinition, BossId, this, Error);
+	if (!Boss)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("The Hollow Giant cannot be used: %s"), *Error);
+		return;
+	}
+	MessageHandle = Boss->WatchMessage(TEXT("BossDefeated"), FOnCrowdyServerMessage::FDelegate::CreateUObject(this, &AHollowGiant::HandleBossMessage));
+}
+
+void AHollowGiant::HandleBossMessage(UCrowdyServerObject* Object, FName Message, const FInstancedStruct& Payload)
+{
+	const FBossDefeated* Defeated = Payload.GetPtr<FBossDefeated>();
+	if (!Defeated)
+	{
+		return;
+	}
+	UE_LOG(LogTemp, Log, TEXT("Player %lld felled the Hollow Giant in %d hits"), Defeated->Winner, Defeated->Hits);
+}
+```
+
+The listener, an `FOnCrowdyServerMessage` delegate, receives the Server Object, the message's name and its payload as an `FInstancedStruct`. It runs once for each message the server sends, and never at any other time: not when the values first arrive, and not when you start watching.
+
+- **The payload** is the struct the definition's **Payload Struct** names, here `FBossDefeated`, with `Winner` and `Hits`. Read it with `GetPtr`, as above. For a message with no values the `FInstancedStruct` is empty, and `GetPtr` gives null.
+- **One listener can serve several messages.** Check `Message` to tell them apart; each `WatchMessage` call is for one message.
+- **`UnwatchMessage(Message, Handle)`** removes a listener. A listener bound to a `UObject`, as above, is skipped once that object is gone, so the boss does not need to remove its own; a lambda or raw binding does.
+- **`WatchMessage` gives an invalid handle and does nothing** when the definition has no message by that name, when the message has **Players Can Listen** off, when the listener is not bound, or when the Server Object is Released. The first two log a warning: "... has no message named BossDefeated, so nothing can listen to it", or "BossDefeated is heard only by other Server Object types; turn on Players Can Listen to hear it in a game". Check `MessageHandle.IsValid()` while you wire it up.
+
+When the definition's payload values are [added in the asset](../create-a-type.md#variables-inputs-and-outputs-or-a-struct) instead of taken from a struct, there is no struct to read. `CrowdyExec::ToList` from `CrowdyExecCodec.h` gives the payload as an `FInstancedPropertyBag` to read by name:
+
+```cpp
+// HollowGiant.cpp
+#include "CrowdyExecCodec.h"
+
+const FInstancedPropertyBag Values = CrowdyExec::ToList(Payload);
+const TValueOrError<int64, EPropertyBagResult> Winner = Values.GetValueInt64(TEXT("Winner"));
+const TValueOrError<int32, EPropertyBagResult> Hits = Values.GetValueInt32(TEXT("Hits"));
+if (Winner.HasValue() && Hits.HasValue())
+{
+	UE_LOG(LogTemp, Log, TEXT("Player %lld felled the Hollow Giant in %d hits"), Winner.GetValue(), Hits.GetValue());
+}
+```
+
+## When a message is heard
+
+The Server Object listens to a message's topic while at least one listener wants it, from C++, from a Blueprint node or from a component, and the connection is open. When the last listener goes it stops listening, and after a dropped connection comes back it listens again.
+
+- **A message that arrives while the object is reading its values is held.** It is announced after the values are current, so a listener that reads `GetState()` sees the state the message followed. At most 32 are held; past that the oldest is dropped and the log warns. A message is announced only while the status is Ready; one that arrives while it is Connecting is held until then.
+- **A message sent while the connection is closed is lost.** Nothing is replayed when it comes back. The Server Object reads its values again and reports what differs through `WatchValues`, but a message is not a value and cannot be read again.
+- **A message in a record type can arrive before the record change it follows.** A type that keeps [a record per entity](../keep-a-record-per-entity.md) sends its records in batches, so a message sent right after a record changed may be announced before `OnRecordsChanged` reports it. Put what the listener needs into the payload.
+- **A refused listen is asked again.** If the server refuses to let the player listen, the log warns once with the platform's reason, "... could not listen to its BossDefeated message, so it is asked again after a wait: ", and the Server Object asks again after a wait that grows from 1 second to 30. The Server Object does not fail.
+- **A payload that does not fit its struct is dropped,** with a warning that names the message.
+- **Every message listened to is a subscription.** A connection allows 256 subscriptions in all, and each subscribe counts against the 120 calls a connection may make every 10 seconds. See [A message never arrives](../troubleshooting.md#a-message-never-arrives).
+
+## Related
+
+- [Hear its messages, from Blueprint](../from-blueprint/hear-server-messages.md): **On Message Received**, **Watch Message** and **Stop Watching Message**
+- [Read and follow its variables](./read-and-follow-variables.md): the previous page
+- [Call its functions](./call-functions.md): the next page
+- [Server messages](../create-a-type.md#server-messages): defining a message and who hears it
+- [Send a message](../write-server-logic.md#send-a-message): what the server code does
+- [Shared boss fight](../examples/shared-boss.md): the boss these messages announce
+- [Troubleshooting](../troubleshooting.md#a-message-never-arrives): a message that never arrives
+
+# Call its functions
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-cpp/call-functions
+
+# Call its functions
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+A client never changes a Server Object's values. It asks, by calling one of the Server Functions its [definition](../create-a-type.md) lists, and the server's code decides what happens. Each function says who can call it, with [Callable By](../create-a-type.md#callable-by): **Players**, **Members**, **Leader** or **Server Only**, which refuses a player's call. A function can also have a **Cooldown**, and a number input a **Value Range**; see [Access, members and timers](../access-members-and-timers.md). The answer comes back to the caller; the change, if there is one, reaches every player through the [variables they can see](./read-and-follow-variables.md).
+
+## Call one
+
+When the local player walks into the beacon, the beacon offers it ten units of oil:
+
+```cpp
+// VillageBeacon.h
+virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+// VillageBeacon.cpp
+#include "LanternPlayer.h"
+
+void AVillageBeacon::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	const ALanternPlayer* Player = Cast<ALanternPlayer>(OtherActor);
+	if (!Beacon || !Player || !Player->CrowdyEntity->IsLocallyOwned())
+	{
+		return;
+	}
+	FFeedBeaconParams Params;
+	Params.Oil = 10;
+	TWeakObjectPtr<AVillageBeacon> WeakThis(this);
+	Beacon->Call(TEXT("FeedBeacon"), FInstancedStruct::Make(Params), [WeakThis](const FCrowdyServerCallResult& Result)
+	{
+		if (!Result.IsSuccess())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("The beacon took no oil: %s"), *Result.Reason);
+			return;
+		}
+		// The reply is what the server decided, which may be less oil than was offered.
+		const FFeedBeaconReply* Reply = Result.Reply.GetPtr<FFeedBeaconReply>();
+		if (WeakThis.IsValid() && Reply)
+		{
+			WeakThis->Light->SetIntensity(Reply->Oil * 100.f);
+		}
+	});
+}
+```
+
+`Call(Function, Params, OnDone)` takes:
+
+- **Function**: the function's **Name** on the definition, `FeedBeacon` here.
+- **Params**: an `FInstancedStruct` holding the function's Input Struct, made with `FInstancedStruct::Make`. For a function with no inputs, pass an empty `FInstancedStruct()`. A function whose inputs are added in the asset takes an `FInstancedPropertyBag` instead; see [below](#call-one-with-inputs-added-in-the-asset).
+- **OnDone**: runs once with an `FCrowdyServerCallResult`, on the game thread. It holds the `Outcome`, the `Reply` on success (empty for a function with no outputs), a `Reason` sentence for anything but success, `bRetryable`, which says calling again later may succeed, and `Code`, an `FName` that only a [Game Kit starter](../use-game-kit-starters.md#refusals-and-their-codes) fills with its refusal code, such as `full` with the outcome `Refused`, and is `None` otherwise.
+
+Things worth knowing before you rely on it:
+
+- **OnDone can run before `Call` returns.** A call the SDK can refuse without asking the server (an unknown function, params of the wrong struct, a Server Object that is already Failed or Released) completes at once, inside `Call`, and sends nothing.
+- **You can call while the Server Object is still Connecting.** The call waits and is sent when the connection opens. If there is still no connection after 30 seconds, it completes as `Unavailable` with `The server could not be reached`.
+- **The server may do less than you asked.** The beacon's reply is how much oil it holds after the feed, as the server decided; the params are only the offer.
+- **Capture your actor weakly.** OnDone can run after the actor that made the call is gone; the beacon checks a `TWeakObjectPtr` before it touches its light.
+- **Only a game instance shutdown skips OnDone.** Calls still waiting then are dropped without running it. Sign-out and a released Server Object complete them as `Canceled`, and the end of the player's access completes them as `AccessEnded`; see [When access ends](../troubleshooting.md#when-access-ends).
+
+## Call one with inputs added in the asset
+
+When a function's inputs are [added in the asset](../create-a-type.md#variables-inputs-and-outputs-or-a-struct) rather than taken from a struct, there is no struct to make. `MakeParams(Function)` hands you a copy of the function's inputs with their default values; set the ones you want by name and pass it to the `Call` that takes an `FInstancedPropertyBag`. Outputs added in the asset are read by name too, through `CrowdyExec::ToList` from `CrowdyExecCodec.h`:
+
+```cpp
+#include "CrowdyExecCodec.h"
+
+FInstancedPropertyBag Params = Beacon->MakeParams(TEXT("FeedBeacon"));
+Params.SetValueInt32(TEXT("Oil"), 10);
+Beacon->Call(TEXT("FeedBeacon"), Params, [](const FCrowdyServerCallResult& Result)
+{
+	const TValueOrError<int32, EPropertyBagResult> Oil = CrowdyExec::ToList(Result.Reply).GetValueInt32(TEXT("Oil"));
+	UE_CLOG(Result.IsSuccess() && Oil.HasValue(), LogTemp, Log, TEXT("The beacon holds %d"), Oil.GetValue());
+});
+```
+
+- `MakeParams` returns an empty `FInstancedPropertyBag` for a function whose inputs are a struct, or that has none.
+- The getters return a `TValueOrError`, so a name the reply does not have is an error, not a crash.
+- The two kinds do not mix: passing a struct to a function whose inputs are added in the asset completes as `BadRequest` with "FeedBeacon takes FeedBeaconParams params".
+
+## What the SDK retries
+
+The SDK retries a call only when the server says it did not run it: a busy server. It tries up to three times in all, with a short wait between tries that grows each time (0.25 to 0.375 seconds, then 0.5 to 0.75) and is never shorter than the wait the server asks for, up to 30 seconds. Each wait is stretched by a random amount, up to half again, so many players do not retry in step. Only when those tries are spent does OnDone see `Busy`.
+
+Nothing else is retried, because the SDK cannot tell whether the server already ran the call. A connection that drops after the server ran a purchase, for example, looks the same from the client as one that dropped before, and sending it again could buy twice. So an unreachable server reaches OnDone as `Unavailable` with `bRetryable` set, a timeout or a crash reaches it on the first answer, a server that is switched off or paused reaches it as `Paused` with `bRetryable` set, and your game decides whether calling again is safe. Where you can, write a Server Function so that a repeated call does no harm: take an amount to reach rather than an amount to add, or let the caller send an id the server remembers and ignores the second time.
+
+The platform limits how often one player may call your app's code (see [call limits](/exec/operations#call-limits)); a call over the limit is answered as busy and retried the same way. Do not call a Server Function every frame.
+
+## Give up sooner
+
+A call waits for the answer as long as the project's **Server Object Call Timeout** allows, 20 seconds unless you changed it; see [Project settings](../../reference/project-settings.md#server-object-timeouts). Both `Call` overloads take a trailing `float TimeoutSeconds`, default 0, which is a limit of its own for that one call. It is counted from the call, retries and waiting to send included, and it can only shorten the wait: a value above the project's timeout changes nothing, and 0 leaves only the project's.
+
+```cpp
+FFeedBeaconParams Params;
+Params.Oil = 10;
+Beacon->Call(TEXT("FeedBeacon"), FInstancedStruct::Make(Params), [](const FCrowdyServerCallResult& Result)
+{
+	UE_CLOG(Result.Outcome == ECrowdyServerCallOutcome::Timeout, LogTemp, Warning, TEXT("%s"), *Result.Reason);
+}, 5.f);
+```
+
+When it runs out, OnDone gets `Timeout` with `bRetryable` false and a `Reason` such as "No answer within 5 seconds; FeedBeacon may still have run on the server". The server is not told to stop, so the call may still take effect, and an answer that arrives later is not reported. Check the watched values before you call again.
+
+## Ping the platform
+
+`UCrowdyServerObjectSubsystem::Ping(OnDone)` asks the platform for an answer over the connection the Server Objects already hold, and runs `OnDone(bOk, RoundTripMs, Reason)` once, on the game thread. `RoundTripMs` is how long the platform took to answer; `Reason` says why when `bOk` is false.
+
+```cpp
+UCrowdyServerObjectSubsystem* Objects = GetGameInstance()->GetSubsystem<UCrowdyServerObjectSubsystem>();
+Objects->Ping([](bool bOk, float RoundTripMs, const FString& Reason)
+{
+	UE_CLOG(bOk, LogTemp, Log, TEXT("The platform answered in %.0f ms"), RoundTripMs);
+});
+```
+
+It never opens a connection. With no Server Object connection open it fails at once, and OnDone runs before `Ping` returns, with "No Server Object connection is open". The platform answers at most 60 pings every 10 seconds on a connection and drops the rest without a word, so the SDK refuses more than that itself, with "Too many pings: the platform answers at most 60 every 10 seconds". Ping on a timer of a second or more, not every frame. From Blueprint it is the **Ping Server Objects** node.
+
+## Bind the Blueprint call in C++
+
+`Call` with a lambda is the way to call from C++. Code that uses the Blueprint node's action instead, `UCrowdyServerCallAction::CallServerFunction`, binds its **On Success** and **On Failed** pins with `AddDynamic`. Both are the dynamic delegate `FCrowdyServerCallDone`, declared in `CrowdyServerObjectLibrary.h`, and it has five parameters: the outputs, the outcome, the reason, whether calling again may succeed, and a Game Kit starter's refusal code. The handler is a `UFUNCTION` that takes all five:
+
+```cpp
+UFUNCTION()
+void HandleFeedFailed(const FInstancedStruct& Outputs, ECrowdyServerCallOutcome Outcome, const FString& Reason, bool bRetryable, FName Code);
+```
+
+```cpp
+UCrowdyServerCallAction* Feed = UCrowdyServerCallAction::CallServerFunction(this, Beacon, TEXT("FeedBeacon"), FInstancedStruct::Make(Params));
+Feed->OnFailed.AddDynamic(this, &AVillageBeacon::HandleFeedFailed);
+Feed->Activate();
+```
+
+The delegate had four parameters before the `FName Code` was added, so a handler written for it, without `Code`, no longer compiles: add the parameter. `Code` is `None` for every type but a [Game Kit starter](../use-game-kit-starters.md#refusals-and-their-codes).
+
+## Outcomes
+
+`Outcome` is an `ECrowdyServerCallOutcome`. Every outcome, what it means and what to do about it, and the refusals that come from the server code generated for the type, are on [Troubleshooting](../troubleshooting.md#outcomes).
+
+## Related
+
+- [Read and follow its variables](./read-and-follow-variables.md)
+- [Get a Server Object](./get-a-server-object.md#status)
+- [Call its functions, from Blueprint](../from-blueprint/call-functions.md): the **Call** node and **Call Server Function**
+- [Call a Server Function Library](./call-a-library.md): the next page, a type with no instance to hold
+- [Use the Game Kit starters](../use-game-kit-starters.md): the **Refused** outcome and its `Code`
+- [Troubleshooting](../troubleshooting.md#outcomes): every outcome, and the refusals from your server code
+- [ck-exec operations](/exec/operations): logs, including a crashed call's
+
+# Call a Server Function Library
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-cpp/call-a-library
+
+# Call a Server Function Library
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+A [Server Function Library](../server-function-libraries.md) has no instance to pick and no values to read, so a game does not acquire it and hold it as it does a Server Object. It calls a function by naming the definition: `CallLibraryFunction`, a static function of `UCrowdyServerObjectLibrary` in `CrowdyServerObjectLibrary.h`, in the `CrowdyExec` module.
+
+## Call one
+
+The chest on the north road hands out a trinket when the local player walks into it. `LootRollerDefinition` is the `CSO_LootRoller` asset from [Make a Server Function Library](../server-function-libraries.md#make-the-asset), picked in the chest's Details panel, and `RollLoot` takes the structs below:
+
+```cpp
+// Chest.h
+USTRUCT(BlueprintType)
+struct FLootRollInputs
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int64 Seed = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0, ClampMax = 4)) int32 Tier = 1;
+};
+
+USTRUCT(BlueprintType)
+struct FLootRollOutputs
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) FString Item;
+};
+
+virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+UPROPERTY(EditAnywhere, Category = "Crowdy")
+TObjectPtr<UCrowdyServerObjectDefinition> LootRollerDefinition;
+
+// Chest.cpp
+#include "LanternPlayer.h"
+
+void AChest::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	const ALanternPlayer* Player = Cast<ALanternPlayer>(OtherActor);
+	if (!Player || !Player->CrowdyEntity->IsLocallyOwned())
+	{
+		return;
+	}
+	FLootRollInputs Inputs;
+	Inputs.Seed = 7;
+	Inputs.Tier = 1;
+	UCrowdyServerObjectLibrary::CallLibraryFunction(this, LootRollerDefinition, TEXT("RollLoot"), FInstancedStruct::Make(Inputs), [](const FCrowdyServerCallResult& Result)
+	{
+		if (!Result.IsSuccess())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("The chest rolled nothing: %s"), *Result.Reason);
+			return;
+		}
+		const FLootRollOutputs* Reply = Result.Reply.GetPtr<FLootRollOutputs>();
+		if (Reply)
+		{
+			UE_LOG(LogTemp, Log, TEXT("The chest holds %s"), *Reply->Item);
+		}
+	});
+}
+```
+
+Walk into the chest and the log reads `The chest holds SilverRing:t1`. The library keeps nothing, so the same `Seed` and `Tier` give the same item every time.
+
+`CallLibraryFunction(WorldContext, Definition, Function, Inputs, OnDone, TimeoutSeconds)` takes:
+
+- **WorldContext**: any object in the game's world, such as the actor.
+- **Definition**: the library's definition asset.
+- **Function**: the function's **Name** on the definition, `RollLoot` here.
+- **Inputs**: an `FInstancedStruct` holding the function's Input Struct, made with `FInstancedStruct::Make`. For a function with no inputs, pass an empty `FInstancedStruct()`.
+- **OnDone**: runs once with an `FCrowdyServerCallResult`, on the game thread. It holds the `Outcome`, the `Reply` on success, a `Reason` for anything but success, and `bRetryable`, as for [a call to a Server Object](./call-functions.md#call-one).
+- **TimeoutSeconds**: optional. A limit of its own for this call that can only shorten the wait, as in [Give up sooner](./call-functions.md#give-up-sooner).
+
+A function whose inputs are [added in the asset](../create-a-type.md#variables-inputs-and-outputs-or-a-struct) takes an `FInstancedPropertyBag`, the second overload. `MakeParams` of the library's Server Object hands you a copy with the default values; set the ones you want by name. The subsystem gives you that object for an empty Instance Id, and `CallLibraryFunction` shares it:
+
+```cpp
+// Chest.cpp
+UCrowdyServerObjectSubsystem* Objects = GetGameInstance()->GetSubsystem<UCrowdyServerObjectSubsystem>();
+FString Error;
+UCrowdyServerObject* Library = Objects->Acquire(LootRollerDefinition, FString(), this, Error);
+if (Library)
+{
+	FInstancedPropertyBag Inputs = Library->MakeParams(TEXT("RollLoot"));
+	Inputs.SetValueInt64(TEXT("Seed"), 7);
+	Inputs.SetValueInt32(TEXT("Tier"), 1);
+	UCrowdyServerObjectLibrary::CallLibraryFunction(this, LootRollerDefinition, TEXT("RollLoot"), Inputs, [](const FCrowdyServerCallResult& Result)
+	{
+		const TValueOrError<FString, EPropertyBagResult> Item = CrowdyExec::ToList(Result.Reply).GetValueString(TEXT("Item"));
+		UE_CLOG(Result.IsSuccess() && Item.HasValue(), LogTemp, Log, TEXT("The chest holds %s"), *Item.GetValue());
+	});
+}
+```
+
+The reply reads by name through `CrowdyExec::ToList` from `CrowdyExecCodec.h`, as on [Call one with inputs added in the asset](./call-functions.md#call-one-with-inputs-added-in-the-asset).
+
+## How it is held and answered
+
+- **The world holds the library.** The first call to a library connects it, and the game instance's `UCrowdyServerObjectSubsystem` keeps it, as its own owner, until the subsystem shuts down. There is nothing to release, and calls to the same library share one connection. Calling `Acquire` yourself works too and is ready as soon as the connection opens, but `CallLibraryFunction` needs none of it.
+- **OnDone runs exactly once.** A call that cannot be sent completes at once, inside `CallLibraryFunction`, so `OnDone` can run before it returns. Only a game instance shutdown skips it, for calls still waiting; sign-out completes them as `Canceled`.
+- **A refusal is an outcome, not a crash:**
+
+  | Cause | Outcome | Reason names |
+  |---|---|---|
+  | A null definition, or a definition that is not a Server Function Library | `BadRequest` | the asset, "... is not a Server Function Library" |
+  | A function the definition does not have | `BadRequest` | the type and the function |
+  | No world, or a world with no game instance | `Unavailable` | that it needs a world with a game instance |
+
+  `Definition->IsFunctionLibrary()` tells you whether an asset picked at run time is a library before you call it, and `Definition->Kind` is the `ECrowdyServerObjectKind` behind it.
+
+  Every other outcome is a call's, listed on [Troubleshooting](../troubleshooting.md#outcomes): `Denied` for a function that is **Server Only** or **Developers Only**, `ServerError` for an input outside its **Value Range**, `Timeout`, `Paused` and the rest.
+- **Calls run side by side.** Two calls that are sent together are two independent calls, and the server may answer them on different instances, in either order. A library has no state to link them.
+- **The first call after the library has been idle can take over a second.** Your `OnDone` simply runs later. A call that goes on past the project's **Server Object Call Timeout**, 20 seconds unless you changed it, ends as `Timeout`.
+- **Capture your actor weakly,** as on [Call one](./call-functions.md#call-one): `OnDone` can run after the actor that made the call is gone. The chest's lambda touches nothing of the actor, so it captures nothing.
+
+## Related
+
+- [Call a Server Function Library, from Blueprint](../from-blueprint/call-a-library.md): the **Call** node, which needs no Target
+- [Call its functions](./call-functions.md): the previous page, a call to a Server Object
+- [Make a Server Function Library](../server-function-libraries.md): the asset, **Kind** and **Scaling**
+- [Loot for the Hollow Giant](../examples/hollow-giant-loot.md): the loot roller, the chest and the boss
+- [Troubleshooting](../troubleshooting.md#outcomes): every outcome

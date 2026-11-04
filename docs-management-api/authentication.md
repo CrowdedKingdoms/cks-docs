@@ -208,12 +208,18 @@ Two behaviours to code against, because both are easy to meet by accident:
   different password. A password-only account signs in immediately, because
   there is no other method to protect.
 - **`register` from a browser carries the clickwrap.** A request with an `Origin`
-  header must send `acceptLegal: true` and `attestAgeOfMajority: true` in
-  `registerUserInput` (the player ticked both boxes), or it is refused with
-  `LEGAL_ACCEPTANCE_REQUIRED` before any account exists. A request with no
-  `Origin` may omit them, but no gameplay token is issued until they are recorded
-  with `recordPlayerConsents`. See
-  [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+  header must send `acceptLegal: true` in `registerUserInput` (the player ticked the box),
+  or it is refused with `LEGAL_ACCEPTANCE_REQUIRED` before any account exists;
+  `attestAgeOfMajority` is ignored since 2026-11-04. A request with no `Origin` may omit
+  it, but no gameplay token is issued until it is recorded with `recordPlayerConsents`. See
+  [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
+- **`register` takes the player's birth date and country** (`birthDate`, `country`, and
+  `parentalConfirmation` under 18; Game API v2.60.0). Every sign-up is refused
+  `TERRITORY_NOT_SUPPORTED` from a place Crowded Kingdoms does not serve, and one whose birth
+  date is too young `AGE_REQUIREMENT_NOT_MET`, before any account exists. That refusal names no
+  age, and the same device or client is then locked out for a while. A browser sign-up must give
+  the birth date (`AGE_REQUIRED` without it). See
+  [Signing up](/management-api/age-and-territory#signing-up).
 
 ## Managing passwords
 

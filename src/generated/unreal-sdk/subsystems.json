@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-29T06:42:10Z",
-  "sdk_version": "2.21.2",
+  "generated_from": "2026-10-30T19:29:04Z",
+  "sdk_version": "2.22.0",
   "table": "subsystems",
   "columns": [
     {
@@ -307,6 +307,16 @@
       "outer": "GameInstance",
       "module": "CrowdyServices",
       "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyProximityChat",
+      "class": "UCrowdyProximityChat",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "services/nearby-text-chat",
       "editor": false,
       "allowlist": ""
     },

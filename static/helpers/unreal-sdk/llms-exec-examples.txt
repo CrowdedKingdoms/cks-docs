@@ -1,0 +1,918 @@
+# Tip jar: your first Server Object
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/examples/tip-jar
+
+# Tip jar: your first Server Object
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+This page builds the village square's tip jar. Every villager can drop a coin in, and everyone sees the same running total. The total is worth keeping on the server, so nobody can tip a thousand coins from a modified client. You use only the editor and Blueprints; the one piece of code is a few lines of Rust that you paste.
+
+Before you start you need:
+
+- a project with the Crowdy SDK, on the **Dev** backend, where your players can sign in (see [Player sign-in](../../runtime/player-sign-in.md));
+- Crowdy Studio signed in to your app, for the Deploy step (see [Server Compute](../deploy-with-server-compute.md#open-the-page)).
+
+## Make the Server Object
+
+1. In the Content Browser, click **Add**, then **Crowdy**.
+2. Pick **Server Object**. The new asset is named `CSO_NewServerObject`.
+3. Rename it `CSO_TipJar` and double-click it. The asset editor opens.
+4. In the **Variables** section of the **Server Object** panel, click **+**.
+5. In **Details**, set **Variable Name** to `Total`.
+6. Leave its type on **Integer** and its **Default Value** on 0.
+7. Leave the eye at the end of the `Total` row open, so it is **Visible to Players**.
+8. In the **Functions** section, click **+**.
+9. In **Details**, set **Name** to `Tip`.
+10. Leave **Callable By** on **Players**.
+11. In the **Inputs** header, click **+**, and rename the new `NewParam` to `Amount`. Leave it an Integer.
+12. In the **Outputs** header, click **+**, and rename the new `NewParam` to `Total`. Leave it an Integer.
+13. Select **Type Settings**, the first row of the **Server Object** panel.
+14. In **Details**, set **Type Name** to `tip_jar`, or click **Use tip_jar** beside it.
+15. Click **Save**.
+
+The panel now shows the variable `Total` with an open eye, and the function `Tip` with `(Amount) returns Total` beside it. The [definition asset page](../create-a-type.md) explains every setting.
+
+## Write what Tip does
+
+1. In the asset editor's toolbar, click **Generate**. It writes the server code under `Server/tip_jar/` in your project.
+2. Open the **Server Code** tab. It shows `logic.rs`, where Tip refuses with "not written yet".
+3. Click in the code, press **Ctrl+A** to select it all, and paste this over it:
+
+   ```rust
+   use crate::*;
+   use ckx_sdk::prelude::*;
+
+   impl Functions for TipJarState {
+       fn tip(&mut self, _ctx: &Ctx, _call: &Call<'_>, params: TipParams) -> Result<TipReply> {
+           if params.Amount < 1 || params.Amount > 100 {
+               return Err(Error::new("a tip is 1 to 100 coins"));
+           }
+           self.Total = self.Total.saturating_add(params.Amount);
+           Ok(TipReply { Total: self.Total })
+       }
+   }
+   ```
+
+4. Click **Save** on the tab.
+
+Tip adds the amount to `Total` and answers with the new total. It refuses a tip of 0 or of a thousand, and the server checks that, not the game. [Write its server logic](../write-server-logic.md) says what each line does.
+
+## Put it on the server
+
+1. In the asset editor's toolbar, click **Deploy**. It sends every Server Object type in the project, and asks first.
+2. Read the dialog, which should say it adds `tip_jar`, and click **Yes**.
+3. Wait for the status line to say "Deployed as version" and a number.
+
+Deploy builds the code on the server and makes it live for your app at once. If it fails, the build output opens, usually with a mistake in the pasted code. The [Server Compute](../deploy-with-server-compute.md#deploy) page has the rest.
+
+## Make the actor
+
+1. In the Content Browser, click **Add**, then **Blueprint Class**, then **Actor**.
+2. Name it `BP_TipJar` and double-click it.
+3. In the Components panel, click **Add** and choose **Crowdy Server Object**.
+4. With the component selected, in **Details**, under **Server Object**, set **Definition** to `CSO_TipJar`.
+5. Leave **Instance Mode** on **Instance Id**.
+6. Set **Instance Id** to `lobby`.
+
+Every `BP_TipJar` with the Instance Id `lobby`, on every player's machine, now shares one tip jar. A different id is a different jar.
+
+## Show the total
+
+1. Open the **Event Graph**.
+2. Right-click in the graph, type `Total`, and choose **On Total Changed (CSO_TipJar)** under **Server Objects**.
+3. Drag from **Event BeginPlay**'s execution pin to the **Bind** pin of the new node.
+4. Drag from the node's **Changed** pin, type `Print String` and choose it.
+5. Drag from the **Total** pin of the node to **In String** of Print String. The editor adds the conversion from Integer to String.
+
+[Blueprint snippet: so-tipjar-total, see /bp/unreal-sdk/so-tipjar-total.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+The node runs **Changed** once as soon as the jar is ready, with the current total, and again after every change. You wired **Bind** once and there is nothing to unbind.
+
+## Tip from the keyboard
+
+1. Click **Class Defaults** in the toolbar.
+2. In **Details**, under **Input**, set **Auto Receive Input** to **Player 0**, so this actor hears the local player's keys.
+3. Back in the **Event Graph**, right-click, type `T`, and choose the **T** key event under **Input, Keyboard Events**.
+4. Drag from its **Pressed** pin, type `Tip`, and choose **Call Tip (CSO_TipJar)**.
+5. Set its **Amount** pin to 1.
+6. Drag from **On Success**, type `Print String`, and choose it.
+7. Drag from the **Total** output pin of Call Tip to its **In String**.
+8. Click the small arrow at the bottom of **Call Tip** to show its **Reason** pin. Drag from **On Failed**, add another **Print String**, and drag **Reason** to its **In String**.
+9. Click **Compile**, then **Save**.
+
+[Blueprint snippet: so-tipjar-tip, see /bp/unreal-sdk/so-tipjar-tip.txt]
+
+Neither node needs a **Target** wired: they use this actor's own component. **On Success** runs when the server has added the coin, with the new total. **On Failed** runs with the reason if the server refused, or could not be reached. The [Blueprint page](../from-blueprint/call-functions.md#the-call-node) says what **Outcome** and **Retryable** tell you.
+
+## Play it with two players
+
+1. Drag `BP_TipJar` from the Content Browser into your level.
+2. Open the dropdown beside the Play button, choose **Advanced Settings**, and under **Multiplayer Options** set **Number of Players** to 2.
+3. Click **Play**. Both windows are players of your app, so each has to be signed in the way your game signs players in.
+4. Watch the two screens. Each prints the jar's total, `0` the first time, as soon as the jar is ready.
+5. Click in one window and press **T**.
+6. The window you pressed in prints `1` twice, once from **On Success** and once from **Changed**. The other window prints `1` once, from **Changed**.
+7. Press **T** in the other window, and both print `2`.
+
+Both windows read the one jar on the server, and **On Total Changed** told each of them. The total is not kept anywhere in your Blueprint; the server holds it.
+
+## Where to go next
+
+- Next: [a shared boss](./shared-boss.md). Many players hit one boss, the server refuses hits while it is defeated and brings it back on a timer, and you switch the type off and on from Server Compute to watch everyone recover.
+- Make a second variable, such as `LastTipper` as a String, keep its eye open, and use **On LastTipper Changed** the same way. Add it to `logic.rs` and Deploy again. After any change to the asset, **Generate** and **Deploy** again; see [After you change the definition](../write-server-logic.md#after-you-change-the-definition).
+- Let only a leader call a function, with **Callable By** set to **Leader**: [Access, members and timers](../access-members-and-timers.md).
+- If the whole game should share one jar, with no Instance Id to choose, tick **Only One Instance** in the asset: [Only One Instance](../access-members-and-timers.md#only-one-instance).
+- For a widget that shows the total with no actor, use **Find By Asset**: [Where the object comes from](../from-blueprint/get-a-server-object.md#where-the-object-comes-from).
+
+# Guild halls and arena lobbies
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/examples/guild-halls-and-arenas
+
+# Guild halls and arena lobbies
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+Two things Oakford's players do in groups, built from the settings on [Access, members and timers](../access-members-and-timers.md). Each shows the settings on the asset, the few lines of `logic.rs` that are left, and the Blueprint side.
+
+## Guild halls
+
+Oakford's players are seated in guild halls of five. A hall keeps a coffer of gold that only its five may add to. A registry seats each new player in the hall that has room, and the game shows the player their own hall.
+
+Three types do it.
+
+**`guild_hall`**, one per hall, with an Instance Id such as `hall-1`:
+
+| Setting | Value |
+|---|---|
+| Members From | This Object |
+| Max Members | 5 |
+| Readable By | Members |
+| Variables | `Gold`, Integer, Visible to Players |
+| Function `Deposit` | Callable By **Members**, Input `Amount` Integer with a **Value Range** of 1 to 100, Cooldown 2 |
+
+**`player_team`**, one per player, whose Instance Id is the player's user id:
+
+| Setting | Value |
+|---|---|
+| Readable By | Owner Only |
+| Variables | `TeamId`, String, Visible to Players |
+| Function `SetTeam` | Callable By **Server Only**, Input `TeamId` String |
+
+**`hall_registry`**, one for the village, with the Instance Id `oakford`:
+
+| Setting | Value |
+|---|---|
+| Readable By | Every Player |
+| Variables | `Halls` and `Seated`, Integers, and `Seats`, a Map of String to String (player to hall), all Server Only |
+| Function `Assign` | Callable By **Players**, no Inputs, Output `TeamId` String |
+| Can Call | `guild_hall`, `player_team` |
+
+### The logic
+
+The hall and the team object need almost nothing. `Deposit` is one line, since the server already checked that the caller is a member, that `Amount` is 1 to 100 and that the player is not depositing too fast:
+
+```rust
+fn deposit(&mut self, _ctx: &Ctx, _call: &Call<'_>, params: DepositParams) -> Result<()> {
+    self.Gold += params.Amount;
+    Ok(())
+}
+```
+
+`SetTeam` on `player_team` stores `params.TeamId` in `self.TeamId`. The registry seats the player and tells their object:
+
+```rust
+fn assign(&mut self, ctx: &Ctx, call: &Call<'_>) -> Result<AssignReply> {
+    let player = call.player()?;
+    // A player who already has a hall keeps it, however often Assign is called.
+    if let Some(hall) = self.Seats.get(&player.to_string()) {
+        return Ok(AssignReply { TeamId: hall.clone() });
+    }
+    if self.Halls == 0 || self.Seated >= 5 {
+        self.Halls += 1;
+        self.Seated = 0;
+    }
+    let hall = format!("hall-{}", self.Halls);
+    calls::guild_hall::add_member(ctx, &hall, &calls::guild_hall::MemberInputs { Player: player })?;
+    let team = calls::player_team::SetTeamParams { TeamId: hall.clone() };
+    calls::player_team::set_team(ctx, &player.to_string(), &team)?;
+    self.Seated += 1;
+    self.Seats.insert(player.to_string(), hall.clone());
+    Ok(AssignReply { TeamId: hall })
+}
+```
+
+`Add Member` is the built-in function that only server code may call, so a player cannot seat themselves. `Seats` makes `Assign` safe to call twice: the second call gives back the same hall.
+
+### The Blueprint side
+
+1. On the village's hall board, `BP_HallBoard`, add a **Crowdy Server Object** component. Set **Definition** to `CSO_HallRegistry`, **Instance Mode** to **Instance Id**, and **Instance Id** to `oakford`. When a player presses the board, call **Call Server Function** on its Server Object with **Function** `Assign`.
+2. On the player's character or HUD, add a second **Crowdy Server Object** component. Set **Definition** to `CSO_PlayerTeam` and **Instance Mode** to **Signed-In Player**. Its `TeamId` says which hall the player is in.
+3. On the hall's own actor, `BP_GuildHall`, add a third component. Set **Definition** to `CSO_GuildHall`, **Instance Mode** to **From Server Value**, **Source Definition** to `CSO_PlayerTeam`, **Source Instance** to **Signed-In Player** and **Source Variable** to `TeamId`. While the player has no hall, `TeamId` is empty and the component waits ("Waiting for TeamId"). When `Assign` sets it, the component joins `hall-1` by itself, and follows the player if they are ever seated elsewhere.
+
+![From Server Value: Source Definition CSO_PlayerTeam, Source Instance Signed-In Player, Source Variable TeamId](/img/unreal-sdk/server-object-component-from-value.png)
+
+4. In the hall's **On Variables Changed**, call **Get Variables** and **Get Server Value** with **Name** `Gold` to show the coffer. **Get Member Count** and **Get Members** show who is in the hall.
+5. To give gold, call **Call Server Function** with **Function** `Deposit` and Inputs made with **Make Inputs** and **Set Server Value** (`Amount`). A player from another hall gets **On Failed** with **Outcome** Denied and the Reason "only members may call Deposit", and reads no `Gold` at all. A second deposit within two seconds gets Denied with **Retryable** true.
+
+If your halls were Crowdy Teams instead, set `guild_hall`'s **Members From** to **Crowdy Team**, use **Player's Team** for the component, and let the Teams nodes seat players; the registry is no longer needed. See [Crowdy Team](../access-members-and-timers.md#crowdy-team).
+
+## The arena lobby
+
+Oakford's arena takes eight players. They gather in a lobby, the first to arrive leads, the leader starts the match, nobody can join once it has begun, and ten minutes later it ends by itself.
+
+One type, **`arena_match`**, with the Instance Id `oakford-arena`:
+
+| Setting | Value |
+|---|---|
+| Members From | This Object |
+| Max Members | 8 |
+| Readable By | Members |
+| Variables | `Phase`, String, starting at `Lobby`, Visible to Players |
+| Function `StartMatch` | Callable By **Leader**, no Inputs |
+| Timer | `EndMatch`, **Runs** **Once After**, **Time** 600 seconds, **Start Automatically** off |
+
+Change **Readable By** to **Every Player** if spectators should see `Phase`. As it stands, someone who is not in the lobby sees how many are in it, who leads and whether it is open, and can **Join**.
+
+### The logic
+
+```rust
+fn start_match(&mut self, ctx: &Ctx, _call: &Call<'_>) -> Result<()> {
+    if self.Phase != "Lobby" {
+        return Err(Error::new("the match has already started"));
+    }
+    members::set_open(false);
+    self.Phase = "Running".into();
+    timers::start(ctx, timers::END_MATCH)
+}
+
+fn end_match(&mut self, _ctx: &Ctx) -> Result<()> {
+    self.Phase = "Ended".into();
+    Ok(())
+}
+```
+
+Nothing checks that the caller is the leader: **Callable By** did that. Nothing counts eight players: **Max Members** did. Closing joining is `members::set_open(false)`, so **Join** is refused with "It is not open for joining" from then on.
+
+### The Blueprint side
+
+1. On `BP_ArenaLobby`, add a **Crowdy Server Object** component with **Definition** `CSO_ArenaMatch`, **Instance Mode** **Instance Id**, **Instance Id** `oakford-arena`.
+2. A **Join** button calls **Call Server Function** with **Function** `Join` and no Inputs. Under **On Failed**, show the **Reason**: "It is full", or "It is not open for joining". In the figure, the button is a custom event, **OnJoinPressed**, that takes **Get Server Object** from the lobby's component (the figure's variable is named `CrowdyServerObject`), calls **Call Server Function** with **Function** `Join`, and prints the **Reason** from **On Failed**.
+
+[Blueprint snippet: so-arena-join, see /bp/unreal-sdk/so-arena-join.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+3. In **On Variables Changed**, call **Get Member Count** to show "5 of 8", **Is Open For Joining** to hide the Join button once it closes, and **Is Leader** to show a **Start** button to the leader only.
+4. **Start** calls **Call Server Function** with **Function** `StartMatch`. A player who is not the leader is refused with Denied, "only the leader may call StartMatch", even from a modified client.
+5. When `Phase` changes to `Ended`, **On Variables Changed** runs again and the game shows the result. **Get Leader** gives the leader's user id, for a name tag.
+
+If the leader leaves the lobby, the member who has been in it longest leads, and **Is Leader** changes for both of them. A lobby for every match rather than one arena needs a registry that finds a lobby with room, as the guild halls have.
+
+## Related
+
+- [Access, members and timers](../access-members-and-timers.md): every setting used here
+- [Relate Server Objects to each other](../relate-server-objects.md): registries, team objects and lobbies as relations, and good practice
+- [Get a Server Object, from Blueprint](../from-blueprint/get-a-server-object.md#add-the-component): the component modes
+- [Read and follow its variables, from Blueprint](../from-blueprint/read-and-follow-variables.md#by-name): the member nodes
+- [Write its server logic](../write-server-logic.md): where `logic.rs` lives
+
+# Shared boss fight
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/examples/shared-boss
+
+# Shared boss fight
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+The Hollow Giant stalks Oakford's north road. Every player who passes can hit it, and all of them see the same health bar fall. Its health is the kind of number a client must never decide, so it lives on the server as a Server Object: one boss, however many players are hitting it.
+
+This page builds it end to end. It uses what the earlier pages explain one piece at a time: the [definition asset](../create-a-type.md), [access and timers](../access-members-and-timers.md), the [server code](../write-server-logic.md), [Server Compute](../deploy-with-server-compute.md) and the [Blueprint nodes](../from-blueprint/get-a-server-object.md). If you have not made a Server Object before, start with [Tip jar: your first Server Object](./tip-jar.md).
+
+The rules of the fight:
+
+- Every hit takes 1 to 25 health off the boss, whoever lands it.
+- A player can hit about four times a second.
+- At half health the boss is **Enraged**. At zero it is **Defeated**, and hits are refused.
+- Ten seconds after it falls, it comes back at full health.
+
+## What the server keeps
+
+The boss has six values, and every player may see all of them.
+
+| Value | Type | Starts at | What it is |
+|---|---|---|---|
+| `Health` | Integer | 100 | What is left |
+| `MaxHealth` | Integer | 100 | What a full bar is |
+| `Phase` | `EBossPhase` | Alive | Alive, Enraged or Defeated |
+| `Respawns` | Integer | 0 | How many times it has come back |
+| `Hits` | Integer | 0 | Hits accepted, over every life |
+| `LastHitBy` | Integer64 | 0 | The user id of the last player to hit it |
+
+You can keep them in structs, as the C++ pages do, or as variables added right in the asset. The server code is the same either way. The structs:
+
+```cpp
+UENUM(BlueprintType)
+enum class EBossPhase : uint8
+{
+	Alive,
+	Enraged,
+	Defeated
+};
+
+USTRUCT(BlueprintType)
+struct FBossState
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 Health = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 MaxHealth = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) EBossPhase Phase = EBossPhase::Alive;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 Respawns = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 Hits = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int64 LastHitBy = 0;
+};
+
+USTRUCT(BlueprintType)
+struct FBossHitInputs
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1, ClampMax = 25)) int32 Damage = 10;
+};
+
+USTRUCT(BlueprintType)
+struct FBossHitOutputs
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 Health = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 Hits = 0;
+};
+```
+
+The `ClampMin` and `ClampMax` are the function's [Value Range](../access-members-and-timers.md#value-range), 1 to 25.
+
+With no C++, add the same six as **Variables** in the asset instead, with `Phase` picking your enum (a Blueprint enum works too), and give `Hit` one **Input**, `Damage`, and two **Outputs**, `Health` and `Hits`. Set the range under **Value Range** in the input's Details, **Min** 1 and **Max** 25. The rest of this page says where the two differ.
+
+## The asset
+
+Make a **Crowdy Server Object Definition**, `CSO_Boss`, as on [Create a Server Object type](../create-a-type.md#make-the-asset). With **Type Settings** selected in the Server Object panel, in Details:
+
+| Setting | Value |
+|---|---|
+| Type Name | `boss` |
+| Readable By | **Every Player** |
+| State Struct | `FBossState`, if you use structs |
+
+Leave **Members From** on **None**: nobody is seated in a boss, and anyone may hit it. Leave every eye on the variables open, **Visible to Players**.
+
+**Every Player** suits a boss that a whole world fights. With **Members** or **Owner Only** the server tells each watcher that something changed and each one reads the values again, which is slower and means a burst of hits can be seen as fewer, bigger steps. See [Readable By](../access-members-and-timers.md#readable-by).
+
+Add a function, `Hit`:
+
+| Setting | Value |
+|---|---|
+| Callable By | **Players** |
+| Cooldown | 0.25 |
+| Inputs | `FBossHitInputs` (**Use Struct**), or one Integer, `Damage`, starting at 10, with a **Value Range** of 1 to 25 |
+| Outputs | `FBossHitOutputs` (**Use Struct**), or two Integers, `Health` and `Hits` |
+
+**Cooldown** is per player: one player can hit every quarter second, and another player's hits do not count against them.
+
+Add a timer under **Timers & Events**:
+
+| Setting | Value |
+|---|---|
+| Name | `Respawn` |
+| Runs | **Once After** |
+| Time | 10 seconds |
+| Start Automatically | **off** |
+
+Its row reads "Respawn: Once After 10 s". Start Automatically is off because the boss starts alive. The server code starts the timer when the boss falls. Save the asset.
+
+## The server code
+
+Click **Generate** in the asset editor's toolbar, which writes `Server/boss/`. `Hit` and `Respawn` both arrive in `logic.rs` as methods that refuse with "not written yet". Replace the file with this:
+
+```rust
+use crate::*;
+use ckx_sdk::prelude::*;
+
+impl Functions for BossState {
+    fn hit(&mut self, ctx: &Ctx, call: &Call<'_>, params: BossHitInputs) -> Result<BossHitOutputs> {
+        if self.Phase == BossPhase::Defeated {
+            return Err(Error::new("The boss is defeated; wait for it to respawn"));
+        }
+        self.Health = (self.Health - params.Damage).max(0);
+        self.Hits = self.Hits.saturating_add(1);
+        self.LastHitBy = call.player().map(|id| id as i64).unwrap_or(0);
+        self.Phase = match self.Health {
+            0 => BossPhase::Defeated,
+            health if health * 2 <= self.MaxHealth => BossPhase::Enraged,
+            _ => BossPhase::Alive,
+        };
+        if self.Health == 0 {
+            timers::start(ctx, timers::RESPAWN)?;
+        }
+        Ok(BossHitOutputs { Health: self.Health, Hits: self.Hits })
+    }
+
+    fn respawn(&mut self, _ctx: &Ctx) -> Result<()> {
+        // A timer that fires twice, or on a boss that is not down, changes nothing.
+        if self.Phase != BossPhase::Defeated {
+            return Ok(());
+        }
+        self.Health = self.MaxHealth;
+        self.Phase = BossPhase::Alive;
+        self.Respawns += 1;
+        Ok(())
+    }
+}
+```
+
+If you added the values in the asset rather than as structs, the generated names are `BossState` (the same), `HitParams` and `HitReply` in place of `BossHitInputs` and `BossHitOutputs`; see [The Rust names](../write-server-logic.md#the-rust-names).
+
+What it does, in the order it does it:
+
+- **It refuses while the boss is defeated.** The function returns an error, so the state is put back exactly as it was and nothing is published. The caller gets the `ServerError` outcome with that message. A second player who hits in the same moment the boss falls gets the refusal too.
+- **It clamps at zero.** A 25 at 10 health leaves 0, not -15.
+- **It counts the hit and remembers who landed it.** `Hits` goes up by one, over every life of the boss.
+- **It sets the phase from what is left.** Half of `MaxHealth` or less is Enraged, and zero is Defeated.
+- **At zero it starts `Respawn`.** The timer starts only because this call succeeded. Had the call been refused, no timer would have been armed. If the platform refuses to start the timer, the whole hit is refused instead: the boss keeps its health, nothing is published, and the player sees `ServerError` with "the change was not kept: timer Respawn could not start" and the reason.
+- **`respawn` restores full health, but only for a boss that is down.** It runs once, ten seconds after the boss fell, and its changes reach every watcher like a function's do. Called on a boss that is not Defeated, for example by a stale or repeated timer, it does nothing.
+
+Nothing here checks that `Damage` is 1 to 25, that the caller is a player or that they are not hitting too fast. The **Value Range** and **Cooldown** on the asset are enforced before `hit` runs.
+
+## Put it on the server
+
+Open Crowdy Studio and choose **Server Compute**, as on [Open the page](../deploy-with-server-compute.md#open-the-page). The **Overview** tab lists `boss` with the badge **New**. Click **Deploy**, read the dialog, which should say it adds `boss`, and click **Yes**. Wait for "Deployed as version" and a number. See [Deploy](../deploy-with-server-compute.md#deploy).
+
+If you change the asset or the code later, **Generate** and **Deploy** again.
+
+## The actor
+
+The boss is an actor with a **Crowdy Server Object** component: **Definition** `CSO_Boss`. What to set in **Instance Mode** depends on how the boss gets into the level.
+
+- **This Actor**, for a boss you place in the level. The component uses the actor's placement, which is the same on every player's machine, so every player who loads the level meets the same boss. No id to type.
+- **Instance Id**, for a boss your game spawns at run time, the usual case for a boss that appears when a fight starts. Type an id such as `boss-1`; every copy with that id, on every machine, is the same boss. Set it before the actor finishes spawning, or call **Rejoin** on the component afterwards. A new id is a new boss, at full health, with nothing saved.
+- **From Server Value**, for a boss per match. Point **Source Definition** at the match's Server Object and **Source Variable** at a String such as `MatchId`; the boss follows it, as the guild hall follows its player's team. See [Guild Halls](./guild-halls-and-arenas.md#guild-halls).
+
+For this page, place the actor in the level and use **This Actor**.
+
+Name it `BP_Boss`: in the Content Browser, **Add**, **Blueprint Class**, **Actor**, then open it, click **Add** in the Components panel, choose **Crowdy Server Object**, set **Definition** to `CSO_Boss` and **Instance Mode** to **This Actor**. Drag it into your level.
+
+## The Blueprint
+
+Every node here is a typed node from [The typed nodes](../from-blueprint/get-a-server-object.md#the-typed-nodes), and none needs a **Target**: they use the actor's own component.
+
+**Show the health.** In the Event Graph:
+
+1. Add **On Health Changed (CSO_Boss)** and wire **Event BeginPlay** into its **Bind**.
+2. Wire **Changed** to a **Set Percent** on your health bar widget, with **Health** divided by **Get MaxHealth (CSO_Boss)**. The figure converts both to floats first.
+
+[Blueprint snippet: so-boss-health, see /bp/unreal-sdk/so-boss-health.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+3. In the same way, bind **On Phase Changed (CSO_Boss)** from **Event BeginPlay**, and from its **Changed** show the **Phase**: the figure sends it through **Enum to String** into a **Print String**, and a tint on the bar that turns red for Enraged and grey for Defeated works as well.
+4. Bind **On Respawns Changed (CSO_Boss)** as well, from the **Then** pin of **On Phase Changed**, and show "It is back." from its **Changed** with a **Print String**.
+
+[Blueprint snippet: so-boss-phase, see /bp/unreal-sdk/so-boss-phase.txt]
+
+**Changed** runs at once, with the current value, as soon as the object is ready, so the bar is right for a player who arrives in the middle of the fight. A widget with no component can read the same boss through **Find By Asset**, using **Get Health (CSO_Boss)** in its own graph; see [A widget that shows the oil](../from-blueprint/read-and-follow-variables.md#a-widget-that-shows-the-oil), which works the same way.
+
+**Hit it.** Give the actor **Auto Receive Input** on **Player 0**, as in [Tip jar: your first Server Object](./tip-jar.md#tip-from-the-keyboard), then:
+
+1. Add the **F** key event, and from **Pressed** add **Call Hit (CSO_Boss)**.
+2. Set its **Damage** pin to 10.
+3. From **On Success**, add a **Print String** that builds "Health " and the **Health** output, the boss's health after your hit, with **Build String**. The call also gives **Hits**, the hit count; the figure leaves it unwired.
+4. Click the small arrow at the bottom of **Call Hit** to show its **Reason** pin, then from **On Failed** add a **Print String** and wire **Reason** to it.
+
+Compile and save.
+
+[Blueprint snippet: so-boss-hit, see /bp/unreal-sdk/so-boss-hit.txt]
+
+## Two players in Play In Editor
+
+1. In **Advanced Settings** under **Multiplayer Options**, set **Number of Players** to 2 and click **Play**. Sign both windows in.
+2. Both show a full bar.
+3. Press **F** in one window. Its bar drops to 90, and it prints the success line with `Health 90`. The other window's bar drops to 90 too, a moment later.
+4. Press **F** in the other window. Both go to 80.
+5. Tap **F** in one window faster than four times a second. A hit sooner than that after your last one runs **On Failed** with the **Outcome** Denied and a **Reason** that says how long to wait, such as "Hit can be called again in 1 s". **Retryable** is true for that one, and the boss does not change.
+6. Keep hitting from both windows. Below 50 health both windows turn Enraged. At 0 both show Defeated.
+
+While it is defeated, another **F** runs **On Failed** with the **Outcome** ServerError and the **Reason** "The boss is defeated; wait for it to respawn", and **Retryable** is false: calling again will be refused the same way until something changes. Ten seconds after it fell, both windows show a full bar, Alive, and **Respawns** 1. **Hits** is not reset: it counts every hit the boss has taken.
+
+To see the range at work, set **Damage** to 30 or 0. The server refuses it before `hit` runs: **On Failed** gets the **Outcome** ServerError and the **Reason** `bad_params: Damage must be 1 to 25`, **Retryable** is false, and the boss does not change.
+
+## Switch it off and on
+
+Open **Server Compute** and look at the `boss` row on the **Overview** tab while both players are in the fight.
+
+1. Click **Switch off** and confirm "Switch off boss". Its Server Objects are saved and stopped.
+2. Press **F** in either window. The call is refused as **Paused**, and nothing changes for either player. Each window keeps showing the last health it had.
+3. Click **Switch on**. There is no dialog.
+4. Press **F** again. The boss starts again from what was saved, both windows follow it again, and the next hit lands on the same health it had before you switched off. Nothing is lost and nothing has gone back.
+
+If the boss was defeated when you switched it off, its `Respawn` timer is still pending: it fires once after the type is back, and both windows see the boss return.
+
+To move a running boss onto code you have just deployed without refusing any hits, press **Restart** on the `boss` row instead: it is saved, stopped and started again on the new code at the next hit, and both windows read it again. See [Restarting a type](../deploy-with-server-compute.md#restarting-a-type).
+
+## What the player sees when the boss falls
+
+The hit that takes it to 0 succeeds for the player who landed it, with `Health` 0. Everyone watching gets one change with `Health` 0 and `Phase` Defeated, and their bars empty together. `LastHitBy` is that player's user id, so the game can name who landed the blow.
+
+From then until the respawn, every hit is refused, from every player, with the same message and not retryable. A game should turn the **F** prompt off on **Defeated** rather than let players fire into it. Ten seconds later the server runs `respawn` and every player gets one change: full health, Alive, `Respawns` up by one.
+
+If something does not behave, turn on [`crowdy.exec.trace`](../troubleshooting.md#seeing-what-a-server-object-is-doing) in both windows. Each accepted hit shows as one applied push with the same epoch and sequence number in both logs, which is the quick way to tell whether the two players really saw the same thing. A dropped connection shows as `exec: connection closed`, then `exec: redial ok` and a re-read.
+
+## Related
+
+- [Tip jar: your first Server Object](./tip-jar.md): the same flow from nothing, with a tip jar
+- [Guild halls and arena lobbies](./guild-halls-and-arenas.md): members, a registry and a lobby
+- [Access, members and timers](../access-members-and-timers.md): every setting used here
+- [Write its server logic](../write-server-logic.md): where `logic.rs` lives and what the generated code does for you
+- [Server messages](../create-a-type.md#server-messages): announcing the boss's fall with a `BossDefeated` message, heard [from Blueprint](../from-blueprint/hear-server-messages.md) and [from C++](../from-cpp/hear-server-messages.md)
+- [Loot for the Hollow Giant](./hollow-giant-loot.md): a Server Function Library the boss calls when it falls
+- [Deploy it with Server Compute](../deploy-with-server-compute.md): Deploy, versions and the switch
+- [Get a Server Object, from C++](../from-cpp/get-a-server-object.md): the statuses and what a dropped connection does
+- [Troubleshooting](../troubleshooting.md#seeing-what-a-server-object-is-doing): `crowdy.exec.trace`
+
+# Raiders on the north road
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/examples/raiders-on-the-north-road
+
+# Raiders on the north road
+
+:::note
+Server Objects run on [ck-exec](/exec/intro). Records per entity are new in v2.19.0; see [What's Changed](../../guides/whats-changed.md#2026-10-12-sdk-v2190).
+:::
+
+A warband camps on Oakford's north road, a short walk from the Hollow Giant. There are far too many raiders for a Server Object each, so the warband is one Server Object per patch of road with a record for every raider in it. Every player sees how hurt each raider is. A player can hire a raider, and then only that player sees what the raider carries. Raiders belong to one of two bands, and a player who hires a raider learns where that band hides.
+
+This page builds it end to end. It uses [Keep a record per entity](../keep-a-record-per-entity.md), which explains each setting, and the pages that earlier examples use: the [definition asset](../create-a-type.md), the [server code](../write-server-logic.md), [Server Compute](../deploy-with-server-compute.md) and the [Blueprint nodes](../from-blueprint/get-a-server-object.md). If you have not made a Server Object before, start with [Tip jar: your first Server Object](./tip-jar.md).
+
+The rules of the road:
+
+- Each raider has 40 health and loses 5 every 5 seconds to the skirmishes on the road. A raider at 0 health retreats, and comes back at full health a moment later.
+- A player can hire one raider at a time by pressing a key. The server picks the first raider nobody has hired.
+- A hired raider collects loot every 5 seconds, and only its player sees the loot.
+- Raiders belong to the ravens or the wolves. Each band has a hideout. A player who has hired a raider of a band can see that band's hideout, and nobody else can.
+
+## What the server keeps
+
+Each raider has a record with four values.
+
+| Value | Type | Starts at | Who receives it |
+|---|---|---|---|
+| `Health` | Integer | 40 | Everyone |
+| `Loot` | Integer | 0 | Owner Only: the player who hired the raider |
+| `Hideout` | String | empty | Team Only: players who have hired a raider of the same band |
+| `Greed` | Integer | 2 | Nobody (Server Only): how much loot a hired raider collects at each skirmish |
+
+Besides these, every record has an owner, the player who hired the raider or 0, and a team, `ravens` or `wolves`. The server code sets them. They are not variables of the type.
+
+Add the four as **Variables** in the asset, as the [tip jar](./tip-jar.md) does. With a struct instead, `FRaiderState` has the same four members, and the server code is the same.
+
+## The asset
+
+Make a **Crowdy Server Object Definition**, `CSO_Raider`, as on [Create a Server Object type](../create-a-type.md#make-the-asset). With **Type Settings** selected, in Details:
+
+| Setting | Value |
+|---|---|
+| Type Name | `raider` |
+| Holds | **A Record per Entity** |
+| Readable By | **Every Player** |
+| Reads World Data | On |
+| Area Size | 2 |
+
+Leave **Max Records** at 2048, **Send Changes Every** at 250 ms, **Areas Followed Around a Player** at 1 and **Team From** on **This Object's Records**. Leave **Members From** on **None**; a record type cannot have members.
+
+**Reads World Data** is on because the server code asks which raiders stand in the area. **Area Size** is 2 because the census reads every chunk of the area, and a small area keeps that to four chunks. With a larger one, the same code just reads more.
+
+Add the variables. For each, select it in the Server Object panel and, in Details, set **Visible to Players**:
+
+| Variable | Type | Default | Visible to Players |
+|---|---|---|---|
+| `Health` | Integer | 40 | **Everyone** |
+| `Loot` | Integer | 0 | **Owner Only** |
+| `Hideout` | String | empty | **Team Only** |
+| `Greed` | Integer | 2 | **Server Only** |
+
+Add a function, `Hire`:
+
+| Setting | Value |
+|---|---|
+| Callable By | **Players** |
+| Cooldown | 1 |
+| Inputs | none |
+| Outputs | none |
+
+Add two timers under **Timers & Events**:
+
+| Name | Runs | Time | Start Automatically |
+|---|---|---|---|
+| `Census` | **Every** | 2 seconds | On |
+| `Skirmish` | **Every** | 5 seconds | On |
+
+Their rows read "Census: Every 2 s" and "Skirmish: Every 5 s". Save the asset.
+
+## The server code
+
+Click **Generate** in the asset editor's toolbar, which writes `Server/raider/`. Replace `logic.rs` with this:
+
+```rust
+use crate::*;
+use ckx_sdk::prelude::*;
+use std::collections::BTreeSet;
+
+const FULL_ANSWER: usize = 200;
+
+fn area_origin(key: &str) -> Option<(i64, i64)> {
+    let (x, y) = key.split_once(',')?;
+    Some((x.parse::<i64>().ok()? * AREA_SIZE, y.parse::<i64>().ok()? * AREA_SIZE))
+}
+
+impl Functions for Records {
+    fn hire(&mut self, _ctx: &Ctx, call: &Call<'_>) -> Result<()> {
+        let player = call.player()?;
+        let free = self.ids().find(|id| self.owner(id) == Some(0)).map(str::to_string);
+        let Some(id) = free else {
+            return Err(Error::new("every raider here is hired"));
+        };
+        self.set_owner(&id, player)
+    }
+
+    fn census(&mut self, ctx: &Ctx) -> Result<()> {
+        let Some((x, y)) = area_origin(&ctx.key) else { return Ok(()) };
+        let mut found = BTreeSet::new();
+        let mut full = false;
+        for cx in x..x + AREA_SIZE {
+            for cy in y..y + AREA_SIZE {
+                let Ok(actors) = ctx.world().actors(ChunkPos::new(cx, cy, 0)) else { return Ok(()) };
+                full |= actors.len() >= FULL_ANSWER;
+                found.extend(actors.into_iter().filter(|actor| actor.player.is_none()).map(|actor| actor.uuid));
+            }
+        }
+        if !full {
+            let gone: Vec<String> = self.ids().filter(|id| !found.contains(*id)).map(str::to_string).collect();
+            for id in gone {
+                self.remove(&id);
+            }
+        }
+        for id in found {
+            if self.get(&id).is_some() {
+                continue;
+            }
+            let (team, hideout) = if self.len() % 2 == 0 { ("ravens", "the old mill") } else { ("wolves", "the quarry") };
+            let raider = RaiderState { Hideout: hideout.to_string(), ..Default::default() };
+            if self.insert(&id, 0, team, raider).is_err() {
+                break;
+            }
+        }
+        Ok(())
+    }
+
+    fn skirmish(&mut self, _ctx: &Ctx) -> Result<()> {
+        let ids: Vec<String> = self.ids().map(str::to_string).collect();
+        for id in ids {
+            let hired = self.owner(&id).is_some_and(|owner| owner != 0);
+            let Some(raider) = self.get_mut(&id) else { continue };
+            raider.Health -= 5;
+            if hired {
+                raider.Loot += raider.Greed;
+            }
+            if raider.Health <= 0 {
+                self.remove(&id);
+            }
+        }
+        Ok(())
+    }
+}
+```
+
+If you used a struct, `RaiderState` is the struct's name without its `F`; see [The Rust names](../write-server-logic.md#the-rust-names).
+
+What it does:
+
+- **`hire` gives the caller the first raider nobody owns.** `set_owner` makes the caller its owner. The raider keeps its band as its team, so the caller is now on that band's team. If every raider is hired the call is refused with that message.
+- **`census` makes a record for each raider standing in the area.** It reads each of the area's four chunks at ground level, collects the actors no player owns, and adds a record, owned by nobody, for each one it does not have. Raiders alternate between the two bands as they are added. It removes the records of raiders that left the area, unless a chunk's answer was full: one call answers at most 200 actors, so a full answer may be missing some, and removing a record for it would remove a raider who is still there.
+- **`skirmish` wounds every raider and pays the hired ones.** A hired raider adds `Greed` to its `Loot`. A raider at 0 health is removed, and with it the hire; the next census adds a new record for the same raider, at full health and owned by nobody.
+- **The ids are the raiders' entity ids.** The census call reports each actor's `uuid`, and that is the id the raider's own actor uses to find its record.
+
+Nothing here checks who may hire. **Callable By** and **Cooldown** on the asset do that before `hire` runs.
+
+## Put it on the server
+
+Open Crowdy Studio and choose **Server Compute**, as on [Open the page](../deploy-with-server-compute.md#open-the-page). The **Overview** tab lists `raider` with the badge **New**. Click **Deploy**, read the dialog, which should say it adds `raider`, and click **Yes**. Wait for "Deployed as version" and a number. See [Deploy](../deploy-with-server-compute.md#deploy). The type asks for the `world.read` permission, since **Reads World Data** is on.
+
+## The actors
+
+Two actors use the type.
+
+**The raider.** `BP_Raider` is a Crowdy entity, so it has a **Crowdy Entity** component; see [Entities and Spawning](../../runtime/entities-and-spawning.md). Its id is the id of its record. Add a **Crowdy Server Object** component, set **Definition** to `CSO_Raider` and **Instance Mode** to **This Actor's Area**. The component reads the raider's own record and follows the raider as it walks from one area into the next. Add a health bar widget, with a Progress Bar variable named `HealthBar`. Spawn the warband from your game mode with **Spawn Crowdy Entity** and the class `BP_Raider`, on the road.
+
+**The player.** Give the player's pawn a **Crowdy Server Object** component too, with **Definition** `CSO_Raider` and **Instance Mode** **This Actor's Area**. The pawn is a Crowdy entity already, and its own area is where **Hire** is called. The census skips actors that belong to a player, so the pawn has no record of its own and the component's variables stay at their defaults. The pawn is only here to reach the area's object. Give it **Auto Receive Input** on **Player 0**, as in [Tip jar: your first Server Object](./tip-jar.md#tip-from-the-keyboard).
+
+## The Blueprint
+
+Every node here is a typed node from [The typed nodes](../from-blueprint/get-a-server-object.md#the-typed-nodes), and none needs a **Target**: each uses its own actor's component.
+
+**Show the health.** In `BP_Raider`'s Event Graph:
+
+1. Add **On Health Changed (CSO_Raider)** and wire **Event BeginPlay** into its **Bind**.
+2. Wire **Changed** to a **Set Percent** on `HealthBar`, with **Health** divided by 40.
+
+[Blueprint snippet: so-raider-health, see /bp/unreal-sdk/so-raider-health.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+**Show what only some players see.** In the same graph:
+
+1. Bind **On Loot Changed (CSO_Raider)** from **Event BeginPlay**, and from its **Changed** print the **Loot** with a **Print String**.
+2. Bind **On Hideout Changed (CSO_Raider)** from the **Then** pin of **On Loot Changed**, and from its **Changed** print the **Hideout**.
+
+[Blueprint snippet: so-raider-private, see /bp/unreal-sdk/so-raider-private.txt]
+
+**Changed** runs at once with the current value, so each of these prints once when the raider appears. A player who may not see a value gets its default, so `Loot` prints 0 and `Hideout` prints an empty line for everyone but the raider's owner and the band's players. The value never changes for them afterwards.
+
+**Hire a raider.** In the player pawn's Event Graph:
+
+1. Add the **H** key event, and from **Pressed** add **Call Hire (CSO_Raider)**.
+2. Click the small arrow at the bottom of **Call Hire** to show its **Reason** pin, then from **On Failed** add a **Print String** and wire **Reason** to it.
+
+[Blueprint snippet: so-raider-hire, see /bp/unreal-sdk/so-raider-hire.txt]
+
+Compile and save both Blueprints.
+
+## Two players in Play In Editor
+
+1. In **Advanced Settings** under **Multiplayer Options**, set **Number of Players** to 2 and click **Play**. Sign both windows in, and spawn the warband from the first.
+2. Within a few seconds both windows show the same raiders with full bars. A raider's bar falls a fifth of the way every 5 seconds, in both windows.
+3. Press **H** in the first window. The server gives that player the first raider nobody owns. Within a second or so, on that raider, the first window prints `Loot` 2, then 4, then 6, one step every 5 seconds. The second window does not print them: it sees the same raider with `Loot` still 0.
+4. In the first window, the raiders of the hired raider's band print their `Hideout`, "the old mill" for the ravens or "the quarry" for the wolves. The second window prints an empty line for all of them.
+5. Press **H** in the second window. It gets the next free raider. Its own loot now climbs in the second window only, and the second window now sees the hideout of the raiders of that raider's band, which may be the same band or the other one.
+6. Press **H** twice within a second. The second press runs **On Failed** with the **Outcome** Denied and a **Reason** such as "Hire can be called again in 1 s".
+7. Wait. A raider at 0 health retreats, and a hired raider that retreats is lost: its player's loot stops, and, if it was their only raider, the hideout of its band goes back to an empty line. A moment later the raider is back at full health, owned by nobody. Press **H** to hire again.
+
+A team is the team of a record the player owns *in the same area's object*. A player who walks into the next area is on no team there until they hire a raider there. To keep a band's secrets across areas, set **Team From** to **Crowdy Team**; see [Who receives a value](../keep-a-record-per-entity.md#who-receives-a-value).
+
+If something does not behave, turn on [`crowdy.exec.trace`](../troubleshooting.md#seeing-what-a-server-object-is-doing) in both windows. Each batch of Everyone values shows as one applied push in both logs, and each fetch of the Owner Only and Team Only values as one read in the owner's or the team's log only.
+
+## Related
+
+- [Keep a record per entity](../keep-a-record-per-entity.md): every setting this page uses, and how values reach players
+- [Shared boss fight](./shared-boss.md): one Server Object everyone hits, beside the Hollow Giant
+- [Access, members and timers](../access-members-and-timers.md): Callable By, Cooldown and timers
+- [Write its server logic](../write-server-logic.md): where `logic.rs` lives and what the generated code does for you
+- [Deploy it with Server Compute](../deploy-with-server-compute.md): Deploy, versions and the switch
+- [Troubleshooting](../troubleshooting.md#a-value-is-not-what-you-expect): when a value is not what you expect
+
+# Loot for the Hollow Giant
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/examples/hollow-giant-loot
+
+# Loot for the Hollow Giant
+
+:::note
+Server Objects run on [ck-exec](/exec/intro). Server Function Libraries are new in v2.20.0; see [What's Changed](../../guides/whats-changed.md#2026-10-16-sdk-v2200).
+:::
+
+The Hollow Giant should drop something when it falls, and a chest on Oakford's north road should hand out a trinket to anyone who walks into it. Both want the same rule: turn a seed and a tier into an item. The rule keeps nothing between calls and needs no members, timers or values to watch, so it is not a Server Object but a [Server Function Library](../server-function-libraries.md), `CSO_LootRoller`. Players can call it, so can the boss's server code, and it answers several calls at once.
+
+This page builds it end to end, on top of the boss from [Shared boss fight](./shared-boss.md). If you have not made a Server Object before, start with [Tip jar: your first Server Object](./tip-jar.md).
+
+The rules:
+
+- A roll takes a `Seed`, an Integer64, and a `Tier`, an Integer from 0 to 4, and answers an item name such as `SilverRing:t1`.
+- The same `Seed` and `Tier` always give the same item. A game that wants variety passes a different seed each time.
+- The chest rolls tier 1. The Hollow Giant rolls tier 3 when it falls, with the user id of the player who landed the last hit as the seed, and keeps the item where every player can see it.
+
+## What the server keeps
+
+The library keeps nothing. That is what makes it a library.
+
+The boss gains one value, `LastDrop`, a String that starts empty and is Visible to Players. The structs, if you use them:
+
+```cpp
+USTRUCT(BlueprintType)
+struct FLootRollInputs
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int64 Seed = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0, ClampMax = 4)) int32 Tier = 1;
+};
+
+USTRUCT(BlueprintType)
+struct FLootRollOutputs
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) FString Item;
+};
+```
+
+With no C++, add `Seed` and `Tier` as the function's **Inputs** in the asset, with a **Value Range** of 0 to 4 on `Tier`, and `Item` as its **Output**; the generated names are then `RollLootParams` and `RollLootReply` in place of `LootRollInputs` and `LootRollOutputs`; see [The Rust names](../write-server-logic.md#the-rust-names).
+
+## The asset
+
+Make a **Crowdy Server Object Definition**, `CSO_LootRoller`, as on [Make a Server Function Library](../server-function-libraries.md#make-the-asset). With **Type Settings** selected, in Details:
+
+| Setting | Value |
+|---|---|
+| Type Name | `loot_roller` |
+| Kind | **Server Function Library** |
+| Description | Turns a seed and a tier into an item name. |
+
+The Server Object panel now shows only **Type Settings** and **Functions**. Add the function `RollLoot`:
+
+| Setting | Value |
+|---|---|
+| Callable By | **Players** |
+| Inputs | `FLootRollInputs` (**Use Struct**), or `Seed` Integer64 and `Tier` Integer starting at 1 with a **Value Range** of 0 to 4 |
+| Outputs | `FLootRollOutputs` (**Use Struct**), or one String, `Item` |
+
+![The CSO_LootRoller editor: the Server Object panel lists only Type Settings and Functions, RollLoot reads (Seed, Tier) returns Item, and Details shows its Callable By, Inputs and Outputs](/img/unreal-sdk/server-function-library-editor.png)
+
+Leave **Scaling** at its defaults: 1 Min Instance, 1 Max Instance and 16 Parallel Calls per Instance. A chest and one boss never need more; see [Scaling](../server-function-libraries.md#scaling) for when to raise them. Save the asset.
+
+## The server code
+
+Click **Generate**, which writes `Server/loot_roller/`. The function arrives in `logic.rs` as a method that refuses with "not written yet". Replace the file with this:
+
+```rust
+use crate::*;
+use ckx_sdk::prelude::*;
+
+const ITEMS: [&str; 6] = ["RustySword", "OakShield", "IronHelm", "SilverRing", "DragonScale", "GhostCloak"];
+
+impl Functions for Library {
+    fn roll_loot(&mut self, _ctx: &Ctx, _call: &Call<'_>, params: LootRollInputs) -> Result<LootRollOutputs> {
+        let mixed = u64::from(params.Seed as u32).wrapping_mul(0x9E37_79B9_7F4A_7C15) >> 40;
+        let index = (mixed as usize + params.Tier as usize) % ITEMS.len();
+        Ok(LootRollOutputs { Item: format!("{}:t{}", ITEMS[index], params.Tier) })
+    }
+}
+```
+
+What it does:
+
+- **It is a pure calculation.** The item depends on the seed and the tier and on nothing the library remembers, so any instance gives the same answer. There is no state to read or change; `self` is the empty `Library` struct.
+- **It trusts the range.** `Tier` is 0 to 4 because the **Value Range** on the asset is enforced before `roll_loot` runs; the function does not check it again.
+- **It uses the low 32 bits of the seed,** which is plenty to spread the six items.
+
+See [A Server Function Library](../write-server-logic.md#a-server-function-library) for the parts of `logic.rs` that are different from a Server Object's.
+
+## The boss rolls on its fall
+
+Open `CSO_Boss`. Add `CSO_LootRoller` to **Can Call**, in the **Can Call** category, and add the `LastDrop` variable. Generate the boss's server code again; it gains a `calls::loot_roller` module whose `roll_loot` takes no key, since a library has no Instance Id. Change the `hit` of [the boss's server code](./shared-boss.md#the-server-code) where it starts the respawn:
+
+```rust
+if self.Health == 0 {
+    timers::start(ctx, timers::RESPAWN)?;
+    let roll = calls::loot_roller::LootRollInputs { Seed: self.LastHitBy, Tier: 3 };
+    if let Ok(loot) = calls::loot_roller::roll_loot(ctx, &roll) {
+        self.LastDrop = loot.Item;
+    }
+}
+```
+
+The roll is allowed to fail. The first call to a library that has been idle can take over a second, and a call from server code that outlasts the call deadline fails with "call deadline passed" although the library may still finish; see [A call to a library from server code fails](../troubleshooting.md#a-call-to-a-library-from-server-code-fails). A missing drop must not undo the kill, so the boss keeps the item only when the roll came back.
+
+## Put it on the server
+
+Open **Server Compute**. The **Overview** tab lists `loot_roller` with the badge **New** and a line that reads **Server Function Library**, 1 function and 1 instance, and `boss` as **Changed**. Click **Deploy**, read the dialog, which should say it adds `loot_roller` and changes `boss`, and click **Yes**. A deploy sends every type together, so the library and the boss go out as one version. See [Deploy](../deploy-with-server-compute.md#deploy).
+
+![The Server Compute row of loot_roller: its description, the line Server Function Library, 1 function and 1 instance, and the New badge](/img/unreal-sdk/server-compute-library.png)
+
+## The chest
+
+The chest is an actor, `BP_Chest`, with no component: a library has no object to hold. Build it from Blueprint on [Call a Server Function Library](../from-blueprint/call-a-library.md#roll-loot-from-the-chest), or from C++ on [Call a Server Function Library, from C++](../from-cpp/call-a-library.md#call-one). Both roll `Seed` 7 at `Tier` 1 when the player walks into it. The Blueprint is this graph, with a **Print String** each for the item and the reason:
+
+[Blueprint snippet: so-chest-roll, see /bp/unreal-sdk/so-chest-roll.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+## Show the drop
+
+On `BP_Boss` from [Shared boss fight](./shared-boss.md#the-blueprint), add **On LastDrop Changed (CSO_Boss)** and wire **Event BeginPlay**, or the **Then** pin of the last **On Changed** you added, into its **Bind**. From **Changed**, add a **Print String** that shows the **LastDrop** pin. Compile and save.
+
+[Blueprint snippet: so-boss-drop, see /bp/unreal-sdk/so-boss-drop.txt]
+
+## Try it
+
+1. Play with two players as on [Two players in Play In Editor](./shared-boss.md#two-players-in-play-in-editor). Walk one player into the chest. That window prints `SilverRing:t1`, and the other window prints nothing, since the call was that player's own.
+2. Walk the other player into the chest. It prints `SilverRing:t1` too, and so does the first player on a second visit, since the seed and the tier have not changed.
+3. Hit the boss down to 0 with either player. Both windows print an item of tier 3, such as `GhostCloak:t3`, the same in both, since the boss kept it in `LastDrop` and everyone watches that. Which item it is depends on who landed the last hit.
+4. Let the boss respawn and bring it down again with the other player. A different seed usually gives a different item, and both windows print the change.
+
+If the item is empty, the boss's roll failed once, typically on the first fall after the library was idle: the boss still fell, and its next fall tries again.
+
+## Related
+
+- [Make a Server Function Library](../server-function-libraries.md): Kind, Scaling and what a library cannot have
+- [A Server Function Library](../write-server-logic.md#a-server-function-library): the server code
+- [Call a Server Function Library](../from-blueprint/call-a-library.md) and [from C++](../from-cpp/call-a-library.md): the chest
+- [Shared boss fight](./shared-boss.md): the boss this page extends
+- [Call other Server Objects](../access-members-and-timers.md#call-other-server-objects): Can Call and the typed helpers
+- [Troubleshooting](../troubleshooting.md#a-call-to-a-library-from-server-code-fails): a cold first call

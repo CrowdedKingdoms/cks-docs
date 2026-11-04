@@ -19,10 +19,8 @@ async def main() -> None:
     async with crowdypy.AsyncCrowdyClient(http_url=API) as identity:
         await identity.auth.login("player@example.com", "correct-horse-battery")
         if not await identity.auth.player_legal_acceptance():
-            # Only after the player ticked both boxes: this records their agreement.
-            await identity.auth.record_player_consents(
-                accept_legal=True, attest_age_of_majority=True
-            )
+            # Only after the player ticked the box: this records their agreement.
+            await identity.auth.record_player_consents(accept_legal=True)
         minted = await identity.portal.mint_app_token("42")
 
     # The game client: one per app, at the app's own datacenter.
@@ -50,15 +48,20 @@ without `await`.
    share one refresh. A live UDP connection keeps its replication server
    across the refresh.
 
-   **The terms and age of majority** (CrowdyPy 0.6.0). No app token is issued
-   until the player has agreed to the current required legal documents and
-   attested that they are at least 18, or the age of majority where they live if
-   that is higher; until then minting raises `LEGAL_ACCEPTANCE_REQUIRED`
-   (`crowdypy.is_legal_acceptance_required_error`). Show your own two checkboxes,
-   linking each document, then call `auth.record_player_consents` as above.
-   `auth.register(..., accept_legal=True, attest_age_of_majority=True)` creates
-   an account that starts accepted. See
-   [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+   **The age and the terms** (CrowdyPy 0.6.0 and 0.23.0). No app token is issued
+   until the player has an age and has agreed to the current required legal documents,
+   the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
+   [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html); until then
+   minting raises `AGE_REQUIRED` or `LEGAL_ACCEPTANCE_REQUIRED`
+   (`crowdypy.is_legal_acceptance_required_error`). Show
+   your own checkboxes, linking each document (`auth.player_legal_documents()` and the
+   app's own `auth.app_required_documents(app_id)`), then call
+   `auth.record_player_consents(accept_legal=True, app_id=...)`.
+   `auth.register(..., accept_legal=True, birth_date=..., country=...,
+   parental_confirmation=...)` creates an account that starts accepted,
+   with the answers of a [neutral age screen](/management-api/age-and-territory#the-age-screen);
+   an account with no age gives it once with `auth.record_player_age(...)`. See
+   [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
 3. Build one identity client and one client per game. The game client points
    at the app's datacenter (`game_api_url`), and `discovery_url` lets it find
    the app again if that instance stops answering.
@@ -93,6 +96,29 @@ channel or team you are banned from. For [org-managed players](/management-api/o
   check, and `managed_player_not_allowed_of(error)` reads `MANAGED_PLAYER_NOT_ALLOWED`.
 - From 0.17.0, `org_legal_acceptance_required_of(error)` reads `ORG_LEGAL_ACCEPTANCE_REQUIRED`:
   the player's organization has not accepted the Org-Managed Players Addendum, which only an
-  admin of the organization can fix, in Studio. A ck-exec connection that the server closes with
+  admin of the organization can fix, in Studio.
+
+A ck-exec connection that the server closes with
 `4403` ("access ended") does not reconnect: pending calls fail `Denied`, and the
 listener you gave `on_access_ended` hears the reason.
+
+From 0.23.0, the player gate's refusals have readers too, in `crowdypy.errors`:
+`legal_acceptance_required_of` (with `missing_documents`), `age_required_of`,
+`age_requirement_not_met_of` (a boolean: it surfaces no age, and a game shows none),
+`territory_not_supported_of` (with `country`), `safety_log_required_of`,
+`parental_consent_unavailable_of` and `social_limit_reached_of`. From 0.24.0,
+`safety_moderator_required_of` reads `SAFETY_MODERATOR_REQUIRED`, and
+`parental_consent_unavailable_of` returns the refusal with its `reason` (`not_configured`,
+`provider_refused` or `provider_unavailable`) instead of a boolean; `apps.app()` reads
+`hasSafetyModerator`, and `platform.territory_policies()` rows carry `regionCode`.
+
+## Player safety
+
+CrowdyPy 0.23.0 and 0.24.0 wrap the teen safety program. With the player's app token, `client.safety`
+holds their own controls in the app: `comm_settings`, `set_comm_settings`,
+`request_parental_consent`, `contacts`, `contact_requests`, `request_contact`, `accept_contact`,
+`remove_contact`, `blocks`, `block`, `unblock` and `file_report`. `apps.recording(app_id)` says
+what the safety log records, for the notice and the indicator. Moderators use `client.moderation`
+(`reports`, `resolve_report`, `escalate_report`) with their identity session. See
+[Voice, video, contacts and blocks](/game-api/communication) and
+[Safety reports and moderation](/game-api/safety-reports).
