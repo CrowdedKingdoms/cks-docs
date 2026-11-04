@@ -82,8 +82,8 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   for a player under 18, also `SAFETY_LOG_REQUIRED` and `SAFETY_MODERATOR_REQUIRED` (v2.61.0).
   None is fixed by retrying: an age refusal names no age and locks the same client or player for
   24 hours.
-  Crowded Kingdoms opens to players 13 and over at one moment; until then every player is 18 or
-  older. See [Players under 18 and player safety](/overview/player-safety).
+  Crowded Kingdoms admits players from 13 (since 2026-11-04). See
+  [Players under 18 and player safety](/overview/player-safety).
 - **`BigInt`** is transmitted as a **decimal string** in both directions (e.g. `"123"`),
   never a JSON number — this avoids precision loss. IDs (`appId`, `orgId`, `userId`) are
   `BigInt`.

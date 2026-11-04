@@ -8,7 +8,7 @@
 - [Best practices](https://docs.crowdedkingdoms.com/overview/best-practices): authority in your server code on ck-exec (hubs and spokes), tokens and hosts.
 - [Overview / client workflow](https://docs.crowdedkingdoms.com/overview/client-workflow): one endpoint, two token types, and how an app's datacenter endpoint is discovered.
 - [Before you ship](https://docs.crowdedkingdoms.com/overview/before-you-ship): public hosts and aliases, and the SDK default origins a shipped client needs.
-- [Players under 18 and player safety](https://docs.crowdedkingdoms.com/overview/player-safety): Crowded Kingdoms opens to players aged 13 to 17 at one moment; what is live, what switches on at the opening, and what a game needs before it admits players under 18 (age screen, safety log, communication controls, reports and moderators, hub hooks).
+- [Players under 18 and player safety](https://docs.crowdedkingdoms.com/overview/player-safety): Crowded Kingdoms admits players from 13 (since 2026-11-04); what is live, what is not yet in production (parental consent), and what a game needs to admit players under 18 (age screen, safety log, communication controls, reports and moderators, hub hooks).
 - [Discord community support](https://discord.gg/x7tMKGwHf): ask questions and get help from the Crowded Kingdoms community.
 
 ## Schema (downloadable SDL)
@@ -92,10 +92,6 @@
 - [SDK symbol index (JSON Lines)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/sdk-surface-index.jsonl): about 340 KB, one line per symbol with name, kind, module, header and, where known, the first sentence of its help text. Check it before the full inventory.
 - [SDK surface inventory (JSON)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/sdk-surface.json): every Blueprint-callable function, delegate, async action, subsystem, struct, enum, setting, console variable, metadata key, log category and C++ type the plugin exports, with module and header.
 - Blueprint clipboard text: one plain-text file per Blueprint graph referenced from the docs, at `https://docs.crowdedkingdoms.com/bp/unreal-sdk/<graph>.txt` (for example [qs-entity](https://docs.crowdedkingdoms.com/bp/unreal-sdk/qs-entity.txt)), named as the pointer lines in `llms-full.txt` name them, ready to paste into the editor.
-
-## Minecraft
-
-- [Minecraft server (in beta)](https://docs.crowdedkingdoms.com/minecraft/intro): a Fabric server hosts one shared world that vanilla Java clients join. Install the server jar, set the fixed seed, and split that world by chunk range.
 
 ## Changelog
 

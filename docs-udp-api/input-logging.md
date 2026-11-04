@@ -88,9 +88,9 @@ notice, and get any consent, that the law where they live requires.
 
 On an app that admits players under 18, the input log is the **safety log**: the evidence a
 [safety report](/game-api/safety-reports) is reviewed with. An app admits players under 18 when
-its [minimum age](/management-api/age-and-territory#minimum-ages) is under 18. Until Crowded
-Kingdoms opens to players 13 and over, no app does; from the opening, every app does unless it set
-`minPlayerAge` to 18.
+its [minimum age](/management-api/age-and-territory#minimum-ages) is under 18: since Crowded
+Kingdoms opened to players 13 and over on 2026-11-04, every app does unless it set `minPlayerAge`
+to 18.
 
 :::info[What is switched on]
 

@@ -157,13 +157,14 @@ for the other two rows.
 Studio's `/authorize` asks, so your game only sends the player back through `portal.signIn` when
 a refresh is refused that way. On the other two, show your own checkboxes, each document linked
 (`client.auth.playerLegalDocuments()` and the app's own `client.auth.appRequiredDocuments(appId)`),
-then call `client.auth.recordPlayerConsents({ acceptLegal: true, attestAgeOfMajority: true, appId })`
+then call `client.auth.recordPlayerConsents({ acceptLegal: true, appId })`
 before minting; `client.auth.playerLegalAcceptance({ appId })` says whether that is still
 needed. Ask the date of birth and the country on [a neutral screen](/management-api/age-and-territory#the-age-screen)
 and send them with `auth.register({ …, birthDate, country, parentalConfirmation })`, or
 `auth.recordPlayerAge({ birthDate, country, parentalConfirmation })` for an account with none.
 The gate's other refusals read with `territoryNotSupportedOf`, `ageRequiredOf`,
-`ageRequirementNotMetOf` (it surfaces no age) and `safetyLogRequiredOf`. See
+`ageRequirementNotMetOf` (it surfaces no age), `safetyLogRequiredOf` and, from 18.25.0,
+`safetyModeratorRequiredOf`. See
 [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
 
 `client.portal` wraps hosted sign-in, minting, **and consent**:
@@ -538,7 +539,10 @@ grids, and how to grant or restrict access.
 
 ## Player safety
 
-CrowdyJS 18.24.0 wraps the teen safety program (ck-api v2.60.0). With the player's app token,
+CrowdyJS 18.24.0 wraps the teen safety program (ck-api v2.60.0), and 18.25.0 its additions
+(ck-api v2.61.0): `safetyModeratorRequiredOf`, the `reason` on `parentalConsentUnavailableOf(err)`,
+`hasSafetyModerator` on app reads, `regionCode` on `platform.territoryPolicies()` rows, and
+`region` in an organization's assertion claims. With the player's app token,
 `client.safety` holds their own controls in the app: voice and video settings (`commSettings`,
 `setCommSettings`), a parent's consent (`requestParentalConsent`), contacts (`contacts`,
 `contactRequests`, `requestContact`, `acceptContact`, `removeContact`), blocks (`blocks`, `block`,

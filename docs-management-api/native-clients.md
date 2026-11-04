@@ -99,15 +99,14 @@ Send `Authorization: Bearer <session token>`. Free/open apps auto-grant on first
 mint; paid apps need an entitlement (else `FORBIDDEN`). The session token stays in
 your secure store to mint/refresh; the **app token** drives gameplay.
 
-**Ask for the age and the terms first.** The mint answers `LEGAL_ACCEPTANCE_REQUIRED` until the
-player has agreed to the current required documents and attested the age of majority.
-A native client shows its own checkboxes and calls `recordPlayerConsents` with the
-session token; `playerLegalAcceptance` says whether that is still needed. See
-[Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
-When Crowded Kingdoms opens to players 13 and over, the age comes from the player's birth
-date instead of the attestation: an account with none is refused `AGE_REQUIRED`, and the client
-asks for it as [the age screen](/management-api/age-and-territory#the-age-screen) describes and
-records it with `recordPlayerAge`.
+**Ask for the age and the terms first.** The mint answers `AGE_REQUIRED` for an account with no
+age: ask the birth date and country as [the age screen](/management-api/age-and-territory#the-age-screen)
+describes, and record them with `recordPlayerAge`. It answers `LEGAL_ACCEPTANCE_REQUIRED` until the
+player has agreed to the current required documents: show your own checkboxes and call
+`recordPlayerConsents` with the session token; `playerLegalAcceptance` says whether that is still
+needed. See [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
+Send an `x-ck-device-id` header (a random id the install keeps) on `register` and
+`recordPlayerAge`, so an age refusal locks that device rather than its network.
 
 ### B. Native launcher → child game (local handoff)
 

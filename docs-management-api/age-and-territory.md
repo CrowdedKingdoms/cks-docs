@@ -21,27 +21,30 @@ A sign-up checks the country and the age before the account exists.
 
 :::info[What is switched on]
 
-- **Live** (Game API v2.60.0): the checks above; the birth date and country at sign-up and in
+- **Since 2026-11-04**, when Crowded Kingdoms opened to players 13 and over: the youngest player
+  is 13; a browser sign-up gives a birth date and a country; an organization gives an age and a
+  country for each player it signs in; developers are adults.
+- **Game API v2.60.0:** the checks above; the birth date and country at sign-up and in
   `recordPlayerAge`; a managed player's `ageYears` and `country`; an app's `minPlayerAge`; and
   the country list, enforced for every player, adults included.
-- **Live** (Game API v2.61.0): age refusals that name no age, and a 24-hour lock after one; the
+- **Game API v2.61.0 and v2.61.1:** age refusals that name no age, and the lock after one; the
   erasure of an account that declares an age under 13; countries checked by region, and a managed
   player's `region`; Crowded Kingdoms staff past the country check.
-- **At the opening**, when Crowded Kingdoms opens to players 13 and over: the youngest player
-  becomes 13; a browser sign-up must give a birth date, and an organization an age and a country
-  for each player it signs in; developers must be adults. Until then nobody under 18 is admitted.
 
 :::
 
-## Now, and at the opening
+## What changed on 2026-11-04
 
-| | Until the opening | From the opening |
+| | Before | Since |
 |---|---|---|
 | Youngest player | 18 | 13, or older where the app or the player's country asks |
 | How a Crowded Kingdoms account's age is known | the age-of-majority attestation, or a birth date | the birth date; the attestation is ignored |
 | A birth date at a browser sign-up | optional | required |
-| A managed player's `ageYears` and `country` | optional: with no age, the player counts as 18 or older, as the organization warrants | required |
+| A managed player's `ageYears` and `country` | optional: with no age, the player counted as 18 or older, as the organization warranted | required |
 | Countries Crowded Kingdoms does not serve | refused | refused |
+
+An account that attested its age before 2026-11-04 keeps the bracket `18_plus` and is not asked
+again.
 
 ## Ages are kept as brackets
 
@@ -72,24 +75,23 @@ mutation SignUp($input: RegisterUserInput!) {
   register(registerUserInput: $input) { token user { userId } }
 }
 # variables: { "input": { "email": "...", "password": "...", "acceptLegal": true,
-#   "attestAgeOfMajority": true, "birthDate": "1994-04", "country": "US" } }
+#   "birthDate": "1994-04", "country": "US" } }
 ```
 
-`attestAgeOfMajority` is still required on a browser sign-up until the opening, and ignored after
-it. Before any account exists, the sign-up is refused:
+`attestAgeOfMajority` is ignored since 2026-11-04. Before any account exists, the sign-up is
+refused:
 
 - `TERRITORY_NOT_SUPPORTED` for a place Crowded Kingdoms does not serve: the country the player
   gave, or the country or region their connection comes from;
-- `AGE_REQUIREMENT_NOT_MET` under 13, or under the platform's minimum (18 until the opening) or
-  the country's. It names no age, and for 24 hours afterwards the same client (its address and
-  user agent) is refused `AGE_REQUIREMENT_NOT_MET` here and at `recordPlayerAge`, whatever it
-  sends;
+- `AGE_REQUIREMENT_NOT_MET` under 13, or under the country's minimum. It names no age, and the
+  same client is then refused `AGE_REQUIREMENT_NOT_MET` here and at `recordPlayerAge`, whatever it
+  sends ([the retry lock](#the-age-screen));
 - `BAD_REQUEST` for a date that is not a real date in the past, a country without a birth date or
   a birth date without one, or a player under 18 without `parentalConfirmation: true`.
 
-From the opening, a browser sign-up without a birth date is refused `AGE_REQUIRED`. A request
-with no `Origin` header (a native client, a tool) may leave the three fields out and give them
-with `recordPlayerAge` before its first mint.
+A browser sign-up without a birth date is refused `AGE_REQUIRED`. A request with no `Origin`
+header (a native client, a tool) may leave the three fields out and give them with
+`recordPlayerAge` before its first mint.
 
 ### An account with no age: `recordPlayerAge`
 
@@ -112,7 +114,7 @@ play.
   Crowded Kingdoms staff.
 - Under 13 is refused `AGE_REQUIREMENT_NOT_MET`, and the account is deleted and erased, as
   `deleteMyAccount` does (Game API v2.61.0): Crowded Kingdoms keeps no personal information about
-  the child. The same client is then refused for 24 hours, as after a sign-up.
+  the child. The same client is then locked out, as after a sign-up.
 - Whether the player may play a given app (its minimum age, the country's) is decided at the
   mint, not here.
 
@@ -131,16 +133,23 @@ launcher, an in-game prompt, or the screen of a server that signs its own player
   age or a way to try again. `AGE_REQUIREMENT_NOT_MET` carries no extensions and its message names
   no age (Game API v2.61.0), so there is nothing in it to show.
 - **Do not offer an immediate retry** after an age refusal: no way back to the date to change it.
-  Crowded Kingdoms stops one as well: for 24 hours it refuses the same client at sign-up and
-  `recordPlayerAge`, the same Minecraft account, and the same managed player (in any of its
-  organization's apps), whatever they send. That stops an immediate retry; it is not a barrier, so
-  your screen keeps its own lockout.
+  Crowded Kingdoms stops one as well, whatever is sent next (Game API v2.61.1):
+  - at sign-up and `recordPlayerAge`, a client that sends an `x-ck-device-id` header (an opaque
+    random id it keeps, 16 to 128 letters, digits, `-` or `_`) is refused for 24 hours by that
+    device, wherever it connects from; one that sends none is refused for an hour by its address
+    and user agent, which schools, households and carriers share;
+  - the same Minecraft account, for 24 hours;
+  - the same managed player (your organization and its `externalId`), for 24 hours, in any of the
+    organization's apps.
+
+  That stops an immediate retry; it is not a barrier, so your screen keeps its own lockout. Send
+  `x-ck-device-id` from a native client to get the day-long lock.
 
 ## Minimum ages
 
 The youngest player an app admits is the highest of three:
 
-- **the platform's:** 18 until the opening, then 13;
+- **the platform's:** 13 (18 before 2026-11-04);
 - **the app's**, `minPlayerAge`, from 13 to 18, which only ever raises the platform's;
 - **the country's**, from [`territoryPolicies`](#countries).
 
@@ -153,8 +162,8 @@ mutation AdultsOnly($appId: BigInt!) {
 `App.effectiveMinPlayerAge` is the higher of the app's and the platform's. `minPlayerAge: null`
 returns the app to the platform's minimum. A raised minimum applies at each player's next mint or
 refresh: a younger player is refused `AGE_REQUIREMENT_NOT_MET`. An app whose minimum is 18 admits
-no minor, and needs no [safety log](/replication-api/input-logging#the-safety-log); set it before
-the opening to keep a game for adults.
+no minor, and needs no [safety log](/replication-api/input-logging#the-safety-log): set it to keep
+a game for adults.
 
 ## Countries
 
@@ -184,10 +193,9 @@ applies a change within a minute, refusing a player already signed in there at t
 - The refusal carries `extensions.country`, and `extensions.region` when a region decided it
   (null otherwise).
 
-The Player Terms, which Crowded Kingdoms publishes at the opening, say where it offers its
-services (section 1.7) and the minimum age by country (section 1.8). Until then the
-[API Terms](https://crowdedkingdoms.com/api-terms.html) govern, and `territoryPolicies` is what
-the API enforces.
+The [Player Terms](https://crowdedkingdoms.com/player-terms.html) say where Crowded Kingdoms
+offers its services (section 1.7) and the minimum age by country (section 1.8);
+`territoryPolicies` is what the API enforces.
 
 ## Players your organization signs in
 
@@ -206,9 +214,8 @@ at each sign-in and not stored (Game API v2.61.0).
   `TERRITORY_NOT_SUPPORTED`.
 - The bracket and the country are stored on the player. A refresh, which carries no age, is
   refused once the stored bracket is wholly below the app's minimum.
-- Until the opening both are optional, and a player with no age counts as 18 or older, as your
-  organization warrants under the addendum. From the opening both are required: no age is
-  `AGE_REQUIRED`, no country `BAD_REQUEST`.
+- Both are required: no age is `AGE_REQUIRED`, no country `BAD_REQUEST`. (Before 2026-11-04 both
+  were optional, and a player with no age counted as 18 or older.)
 - A player under 18 gets the minors' defaults: [voice and video](/game-api/communication) off
   until a parent consents, then contacts only, and no direct messages. The app must keep its
   [safety log](/replication-api/input-logging#the-safety-log) on (`SAFETY_LOG_REQUIRED` otherwise),
@@ -220,34 +227,35 @@ If your server asks players their age, [the age screen](#the-age-screen) applies
 
 ## Developers
 
-From the opening, creating an organization and administering one or its apps need the developer
+Creating an organization and administering one or its apps need the developer
 documents ([Legal documents](legal-documents#developer-documents)), which only adults may accept:
 an account with no age is refused `AGE_REQUIRED` (`recordPlayerAge` first), and one under 18
 `AGE_REQUIREMENT_NOT_MET`. A player of 13 to 17 plays, and does not build on Crowded Kingdoms.
 
 ## In the SDKs
 
-| | CrowdyJS 18.24.0 | CrowdyCPP 0.75.0 | CrowdyPy 0.23.0 |
+| | CrowdyJS 18.25.0 | CrowdyCPP 0.76.0 | CrowdyPy 0.24.0 |
 |---|---|---|---|
 | Sign-up with the age | `auth.register({ …, birthDate, country, parentalConfirmation })` | `auth().registerUser(RegisterUserInput)` | `auth.register(…, birth_date=, country=, parental_confirmation=)` |
 | An account with no age | `auth.recordPlayerAge({ birthDate, country, parentalConfirmation })` | `auth().recordPlayerAge(PlayerAgeInput)` | `auth.record_player_age(birth_date=, country=, parental_confirmation=)` |
 | The bracket and country | `users.me()` | `users().me()` | `users.me()` |
-| The country list | `platform.territoryPolicies()` | `platform().territoryPolicies()` | `platform.territory_policies()` |
-| The refusals | `territoryNotSupportedOf`, `ageRequiredOf`, `ageRequirementNotMetOf`, `safetyLogRequiredOf` | `graphql::territoryNotSupportedOf` and the same names | `territory_not_supported_of` and the same names, in `crowdypy.errors` |
+| The country and region list (`regionCode`) | `platform.territoryPolicies()` | `platform().territoryPolicies()` | `platform.territory_policies()` |
+| The refusals | `territoryNotSupportedOf`, `ageRequiredOf`, `ageRequirementNotMetOf`, `safetyLogRequiredOf`, `safetyModeratorRequiredOf` | `graphql::territoryNotSupportedOf` and the same names | `territory_not_supported_of` and the same names, in `crowdypy.errors` |
 
 The age readers surface no age. None of the SDKs wraps `mintManagedPlayerToken`, which runs on
-your organization's server.
+your organization's server; CrowdyJS and CrowdyPy type the assertion's claims
+(`ManagedPlayerAssertionClaims`: `ageYears`, `country`, `region`).
 
 ## Refusals
 
 | `extensions.code` | HTTP | When | What to do |
 |---|---|---|---|
 | `TERRITORY_NOT_SUPPORTED` | 403 | The player's place, the country they gave or their connection's country or region (`extensions.country`, `extensions.region`), is one Crowded Kingdoms does not serve; or, in a country checked by region, the region cannot be told or a managed player was sent without one. | Tell the player Crowded Kingdoms is not available where they are. Do not retry. |
-| `AGE_REQUIRED` | 403 | The player's age is not known: an account with no age once the opening has come, or a managed player signed in without `ageYears`. | Ask the age ([the age screen](#the-age-screen)), then `recordPlayerAge`, or sign the managed player in with `ageYears` and `country`. Until the opening an account with no age is refused `LEGAL_ACCEPTANCE_REQUIRED` instead, and the attestation is its remedy. |
-| `AGE_REQUIREMENT_NOT_MET` | 403 | The player is younger than the app allows where they are, or under 13; or a developer under 18; or the same client, Minecraft account or managed player was refused so in the last 24 hours. No extensions. | Tell the player they cannot play this, without a reason, an age or a way to try again. Do not retry with another date or age. |
+| `AGE_REQUIRED` | 403 | The player's age is not known: an account with no age, a browser sign-up without `birthDate`, or a managed player signed in without `ageYears`. | Ask the age ([the age screen](#the-age-screen)), then `recordPlayerAge`, or sign the managed player in with `ageYears` and `country`. |
+| `AGE_REQUIREMENT_NOT_MET` | 403 | The player is younger than the app allows where they are, or under 13; or a developer under 18; or the same device, client, Minecraft account or managed player was refused so recently ([the retry lock](#the-age-screen)). No extensions. | Tell the player they cannot play this, without a reason, an age or a way to try again. Do not retry with another date or age. |
 | `LEGAL_ACCEPTANCE_REQUIRED` | 403 | Documents are missing (`extensions.missingDocuments`). | [Legal documents](legal-documents#the-refusal). |
-| `SAFETY_LOG_REQUIRED` | 403 | A player under 18, in an app whose safety log is off. | The app's admins turn it on ([the safety log](/replication-api/input-logging#the-safety-log)). Tell the player the game cannot admit them yet. |
-| `SAFETY_MODERATOR_REQUIRED` | 403 | A player under 18, in an app whose organization has no appointed moderator (Game API v2.61.0). | The organization gives a member a role that grants `moderate_safety` ([Moderators](/game-api/safety-reports#moderators)). Tell the player the game cannot admit them yet, naming no age. |
+| `SAFETY_LOG_REQUIRED` | 403 | A player under 18, in an app whose safety log is off: at the mint, and since Game API v2.61.1 when Studio's hosted sign-in issues the code. | The app's admins turn it on ([the safety log](/replication-api/input-logging#the-safety-log)). Tell the player the game cannot admit them yet. |
+| `SAFETY_MODERATOR_REQUIRED` | 403 | A player under 18, in an app whose organization has no appointed moderator (Game API v2.61.0; at the hosted sign-in's code too since v2.61.1). | The organization gives a member a role that grants `moderate_safety` ([Moderators](/game-api/safety-reports#moderators)). Tell the player the game cannot admit them yet, naming no age. |
 | `CONFLICT` | 409 | `recordPlayerAge` on an account that has an age. | Read `me { ageBracket }`; do not ask again. |
 | `BAD_REQUEST` | 400 | A malformed date or country, one without the other, or a player under 18 without `parentalConfirmation`. | Fix the input. |
 

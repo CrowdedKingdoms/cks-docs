@@ -13,12 +13,12 @@ stay off.
 
 :::info[What is switched on]
 
-- **Live** (Game API v2.60.0 and replication server v0.43.0): the settings, contacts, blocks and
-  parental consent fields on this page, and the realtime servers that enforce them on both sides.
-- **At the opening**, when Crowded Kingdoms opens to players 13 and over: players under 18, and so
-  the minors' defaults. Until then every player is an adult.
-- **Being built:** `PARENTAL_CONSENT_UNAVAILABLE` saying why, from the Game API release after
-  v2.61.0 ([below](#parental-consent-for-voice-and-video)).
+- **Live** (Game API v2.60.0 to v2.61.1 and replication server v0.43.0): the settings, contacts,
+  blocks and parental consent fields on this page, and the realtime servers that enforce them on
+  both sides. Players under 18, and so the minors' defaults, since 2026-11-04.
+- **Not yet in production: parental consent.** Kids Web Services is not available in production
+  yet: `requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason`
+  `not_configured`, so a player under 18 cannot turn voice or video on there yet.
 
 :::
 
@@ -164,10 +164,11 @@ mutation AskParent($appId: BigInt!, $email: String!) {
   whether it is given. When a parent withdraws it, through Kids Web Services or by writing to
   Crowded Kingdoms, the medium turns off again within a second.
 - `PARENTAL_CONSENT_UNAVAILABLE` (503) when consent cannot be asked; voice and video then stay off
-  for players under 18. From the Game API release after v2.61.0 it says why in
-  `extensions.reason`: `not_configured` (the service is not set up on this deployment),
-  `provider_refused` or `provider_unavailable` (the service turned the request down or did not
-  answer). `RATE_LIMITED` after three requests in an hour.
+  for the player, and nothing was sent. `extensions.reason` says why (Game API v2.61.1):
+  `not_configured`, the deployment has no consent service yet (production, for now): do not retry;
+  `provider_refused`, the service refused the request (an address it does not accept): a parent's
+  other address may work; `provider_unavailable`, the service did not answer: retry shortly.
+- `RATE_LIMITED` after three requests in an hour.
 
 ## What your game shows
 
@@ -185,13 +186,14 @@ For a game that offers voice, video or chat:
 
 ## In the SDKs
 
-The player's own controls, with the app token: CrowdyJS 18.24.0 `client.safety` (`commSettings`,
+The player's own controls, with the app token: CrowdyJS 18.25.0 `client.safety` (`commSettings`,
 `setCommSettings`, `requestParentalConsent`, `contacts`, `contactRequests`, `requestContact`,
-`acceptContact`, `removeContact`, `blocks`, `block`, `unblock`); CrowdyCPP 0.75.0
-`client.safety()`, the same names, each with an `Async` twin; CrowdyPy 0.23.0 `client.safety`,
+`acceptContact`, `removeContact`, `blocks`, `block`, `unblock`); CrowdyCPP 0.76.0
+`client.safety()`, the same names, each with an `Async` twin; CrowdyPy 0.24.0 `client.safety`,
 in snake case (`comm_settings`, `set_comm_settings`, `request_parental_consent`, …). The refusals
-read with `socialLimitReachedOf` and `parentalConsentUnavailableOf` (`social_limit_reached_of`,
-`parental_consent_unavailable_of` in CrowdyPy).
+read with `socialLimitReachedOf` and `parentalConsentUnavailableOf`, which gives the `reason`
+(`social_limit_reached_of` and `parental_consent_unavailable_of` in CrowdyPy;
+`graphql::parentalConsentUnavailableOf` in CrowdyCPP).
 
 ## Errors
 
@@ -199,7 +201,7 @@ read with `socialLimitReachedOf` and `parentalConsentUnavailableOf` (`social_lim
 |---|---|
 | `UNAUTHORIZED` (UDP error 7) | A send the rules above refuse. |
 | `SOCIAL_LIMIT_REACHED` | 409: the player has as many contacts, waiting requests or blocks in the app as allowed. Remove some first. |
-| `PARENTAL_CONSENT_UNAVAILABLE` | 503: consent cannot be asked here now; `extensions.reason` says why from the release after v2.61.0. Do not retry in a loop. |
+| `PARENTAL_CONSENT_UNAVAILABLE` | 503: consent cannot be asked now; `extensions.reason` is `not_configured`, `provider_refused` or `provider_unavailable` (above). Do not retry in a loop. |
 | `RATE_LIMITED` | 429: a fourth parental consent request within an hour. |
 | `NOT_FOUND` | The other player is not one of the app's players, or (`acceptContact`) has not asked. |
 | `BAD_REQUEST` | A contact request to a player the caller has blocked. |
