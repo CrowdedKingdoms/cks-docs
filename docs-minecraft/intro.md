@@ -2,6 +2,11 @@
 slug: intro
 sidebar_position: 1
 title: Minecraft server (in beta)
+# DRAFT (2026-11-04): not published on any tier. It links the private mod repository's
+# releases, which readers cannot open, and describes features that are not publicly released.
+# The file stays so the page can come back: remove `draft: true`, and restore the navbar item
+# and the footer's Games column in docusaurus.config.ts and the Minecraft entry in llms.txt.
+draft: true
 ---
 
 # Minecraft server (in beta)

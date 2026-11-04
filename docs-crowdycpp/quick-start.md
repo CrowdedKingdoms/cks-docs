@@ -40,10 +40,10 @@ auto login = identity.auth().login("player@example.com", password);
 ```
 
 **Then the age and the terms** (ck-api v2.35.0 and v2.60.0, CrowdyCPP 0.57.0 and 0.75.0). No
-gameplay token is issued until the player has agreed to the current required legal
-documents and, until Crowded Kingdoms opens to players 13 and over, attested that they are at
-least 18, or the age of majority where they live if that is higher; the mint in step 2 answers
-`LEGAL_ACCEPTANCE_REQUIRED` until then. Show your own checkboxes, linking each document
+gameplay token is issued until the player has an age and has agreed to the current required
+legal documents, the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
+[Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html); the mint in step 2
+answers `AGE_REQUIRED` or `LEGAL_ACCEPTANCE_REQUIRED` until then. Show your own checkboxes, linking each document
 (`auth().playerLegalDocuments()`, and the app's own `auth().appRequiredDocuments(appId)`), and
 record the player's answer with the session token:
 
@@ -52,7 +52,6 @@ if (!identity.auth().playerLegalAcceptance(appId)) {
   // Only after the player ticked the boxes: this records their agreement.
   domains::PlayerConsents consents;
   consents.acceptLegal = true;
-  consents.attestAgeOfMajority = true;  // ignored once the platform asks for a birth date
   consents.appId = appId;               // the app's own documents too
   identity.auth().recordPlayerConsents(consents);
 }
@@ -63,7 +62,10 @@ country once, from a [neutral age screen](/management-api/age-and-territory#the-
 `auth().recordPlayerAge(PlayerAgeInput{birthDate, country, parentalConfirmation})`;
 `auth().registerUser(RegisterUserInput)` takes the same answers at sign-up. The gate's refusals
 read with `graphql::territoryNotSupportedOf`, `ageRequiredOf`, `ageRequirementNotMetOf` (it
-surfaces no age), `legalAcceptanceRequiredOf` (with `missingDocuments`) and `safetyLogRequiredOf`.
+surfaces no age), `legalAcceptanceRequiredOf` (with `missingDocuments`), `safetyLogRequiredOf`,
+and from 0.76.0 `safetyModeratorRequiredOf` and `parentalConsentUnavailableOf`, which returns the
+refusal with its `reason`; `admin().apps().get()` reads `hasSafetyModerator`, and
+`platform().territoryPolicies()` rows carry `regionCode`.
 See [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
 
 ## 2. App token and per-game client

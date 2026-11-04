@@ -15,11 +15,12 @@ refusal lists what is missing.
 - **Live** (Game API v2.60.0): your app's own documents (`setAppRequiredDocuments`), the public
   lists (`playerLegalDocuments`, `appRequiredDocuments`), the missing documents on the refusal,
   and acceptances recorded with the app and how they were given.
-- **At the opening**, when Crowded Kingdoms opens to players 13 and over: the platform's player
-  documents become the Player Terms and the Player Privacy Policy, replacing today's five and the
-  age-of-majority attestation, and every player accepts them at their next mint. Developers accept
-  their own documents before creating or administering an organization. The Org-Managed Players
-  Addendum gets a new version, which every organization accepts again.
+- **Since 2026-11-04**, when Crowded Kingdoms opened to players 13 and over: the platform's
+  player documents are the Player Terms and the Player Privacy Policy, which replaced the five
+  earlier documents and the age-of-majority attestation, and every player accepts them at their
+  next mint. Developers accept their own documents before creating or administering an
+  organization. The Org-Managed Players Addendum has a new version, which every organization
+  accepts again.
 - **In Studio:** the hosted sign-in asks for your app's documents with the platform's
   ([below](#hosted-sign-in-and-your-apps-documents)), and the app's page sets them.
 
@@ -31,12 +32,13 @@ refusal lists what is missing.
 query { playerLegalDocuments { documentId version title url } }
 ```
 
-Public, so a sign-up form can show them before an account exists. Today the list is the Game
+Public, so a sign-up form can show them before an account exists. The list is the
+[Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
+[Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html), at the versions of
+2026-11-04 (`player-terms-2026-11-04`, `player-privacy-2026-11-04`). Until then it was the Game
 Terms, the API Terms, the SDK Developer Terms, the Free Tier and Billing Basis and the Overworld
-Privacy Policy, and a player also attests that they are 18 or older, or the age of majority where
-they live if that is higher. From the opening it is the Player Terms and the Player Privacy Policy,
-and the attestation is no longer asked. Render whatever the list returns rather than a list of
-your own: a new `version` of any document asks every player again at their next mint.
+Privacy Policy, with an age-of-majority attestation. Render whatever the list returns rather than a
+list of your own: a new `version` of any document asks every player again at their next mint.
 
 ## Your app's documents
 
@@ -74,13 +76,15 @@ the acceptance with the player's identity session token:
 query Accepted($appId: BigInt!) { playerLegalAcceptance(appId: $appId) }   # false: ask first
 
 mutation Accept($appId: BigInt!) {
-  recordPlayerConsents(acceptLegal: true, attestAgeOfMajority: true, appId: $appId)
+  recordPlayerConsents(acceptLegal: true, appId: $appId)
 }
 ```
 
 - `appId` records the app's documents together with the platform's; without it, only the
   platform's are recorded. `playerLegalAcceptance(appId)` is true once both sets are stored.
-- `attestAgeOfMajority: true` is required until the opening, and ignored after it.
+- `attestAgeOfMajority` is ignored since 2026-11-04: the age comes from the player's birth date
+  ([Age, country and who may play](age-and-territory)). A client that still sends it is not
+  refused.
 - `method` says how the player accepted: `CLICKWRAP` (the default), on a Crowded Kingdoms page or
   an SDK sign-up form, or `IN_GAME`, on your game's own screen.
 - It records the player's own agreement: call it only after they ticked the box. Repeating it is
@@ -120,9 +124,10 @@ or native client, an SDK sign-up form or an in-game screen records them itself w
 
 ## Developer documents
 
-From the opening, developers accept the API Terms, the SDK Developer Terms and the Free Tier and
-Billing Basis before they create an organization or administer one or its apps. Until then the
-list is empty and developers accept nothing beyond the player documents.
+Developers accept the [API Terms](https://crowdedkingdoms.com/api-terms.html), the
+[SDK Developer Terms](https://crowdedkingdoms.com/sdk-terms.html) and the
+[Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) before they create an
+organization or administer one or its apps (since 2026-11-04).
 
 ```graphql
 query { developerLegalDocuments { documentId version title url } developerLegalAcceptance }
@@ -137,15 +142,15 @@ apps' administration answer `LEGAL_ACCEPTANCE_REQUIRED`.
 
 ## In the SDKs
 
-- **CrowdyJS 18.24.0:** `client.auth.playerLegalDocuments()`, `appRequiredDocuments(appId)`,
-  `recordPlayerConsents({ acceptLegal, attestAgeOfMajority, appId, method })` and
+- **CrowdyJS 18.25.0:** `client.auth.playerLegalDocuments()`, `appRequiredDocuments(appId)`,
+  `recordPlayerConsents({ acceptLegal, appId, method })` and
   `playerLegalAcceptance({ appId })`; `legalAcceptanceRequiredOf(err).missingDocuments` reads the
   refusal; an app admin calls `client.apps.setRequiredDocuments(appId, documents)`; a developer
   `developerLegalDocuments()`, `recordDeveloperConsents()` and `developerLegalAcceptance()`.
-- **CrowdyCPP 0.75.0:** `auth().recordPlayerConsents(PlayerConsents)` with `appId` and `method`
+- **CrowdyCPP 0.76.0:** `auth().recordPlayerConsents(PlayerConsents)` with `appId` and `method`
   (`LegalAcceptanceMethod::IN_GAME` on your own screen), `auth().playerLegalAcceptance(appId)`,
   `playerLegalDocuments()`, `appRequiredDocuments(appId)` and
   `admin().apps().setRequiredDocuments(appId, documents)`.
-- **CrowdyPy 0.23.0:** `auth.record_player_consents(accept_legal=True, app_id=…, method=…)`,
+- **CrowdyPy 0.24.0:** `auth.record_player_consents(accept_legal=True, app_id=…, method=…)`,
   `auth.player_legal_acceptance(app_id=…)`, `auth.player_legal_documents()`,
   `auth.app_required_documents(app_id)` and `apps.set_required_documents(app_id, documents)`.

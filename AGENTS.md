@@ -175,17 +175,17 @@ viewer function is ever detached.
   repo is promoted, change those to the target branch (`grep -rn "blob/dev\|-b dev"`).
   Site-internal links and `llms.txt` need nothing: the `tier-origin` plugin
   rewrites the prod origin in built text files to the tier's own.
-- **The players-under-18 pages carry status markers that go stale by design** (2026-10-30, dev;
-  updated 2026-11-02 for Game API v2.61.0 and replication server v0.43.0).
-  `docs/player-safety.md` defines three states (Live, At the opening, Being built) and each page
-  in the set has a "What is switched on" box. Update them when the state moves:
-  `grep -rn "release after v2.61.0\|At the opening\|at the opening\|Being built\|being built" docs*`.
-  "At the opening" is production's switch to players 13 and over; dev runs flipped already, but
-  the pages describe what every tier will do, so the marker stays until prod opens. The
-  `PARENTAL_CONSENT_UNAVAILABLE` `extensions.reason` is marked "the release after v2.61.0":
-  replace that with its version. The Player Terms and Player Privacy Policy are named but not
-  linked, because their pages 404 until the opening; link them then. Do not list the blocked
-  countries or regions: point at `territoryPolicies` and the Player Terms (sections 1.7 and 1.8).
+- **The players-under-18 pages** (2026-10-30; production opened to players 13 and over on
+  2026-11-04, Game API v2.61.1). `docs/player-safety.md` is the map, and each page in the set has
+  a "What is switched on" box. One fact is production's own and goes stale on purpose: Kids Web
+  Services is not available there yet, so `requestParentalConsent` answers
+  `PARENTAL_CONSENT_UNAVAILABLE` with reason `not_configured` (`grep -rn "Not yet in production"
+  docs*`); remove it on every tier once production has it. Do not list the blocked countries or
+  regions: point at `territoryPolicies` and the Player Terms (sections 1.7 and 1.8).
+- **The Minecraft server page is a draft** (`docs-minecraft/intro.md`, `draft: true`, 2026-11-04):
+  it links the private mod repository's releases and describes features not publicly released.
+  Its navbar item, footer column and `llms.txt` entry were removed with it; restore all three
+  when it goes public.
 - **The Unreal SDK still ships its Game Model API, and no page documents it.**
   Its symbols are in `docs-unreal-sdk/reference/surface-allowlist.json` with reason
   `deprecated` and the note "Legacy game-model engine removed; the Unreal SDK
