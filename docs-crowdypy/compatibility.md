@@ -45,7 +45,7 @@ agent's policy.
   `org_legal_acceptance_required_of` are 0.17.0. See
   [Org-managed players](/management-api/org-managed-players).
 - The full list of what each release needs from the server is in the repository's
-  [compatibility notes](https://github.com/CrowdedKingdoms/CrowdyPy/blob/dev/docs/compatibility.md).
+  [compatibility notes](https://github.com/CrowdedKingdoms/CrowdyPy/blob/prod/docs/compatibility.md).
 
 ## Native core
 

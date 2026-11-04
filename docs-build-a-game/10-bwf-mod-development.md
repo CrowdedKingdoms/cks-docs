@@ -22,7 +22,7 @@ Crowded Kingdoms. Use either of these:
   its agent, and its setup gives you an app you can mod:
 
   ```bash
-  git clone -b dev https://github.com/CrowdedKingdoms/the-construct.git
+  git clone -b prod https://github.com/CrowdedKingdoms/the-construct.git
   cd the-construct
   npm install
   CONSTRUCT_EMAIL=you@example.com CONSTRUCT_PASSWORD=... \
