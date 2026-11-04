@@ -1,0 +1,49 @@
+---
+id: record-parental-consent-withdrawal
+title: recordParentalConsentWithdrawal
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: record a parent's withdrawal of consent to one medium (VOICE or VIDEO) for one player in one app, when it reached Crowded Kingdoms by email rather than through the consent service. It ends the consent as the service's own withdrawal does, recomputes the player's communication settings (a minor's medium goes back to OFF) and tells the realtime servers (P2P&#x005F;SOCIAL&#x005F;REFRESH) when that changes what they read, so live sessions apply it within a second. withdrawn is false when no consent was held; the settings are recomputed all the same, so calling it again is safe. NOT&#x005F;FOUND unless the player has a grant or a consent in the app. Send the identity session to the app's datacenter.
+
+
+```graphql
+recordParentalConsentWithdrawal(
+  appId: BigInt!
+  userId: BigInt!
+  feature: ParentalConsentFeature!
+): ParentalConsentWithdrawal!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>recordParentalConsentWithdrawal.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app the consent was for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>recordParentalConsentWithdrawal.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>recordParentalConsentWithdrawal.<b>feature</b></code>](#feature)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParentalConsentFeature!</b></code>](/reference/graphql/types/enums/parental-consent-feature.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #feature */} 
+The medium the parent withdrew.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ParentalConsentWithdrawal</b></code>](/reference/graphql/types/objects/parental-consent-withdrawal.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The answer to recordParentalConsentWithdrawal: the consent it ended, if one was held, and the player’s communication settings recomputed after it.
