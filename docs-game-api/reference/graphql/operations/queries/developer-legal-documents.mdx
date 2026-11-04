@@ -1,0 +1,29 @@
+---
+id: developer-legal-documents
+title: developerLegalDocuments
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The documents a developer accepts (recordDeveloperConsents) before creating or administering an organization, at the versions required now; only an account of 18 or older may. Empty while the platform asks developers for nothing beyond the player documents. Public.
+
+
+```graphql
+developerLegalDocuments: [LegalDocument!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>LegalDocument</b></code>](/reference/graphql/types/objects/legal-document.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A document players (or developers) accept: its id, the version currently required, its title and where to read it. appId is set for an app’s own document and null for the platform’s.

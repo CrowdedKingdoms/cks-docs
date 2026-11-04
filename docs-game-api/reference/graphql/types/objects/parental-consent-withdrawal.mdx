@@ -1,0 +1,63 @@
+---
+id: parental-consent-withdrawal
+title: ParentalConsentWithdrawal
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The answer to recordParentalConsentWithdrawal: the consent it ended, if one was held, and the player’s communication settings recomputed after it.
+
+
+```graphql
+type ParentalConsentWithdrawal {
+  appId: BigInt!
+  userId: BigInt!
+  feature: ParentalConsentFeature!
+  withdrawn: Boolean!
+  revokedAt: DateTime
+  settings: CommSettings!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentWithdrawal.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentWithdrawal.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentWithdrawal.<b>feature</b></code>](#feature)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParentalConsentFeature!</b></code>](/reference/graphql/types/enums/parental-consent-feature.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #feature */} 
+The medium the parent withdrew.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentWithdrawal.<b>withdrawn</b></code>](#withdrawn)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #withdrawn */} 
+True when a consent was held and has now ended; false when none was held (nothing changed but the recompute).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentWithdrawal.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #revoked-at */} 
+When the consent ended (now, when withdrawn is true); null when none was ever held.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentWithdrawal.<b>settings</b></code>](#settings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommSettings!</b></code>](/reference/graphql/types/objects/comm-settings.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #settings */} 
+The player’s settings in the app after the recompute, which the realtime servers read.
+
+
+
+
+### Returned By
+
+[`recordParentalConsentWithdrawal`](/reference/graphql/operations/mutations/record-parental-consent-withdrawal.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

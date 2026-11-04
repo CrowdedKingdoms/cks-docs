@@ -1,0 +1,48 @@
+---
+id: contact-request
+title: ContactRequest
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A contact request waiting for an answer.
+
+
+```graphql
+type ContactRequest {
+  userId: BigInt!
+  direction: ContactRequestDirection!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ContactRequest.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The other player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ContactRequest.<b>direction</b></code>](#direction)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ContactRequestDirection!</b></code>](/reference/graphql/types/enums/contact-request-direction.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #direction */} 
+Who asked whom.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ContactRequest.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
+When it was made.
+
+
+
+
+### Returned By
+
+[`contactRequests`](/reference/graphql/operations/queries/contact-requests.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

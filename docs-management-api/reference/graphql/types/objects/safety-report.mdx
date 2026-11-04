@@ -1,0 +1,123 @@
+---
+id: safety-report
+title: SafetyReport
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A report about a player, filed by another player (fileSafetyReport) or by the app’s hub (the node API’s safety.report). Moderators (moderate&#x005F;safety on the app) read and decide it.
+
+
+```graphql
+type SafetyReport {
+  appId: BigInt!
+  reportId: BigInt!
+  reporterUserId: BigInt!
+  reportedUserId: BigInt!
+  reportedActorUuid: String
+  reason: SafetyReportReason!
+  details: String
+  occurredAt: DateTime!
+  filedAt: DateTime!
+  status: SafetyReportStatus!
+  outcome: String
+  resolvedBy: BigInt
+  resolvedAt: DateTime
+  ncmecReportId: String
+  ncmecSubmittedAt: DateTime
+  holdId: BigInt
+  sessions: [BigInt!]!
+  capture: SafetyReportCapture!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>reportId</b></code>](#report-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #report-id */} 
+The report.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>reporterUserId</b></code>](#reporter-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reporter-user-id */} 
+Who reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>reportedUserId</b></code>](#reported-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reported-user-id */} 
+Who is reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>reportedActorUuid</b></code>](#reported-actor-uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reported-actor-uuid */} 
+The reported player’s actor, when the report named one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SafetyReportReason!</b></code>](/reference/graphql/types/enums/safety-report-reason.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #reason */} 
+Why.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>details</b></code>](#details)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #details */} 
+What the reporter wrote (at most 1,000 characters).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #occurred-at */} 
+When it happened, as the reporter said.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>filedAt</b></code>](#filed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #filed-at */} 
+When it was filed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SafetyReportStatus!</b></code>](/reference/graphql/types/enums/safety-report-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #status */} 
+Where it stands.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>outcome</b></code>](#outcome)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #outcome */} 
+The moderator’s outcome, once resolved.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>resolvedBy</b></code>](#resolved-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #resolved-by */} 
+The moderator who resolved or escalated it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>resolvedAt</b></code>](#resolved-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #resolved-at */} 
+When it was resolved or escalated.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>ncmecReportId</b></code>](#ncmec-report-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #ncmec-report-id */} 
+The CyberTipline report it was escalated as.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>ncmecSubmittedAt</b></code>](#ncmec-submitted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #ncmec-submitted-at */} 
+When the CyberTipline report was recorded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>holdId</b></code>](#hold-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #hold-id */} 
+The legal hold set on the reported account when it was deleted while the report was open or escalated (legalHolds).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>sessions</b></code>](#sessions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #sessions */} 
+The recorded sessions it covers (InputLogSession.gameTokenId): both players’ sessions from 15 minutes before it occurred to its filing. A moderator reads them with inputLogMessages while the report is open or escalated.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReport.<b>capture</b></code>](#capture)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SafetyReportCapture!</b></code>](/reference/graphql/types/objects/safety-report-capture.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #capture */} 
+Its copy in the preservation store.
+
+
+
+
+### Returned By
+
+[`escalateSafetyReport`](/reference/graphql/operations/mutations/escalate-safety-report.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`resolveSafetyReport`](/reference/graphql/operations/mutations/resolve-safety-report.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`safetyReports`](/reference/graphql/operations/queries/safety-reports.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,48 @@
+---
+id: safety-report-status
+title: SafetyReportStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPEN: waiting for a moderator. RESOLVED: closed with an outcome; its preserved evidence is deleted and its account hold released. ESCALATED: reported to the CyberTipline; its evidence and its account hold are kept for a year from the submission.
+
+
+```graphql
+enum SafetyReportStatus {
+  OPEN
+  RESOLVED
+  ESCALATED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportStatus.<b>OPEN</b></code>](#open) {/* #open */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportStatus.<b>RESOLVED</b></code>](#resolved) {/* #resolved */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportStatus.<b>ESCALATED</b></code>](#escalated) {/* #escalated */} 
+
+
+
+
+
+### Member Of
+
+[`SafetyReport`](/reference/graphql/types/objects/safety-report.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`safetyReports`](/reference/graphql/operations/queries/safety-reports.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

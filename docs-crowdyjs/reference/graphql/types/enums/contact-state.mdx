@@ -1,0 +1,43 @@
+---
+id: contact-state
+title: ContactState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+PENDING: asked and not yet accepted. ACCEPTED: both players are each other’s contacts.
+
+
+```graphql
+enum ContactState {
+  PENDING
+  ACCEPTED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ContactState.<b>PENDING</b></code>](#pending) {/* #pending */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ContactState.<b>ACCEPTED</b></code>](#accepted) {/* #accepted */} 
+
+
+
+
+
+### Member Of
+
+[`PlayerContact`](/reference/graphql/types/objects/player-contact.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

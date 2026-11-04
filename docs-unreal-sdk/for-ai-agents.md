@@ -7,15 +7,18 @@ description: "The fastest correct path for a coding agent working in an Unreal p
 
 # For AI Agents
 
-This page is the routing layer for a coding agent working inside a studio's Unreal project. It does not re-explain the SDK; every row links the page that owns the fact, and the full text of every page is available as one file for your context window. Read this page, then pull only the pages a task needs.
+This page is the routing layer for a coding agent working inside a studio's Unreal project. It does not re-explain the SDK; every row links the page that owns the fact, and the text of every page is available as plain-text files, one per section. Read this page, then pull only the pages a task needs.
 
-Three machine-readable files sit beside the docs. This page is where they are described:
+Machine-readable files sit beside the docs. This page is where they are described. Start at the index, pull one section file, and check the slim symbol index before the full manifest.
 
-| File | What it is |
-|---|---|
-| [`/helpers/unreal-sdk/llms-full.txt`](pathname:///helpers/unreal-sdk/llms-full.txt) | Every page in this section as plain text, in sidebar order, with every C++ snippet inlined and a pointer line for every Blueprint graph. |
-| [`/helpers/unreal-sdk/sdk-surface.json`](pathname:///helpers/unreal-sdk/sdk-surface.json) | The generated inventory of every reflected symbol the plugin ships. Check it before you go looking through headers; see [SDK surface manifest](./reference/sdk-surface.md). |
-| [`/helpers/unreal-sdk/AGENTS.md`](pathname:///helpers/unreal-sdk/AGENTS.md) | The drop-in for a project root, `CLAUDE.md`, or `.cursorrules`: the locked rules and one example per marker, under 8 KB. |
+| File | Size | Use it when |
+|---|---|---|
+| [`/helpers/unreal-sdk/llms.txt`](pathname:///helpers/unreal-sdk/llms.txt) | about 42 KB | You are starting a task. Every page with its URL and a one-line description, grouped into sections, each with the URL and size of its section file. |
+| `/helpers/unreal-sdk/llms-<section>.txt`: [`start`](pathname:///helpers/unreal-sdk/llms-start.txt), [`concepts`](pathname:///helpers/unreal-sdk/llms-concepts.txt), [`studio`](pathname:///helpers/unreal-sdk/llms-studio.txt), [`runtime`](pathname:///helpers/unreal-sdk/llms-runtime.txt), [`mass`](pathname:///helpers/unreal-sdk/llms-mass.txt), [`exec`](pathname:///helpers/unreal-sdk/llms-exec.txt), [`services`](pathname:///helpers/unreal-sdk/llms-services.txt), [`guides`](pathname:///helpers/unreal-sdk/llms-guides.txt), [`reference`](pathname:///helpers/unreal-sdk/llms-reference.txt) | 20 to 430 KB each | You know which part of the SDK the task touches. Every page of that section as plain text, with C++ snippets inlined and a pointer line for each Blueprint graph. A section over 200 KB is split by subfolder: `exec` and `mass` also have `llms-exec-from-blueprint.txt`, `llms-exec-from-cpp.txt`, `llms-exec-examples.txt` and the same three for `mass`; `llms-exec.txt` then holds only the section's top-level pages. The index lists every file with its size. |
+| [`/helpers/unreal-sdk/sdk-surface-index.jsonl`](pathname:///helpers/unreal-sdk/sdk-surface-index.jsonl) | about 340 KB | You need to know whether a symbol exists, which module and header it lives in, or where to look. One line per symbol: name, kind, module, header, and the first sentence of its help text where the manifest has one (console variables only today). Line one names the columns. |
+| [`/helpers/unreal-sdk/sdk-surface.json`](pathname:///helpers/unreal-sdk/sdk-surface.json) | about 3 MB | The index is not enough: you need a function's specifiers and return type, a struct's metadata, an enum's values or a delegate's signature. Too large to read whole; query it with `jq` or a script. See [SDK surface manifest](./reference/sdk-surface.md). |
+| [`/helpers/unreal-sdk/llms-full.txt`](pathname:///helpers/unreal-sdk/llms-full.txt) | about 1.6 MB | A tool wants every page in one file. About 400,000 tokens, so it does not fit a context window. Prefer the section files. |
+| [`/helpers/unreal-sdk/AGENTS.md`](pathname:///helpers/unreal-sdk/AGENTS.md) | under 8 KB | A drop-in for a project root, `CLAUDE.md`, or `.cursorrules`: the locked rules and one example per marker. |
 
 ## Where does this state go
 
@@ -89,6 +92,7 @@ Close the Unreal Editor first. It holds the project's Server Object types and se
 | List organizations, apps and datacenters | `-run=CrowdyStudio -op=apps` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
 | Create an app | `-run=CrowdyStudio -op=createapp -org=<id> -name="My Game" -slug=my-game -datacenter=<code> -yes` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
 | Point the project at an app | `-run=CrowdyStudio -op=sync -app=<id> -yes` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Read every entity class's CrowdyEvent routing and CrowdyState flags | `-run=CrowdyStudio -op=registry [-class=<substring>] [-norebuild] [-out=file]` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
 | Add Game Kit starters | `-op=addstarter -starter=<name>` | [Add a starter](./exec/use-game-kit-starters.md#add-a-starter) |
 | Define a Server Object type | `-op=exporttype -spec=type.json` (a template), `-op=newtype -spec=@type.json`, `-op=edittype -type=T -spec=@type.json -yes` | [Define a type from a file](./exec/deploy-with-server-compute.md#define-a-type-from-a-file) |
 | Generate its server code | `-op=generate -type=T`, or `-op=generate -yes` for every type that is out of date | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |

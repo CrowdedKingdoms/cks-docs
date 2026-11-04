@@ -36,9 +36,10 @@ You know the shape of what you need (send an event, read a team, elect a host) b
   UCrowdyVideoFrameReceiver: "Receives raw encoded video frames sent over the SDK's channels and hands them to your decoder.",
   UCrowdyAvatars: "Player profiles and per-app avatar state; only GetMyAvatars writes the local cache.",
   UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
+  UCrowdyProximityChat: "Nearby text chat: send a line to the players within a distance of your pawn's chunk, and hear theirs.",
   UCrowdyHostSubsystem: "Host election and the server-validated host query.",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
-  UVoiceChatSubsystem: "The voice capture and playback engine, reached directly or through UCrowdySDKSubsystem.",
+  UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",
   UCrowdyMassEntitySubsystem: "The crowd rows of a map that draws with Mass: targets, traces, events and fields. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
   UCrowdyMassServerRecordsSubsystem: "The Server Object records of crowd rows, and a callback when one changes. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
 }} notesLabel="What it is for" />

@@ -295,6 +295,19 @@ const config: Config = {
         sidebarPath: './sidebars/gameKit.ts',
       },
     ],
+    // The Minecraft server docs instance is off while its only page is a draft (2026-11-04): the
+    // page links the private mod repository's releases and describes features that are not
+    // publicly released, and an instance with no published page fails the build. Restore this
+    // block with the navbar item and footer column when docs-minecraft/intro.md goes public.
+    // [
+    //   '@docusaurus/plugin-content-docs',
+    //   {
+    //     id: 'minecraft',
+    //     path: 'docs-minecraft',
+    //     routeBasePath: '/minecraft',
+    //     sidebarPath: './sidebars/minecraft.ts',
+    //   },
+    // ],
     [
       '@docusaurus/plugin-content-docs',
       {
@@ -515,6 +528,9 @@ const config: Config = {
           position: 'left',
           label: 'Portal',
         },
+        // The Minecraft server page is a draft (2026-11-04): it links the private mod repository's
+        // releases and describes features that are not publicly released, so it has no navbar
+        // item or footer link until it is public. See docs-minecraft/intro.md.
         {
           type: 'dropdown',
           label: 'SDKs',

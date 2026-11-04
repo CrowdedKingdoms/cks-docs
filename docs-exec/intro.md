@@ -59,7 +59,7 @@ A deploy is a manifest plus the modules it names:
 | `mailbox` | Calls that may wait at one instance: default 1,024, at most 4,096. Past it, a call is answered `Busy`. |
 | `deadline_ms` | How long the handler itself may run, in milliseconds: default 2,000, from 10 to 10,000. Passing it crashes the instance: it restarts from its last snapshot, and unsaved changes are lost. A player call also has its own wait of 5 seconds, which covers time in the mailbox and time spent placing the instance. If that expires first, the caller gets `DeadlineExceeded` and the instance keeps running. |
 | `seed_b64` | Bytes every new instance of the type is spawned with; the root hub's seed is its app's starting state. |
-| `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `grids.write`, `permissions.write`, `access.read`, `access.write`. None by default; see [world and platform data](world-and-platform-data). |
+| `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `grids.write`, `permissions.write`, `access.read`, `access.write`, `safety.write`. None by default; see [world and platform data](world-and-platform-data). |
 
 A limit outside its range is brought into it, not refused. A manifest whose only type is the
 root hub is valid. `execDeploy` refuses a manifest with

@@ -121,7 +121,7 @@ Calling `SetObjectLocation(NewLocation)` runs the body on the owner and announce
 `ASampleVoiceSwitch` toggles voice chat on `UCrowdySDKSubsystem`:
 
 - `StartVoiceChat` and `StopVoiceChat` control the microphone.
-- `PlayVoiceChat` and `MuteVoiceChat` control hearing others.
+- `PlayVoiceChat` and `MuteVoiceChat` control hearing others. Others are muted until `PlayVoiceChat`.
 
 No wrapper is needed; the subsystem methods are BlueprintCallable.
 
