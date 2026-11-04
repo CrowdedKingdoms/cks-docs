@@ -55,6 +55,41 @@ nothing deprecated.
 - **`MIGRATION.md`** ships at the plugin root: for each release from 2.24.0, what changed and the exact
   steps to migrate.
 
+## 2026-11-04 (Crowded Kingdoms admits players from 13)
+
+Production opened to players aged 13 to 17 on 2026-11-04: Game API v2.61.1, replication server
+v0.43.0 and ck-exec 0.20.0, with CrowdyJS 18.25.0, CrowdyCPP 0.76.0 and CrowdyPy 0.24.0. See
+[Players under 18 and player safety](/overview/player-safety).
+
+- **Documents:** the platform's player documents are the
+  [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
+  [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html)
+  (`player-terms-2026-11-04`, `player-privacy-2026-11-04`), which every player accepts at their
+  next mint; the age-of-majority attestation is ignored. Developers accept the developer documents
+  before creating or administering an organization, and only adults may. Organizations accept the
+  new [Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html).
+  See [Legal documents](/management-api/legal-documents).
+- **Age:** the youngest player is 13. A browser sign-up gives a birth date and a country
+  (`AGE_REQUIRED` without), and an organization gives each player's `ageYears` and `country`. See
+  [Age, country and who may play](/management-api/age-and-territory).
+- **Players under 18** get the minors' defaults (voice and video off until a parent consents,
+  then contacts only; no direct messages), in apps that keep the safety log and have appointed a
+  moderator.
+- **Not yet in production: parental consent.** Kids Web Services is not available there yet:
+  `requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason`
+  `not_configured`, so a player under 18 cannot turn voice or video on there yet.
+- **Game API v2.61.1:** `PARENTAL_CONSENT_UNAVAILABLE` carries `extensions.reason`
+  (`not_configured`, `provider_refused`, `provider_unavailable`); after an age refusal, a client
+  that sends `x-ck-device-id` is locked by that device for 24 hours, and one that sends none by
+  its address and browser for an hour; a player under 18 is refused `SAFETY_LOG_REQUIRED` or
+  `SAFETY_MODERATOR_REQUIRED` when Studio's hosted sign-in issues the code, as at the mint.
+- **SDKs:** CrowdyJS 18.25.0 adds `safetyModeratorRequiredOf`, the `reason` on
+  `parentalConsentUnavailableOf(err)`, `hasSafetyModerator` on app reads, `regionCode` on the
+  territory list and `region` in an organization's assertion claims; CrowdyCPP 0.76.0 and CrowdyPy
+  0.24.0 the same, their consent readers returning the refusal with its reason instead of a
+  boolean.
+- **The Minecraft server page is unpublished** until the server mod's release is public.
+
 ## 2026-11-02 (dev: the safety baseline completed; the realtime rules; the SDKs)
 
 On the dev environment: Game API v2.61.0, replication server v0.43.0, CrowdyJS 18.24.0, CrowdyCPP

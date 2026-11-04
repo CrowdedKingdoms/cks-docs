@@ -6,41 +6,44 @@ title: Players under 18 and player safety
 
 # Players under 18 and player safety
 
-Crowded Kingdoms is opening to players aged 13 to 17. It opens at one moment, for every game on
-the platform, once the safety baseline described here is live in production. Until then every
-player must be 18 or older, as the [API Terms](https://crowdedkingdoms.com/api-terms.html)
-(sections 3.1 and 6.11) say today.
+Crowded Kingdoms admits players from 13. It opened to players aged 13 to 17 on 2026-11-04, for
+every game on the platform, with the safety baseline described here. Players accept the
+[Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
+[Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html).
 
-This page is the map: what changes, what is switched on, and what your game needs before it admits
-players under 18. Each part has its own page.
+This page is the map: what is switched on, and what your game needs to admit players under 18.
+Each part has its own page.
 
-## Three states
+## What is switched on
 
-The pages in this set mark each feature with one of these:
+Everything below is live: in the Game API (v2.60.0 to v2.61.1), replication server v0.43.0 and
+ck-exec 0.20.0, and wrapped by CrowdyJS 18.25.0, CrowdyCPP 0.76.0 and CrowdyPy 0.24.0.
 
-- **Live:** in the Game API from v2.60.0 (most of it) or v2.61.0, in replication server v0.43.0,
-  or in the release a page names.
-- **At the opening:** built, and switched on when Crowded Kingdoms opens to players 13 and over.
-  Until then the platform admits nobody under 18, so nothing that concerns a minor can happen yet.
-- **Being built:** decided, not released yet.
-
-### Live
+:::caution[Not yet in production: parental consent]
+Kids Web Services, the parental consent service, is not available in production yet. There,
+`requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason`
+`not_configured`, so a player under 18 cannot turn voice or video on yet. Everything else on this
+page applies in production.
+:::
 
 - **Who may play.** Every sign-up, mint and refresh checks the player's country (by region, in
-  the countries checked that way), age and documents, in that order. Places Crowded Kingdoms does
-  not serve are refused for everyone, adults included, except Crowded Kingdoms staff. An app can
-  ask for an older minimum age than the platform's. See
+  the countries checked that way), age and documents, in that order. The youngest player is 13,
+  or older where the app or the player's country asks. Places Crowded Kingdoms does not serve are
+  refused for everyone, adults included, except Crowded Kingdoms staff. See
   [Age, country and who may play](/management-api/age-and-territory).
-- **Birth date and country at sign-up** (`register`, `recordPlayerAge`), and an age, a country and
-  where needed a region for each player an organization signs in itself. An age refusal names no
-  age, and the same client or player is refused again for 24 hours whatever it sends. An account
-  that declares an age under 13 is deleted and erased.
-- **Documents of your app's own**, which its players accept on top of the platform's, in Studio's
-  hosted sign-in too. See [Legal documents](/management-api/legal-documents).
+- **Birth date and country.** A sign-up gives them (`register`), and an account with no age gives
+  them once (`recordPlayerAge`); an organization gives an age, a country and where needed a region
+  for each player it signs in itself. An age refusal names no age, and stops the same device or
+  player from answering again at once. An account that declares an age under 13 is deleted and
+  erased.
+- **Documents.** The platform's are the Player Terms and the Player Privacy Policy; an app can
+  require its own on top, and Studio's hosted sign-in asks for both. Developers accept their own
+  documents before creating or administering an organization, and only adults may. See
+  [Legal documents](/management-api/legal-documents).
 - **Voice and video settings, contacts and blocks**, enforced by the realtime servers on both the
-  sending and the receiving side, and the request for a parent's consent. A block stops
-  communication; movement and world edits still pass. See
-  [Voice, video, contacts and blocks](/game-api/communication).
+  sending and the receiving side. A player under 18 has voice and video off both ways until a
+  parent consents, then contacts only, and no direct messages. A block stops communication;
+  movement and world edits still pass. See [Voice, video, contacts and blocks](/game-api/communication).
 - **The safety log.** An app that admits players under 18 keeps its input log on, with voice and
   video each at the app's choice; clients read what is recorded to show the notice and the
   indicator. On such an app only moderators read other players' records, and only those a report
@@ -49,37 +52,17 @@ The pages in this set mark each feature with one of these:
   the evidence each report preserves. A player under 18 is admitted only to an app whose
   organization has appointed a moderator, and Crowded Kingdoms receives every child-safety report
   too. See [Safety reports and moderation](/game-api/safety-reports).
-- **Your server code on ck-exec** (ck-exec 0.20.0, `ckx-sdk` 0.13.0): a player's erasure and data
-  export reach your hubs, hubs check blocks and file reports, and `players.get` names a player's
-  age bracket. See [Players' data, blocks and reports](/exec/players-and-safety).
-- **The SDKs** wrap it: CrowdyJS 18.24.0, CrowdyCPP 0.75.0 and CrowdyPy 0.23.0.
+- **Your server code on ck-exec** (`ckx-sdk` 0.13.0): a player's erasure and data export reach
+  your hubs, hubs check blocks and file reports, and `players.get` names a player's age bracket.
+  See [Players' data, blocks and reports](/exec/players-and-safety).
 
 Crowded Kingdoms can also delete and erase an account itself, for example at a parent's request
 for a child's account, and records a parent's withdrawal of consent that reaches it by email.
 
-### At the opening
+## What your game needs to admit players under 18
 
-- The youngest player is 13, or older where the app or the player's country asks.
-- A browser sign-up gives a birth date and a country; the age-of-majority attestation is no longer
-  asked. An organization gives an age and a country for every player it signs in.
-- The platform's player documents become the Player Terms and the Player Privacy Policy. They
-  are published at the opening, with a new version of the
-  [Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html) that
-  every organization accepts again.
-- Developers accept their own documents before creating or administering an organization, and
-  only adults may.
-- Players under 18 get the minors' defaults: voice and video off both ways until a parent
-  consents, then contacts only; no direct messages.
-
-### Being built
-
-- `PARENTAL_CONSENT_UNAVAILABLE` says why (`extensions.reason`), from the Game API release after
-  v2.61.0.
-
-## Before your game admits players under 18
-
-An app admits players under 18 when its minimum age is under 18: once Crowded Kingdoms opens,
-that is every app that has not set `minPlayerAge` to 18. To keep a game for adults, set it now
+An app admits players under 18 when its minimum age is under 18: every app that has not set
+`minPlayerAge` to 18. To keep a game for adults, set it
 ([Minimum ages](/management-api/age-and-territory#minimum-ages)). Such an app needs no safety
 log, no moderator and no parental consent, and no minor reaches it. Everything else still
 applies to it: the country check, the age and country every sign-up and every managed player's

@@ -179,13 +179,16 @@ filed about an account already deleted holds it at once.
 
 ## In the SDKs
 
-- **Filing**, with the player's app token: CrowdyJS 18.24.0
+- **Filing**, with the player's app token: CrowdyJS 18.25.0
   `client.safety.fileReport({ appId, reportedUserId, reason, details, occurredAt })`, CrowdyCPP
-  0.75.0 `client.safety().fileReport(…)`, CrowdyPy 0.23.0 `client.safety.file_report(…)`.
+  0.76.0 `client.safety().fileReport(…)`, CrowdyPy 0.24.0 `client.safety.file_report(…)`.
 - **Moderating**, with the moderator's identity session: CrowdyJS `client.moderation.reports(appId,
   { status })`, `resolveReport(appId, reportId, outcome)` and `escalateReport(appId, reportId,
   ncmecReportId)`; CrowdyCPP `client.moderation()` (also `admin().moderation()`), the same names;
   CrowdyPy `client.moderation.reports`, `resolve_report` and `escalate_report`.
+- **The moderator requirement:** `App.hasSafetyModerator` is on the SDKs' app reads (CrowdyJS
+  `apps.app(appId)`, CrowdyCPP `admin().apps().get()`, CrowdyPy `apps.app()`), and the refusal
+  reads with `safetyModeratorRequiredOf` (`safety_moderator_required_of`).
 
 ## Errors
 
