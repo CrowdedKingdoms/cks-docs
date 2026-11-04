@@ -162,7 +162,11 @@ A server can disable or rename a provider; a hard-coded button then opens a cons
 
 ## Let the player agree to the terms
 
-The server hands out no gameplay token until the signed-in player has agreed to the current terms and confirmed they are at least 18, or the age of majority where they live if that is higher. A new version of a document asks again. What the server requires and how it is stored is on [Terms and age of majority](/management-api/portals-and-app-tokens#terms-age-and-country); this section is what the SDK does about it and what you can change.
+The server hands out no gameplay token until the signed-in player has agreed to the current terms and has an age. A new version of a document asks again. What the server requires and how it is stored is on [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country); this section is what the SDK does about it and what you can change.
+
+:::caution[Since 2026-11-04]
+Crowded Kingdoms admits players from 13, and a player's age comes from their date of birth, not from a confirmation box: the documents are the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html), and the age confirmation the prompt below asks for records nothing. An account with no age is refused `AGE_REQUIRED` until it gives its birth date and country with `recordPlayerAge`, which this plugin does not ask for yet; an account that confirmed its age before that date keeps it. See [Age, country and who may play](/management-api/age-and-territory).
+:::
 
 ### What the player sees by default
 

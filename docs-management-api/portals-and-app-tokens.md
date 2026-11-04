@@ -50,17 +50,14 @@ for the first two, which answer `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED` and
 `AGE_REQUIREMENT_NOT_MET`, and [Legal documents](/management-api/legal-documents) for the third,
 including documents of your app's own.
 
-Until Crowded Kingdoms opens to players 13 and over, the documents are the
-[Game Terms](https://crowdedkingdoms.com/game-terms.html),
-[API Terms](https://crowdedkingdoms.com/api-terms.html),
-[SDK Developer Terms](https://crowdedkingdoms.com/sdk-terms.html),
-[Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) and
-[Overworld Privacy Policy](https://crowdedkingdoms.com/overworld-privacy.html), and the player
-also attests that they are at least 18, or the age of majority where they live if that is
-higher. Until both are stored, `mintAppToken`, `createPortalAuthorizationCode` and
+The documents are the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
+[Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html), and any your app
+requires of its own. Until they are stored, `mintAppToken`, `createPortalAuthorizationCode` and
 `refreshAppToken` answer **`LEGAL_ACCEPTANCE_REQUIRED`** (403), listing what is missing in
-`extensions.missingDocuments`. ck-api v2.35.0. From the opening the documents are the Player
-Terms and the Player Privacy Policy, and the age comes from the player's birth date.
+`extensions.missingDocuments`. The age comes from the player's birth date. (Until 2026-11-04,
+when Crowded Kingdoms opened to players 13 and over, the documents were the Game Terms, API
+Terms, SDK Developer Terms, Free Tier and Billing Basis and Overworld Privacy Policy, with an
+age-of-majority attestation.)
 
 - **A browser game on its own domain** does nothing new: Studio's hosted `/authorize`
   asks for the platform's documents before it issues the code. When a refresh is refused
@@ -73,17 +70,16 @@ Terms and the Player Privacy Policy, and the age comes from the player's birth d
 query Accepted { playerLegalAcceptance }            # false: ask before minting
 
 mutation Accept {
-  recordPlayerConsents(acceptLegal: true, attestAgeOfMajority: true)
+  recordPlayerConsents(acceptLegal: true)
 }
 ```
 
-`acceptLegal` must be `true`, and so must `attestAgeOfMajority` until the opening; after it,
-the attestation is ignored. Pass the app's `appId` to record its own documents too. Repeating
-the call is harmless. It records the player's own agreement, so call it only after they ticked
-the boxes. `register` takes the same fields, and the birth date and country
-([Signing up](/management-api/age-and-territory#signing-up)): a browser request must send
-`acceptLegal` and `attestAgeOfMajority`, and the account starts accepted. A request with no
-browser origin may omit them and record them before its first mint. The SDKs wrap both calls
+`acceptLegal` must be `true`; `attestAgeOfMajority` is ignored since 2026-11-04. Pass the app's
+`appId` to record its own documents too. Repeating the call is harmless. It records the player's
+own agreement, so call it only after they ticked the boxes. `register` takes the same field, and
+the birth date and country ([Signing up](/management-api/age-and-territory#signing-up)): a
+browser request must send `acceptLegal` and the birth date, and the account starts accepted. A
+request with no browser origin may omit them and record them before its first mint. The SDKs wrap both calls
 (CrowdyJS `client.auth.recordPlayerConsents` / `playerLegalAcceptance`, and
 `isLegalAcceptanceRequiredError` for the refusal).
 

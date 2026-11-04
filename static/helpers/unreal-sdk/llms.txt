@@ -153,7 +153,7 @@ This section is split into 4 files, each readable whole.
 
 Sign-in and account settings, player names, teams, playing together with parties, chat, emotes and spectating, avatars, voice, host election and the optional UI hooks.
 
-- [Player Services as one file (160 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-services.txt)
+- [Player Services as one file (161 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-services.txt)
 - [Authentication](https://docs.crowdedkingdoms.com/unreal-sdk/services/authentication): Sign a player in with a password, a magic link, or a social provider, what the SDK hands back, the two tokens it holds for you and why you never see the one that talks to the game, session persistence, sign-out, account settings (password, email, delete, sign out everywhere), linked identities, the player's own access and claiming free access, and what to show when the app is paused, the player's access ends or the account is blocked.
 - [Player Names](https://docs.crowdedkingdoms.com/unreal-sdk/services/player-names): Read a player's public name by User ID for a nametag, read up to 100 at once for a roster, and let the signed-in player choose their own, with the Name Taken refusal, in C++ and Blueprint.
 - [Teams](https://docs.crowdedkingdoms.com/unreal-sdk/services/teams): Persistent, server-owned player groups with membership, roles, and permissions: the cache for instant UI, the per-call and async-action surfaces, and why runtime code and Crowdy Studio edit the same rows.

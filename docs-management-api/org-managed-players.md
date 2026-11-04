@@ -117,8 +117,8 @@ CrowdyCPP: `client.portal().adoptAppToken(response)`. CrowdyPy:
 `client.set_app_token(client.portal.adopt_app_token(response))`.
 
 `ageYears` and `country` are the player's age and country as your organization knows them
-([below](#age-country-and-minors)): optional until Crowded Kingdoms opens to players 13 and
-over, required from then.
+([below](#age-country-and-minors)), and required; `region` too where the country is checked by
+region.
 
 `externalId` should be your own stable account id, not an email address: 1 to 256 characters,
 no control characters. `gamertag` (at most 64 characters) is set when the player is created;
@@ -162,8 +162,8 @@ mutation {
 | `iat`, `exp` | issued-at and expiry, Unix seconds; `exp` at most 300 seconds after `iat` |
 | `jti` | a fresh unique id: each assertion works once |
 | `gamertag` | optional; used when the player is created |
-| `ageYears` | the player's age in whole years ([below](#age-country-and-minors)); optional until the opening to players 13 and over, required from it |
-| `country` | where the player lives, ISO 3166-1 alpha-2; the same |
+| `ageYears` | the player's age in whole years ([below](#age-country-and-minors)); required |
+| `country` | where the player lives, ISO 3166-1 alpha-2; required |
 | `region` | the player's region, ISO 3166-2, in a country Crowded Kingdoms checks by region; required there (Game API v2.61.0) |
 
 ```ts
@@ -277,9 +277,12 @@ recorded, voice and video included unless you leave them out (API Terms §6.4a).
 
 ## Age, country and minors
 
-Until Crowded Kingdoms opens to players 13 and over, every managed player must be 18 or older, or
-the age of majority where they live if that is older: your organization warrants that under the
-addendum (§2.3). The addendum's new version, which comes with the opening, changes that.
+Crowded Kingdoms admits players from 13 since 2026-11-04, managed players included. Your
+organization's part is in the current
+[Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html)
+(section 2.3, "Age and Country"). It has a new version since that date, which an admin of your
+organization accepts once more; until then your sign-ins answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`
+([above](#before-the-first-sign-in-accept-the-addendum)).
 
 At every sign-in, send the player's age and country: `ageYears` and `country` on
 `mintManagedPlayerToken`, or as claims of the assertion (Game API v2.60.0). In a country Crowded
@@ -289,8 +292,8 @@ Kingdoms checks by region (`territoryPolicies` lists its regions), send `region`
 - Crowded Kingdoms keeps the age as a bracket (`under_13`, `13_15`, `16_17` or `18_plus`), never
   the age itself, and the country on the player, and checks them against its own rules. A place
   it does not serve, or a missing `region` where one is needed, is refused
-  `TERRITORY_NOT_SUPPORTED`; a player under 13, or under the app's or the country's minimum age
-  (18 for everyone until the opening), `AGE_REQUIREMENT_NOT_MET`, which names no age; both before
+  `TERRITORY_NOT_SUPPORTED`; a player under 13, or under the app's or the country's minimum age,
+  `AGE_REQUIREMENT_NOT_MET`, which names no age; both before
   the player is created or signed in. A refresh is refused once the stored bracket is wholly below
   the app's minimum.
 - After an age refusal, the same player (your organization and its `externalId`) is refused
@@ -298,9 +301,8 @@ Kingdoms checks by region (`territoryPolicies` lists its regions), send `region`
   already exists and is now said to be under 13 is deleted, as `deleteManagedPlayer` does (a legal
   hold refuses that).
 - The country checked is the one you send, not your server's address.
-- Until the opening both are optional, and a player signed in without an age counts as 18 or
-  older. From the opening both are required: no age is `AGE_REQUIRED`, no country `BAD_REQUEST`.
-  A server that sends no age is refused from that day.
+- Both are required: no age is `AGE_REQUIRED`, no country `BAD_REQUEST`. (Until 2026-11-04 both
+  were optional, and a player signed in without an age counted as 18 or older.)
 - If your server asks players their age, [the age screen](/management-api/age-and-territory#the-age-screen)
   applies to it.
 
@@ -382,10 +384,10 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 | `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. An open or escalated [safety report](/game-api/safety-reports) about the player sets one. |
 | `TERRITORY_NOT_SUPPORTED` | The country or region you sent (`extensions.country`, `extensions.region`) is one Crowded Kingdoms does not serve, or the country is checked by region and you sent no `region`. |
 | `AGE_REQUIREMENT_NOT_MET` | The player is under 13, or under the app's or the country's minimum age, or was refused so in the last 24 hours. Tell the player, without a reason or an age; do not retry with another age. |
-| `AGE_REQUIRED` | From the opening to players 13 and over: the sign-in carried no `ageYears`. |
+| `AGE_REQUIRED` | The sign-in carried no `ageYears`. |
 | `SAFETY_LOG_REQUIRED` | A player under 18, in an app whose safety log is off. |
 | `SAFETY_MODERATOR_REQUIRED` | A player under 18, in an app whose organization has no appointed moderator. |
-| `BAD_REQUEST` | `ageYears` outside 0 to 130, a `country` that is not a two-letter code, or, from the opening, no `country`. |
+| `BAD_REQUEST` | `ageYears` outside 0 to 130, a `country` that is not a two-letter code, or no `country`. |
 | `TIER_ACCESS_REQUIRED` | Only on `dev` and `test`, Crowded Kingdoms' internal environments: none of your organization's members may use that environment. A managed player's own requests there also answer it while your organization's managed players are switched off. Production never returns it. |
 
 See [Error codes](/overview/error-codes) for every code.

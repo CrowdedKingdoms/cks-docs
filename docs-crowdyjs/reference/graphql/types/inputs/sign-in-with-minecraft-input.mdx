@@ -46,7 +46,7 @@ The serverId from minecraftChallenge, after the client joined it through Mojang�
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>birthDate</b></code>](#birth-date)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #birth-date */} 
-The player’s birth date, YYYY-MM-DD (YYYY-MM is accepted too), from the mod’s age screen. Only the age bracket is kept, counted from the last day of the month.
+The player’s birth date, YYYY-MM or YYYY-MM-DD, from the mod’s age screen; the age is counted from the last day of the month. Only the year and month of the first admitted sign-in are kept, and they decide the account’s age from then on: a later sign-in’s birthDate is not used.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #country */} 

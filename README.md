@@ -1,6 +1,6 @@
 # Crowded Kingdoms documentation site
 
-Public [Docusaurus v3](https://docusaurus.io/) site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com). Each docs instance has its own navbar tab and sidebar: Overview (`docs/`), Management API, Game API, Replication API, ck-exec (`docs-exec/`), Game Kit, Minecraft server, CrowdyJS, CrowdyCPP, CrowdyPy, Unreal SDK, Management UI, Build a game and Releases — fourteen, one per `docs*/` folder, each registered in `docusaurus.config.ts`. Each tier has its own site (`DOCS_TIERS` in `docusaurus.config.ts`); `CKS_DOCS_TIER` picks it at build time.
+Public [Docusaurus v3](https://docusaurus.io/) site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com). Each docs instance has its own navbar tab and sidebar: Overview (`docs/`), Management API, Game API, Replication API, ck-exec (`docs-exec/`), Game Kit, CrowdyJS, CrowdyCPP, CrowdyPy, Unreal SDK, Management UI, Build a game and Releases — thirteen, one per `docs*/` folder, each registered in `docusaurus.config.ts`. `docs-minecraft/` is the fourteenth folder: its page is a draft and its instance is commented out until the Minecraft server mod is public (see AGENTS.md). Each tier has its own site (`DOCS_TIERS` in `docusaurus.config.ts`); `CKS_DOCS_TIER` picks it at build time.
 
 ## Local preview
 
