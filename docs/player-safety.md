@@ -20,9 +20,10 @@ Everything below is live: in the Game API (v2.60.0 to v2.61.1), replication serv
 ck-exec 0.20.0, and wrapped by CrowdyJS 18.25.0, CrowdyCPP 0.76.0 and CrowdyPy 0.24.0.
 
 :::caution[Not yet in production: parental consent]
-Kids Web Services, the parental consent service, is not available in production yet. There,
-`requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason`
-`not_configured`, so a player under 18 cannot turn voice or video on yet. Everything else on this
+Kids Web Services, the parental consent service, is connected in production but is not live there
+until its review is complete, and refuses requests until then: `requestParentalConsent` answers
+`PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason` `provider_refused` (`not_configured`
+until 2026-11-06), so a player under 18 cannot turn voice or video on yet. Everything else on this
 page applies in production.
 :::
 
