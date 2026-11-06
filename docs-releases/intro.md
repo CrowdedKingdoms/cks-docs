@@ -39,6 +39,15 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-06 (production: parental consent reaches Kids Web Services, which refuses requests until it is live)
+
+- **Production:** `requestParentalConsent` now reaches Kids Web Services. It is not live in
+  production until its review is complete, and refuses requests until then, so the answer is
+  `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason` `provider_refused` where it was
+  `not_configured`. A player under 18 still cannot turn voice or video on in production. No
+  client change is needed: both reasons mean "do not retry as it is". See
+  [Parental consent for voice and video](/game-api/communication#parental-consent-for-voice-and-video).
+
 ## 2026-11-02 (Unreal SDK v2.24.0: spawned entities appear once; MIGRATION.md)
 
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-11-02-sdk-v2240). No breaking change and

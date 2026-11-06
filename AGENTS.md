@@ -178,9 +178,10 @@ viewer function is ever detached.
 - **The players-under-18 pages** (2026-10-30; production opened to players 13 and over on
   2026-11-04, Game API v2.61.1). `docs/player-safety.md` is the map, and each page in the set has
   a "What is switched on" box. One fact is production's own and goes stale on purpose: Kids Web
-  Services is not available there yet, so `requestParentalConsent` answers
-  `PARENTAL_CONSENT_UNAVAILABLE` with reason `not_configured` (`grep -rn "Not yet in production"
-  docs*`); remove it on every tier once production has it. Do not list the blocked countries or
+  Services is connected there (2026-11-06) but stays in Epic's test mode until its review, so
+  `requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with reason `provider_refused`
+  (`not_configured` before 2026-11-06; `grep -rn "Not yet in production" docs*`); remove it on
+  every tier once Kids Web Services is live in production. Do not list the blocked countries or
   regions: point at `territoryPolicies` and the Player Terms (sections 1.7 and 1.8).
 - **The Minecraft server page is a draft** (`docs-minecraft/intro.md`, `draft: true`, 2026-11-04):
   it links the private mod repository's releases and describes features not publicly released.
