@@ -16,9 +16,11 @@ stay off.
 - **Live** (Game API v2.60.0 to v2.61.1 and replication server v0.43.0): the settings, contacts,
   blocks and parental consent fields on this page, and the realtime servers that enforce them on
   both sides. Players under 18, and so the minors' defaults, since 2026-11-04.
-- **Not yet in production: parental consent.** Kids Web Services is not available in production
-  yet: `requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason`
-  `not_configured`, so a player under 18 cannot turn voice or video on there yet.
+- **Not yet in production: parental consent.** Kids Web Services is connected in production but
+  is not live there until its review is complete, and refuses requests until then:
+  `requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason`
+  `provider_refused` (`not_configured` until 2026-11-06), so a player under 18 cannot turn voice
+  or video on there yet.
 
 :::
 
@@ -165,9 +167,10 @@ mutation AskParent($appId: BigInt!, $email: String!) {
   Crowded Kingdoms, the medium turns off again within a second.
 - `PARENTAL_CONSENT_UNAVAILABLE` (503) when consent cannot be asked; voice and video then stay off
   for the player, and nothing was sent. `extensions.reason` says why (Game API v2.61.1):
-  `not_configured`, the deployment has no consent service yet (production, for now): do not retry;
-  `provider_refused`, the service refused the request (an address it does not accept): a parent's
-  other address may work; `provider_unavailable`, the service did not answer: retry shortly.
+  `not_configured`, the deployment has no consent service: do not retry; `provider_refused`, the
+  service refused the request (an address it does not accept; in production, every request until
+  Kids Web Services is live there): elsewhere a parent's other address may work;
+  `provider_unavailable`, the service did not answer: retry shortly.
 - `RATE_LIMITED` after three requests in an hour.
 
 ## What your game shows
