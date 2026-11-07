@@ -1,20 +1,29 @@
 ---
 slug: host-election
-sidebar_position: 5
-title: Host Election
-description: "The server's own answer to whether an actor is the elected host: the host subsystem's getters and event, and the server-validated check for the moment a local answer is not enough to act on."
+sidebar_position: 7
+title: Host Election (Deprecated)
+sidebar_label: Host Election (Deprecated)
+description: "Deprecated in 2.25. The server's own answer to whether an actor is the elected host: the host subsystem's getters and event, and the server-validated check for the moment a local answer is not enough to act on."
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Host Election
+# Host Election (Deprecated)
 
-`UCrowdyHostSubsystem` tracks who the SDK elected host and can also ask the server directly, for the one caller who cannot afford to be wrong. The local convenience answer, and why election is a convention and not enforcement, lives on [Host Authority](../runtime/host-authority.md); this page is the subsystem and the server-validated check it is built around.
+:::warning[Deprecated in 2.25. Everything on this page still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+:::note[There is no elected host by default.]
+This page applies when [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host) is **Elected Host (Deprecated)**, which goes in a later release. Under the default, Server Object, nobody is elected: replicated subsystems are written by [the Leader](../runtime/leader.md), `IsHost`, `GetHostUserID`, `OnHostElected` and `IsCrowdyEntityHost` report the Leader, and `CheckEntityIsHost` does too for your own avatar. Under the default, the check on your own avatar reads the local Leader and sends no request. Every host function on this page warns when compiled. When you leave Elected Host, use **Get Leader User ID**, **Is Local Leader** and **On Leader Changed** on the Crowdy Leader Subsystem; under Elected Host they report no Leader. Keep anything that must be enforced in a Server Object. **Is Crowdy Entity Locally Owned** is a different question: it is true on every client for its own avatar.
+:::
+
+`UCrowdyHostSubsystem` tracks who the SDK elected host and can also ask the server directly, for the one caller who cannot afford to be wrong. Why election is a convention and not enforcement is on [A Coordinator Is a Convention](../concepts/host-is-a-convention.md); this page is the subsystem, what the host writes, and the server-validated check.
 
 ## When you touch this
 
-Reading `IsHost` or the elected id for ordinary view-plane logic is the common case, and [Host Authority](../runtime/host-authority.md) covers it. Reach for the check on this page only when a wrong answer costs something: granting an ownership transfer, starting a host-only sequence you cannot cheaply undo, anything where a stale or spoofed local read is a real risk.
+When a project keeps the elected host: reading `IsHost` or the elected id for ordinary view-plane logic is the common case. Reach for the check on this page only when a wrong answer costs something: granting an ownership transfer, starting a host-only sequence you cannot cheaply undo, anything where a stale or spoofed local read is a real risk.
 
 ## The host subsystem
 
@@ -25,9 +34,13 @@ Reading `IsHost` or the elected id for ordinary view-plane logic is the common c
 | `GetHostID()` | The host's entity id as an `FGuid`. No display name override, so Blueprint lists the node as **Get Host ID**: an upper-case run stays together. |
 | `IsHostSet()` | Whether an election result has arrived yet. |
 | `GetHostUserID()` (**Get Host User ID**) | The host's raw user id, 0 until known. Backed by a `std::atomic<int64>` read with relaxed ordering, so it is safe to call from any thread as well as from Blueprint. |
-| `IsHost()` (**Is Host**) | Compares this client's own user id to the tracked host id. The same local, unenforced answer as `GetCrowdyHasAuthority` on [Host Authority](../runtime/host-authority.md); also safe from any thread. |
+| `IsHost()` (**Is Host**) | Compares this client's own user id to the tracked host id. A local, unenforced answer; to gate writing an entity or a replicated subsystem, ask [**Is Crowdy Entity Locally Owned**](../runtime/leader.md#checking-who-writes-an-entity) instead. Safe from any thread. |
 | `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`) | Fires on the game thread when the elected host changes, the first result included (0 to the first host); a poll that repeats the same host does not fire it. |
 | `CheckEntityIsHost(Entity, Callback)` | The server-validated check, C++ entry point; see below. |
+
+`IsHostSet()` matters because an early `IsHost()` false does not mean someone else is host. `GetHostID()` is the id the host's own entities are owned under; `GetHostUserID()` is a different number. Bind `OnHostElected` rather than caching the answer at `BeginPlay`: the host changes when the current one leaves, and a host-owned entity's writer moves with it.
+
+`CrowdyGetHostID` on `UCrowdyUtilities` returns the host's id and whether one is set. `IsCrowdyEntityHost(Entity)` is true when the entity is the host player's own entity (its NetID equals the host id), and `DoesCrowdyEntityOwn(OwnerActor, TargetActor)` resolves a host-owned side to the concrete host id on both ends.
 
 ### After sign-out
 
@@ -37,13 +50,19 @@ When the player signs out, the host is cleared before `OnLogout` fires, on which
 `IsHost()` and the server-validated `CheckEntityIsHost` answer the same question at different trust levels, and day to day they say the same thing. The server check exists for the moment you cannot assume the caller is running an unmodified client, not because the local view is usually wrong.
 :::
 
+## What the host writes
+
+Under Elected Host, a level-placed entity Owned By World (or Auto, the default for a placed actor) is `HostOwned`: whichever client is host at the moment writes it, and its `IsLocallyOwned()` is true there alone. Its Crowdy State is written by the host through explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`, or the [static nodes](../runtime/crowdy-state.md#the-two-nodes)) and the keyframe, never by a background diff, so an implicit and an explicit write cannot race. Assigning a property on it and waiting does nothing. On a host change the entity is re-tracked by the new host without any code of yours. Replicated subsystems are written by the host too, and they are auto-diffed.
+
+An entity Owned By Player has a `HostOverride` (`ECrowdyHostOverride`): `Allow`, the default, lets the host correct its Crowdy State as a super-user and the owner adopts the value; `OwnerOnly` refuses even a host correction. This is precedence by convention. It orders who wins on the view plane; it does not make either value trustworthy.
+
 ## The server-validated check
 
 `CheckEntityIsHost` is server-validated in a specific sense: for the local player's own entity it asks the server's `amIGameHost` query directly; for any other actor it resolves that actor's server-side owner user id and compares it to the elected host user id. [Host discovery](/game-api/host-discovery#amigamehost) on the Game API covers the query itself; this page states only what the SDK does with the answer.
 
 That answer is still not enforcement by itself. `CheckEntityIsHost` tells the caller the current truth about who is host so the caller can gate something; the check is not the gate. A change worth cheating for is decided by your server code, on the [truth plane](../concepts/two-planes.md).
 
-The lantern world uses it exactly there: a claim on a lantern post is only granted after a definite server yes.
+The lantern world uses it there: under Elected Host, the host grants a claim on a level-placed lantern post only after a definite server yes.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -78,6 +97,8 @@ The subsystem is world-scoped, but a Blueprint graph waiting on `CheckEntityIsHo
 
 ## Gotchas
 
+- `IsHostSet()` before `IsHost()`. Until an election result arrives, every client reads false.
+- `GetHostID()` and `GetHostUserID()` are different ids. Compare `GetOwnerID()` with the first only for an entity a player spawned; a host-owned entity carries no owner id at all, so ask `GetRole() == ECrowdyRole::HostOwned`, `IsLocallyOwned()`, or `DoesCrowdyEntityOwn` instead.
 - `IsHost()` and `GetHostUserID()` are the local, unenforced view. Reach for `CheckEntityIsHost` only when the caller cannot afford a spoofed or stale answer.
 - `GetHostID()` has no display name override; find it in Blueprint as **Get Host ID**.
 - `CheckEntityIsHost` needs the target actor to have sent at least one update. A freshly spawned, never-updated actor answers Failed, the same as an unresolved entity.
@@ -86,7 +107,7 @@ The subsystem is world-scoped, but a Blueprint graph waiting on `CheckEntityIsHo
 
 ## Related
 
-- [Host Authority](../runtime/host-authority.md): the local, unenforced view of who is host, and the same examples from the view-plane side.
-- [Ownership transfer](../runtime/ownership-transfer.md): the grant flow the server check feeds in the lantern world.
+- [The Leader](../runtime/leader.md): who writes shared state by default, and the Leader Source setting.
+- [Ownership transfer](../runtime/ownership-transfer.md): the grant flow the server check feeds.
 - [The Two Planes](../concepts/two-planes.md): where a rule is actually enforced.
 - [Host discovery](/game-api/host-discovery#amigamehost) on the Game API: the `amIGameHost` and actor-owner queries underneath this subsystem.

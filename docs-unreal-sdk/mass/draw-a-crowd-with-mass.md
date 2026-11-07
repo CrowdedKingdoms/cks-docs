@@ -11,7 +11,7 @@ description: "What Crowds with Mass is, when to choose it over the actor pool, t
 Since v2.19.0 CrowdyMass is part of the SDK; on v2.18.0 and earlier it was the separate CrowdyMass plugin, as [What's Changed](../guides/whats-changed.md#2026-10-12-sdk-v2190) explains.
 :::
 
-Crowds with Mass is a way to draw many remote players, or other Dynamic entities, without spawning an actor for each one. The other players on a map become rows of a crowd that the engine draws and animates in bulk. This page tells you what that means, when it is the right choice, and where to read next. If you learn by doing, follow [Market night in Oakford](./examples/market-night-in-oakford.md).
+Crowds with Mass is a way to draw many remote players, or other entities that replicate movement, without spawning an actor for each one. The other players on a map become rows of a crowd that the engine draws and animates in bulk. This page tells you what that means, when it is the right choice, and where to read next. If you learn by doing, follow [Market night in Oakford](./examples/market-night-in-oakford.md).
 
 ## What it is
 
@@ -100,7 +100,7 @@ The pages follow one world, the village of Oakford. Players are `ALanternPlayer`
 
 ## Before you start
 
-You need a signed-in project with a Dynamic Crowdy entity, usually the player pawn, and a character with a skeletal mesh: a row is built from that mesh, so a bare Character with no mesh produces no row. The [Entity Component](../runtime/entity-component.md) page lists the entity settings, and [Continuous State](../runtime/continuous-state.md#a-custom-executor) builds the custom executor that `ALanternPlayer` uses. The [Quickstart](../quickstart.md) gets a project connected first.
+You need a signed-in project with a Crowdy entity that replicates movement, usually the player pawn, and a character with a skeletal mesh: a row is built from that mesh, so a bare Character with no mesh produces no row. The [Entity Component](../runtime/entity-component.md) page lists the entity settings, and [Continuous State](../runtime/continuous-state.md#a-custom-executor) builds the custom executor that `ALanternPlayer` uses. The [Quickstart](../quickstart.md) gets a project connected first.
 
 ## Read this section in order
 

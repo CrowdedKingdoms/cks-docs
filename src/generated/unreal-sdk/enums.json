@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-30T19:29:04Z",
-  "sdk_version": "2.22.0",
+  "generated_from": "2026-11-07T12:24:10Z",
+  "sdk_version": "2.24.0",
   "table": "enums",
   "columns": [
     {
@@ -161,7 +161,7 @@
       ],
       "module": "CrowdyNet",
       "header": "ECrowdyTarget.h",
-      "page": "runtime/entity-component",
+      "page": "guides/deprecated",
       "editor": false,
       "allowlist": ""
     },
@@ -282,7 +282,7 @@
       ],
       "module": "CrowdyReplication",
       "header": "CrowdyEntityComponent.h",
-      "page": "runtime/continuous-state",
+      "page": "runtime/entity-component",
       "editor": false,
       "allowlist": ""
     },
@@ -325,6 +325,20 @@
       "page": "runtime/entity-component",
       "editor": false,
       "allowlist": ""
+    },
+    {
+      "id": "ECrowdyReplicateMovement",
+      "name": "ECrowdyReplicateMovement",
+      "values": [
+        "Auto",
+        "On",
+        "Off"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEntityComponent.h",
+      "page": "runtime/continuous-state",
+      "editor": false,
+      "allowlist": "internal"
     },
     {
       "id": "ECrowdyRole",
@@ -392,6 +406,62 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyCommunicationScope",
+      "name": "ECrowdyCommunicationScope",
+      "values": [
+        "Off",
+        "Contacts",
+        "Everyone"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyCommunicationSetting",
+      "name": "ECrowdyCommunicationSetting",
+      "values": [
+        "VoiceSend",
+        "VoiceReceive",
+        "VideoSend",
+        "VideoReceive"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyConsentFeature",
+      "name": "ECrowdyConsentFeature",
+      "values": [
+        "Voice",
+        "Video"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyConsentStatus",
+      "name": "ECrowdyConsentStatus",
+      "values": [
+        "Requested",
+        "AlreadyGranted",
+        "NotRequired"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyInputMode",
       "name": "ECrowdyInputMode",
       "values": [
@@ -434,6 +504,41 @@
       "module": "CrowdyServices",
       "header": "CrowdyProximityChat.h",
       "page": "services/nearby-text-chat",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySafetyErrorCode",
+      "name": "ECrowdySafetyErrorCode",
+      "values": [
+        "None",
+        "NetworkError",
+        "ServerError",
+        "ConsentUnavailable",
+        "LimitReached",
+        "RateLimited"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySafetyReportReason",
+      "name": "ECrowdySafetyReportReason",
+      "values": [
+        "ChildSafety",
+        "Harassment",
+        "SexualContent",
+        "Hate",
+        "SelfHarm",
+        "Cheating",
+        "Other"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
       "editor": false,
       "allowlist": ""
     },

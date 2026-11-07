@@ -11,7 +11,7 @@ Every piece of networked state in the SDK lives on one of two planes. The view p
 
 ## The split
 
-**Plane A, the view plane (Crowdy State).** Continuous, client-authoritative state that has to move fast: movement, animation, transient effects. The client that owns an entity writes its view state; the SDK ships it to every other client over UDP, through RPC events and property replication. Nothing on this plane is checked by a server. An elected host helps coordinate it, but as a convention, not as an authority.
+**Plane A, the view plane (Crowdy State).** Continuous, client-authoritative state that has to move fast: movement, animation, transient effects. The client that owns an entity writes its view state; the SDK ships it to every other client over UDP, through RPC events and property replication. Nothing on this plane is checked by a server. A [Leader](../runtime/leader.md) helps coordinate shared state on it, but as a convention, not as an authority.
 
 **Plane B, the truth plane (your server code).** Gameplay state the game must be able to trust: hit points, stats, inventory, currency, anything a client could benefit from lying about. The server owns it: your app's code on [ck-exec](/exec/intro) holds it, and a client asks that code for a change, which it decides and confirms. This is the only place a rule is enforced.
 
@@ -19,8 +19,8 @@ Every piece of networked state in the SDK lives on one of two planes. The view p
 The SDK once had its own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions), built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it and the SDK has removed it. Its replacement is [Server Objects](../exec/overview.md), from Blueprint or C++. See [Move from Game Models](../exec/move-from-game-models.md).
 :::
 
-:::note[The elected host is a convention, not an enforcement point.]
-Any client can, in principle, lie about its own view state. The host is a coordinator for shared view-plane logic, not a referee. See [The Host Is a Convention](./host-is-a-convention.md).
+:::note[The Leader is a convention, not an enforcement point.]
+Any client can, in principle, lie about its own view state. The Leader is a coordinator for shared view-plane logic, not a referee. See [A Coordinator Is a Convention](./host-is-a-convention.md).
 :::
 
 ## Where the planes are allowed to touch
@@ -35,7 +35,7 @@ Each of these follows from the split above. The page that owns the detail is lin
 2. **Never decide gameplay from another client's Crowdy State.** Every client writes its own view state and nothing checks it, so a remote client's health bar, hit flag or score in Crowdy State is a claim, not a fact. Read the trusted value from the server instead. See [Crowdy State](../runtime/crowdy-state.md).
 3. **Change a trusted value by asking, not by writing.** The server's code decides and confirms; there is no client-side write to a trusted value. See [Game API best practices](/game-api/best-practices).
 4. **Expect the confirmed value to arrive a moment later.** Predict locally if you must, and let the confirmed value overwrite the prediction.
-5. **Do not build authority on "I am the host".** The host is an elected client that coordinates view-plane work; it can leave, change, or lie. Anything that must be true for everyone goes through the server's code. See [The Host Is a Convention](./host-is-a-convention.md).
+5. **Do not build authority on "I am the Leader".** The Leader is a client that coordinates view-plane work; it can leave, change, or lie. Anything that must be true for everyone goes through the server's code. See [A Coordinator Is a Convention](./host-is-a-convention.md).
 6. **Every server id is 64-bit.** Store app, user and team ids as `int64` (Blueprint `Integer64`), never as a 32-bit integer or a parsed number; the app id travels as a string.
 7. **A packaged build only knows the markers it was cooked with.** `CrowdyEvent` and `CrowdyState` markers are baked into a registry at cook time; add a marker, cook again, and never read Unreal metadata at runtime in shipped code. See [Packaging](../guides/packaging.md).
 
@@ -51,7 +51,7 @@ The table below is a guide, not a rule book. Each row names the mechanism that f
 
 | State | Plane | Mechanism |
 |---|---|---|
-| Movement | View | Dynamic entity mode: the continuous state channel sends a snapshot every replication interval. |
+| Movement | View | An entity that replicates movement: the continuous state channel sends a snapshot every replication interval. |
 | Animation blend state | View | A Crowdy State property (`meta=(CrowdyState)`), diffed and sent on change. |
 | A one-shot effect trigger (a muzzle flash, an impact) | View | An RPC event (`meta=(CrowdyEvent)`), because a trigger is not continuous state. |
 | Hit points | Truth | Your server code, which applies damage and heals. |
@@ -69,6 +69,6 @@ The table below is a guide, not a rule book. Each row names the mechanism that f
 ## Related
 
 - [Entities, Identity, and Ownership](./entities-identity-ownership.md): what an entity is and who may write its view state.
-- [The Host Is a Convention](./host-is-a-convention.md): what host election does and does not decide.
+- [A Coordinator Is a Convention](./host-is-a-convention.md): what a coordinating client does and does not decide.
 - [Crowdy State](../runtime/crowdy-state.md): the view-plane property system.
 - [ck-exec overview](/exec/intro): where the truth plane's code runs.

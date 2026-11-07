@@ -66,7 +66,7 @@ Declare only one property of that enum on the class. Two properties ask for the 
 
 Two other settings must allow it:
 
-- The map profile's **State Keyframe Interval (Seconds, 0 = off)** must not be 0. It defaults to `2.0`.
+- The **Keyframe Interval** under the map profile's **Crowdy State** must not be 0. It defaults to 2 s.
 - The entity component's **State Heartbeat** must not be **Off**. The default, **Inherit**, follows the map profile.
 
 The SDK warns once per property for any Crowdy State enum outside the heartbeat. `crowdy.state.heartbeat.advisories` lists them all. See [The metadata keys](../runtime/crowdy-state.md#the-metadata-keys), [What ships, and when](../runtime/crowdy-state.md#what-ships-and-when) and [Settings](../runtime/entity-component.md#settings) for the keys and the cadence.
@@ -120,11 +120,11 @@ Write the property on the machine that owns the player. The owning client diffs 
 <TabItem value="bp" label="Blueprint">
 
 1. In `BP_LanternPlayer`, add a key event for the **X** key, the sit key.
-2. From the event, call **Is Crowdy Entity Locally Controlled** and feed a **Branch**, so only the owner writes.
+2. From the event, call **Is Crowdy Entity Locally Owned** and feed a **Branch**, so only the owner writes.
 3. On the true pin, feed a second **Branch** from an **Equal (Enum)** that compares **Get Stance** to `Sitting`.
 4. On its true pin call **Set Stance** with `Standing`. On its false pin call **Set Stance** with `Sitting`.
 
-<Blueprint src="mass-sit-stance" title="X, Branch on Is Crowdy Entity Locally Controlled, Branch on Stance equal to Sitting, Set Stance (Standing or Sitting)" />
+<Blueprint src="mass-sit-stance" title="X, Branch on Is Crowdy Entity Locally Owned, Branch on Stance equal to Sitting, Set Stance (Standing or Sitting)" />
 
 Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
 
@@ -266,7 +266,7 @@ Marking an event an action animates the crowd. It does not animate an actor, bec
 <TabItem value="bp" label="Blueprint">
 
 1. In the `WaveTorch` event, call **Play Crowdy Mass Action** (`PlayCrowdyMassAction`). Plug the event's pins into **Action Id**, **Variant** and **Play Rate**, and the character's `Mesh` into **Mesh**.
-2. For the sender, add an input action event for the wave key. Call **Is Crowdy Entity Locally Controlled** into a **Branch** so only the owner sends.
+2. For the sender, add an input action event for the wave key. Call **Is Crowdy Entity Locally Owned** into a **Branch** so only the owner sends.
 3. On the true pin, call `WaveTorch` with **Action Id** set to 1, `Wave`'s id. To look it up by name instead, call **Find Action Id** on `DA_LanternPlayerAnims` with `Wave`.
 
 The figure shows the body from step 1: the `WaveTorch` event feeds **Play Crowdy Mass Action**, with its three pins plugged in and the character's `Mesh` as the target mesh. The sender in steps 2 and 3 is not in the figure.

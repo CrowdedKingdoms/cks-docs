@@ -370,7 +370,7 @@ An event marked an action with no handler registered gets both: the action write
 
 ## Which events you can receive
 
-Any Crowdy event declared on your own actor class, with a recipient that reaches rows. Only the two multicast recipients reach a machine that draws the player as a crowd row or a near tier actor. An `OwningClient` or `Host` event lands on one machine, which holds the player as a real actor. See [Recipients and Routing](../../runtime/recipients-and-routing.md).
+Any Crowdy event declared on your own actor class, with a recipient that reaches rows. Only the two multicast recipients reach a machine that draws the player as a crowd row or a near tier actor. An `OwningClient` event (or a deprecated `Host` event, under Elected Host) lands on one machine, which holds the player as a real actor. See [Recipients and Routing](../../runtime/recipients-and-routing.md).
 
 The events the SDK declares on `UCrowdyMassEntity`, such as `PlayCrowdyAction`, run their own body on every observer and are not offered to a handler. A handler registered for one never runs.
 

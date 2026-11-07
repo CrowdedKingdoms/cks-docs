@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-30T19:29:04Z",
-  "sdk_version": "2.22.0",
+  "generated_from": "2026-11-07T12:24:10Z",
+  "sdk_version": "2.24.0",
   "table": "structs",
   "columns": [
     {
@@ -431,6 +431,16 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyAppRecording",
+      "name": "FCrowdyAppRecording",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyAuthResult",
       "name": "FCrowdyAuthResult",
       "display_name": "",
@@ -481,6 +491,36 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyCommunicationChoices",
+      "name": "FCrowdyCommunicationChoices",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyCommunicationSettings",
+      "name": "FCrowdyCommunicationSettings",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyContactRequest",
+      "name": "FCrowdyContactRequest",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyKitGroup",
       "name": "FCrowdyKitGroup",
       "display_name": "",
@@ -521,6 +561,26 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyPlayerBlock",
+      "name": "FCrowdyPlayerBlock",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyPlayerContact",
+      "name": "FCrowdyPlayerContact",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyPlayerProfile",
       "name": "FCrowdyPlayerProfile",
       "display_name": "",
@@ -537,6 +597,16 @@
       "module": "CrowdyServices",
       "header": "CrowdyProximityChat.h",
       "page": "services/nearby-text-chat",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdySafetyError",
+      "name": "FCrowdySafetyError",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdySafety.h",
+      "page": "services/player-safety",
       "editor": false,
       "allowlist": ""
     },
@@ -2379,6 +2449,16 @@
       "page": "",
       "editor": false,
       "allowlist": ""
+    },
+    {
+      "id": "FCrowdyPresenceReply",
+      "name": "FCrowdyPresenceReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
     },
     {
       "id": "FCrowdyServerCallResult",

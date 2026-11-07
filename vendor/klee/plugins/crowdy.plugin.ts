@@ -35,6 +35,7 @@ const ENGINE_FUNCTION_NAMES: { [memberName: string]: string } = {
     "BuildString_Int": "Build String (Integer)",
     "GetTransform": "Get Actor Transform",
     "RemoveFromParent": "Remove from Parent",
+    "K2_AddActorWorldOffset": "Add Actor World Offset",
     "EqualEqual_StrStr": "===",
 };
 

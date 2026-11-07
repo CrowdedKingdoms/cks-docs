@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-30T19:29:04Z",
-  "sdk_version": "2.22.0",
+  "generated_from": "2026-11-07T12:24:10Z",
+  "sdk_version": "2.24.0",
   "table": "subsystems",
   "columns": [
     {
@@ -321,6 +321,16 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdySafety",
+      "class": "UCrowdySafety",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyTeams",
       "class": "UCrowdyTeams",
       "base": "UGameInstanceSubsystem",
@@ -337,6 +347,16 @@
       "outer": "World",
       "module": "CrowdyVoice",
       "page": "services/voice-chat",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyLeaderSubsystem",
+      "class": "UCrowdyLeaderSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyExec",
+      "page": "runtime/leader",
       "editor": false,
       "allowlist": ""
     },

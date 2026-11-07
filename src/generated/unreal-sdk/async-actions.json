@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-30T19:29:04Z",
-  "sdk_version": "2.22.0",
+  "generated_from": "2026-11-07T12:24:10Z",
+  "sdk_version": "2.24.0",
   "table": "async-actions",
   "columns": [
     {
@@ -220,6 +220,24 @@
         "Login"
       ],
       "class": "UCrowdyAuth_Login",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuth_RecordPlayerAge",
+      "node": [
+        "Record Player Age"
+      ],
+      "factories": [
+        "RecordPlayerAge"
+      ],
+      "class": "UCrowdyAuth_RecordPlayerAge",
       "pins": [
         "OnSuccess",
         "OnError"
@@ -1185,6 +1203,142 @@
       ],
       "module": "CrowdyServices",
       "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySafety_Command",
+      "node": [
+        "Accept Contact",
+        "Remove Contact",
+        "Block Player",
+        "Unblock Player",
+        "File Report"
+      ],
+      "factories": [
+        "AcceptContact",
+        "RemoveContact",
+        "BlockPlayer",
+        "UnblockPlayer",
+        "FileReport"
+      ],
+      "class": "UCrowdySafety_Command",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySafety_CommunicationSettings",
+      "node": [
+        "Get Communication Settings",
+        "Set Communication Setting"
+      ],
+      "factories": [
+        "GetCommunicationSettings",
+        "SetCommunicationSetting"
+      ],
+      "class": "UCrowdySafety_CommunicationSettings",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySafety_GetBlocks",
+      "node": [
+        "Get Blocks"
+      ],
+      "factories": [
+        "GetBlocks"
+      ],
+      "class": "UCrowdySafety_GetBlocks",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySafety_GetContactRequests",
+      "node": [
+        "Get Contact Requests"
+      ],
+      "factories": [
+        "GetContactRequests"
+      ],
+      "class": "UCrowdySafety_GetContactRequests",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySafety_GetContacts",
+      "node": [
+        "Get Contacts"
+      ],
+      "factories": [
+        "GetContacts"
+      ],
+      "class": "UCrowdySafety_GetContacts",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySafety_RequestContact",
+      "node": [
+        "Request Contact"
+      ],
+      "factories": [
+        "RequestContact"
+      ],
+      "class": "UCrowdySafety_RequestContact",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySafety_RequestParentalConsent",
+      "node": [
+        "Request Parental Consent"
+      ],
+      "factories": [
+        "RequestParentalConsent"
+      ],
+      "class": "UCrowdySafety_RequestParentalConsent",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
       "editor": false,
       "allowlist": ""
     },

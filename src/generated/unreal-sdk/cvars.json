@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-30T19:29:04Z",
-  "sdk_version": "2.22.0",
+  "generated_from": "2026-11-07T12:24:10Z",
+  "sdk_version": "2.24.0",
   "table": "cvars",
   "columns": [
     {
@@ -322,6 +322,17 @@
       "allowlist": "internal"
     },
     {
+      "id": "crowdy.mass.crowdsim.extras",
+      "name": "crowdy.mass.crowdsim.extras",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Non-zero puts one Continuous extras entry carrying this number (layout hash 0) on every bot update, to check extras arrive through the Mass backend. 0 (default) sends none.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
       "id": "crowdy.mass.derive.force",
       "name": "crowdy.mass.derive.force",
       "kind": "variable",
@@ -393,7 +404,7 @@
       "kind": "variable",
       "role": "behaviour",
       "trace": false,
-      "help": "Asks for HTTP/2 on the SDK's own requests, falling back to HTTP/1.1 when the server does not offer it; 0 leaves the engine's HTTP version. With HTTP/2 the curl diagnostics the engine logs for a failed request can include the request headers, bearer token included, so set 0 if you ship logs from builds with logging enabled.",
+      "help": "Asks for HTTP/2 on the SDK's own requests, falling back to HTTP/1.1 when the server does not offer it; 0 leaves the engine's HTTP version. LogHttp stays at Error while an SDK request is in flight, because the curl report the engine logs for a failed HTTP/2 request includes its headers, bearer token included.",
       "module": "CrowdyCppBridge",
       "editor": false,
       "allowlist": ""
@@ -427,6 +438,17 @@
       "role": "behaviour",
       "trace": false,
       "help": "Reuse actor update message objects instead of allocating one per received message (default 1). Turn it off to measure what the pool is worth on the same build.",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.receive.updateextras",
+      "name": "crowdy.net.receive.updateextras",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Read the entries an actor update carries after its state block (default 1). 0 stops at the state block, as SDK versions before 2.25 do.",
       "module": "CrowdyNet",
       "editor": false,
       "allowlist": ""
@@ -516,6 +538,28 @@
       "trace": false,
       "help": "When non-zero, a sent CrowdyState delta for an owned entity is also decoded onto a local 'mirror' entity (a lazily-spawned second instance of the same class, RemoteProxy role, a distinct NetID) so decode/OnRep/host-authority checks can be exercised from one PIE client. Unlike crowdy.rpc.loopback this cannot replay onto the same actor (an owner's own entity silently drops a non-host-sourced delta, and decode's changed-detection would report no change against identical values); the mirror is a genuinely distinct receive target instead.",
       "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.auth.age.preview",
+      "name": "crowdy.auth.age.preview",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Shows the age prompt over the game viewport without recording anything; its buttons only close it.",
+      "module": "CrowdyServices",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.auth.age.unlock",
+      "name": "crowdy.auth.age.unlock",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Lifts the age lock on this install, for testing a refusal.",
+      "module": "CrowdyServices",
       "editor": false,
       "allowlist": ""
     },

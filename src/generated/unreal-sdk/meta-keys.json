@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-30T19:29:04Z",
-  "sdk_version": "2.22.0",
+  "generated_from": "2026-11-07T12:24:10Z",
+  "sdk_version": "2.24.0",
   "table": "meta-keys",
   "columns": [
     {
@@ -153,6 +153,17 @@
       "header": "CrowdyRPC.h",
       "module": "CrowdyReplication",
       "page": "runtime/rpc-events-blueprint",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyContinuous",
+      "key": "CrowdyContinuous",
+      "owner": "CrowdyStateMetaKeys",
+      "symbol": "CrowdyStateMetaKeys::Continuous",
+      "header": "CrowdyStateMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/crowdy-state",
       "editor": false,
       "allowlist": ""
     },

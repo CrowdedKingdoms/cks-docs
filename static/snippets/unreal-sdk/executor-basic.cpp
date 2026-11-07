@@ -28,9 +28,8 @@ ALanternPlayer::ALanternPlayer()
 	Torch = CreateDefaultSubobject<UPointLightComponent>(TEXT("Torch"));
 	Torch->SetupAttachment(RootComponent);
 
-	// Dynamic sends the transform every interval, Player Derived names the entity after the signed-in user, Local Client makes this client its sender.
+	// A character sends its movement by default; Player Derived names the entity after the signed-in user, Owned By Player makes this client its sender.
 	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
-	CrowdyEntity->Mode = ECrowdyEntityMode::Dynamic;
 	CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::PlayerDerived;
-	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+	CrowdyEntity->OwnedBy = ECrowdyOwnedBy::Player;
 }
