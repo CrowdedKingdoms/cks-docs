@@ -3014,7 +3014,7 @@ ownership surface. New capabilities:
   super-user writes; a request/grant ownership-transfer flow (`UCrowdyOwnershipTransfer`); a
   server-validated host check (the **Is Crowdy Entity Host (Server)** node); and client-side
   ownership helpers (`DoesCrowdyEntityOwn`, `IsCrowdyEntityHost`, `GetCrowdyEntityComponent`).
-  See [Host authority](/unreal-sdk/runtime/host-authority) and
+  See [The Leader](/unreal-sdk/runtime/leader) (the host authority page's successor) and
   [Ownership transfer](/unreal-sdk/runtime/ownership-transfer).
 
 **Breaking changes**
@@ -3026,7 +3026,7 @@ These are the only changes that touch an existing 2.0 project; everything above 
   Authority"). The old `CrowdyHasAuthority` name is now the exec/branch variant (Blueprint
   "Switch Crowdy Has Authority"). Update C++ callers from `CrowdyHasAuthority(this)` to
   `GetCrowdyHasAuthority(this)`; Blueprint nodes re-resolve on recompile. See
-  [Host authority](/unreal-sdk/runtime/host-authority#checking-who-writes-an-entity).
+  [Checking who writes an entity](/unreal-sdk/runtime/leader#checking-who-writes-an-entity).
 - **`ECrowdyDecayRate` corrected.** Removed the non-functional **`Linear_100`** value (the
   `CrowdyDecay` option on a `SpatialMulticast` CrowdyEvent). It shared an underlying value with
   `Linear_50`, so the two were indistinguishable on the wire. The ladder is now `No_Decay` (0),

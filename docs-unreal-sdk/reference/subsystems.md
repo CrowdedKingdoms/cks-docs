@@ -38,7 +38,7 @@ You know the shape of what you need (send an event, read a team, find the Leader
   UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
   UCrowdyProximityChat: "Nearby text chat: send a line to the players within a distance of your pawn's chunk, and hear theirs.",
   UCrowdyHostSubsystem: "Deprecated: use `UCrowdyLeaderSubsystem`. See [Deprecated](#deprecated).",
-  UCrowdyLeaderSubsystem: "The Leader: the one client per app that writes replicated subsystems. GetLeaderUserID, IsLocalLeader and OnLeaderChanged. Needs your app's server code deployed once; see [The Leader](../runtime/leader.md).",
+  UCrowdyLeaderSubsystem: "The Leader: the one client per app that writes replicated subsystems. GetLeaderUserID, IsLocalLeader and OnLeaderChanged. Needs your app's server code deployed once; see [The Leader](/unreal-sdk/runtime/leader).",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
   UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",
   UCrowdyMassEntitySubsystem: "The crowd rows of a map that draws with Mass: targets, traces, events and fields. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
