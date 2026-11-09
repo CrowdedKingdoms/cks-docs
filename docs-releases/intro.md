@@ -39,13 +39,18 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
-## 2026-11-09 (free apps are no longer capped at about 1 MB/s)
+## 2026-11-10 (free apps are no longer capped at about 1 MB/s; managed sign-ins outlive a new addendum version)
 
 - **No app's egress is slowed for being free.** An app whose organization cannot be charged was capped at about
   1 MB/s of egress until it was funded. That cap is gone: every app sends at whatever rate its game needs. What
   stops an unfunded app is unchanged: past a free allowance it is denied with `insufficient_funds` until the
   wallet is funded or auto-billing is on. See
   [Shared environment & billing](/management-api/shared-environment#free-tier).
+- **A managed player's sign-in outlives a new Org-Managed Players Addendum version.** When the addendum changes in
+  a way organizations must accept again, new sign-ins answer `ORG_LEGAL_ACCEPTANCE_REQUIRED` until an admin accepts,
+  but players already signed in keep refreshing their tokens until their sign-in's length runs out, as the
+  addendum's section 1.5 says. Before, their refreshes were refused at once. See
+  [Org-managed players](/management-api/org-managed-players#sessions-refresh-and-signing-out).
 - **Correction: data in is billed.** The billing page said ingress did not count toward billed volume. It has been
   a priced dimension, with its own monthly allowance, since 2026-09-06; the page now says so. See
   [What counts as a billed byte](/management-api/shared-environment#free-tier).
