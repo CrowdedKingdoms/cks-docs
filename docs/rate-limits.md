@@ -77,8 +77,9 @@ Management API `effectiveQuota`, and see
 Exceeding a quota surfaces as a quota error on the affected operation, not as a
 transport 429.
 
-One shaping cap does behave like a rate limit and is worth knowing about: an
-unfunded free app's egress is soft-capped at roughly **1 MB/s**. Funding the org
-wallet or enabling auto-billing lifts it — buying a capacity reservation does
-not. Once an organization can be charged, CK does not rate-limit its egress, and
-spend is bounded by the caps you set rather than by a throughput ceiling.
+CK does not rate-limit an app's egress, free or paid. An app past a free
+allowance whose organization cannot be charged is denied rather than slowed (see
+[What "access denied" means](/management-api/shared-environment#what-access-denied-means)),
+and a funded app's spend is bounded by the caps you set rather than by a
+throughput ceiling. Until 2026-11-09 an unfunded app's egress was also capped at
+about 1 MB/s; that cap is gone.

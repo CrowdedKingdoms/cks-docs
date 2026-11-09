@@ -39,6 +39,17 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-09 (free apps are no longer capped at about 1 MB/s)
+
+- **No app's egress is slowed for being free.** An app whose organization cannot be charged was capped at about
+  1 MB/s of egress until it was funded. That cap is gone: every app sends at whatever rate its game needs. What
+  stops an unfunded app is unchanged: past a free allowance it is denied with `insufficient_funds` until the
+  wallet is funded or auto-billing is on. See
+  [Shared environment & billing](/management-api/shared-environment#free-tier).
+- **Correction: data in is billed.** The billing page said ingress did not count toward billed volume. It has been
+  a priced dimension, with its own monthly allowance, since 2026-09-06; the page now says so. See
+  [What counts as a billed byte](/management-api/shared-environment#free-tier).
+
 ## 2026-11-07 (Unreal SDK v2.25.0: no elected host by default; movement replicates by default)
 
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-11-07-sdk-v2250); steps to upgrade: the
