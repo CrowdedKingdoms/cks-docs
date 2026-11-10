@@ -32,6 +32,7 @@ input UpdateAppInput {
   replayLoggingRecordsVideo: Boolean
   claimOwnerKeys: [String!]
   minPlayerAge: Int
+  idleTimeoutSeconds: Int
 }
 ```
 
@@ -84,6 +85,10 @@ Grid permission keys a player's claim grants its owner on the claimed grid (at m
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>minPlayerAge</b></code>](#min-player-age)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #min-player-age */} 
 The youngest age the app admits, 13 to 18. It only ever raises the platform's minimum (18 until players 13 and over are admitted, then 13), never lowers it; younger players are refused AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET at their next mint or refresh. null returns the app to the platform's minimum. Omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>idleTimeoutSeconds</b></code>](#idle-timeout-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #idle-timeout-seconds */} 
+Seconds a realtime session may go without gameplay input before the replication server releases it with reason idle: 60 to 86400, or 0 to turn the timeout off. null returns the app to the platform default (900 seconds). Takes effect within about 15 seconds, for sessions already open too. Omit to leave unchanged.
 
 
 

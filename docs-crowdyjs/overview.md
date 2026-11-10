@@ -473,6 +473,23 @@ until the owner fixes it; `gameClientBootstrap(appId).runtimeGate` says why.
 `client.world(appId).subscribe(handlers)` is a convenience wrapper that passes
 its `appId` for you.
 
+**A session that goes without gameplay input for the app's idle timeout ends, and the SDK does not
+reconnect it** (CrowdyJS 18.26.0; 15 minutes unless the app sets its own `idleTimeoutSeconds`, see
+[Decide how long an idle player stays connected](/management-api/game-setup#c4-decide-how-long-an-idle-player-stays-connected)).
+Movement, edits, messages, voice and video count; keep-alives and keyframes that repeat an unchanged
+state do not. The status becomes `inactive` on both transports (the relay's close code
+`GAMEPLAY_IDLE_CLOSE_CODE`, 4410, or the `IDLE_TIMEOUT_CODE` connection event). Reconnect on the
+player's next input:
+
+```ts
+client.realtime.onStatus((status) => {
+  if (status === 'inactive') showPausedOverlay(); // the player stepped away
+});
+onPlayerInput(() => {
+  if (client.realtime.status() === 'inactive') client.realtime.connect();
+});
+```
+
 The SDK uses the `graphql-transport-ws` protocol, reconnects with backoff, re-reads the current token before reconnecting, and resubscribes to the UDP notifications subscription. It does **not** rotate an expiring app token for you — call `game.portal.refresh()` before the token's `expiresAt` to keep the same-app session alive (see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)).
 
 ## Raw UDP sends

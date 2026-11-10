@@ -48,6 +48,11 @@ without `await`.
    share one refresh. A live UDP connection keeps its replication server
    across the refresh.
 
+A player who sends no gameplay input for the app's idle timeout (15 minutes unless the
+app sets its own) is released by the replication server, and the connection reports
+`ConnState.INACTIVE` (CrowdyPy 0.25.0). Nothing reconnects it; call `game.udp.connect()`
+again on the player's next input.
+
    **The age and the terms** (CrowdyPy 0.6.0 and 0.23.0). No app token is issued
    until the player has an age and has agreed to the current required legal documents,
    the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
