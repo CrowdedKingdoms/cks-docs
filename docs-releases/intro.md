@@ -39,6 +39,14 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-10 (sign-ups are no longer limited per network address)
+
+- **One network address can create any number of accounts.** `register` was limited to 30 sign-ups an hour from
+  one client address as well as 5 an hour for one email address, which stopped a studio's test rig or a classroom
+  behind one address after its thirtieth sign-up with `RATE_LIMITED`. From ck-api v2.63.0 only the per-email limit
+  remains. The other public sign-in mutations keep both limits. See
+  [Authentication](/management-api/authentication).
+
 ## 2026-11-10 (free apps are no longer capped at about 1 MB/s; managed sign-ins outlive a new addendum version)
 
 - **No app's egress is slowed for being free.** An app whose organization cannot be charged was capped at about
