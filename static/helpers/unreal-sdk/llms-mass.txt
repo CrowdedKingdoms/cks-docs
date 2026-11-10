@@ -7,7 +7,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/draw-a-crowd-with-mass
 Since v2.19.0 CrowdyMass is part of the SDK; on v2.18.0 and earlier it was the separate CrowdyMass plugin, as [What's Changed](../guides/whats-changed.md#2026-10-12-sdk-v2190) explains.
 :::
 
-Crowds with Mass is a way to draw many remote players, or other Dynamic entities, without spawning an actor for each one. The other players on a map become rows of a crowd that the engine draws and animates in bulk. This page tells you what that means, when it is the right choice, and where to read next. If you learn by doing, follow [Market night in Oakford](./examples/market-night-in-oakford.md).
+Crowds with Mass is a way to draw many remote players, or other entities that replicate movement, without spawning an actor for each one. The other players on a map become rows of a crowd that the engine draws and animates in bulk. This page tells you what that means, when it is the right choice, and where to read next. If you learn by doing, follow [Market night in Oakford](./examples/market-night-in-oakford.md).
 
 ## What it is
 
@@ -96,7 +96,7 @@ The pages follow one world, the village of Oakford. Players are `ALanternPlayer`
 
 ## Before you start
 
-You need a signed-in project with a Dynamic Crowdy entity, usually the player pawn, and a character with a skeletal mesh: a row is built from that mesh, so a bare Character with no mesh produces no row. The [Entity Component](../runtime/entity-component.md) page lists the entity settings, and [Continuous State](../runtime/continuous-state.md#a-custom-executor) builds the custom executor that `ALanternPlayer` uses. The [Quickstart](../quickstart.md) gets a project connected first.
+You need a signed-in project with a Crowdy entity that replicates movement, usually the player pawn, and a character with a skeletal mesh: a row is built from that mesh, so a bare Character with no mesh produces no row. The [Entity Component](../runtime/entity-component.md) page lists the entity settings, and [Continuous State](../runtime/continuous-state.md#a-custom-executor) builds the custom executor that `ALanternPlayer` uses. The [Quickstart](../quickstart.md) gets a project connected first.
 
 ## Read this section in order
 
@@ -136,11 +136,11 @@ When a map should draw its remote players as a crowd. A map that sets nothing ke
 The switch is on a **Crowdy Map Profile** data asset, under **Actor Management**. For Oakford:
 
 1. In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**, and name it `DA_OakfordProfile`.
-2. Open it. Under **Actor Management**, set **Backend Class** to **Crowdy Mass Rendering Backend**.
+2. Open it. Under **Remote Entities**, set **Backend Class** to **Crowdy Mass Rendering Backend**.
 3. Leave **Backend Config** empty for now. The backend then reads everything from the project settings below.
 4. Open **Project Settings, Plugins, Crowdy SDK**, find **Map Profiles**, and add the Oakford map with `DA_OakfordProfile` as its profile. Use **Default Profile** instead to draw every map through Mass.
 
-![The DA_OakfordProfile Details panel with Actor Management expanded, Backend Class set to CrowdyMassRenderingBackend, Backend Config set to None, and Enable Networking ticked](/img/unreal-sdk/mass-map-profile-backend.png)
+![The DA_OakfordProfile Details panel with Remote Entities expanded, Backend Class set to CrowdyMassRenderingBackend, Backend Config set to None, and Handle Events and Spawns ticked](/img/unreal-sdk/mass-map-profile-backend.png)
 
 The map profile page covers the asset and how a profile is found: [Create the asset](../runtime/map-profile.md#create-the-asset) and [Assign the profile](../runtime/map-profile.md#assign-the-profile).
 
@@ -161,17 +161,17 @@ The rest of the Mass module stays out of the way on such a map too. Its two per-
 
 In C++, `UCrowdySDKDeveloperSettings::ProfileDrawsCrowdRows(Profile)` tells you whether a profile selects a backend that draws crowd rows.
 
-**Backend Class** and **Backend Config** are greyed out when `bUseCrowdyActorTracker` is off on the profile. Without the tracker there is no backend at all.
+**Backend Class** and **Backend Config** are greyed out when **Draw Remote Entities** (`bUseCrowdyActorTracker`) is off on the profile. Without the tracker there is no backend at all.
 
 :::caution[Backend Config must match the Backend Class.]
-The Mass backend ignores a **Backend Config** of another class without a word and reads the project settings instead, so none of its overrides apply. (The actor pool backend is the one that refuses a mismatched config and then draws nothing.) Pair **Crowdy Mass Rendering Backend** with a **Crowdy Mass Backend Config** or with nothing.
+Saving the profile reports a mismatch. At play, the Mass backend ignores a **Backend Config** of another class without a word and reads the project settings instead, so none of its overrides apply. (The actor pool backend is the one that refuses a mismatched config and then draws nothing.) Pair **Crowdy Mass Rendering Backend** with a **Crowdy Mass Backend Config** or with nothing.
 :::
 
 **Success signal.** Two clients on the Oakford map: the other player appears as a crowd row and moves. If nothing appears, start at "Nothing appears at all" on [Fix a crowd that does not look right](./troubleshooting.md).
 
 ## Start from the shipped profile
 
-`/CrowdySDK/Mass/Data/DA_CrowdyMassDefaultProfile` is a ready-made profile that selects the Mass backend with an empty **Backend Config** and **Enable Networking** on. Use it as a starting point, or to try Mass before you author your own.
+`/CrowdySDK/Mass/Data/DA_CrowdyMassDefaultProfile` is a ready-made profile that selects the Mass backend with an empty **Backend Config** and every switch on. Use it as a starting point, or to try Mass before you author your own.
 
 Nothing registers it for you. Point **Map Profiles** at it, as the **Default Profile** to draw every map through Mass or as the entry for one map, and that map is on Mass.
 
@@ -331,21 +331,21 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/make-a-character-draw-a
 
 # Make a character draw as a crowd row
 
-A character becomes a crowd row on other machines without a second version of it. You make the class a Dynamic Crowdy entity, send a state struct whose field names the crowd can read, give the class a skinned mesh, and check the result with one console command. By the end `ALanternPlayer` appears in Oakford's square as a moving row on every other player's machine.
+A character becomes a crowd row on other machines without a second version of it. You make the class a Crowdy entity that replicates movement, send a state struct whose field names the crowd can read, give the class a skinned mesh, and check the result with one console command. By the end `ALanternPlayer` appears in Oakford's square as a moving row on every other player's machine.
 
 ## When you need this
 
 When a map selects Mass (see [Turn Mass on for a map](./turn-mass-on-for-a-map.md)) and you want a class, usually the player pawn, drawn as a row. This page starts from `ALanternPlayer`, a character whose `ULanternPlayerExecutor` sends `FLanternPlayerState`, built as in [Continuous State](../runtime/continuous-state.md#a-custom-executor). `BP_LanternPlayer` is your Blueprint subclass of `ALanternPlayer`.
 
-## Make the class a Dynamic entity
+## Make the class an entity that replicates movement
 
 Add a **Crowdy Entity Component** to `ALanternPlayer`, or to `BP_LanternPlayer` if you work in Blueprint, and set:
 
 | Setting | Value | Why |
 |---|---|---|
-| **Mode** | **Dynamic** | Streams the executor's snapshot every replication interval. **Static** is event-only and moves nothing. |
+| **Replicate Movement** | **Auto** | Streams the executor's snapshot every replication interval. **Auto** is on for a Character, so leave it. **Off** is event-only and moves nothing. |
 | **Identity Policy** | **Player Derived** | For a player pawn: the id comes from the signed-in account, so only one actor per client can use it, the locally controlled primary pawn. |
-| **Ownership** | **Local Client** | This client owns the entity. The options are **Local Client** and **Host**, and **Host** is the default. |
+| **Owned By** | **Player** | This client owns the entity. The options are **Auto**, **Player** and **World**, and **Auto** is the default: World when placed in the level, Player when spawned. |
 | **State Executor** | An executor whose state struct has the fields below | Builds the snapshot sent every interval. Unset means the SDK's transform-only default. |
 | **Auto Register** | on | Joins the continuous channel at `BeginPlay`. |
 
@@ -545,7 +545,7 @@ With it on, every class is built from itself. It pushes aside per-class bindings
 ## Gotchas
 
 - The Mass backend skips your own locally owned entity. Use **Render Local Owner** or an area spawner to see a row on one client; see [Check it with one client](./turn-mass-on-for-a-map.md#check-it-with-one-client).
-- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A Dynamic entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
+- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A moving entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
 - `crowdy.mass.derive` and `crowdy.mass.derive.force` are compiled out of Shipping builds; see [Fix a crowd that does not look right](./troubleshooting.md).
 
 ## Related
@@ -877,7 +877,7 @@ Declare only one property of that enum on the class. Two properties ask for the 
 
 Two other settings must allow it:
 
-- The map profile's **State Keyframe Interval (Seconds, 0 = off)** must not be 0. It defaults to `2.0`.
+- The **Keyframe Interval** under the map profile's **Crowdy State** must not be 0. It defaults to 2 s.
 - The entity component's **State Heartbeat** must not be **Off**. The default, **Inherit**, follows the map profile.
 
 The SDK warns once per property for any Crowdy State enum outside the heartbeat. `crowdy.state.heartbeat.advisories` lists them all. See [The metadata keys](../runtime/crowdy-state.md#the-metadata-keys), [What ships, and when](../runtime/crowdy-state.md#what-ships-and-when) and [Settings](../runtime/entity-component.md#settings) for the keys and the cadence.
@@ -942,7 +942,7 @@ void ALanternPlayer::OnSit()
 <TabItem value="bp" label="Blueprint">
 
 1. In `BP_LanternPlayer`, add a key event for the **X** key, the sit key.
-2. From the event, call **Is Crowdy Entity Locally Controlled** and feed a **Branch**, so only the owner writes.
+2. From the event, call **Is Crowdy Entity Locally Owned** and feed a **Branch**, so only the owner writes.
 3. On the true pin, feed a second **Branch** from an **Equal (Enum)** that compares **Get Stance** to `Sitting`.
 4. On its true pin call **Set Stance** with `Standing`. On its false pin call **Set Stance** with `Sitting`.
 
@@ -1123,7 +1123,7 @@ void ALanternPlayer::OnWave()
 <TabItem value="bp" label="Blueprint">
 
 1. In the `WaveTorch` event, call **Play Crowdy Mass Action** (`PlayCrowdyMassAction`). Plug the event's pins into **Action Id**, **Variant** and **Play Rate**, and the character's `Mesh` into **Mesh**.
-2. For the sender, add an input action event for the wave key. Call **Is Crowdy Entity Locally Controlled** into a **Branch** so only the owner sends.
+2. For the sender, add an input action event for the wave key. Call **Is Crowdy Entity Locally Owned** into a **Branch** so only the owner sends.
 3. On the true pin, call `WaveTorch` with **Action Id** set to 1, `Wave`'s id. To look it up by name instead, call **Find Action Id** on `DA_LanternPlayerAnims` with `Wave`.
 
 The figure shows the body from step 1: the `WaveTorch` event feeds **Play Crowdy Mass Action**, with its three pins plugged in and the character's `Mesh` as the target mesh. The sender in steps 2 and 3 is not in the figure.
@@ -1431,9 +1431,10 @@ Only the two multicast recipients ever reach a crowd row. An entity drawn as a p
 | `SpatialMulticast` (the default) | Yes. |
 | `Multicast` | Yes. |
 | `OwningClient` | No. It is delivered to the entity's owner, who holds the entity as a real actor. |
-| `Host` | No. It is delivered to the elected host as a request addressed to an actor. |
 
-An `OwningClient` or `Host` event that arrives for an entity a client holds as a row is dropped, and the log says so at most once a second. The routing rules for all four recipients are on [Recipients and Routing](../runtime/recipients-and-routing.md#the-four-recipients).
+The deprecated `Host` recipient is described under [Deprecated](#deprecated).
+
+A targeted `OwningClient` event that arrives for an entity a client holds as a row is dropped, and the log says so at most once a second. One named for another client, on the spatial path or the session channel, is ignored. The routing rules for every recipient are on [Recipients and Routing](../runtime/recipients-and-routing.md#the-recipients).
 
 ## What runs when one arrives
 
@@ -1527,6 +1528,18 @@ Two checks happen before the cap and cost no allowance: whether the event is mea
 
 `crowdy.rpc.trace 1` prints one line per event delivered to the stand-in, naming the entity, the stand-in, where it was moved to and whether the world will run a body. If the body never seems to run, read that line first. [Fix a crowd that does not look right](./troubleshooting.md) lists the diagnostic commands.
 
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### The Host recipient
+
+`OwningClient` replaces `Host`; see [Which events reach a row](#which-events-reach-a-row).
+
+A `Host` event never reaches a row either. Under Leader Source **Elected Host (Deprecated)** it is delivered to the elected host as a request addressed to an actor; on an actor, by default, it is dropped with a warning. A `Host` event that arrives for an entity a client holds as a row is dropped and logged, at most once a second, the same as a targeted `OwningClient` one.
+
 ## Gotchas
 
 - A body that works in a one-player test can fail on observers only, because the owner always holds a real actor. Test with a second player or the single-client check.
@@ -1536,7 +1549,7 @@ Two checks happen before the cap and cost no allowance: whether the event is mea
 ## Related
 
 - [RPC Events in Blueprint](../runtime/rpc-events-blueprint.md) and [RPC Events in C++](../runtime/rpc-events-cpp.md): declaring and calling events.
-- [Recipients and Routing](../runtime/recipients-and-routing.md): the four recipients and how far a spatial event travels.
+- [Recipients and Routing](../runtime/recipients-and-routing.md): the recipients and how far a spatial event travels.
 - [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md): the action half of a marked event, and the `WaveTorch` declaration and body.
 - [Promote close entities to actors](./promote-close-entities-to-actors.md): what a close entity draws as.
 - [Receive its events, from Blueprint](./from-blueprint/receive-its-events.md) and [Receive its events, from C++](./from-cpp/receive-its-events.md): handlers.
@@ -1754,7 +1767,7 @@ The fragment is on the row. Now the replicated value has to reach it.
 
 ### Mark the property
 
-Declare the property on `ALanternPlayer` and mark it `CrowdyState`. Add `CrowdyHeartbeat` so a player who arrives late is sent the current value on the next keyframe instead of waiting for it to change. The keyframe needs the map profile's **State Keyframe Interval (Seconds, 0 = off)** to be non-zero. [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) covers the heartbeat in full.
+Declare the property on `ALanternPlayer` and mark it `CrowdyState`. Add `CrowdyHeartbeat` so a player who arrives late is sent the current value on the next keyframe instead of waiting for it to change. The keyframe needs the **Keyframe Interval** under the map profile's **Crowdy State** to be non-zero. [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) covers the heartbeat in full.
 
 In Oakford the sit key (`OnSit`) is the only thing that sets `TorchBrightness`: 0.3 while the player sits and 1.0 while they stand.
 
@@ -1896,6 +1909,16 @@ It prints one block. Paste the whole block when you report a problem.
 
 Landing a value makes it available, not visible. Acting on it takes a processor like the one above, or a Blueprint field read.
 
+## Land spawn data on the row
+
+On a Mass map an entity that replicates movement, spawned with `SpawnEntity`, has no actor on other clients: its row is its body, so `OnCrowdySpawned` does not fire there. Its `InitialState` goes through the fields you registered with `RegisterStateFragmentField` instead. Each property of the `InitialState` struct that a registered field names, declared as the type that field reads, reaches that field's ingestor once, with the same context and the same rules as a replicated value. A property that no field names, or that carries a field's name as another type, is dropped without a warning.
+
+To land a spawn value, give your `InitialState` struct a property with the field's name. The same field then serves both roads: a Crowdy State property of that name on the class, and the spawn data. `UCrowdyMassEntitySubsystem::ApplySpawnState(UUID, State)` is the call the SDK makes for you, once the row exists: the spawn event usually arrives before the entity's first update, so the backend holds the data until then, for up to 1024 entities at once and, once that many are waiting, for 15 seconds each. A row takes its spawn data once; a repeat of the spawn event is ignored. When a field is fed by both roads it holds whichever value arrived last, and on the rare occasion an update beats the spawn event that can be the spawn value, so use spawn data for values that are fixed at spawn.
+
+Spawn data is matched by the C++ name of each property, so declare the `InitialState` struct in C++: a Blueprint struct's members carry generated names and match no field.
+
+Whether an entity is a moving one is read from its class's default `ReplicateMovement`. A class whose component sends no movement by default and is set to `On` at runtime still gets its actor from the spawn event, and a row beside it once it moves; set `ReplicateMovement` on the class instead.
+
 ## Read a value that rides your position payload
 
 `RegisterViewStateField(PropertyName, Ingestor)` is the other way in. It reads a named byte off the wire struct your state executor sends, such as `FLanternPlayerState`, instead of off a Crowdy State property. It takes no type: the field must be a single byte (`uint8`, `TEnumAsByte`, or an `enum class` over `uint8`), and a property of that name that is anything else is skipped with a warning. It matches per struct, `IsViewStateFieldRegistered` is its check, and it obeys every rule above.
@@ -1943,7 +1966,7 @@ See [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-ro
 
 ## Nothing appears at all
 
-1. Check that a map profile for this map selects **Crowdy Mass Rendering Backend** as its **Backend Class** and has **Enable Networking** ticked. Check that the profile is assigned under **Project Settings, Plugins, Crowdy SDK, Map Profiles**. See [Assign the profile](../runtime/map-profile.md#assign-the-profile).
+1. Check that a map profile for this map selects **Crowdy Mass Rendering Backend** as its **Backend Class** and has **Draw Remote Entities** ticked. Check that the profile is assigned under **Project Settings, Plugins, Crowdy SDK, Map Profiles**. See [Assign the profile](../runtime/map-profile.md#assign-the-profile).
 2. Check that the Mass entity subsystem is running. It exists in Play In Editor and game worlds whose map profile selects the Mass backend, not in the editor world and not on an actor pool map. See [Crowd nodes do nothing on this map](#crowd-nodes-do-nothing-on-this-map).
 3. Run `crowdy.mass.derive` on the class and check that a mesh resolves.
 4. Check whether you are the only client. The backend does not draw your own entity as a row, so on one client you see nothing. Tick **Render Local Owner**, which lives under **Mass Backend, Debug** on the **Crowdy Mass Backend Config**, or place a **Crowdy Mass Area Spawner** in the level. See [Turn Mass on for a map](./turn-mass-on-for-a-map.md).
@@ -1998,7 +2021,7 @@ See [The engine's animation pass](./turn-mass-on-for-a-map.md#the-engines-animat
 3. Declare the enum as `enum class : uint8`. A wider enum cannot ride the one byte a pose uses.
 4. Check that no fragment field is registered under the name of that same property. A field claimed by name takes the property from the pose, and the log says nothing poses entities of that class. Register the field against a second property, or drop it. See [Add your own crowd data](./add-your-own-crowd-data.md).
 5. Drop `CrowdyOwnerOnly` from the property. A crowd observer is never the owner, so it never receives the value.
-6. Add the property to the heartbeat. An enum is held state, sent when it changes. Without `CrowdyHeartbeat`, one dropped change leaves the pose wrong until something else changes. The heartbeat also needs a non-zero **State Keyframe Interval (Seconds, 0 = off)** on the map profile and a **State Heartbeat** that is not **Off** on the entity component.
+6. Add the property to the heartbeat. An enum is held state, sent when it changes. Without `CrowdyHeartbeat`, one dropped change leaves the pose wrong until something else changes. The heartbeat also needs a non-zero **Keyframe Interval** under the map profile's **Crowdy State** and a **State Heartbeat** that is not **Off** on the entity component.
 7. Run `crowdy.mass.state.verdict` in a play session. Check whether the property is in the dropped list, and whether the pose writes from CrowdyState move at all.
 8. Check that the observer resolves the class. An update names its class by id, and a client resolves only the ids of classes that were loaded when the SDK started. Add the class to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. Until then the log warns that the entity named a class id this client cannot resolve, and the client falls back to guessing from the state struct. The guess works only once a component of that class has begun play on that machine, and it fails for two classes that share one struct. See [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all). Do this before you suspect the pose path.
 

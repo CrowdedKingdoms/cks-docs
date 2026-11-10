@@ -3,6 +3,7 @@ UFUNCTION()
 void HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID);
 
 // LanternPost.cpp
+#include "Replication/Ownership/CrowdyOwnershipTransfer.h"
 #include "Replication/Subsystems/CrowdyEntitySubsystem.h"
 
 GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>()->OnOwnershipRequested.AddDynamic(this, &ALanternPost::HandleOwnershipRequested);
@@ -13,5 +14,5 @@ void ALanternPost::HandleOwnershipRequested(AActor* TargetEntity, AActor* Reques
 	{
 		return;
 	}
-	VerifyThenGrant(RequesterID);
+	UCrowdyOwnershipTransfer::GrantOwnershipTransferToPlayer(this, this, RequesterID);
 }

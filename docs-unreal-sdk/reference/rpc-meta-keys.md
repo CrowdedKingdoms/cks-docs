@@ -47,8 +47,9 @@ Blueprint one also needs `CrowdyReplicates` sitting next to it, because a Bluepr
 tell the router this custom event is RPC-style rather than a struct handler.
 
 `CrowdyRecipient` takes an `ECrowdyEventRecipient` name and defaults to `SpatialMulticast`. The enumerators,
-in declared order, are `SpatialMulticast`, `Multicast`, `OwningClient`, and `Host`. See
-[enums](/unreal-sdk/reference/enums) for the full type.
+in declared order, are `SpatialMulticast`, `Multicast`, and `OwningClient`. See
+[enums](/unreal-sdk/reference/enums) for the full type. The deprecated `Host` value is under
+[Deprecated](#deprecated).
 
 `CrowdyDecay` takes an `ECrowdyDecayRate` name and defaults to `No_Decay`. The enumerators are `No_Decay`,
 `Exponential_Decay`, `Linear_50`, `Linear_25`, `Linear_10`, and `Linear_5`. It applies only to
@@ -81,9 +82,22 @@ site. It cannot emit the `UFUNCTION`, because UnrealHeaderTool does not expand m
 reflected functions.]
 :::
 
-:::warning[`CrowdyRecipient = "Host"` addresses the elected host. Election is a convention, not an
-enforcement boundary, so do not treat Host-only delivery as a security control.]
-Anyone can hold the host role at some point in a session. If a call must only take effect for a
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### CrowdyRecipient = "Host"
+
+`OwningClient` replaces the `Host` value of `CrowdyRecipient`; see
+[Recipients and routing](../runtime/recipients-and-routing.md#targeted-owningclient).
+
+:::warning[`CrowdyRecipient = "Host"` is deprecated and warns: use `OwningClient`. On a replicated subsystem it runs on the Leader; on an
+actor it is dropped with a warning that names Leader Source, unless Leader Source is Elected Host, where it
+addresses the elected host. Neither is an enforcement boundary, so do not treat Host-only delivery as a
+security control.]
+Anyone can hold the Leader or host role at some point in a session. If a call must only take effect for a
 server-validated reason, check that reason on the receiving end; do not rely on the recipient filter alone
 to keep an untrusted client from reaching the logic.
 :::

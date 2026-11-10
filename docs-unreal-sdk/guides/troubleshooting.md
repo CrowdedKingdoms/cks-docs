@@ -12,7 +12,7 @@ section with the full fix and the trace CVar that confirms it.
 
 | Symptom | Likely cause | Fix | Trace CVar |
 |---|---|---|---|
-| [Nothing replicates on a map](#nothing-replicates-at-all) | A `MapProfiles` row or `DefaultProfile` names an asset that did not load, or networking is off on the resolved profile | Fix the asset path the warning names, or tick Enable Networking | `crowdy.entity.trace` |
+| [Nothing replicates on a map](#nothing-replicates-at-all) | A `MapProfiles` row or `DefaultProfile` names an asset that did not load, or a switch is off on the resolved profile | Fix the asset path the warning names, or tick the profile's switches | `crowdy.entity.trace` |
 | [Actors do not appear at all](#rendering-backend-not-set) | The map profile's Backend Class was cleared | Assign a `UCrowdyRenderingBackend` subclass | `crowdy.entity.trace` |
 | [Entities register but are never drawn](#entities-register-but-are-never-drawn) | Backend Config empty, or its Replication Policy Class unset (2.14.0 and earlier) | Set a Crowdy Actor Pool Backend Config with a policy class | `crowdy.entity.trace` |
 | [Only some remote entities of a class appear](#only-some-remote-entities-of-a-class-appear) | The actor pool never grew past 8 per class (2.16.0 and earlier), or it is at `MaxPoolSizePerClass` | Update to 2.17.0; raise the cap if it warns | `crowdy.pool.trace` |
@@ -28,7 +28,8 @@ section with the full fix and the trace CVar that confirms it.
 
 A project that configures nothing runs on the SDK's shipped default map profile, so "no profile" is not
 the nothing-configured state. The map is inactive when a `MapProfiles` row or the `DefaultProfile` points
-at an asset that did not load, or when **Enable Networking** is off on the profile that resolved.
+at an asset that did not load, or when its switches (**Handle Events and Spawns**, **Draw Remote Entities**,
+**Send Movement**, **Replicate Crowdy State**) are off on the profile that resolved.
 
 With no profile resolved for the current map, the entity subsystem, the auto replicator, and the actor
 manager do nothing. You get one warning in the log and otherwise no errors, so replication just looks dead.
@@ -39,10 +40,10 @@ Fix:
    "did not load; check that the asset still exists and is packaged". Fix the path, or the cook, first.
 2. Open Project Settings, Plugins, Crowdy SDK, Map Profiles, and confirm the row for this map (or
    `DefaultProfile`) points at a `UCrowdyMapProfile` asset that opens.
-3. On that profile, confirm `bEnableNetworking` is true. Keep the other defaults: Actor Pool backend and
-   the auto replicator on.
+3. On that profile, confirm the four switches are ticked. Keep the other defaults: Actor Pool backend and
+   movement sending on.
 4. A map with no row and no `DefaultProfile` runs on the shipped default; if that map should be inactive,
-   give it a profile of its own with **Enable Networking** off.
+   give it a profile of its own with the four switches off.
 
 The profile is resolved by `UCrowdySDKDeveloperSettings::ResolveProfileForWorld`. If no profile resolves,
 the SDK logs "map resolved no map profile, so the SDK is inactive on it: no entity registration" and stays
@@ -125,7 +126,7 @@ CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity
 
 ### The entity is not registered, or the dispatch drops it
 
-A Dynamic entity needs to register before it can send or receive. Until it registers it has no NetID on the
+A moving entity needs to register before it can send or receive. Until it registers it has no NetID on the
 network, and a call aimed at an unregistered entity logs "target is not a registered entity, event dropped"
 from `DispatchGameEvent` and goes nowhere.
 
@@ -139,17 +140,20 @@ Check the `CrowdyRecipient` on the receiver function. The recipient decides who 
 - `SpatialMulticast` (default): spatial and decay-thinned. Remote clients only run the event if they are in
   range.
 - `Multicast`: a named channel, any distance, no decay.
-- `OwningClient`: only the entity's owner.
-- `Host`: only the elected host.
+- `OwningClient`: only the client that writes the entity. With a text parameter it is a direct message: it can be
+  lost with no message while the entity crosses a chunk border, and is refused without `use_direct_messages`. See
+  [Recipients and routing](../runtime/recipients-and-routing.md#targeted-owningclient).
+
+The deprecated `Host` recipient is described under [Deprecated](#deprecated).
 
 If you used the default `SpatialMulticast` and the other client is out of range, the event is thinned away
 on purpose. Raise `CrowdyDistance` (values run `None` to `Eight_Chunks`, default `Eight_Chunks`) or relax
 `CrowdyDecay` (default `No_Decay`). Decay and distance apply only to `SpatialMulticast`.
 
-If you need delivery at any distance, switch to `Multicast` with a `CrowdyChannel`, or use `OwningClient` or
-`Host` for targeted delivery.
+If you need delivery at any distance, switch to `Multicast` with a `CrowdyChannel`, or use `OwningClient` for
+targeted delivery.
 
-:::note[The owner of a SpatialMulticast event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network: an event is not delivered back to its sender, even where a Dynamic entity's owner draws its own echoed proxy (Render Local Owner on the actor pool).]
+:::note[The owner of a SpatialMulticast event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network: an event is not delivered back to its sender, even where the owner of an entity that replicates movement draws its own echoed proxy (Render Local Owner on the actor pool).]
 :::
 
 ### The event was never registered, or the receiving function cannot be found
@@ -251,7 +255,7 @@ The SDK is split across modules. Reference the right one for the API you call:
 
 - `CrowdyReplication`: the entity subsystem (`UCrowdyEntitySubsystem`), the entity component, RPC events.
 - `CrowdyServices`: high-level subsystems and statics: `UCrowdyUtilities`, `UCrowdyTeams`,
-  `UCrowdyAvatars`, `UCrowdyChannels`, `UCrowdyHostSubsystem`.
+  `UCrowdyAvatars`, `UCrowdyChannels`.
 - `CrowdySDK`: `UCrowdySDKSubsystem` (including voice).
 
 Fix:
@@ -285,6 +289,26 @@ symptom with one client, and [Log categories](../reference/log-categories.md) fo
 
 A `LogHttp` `ConnectionError` burst against a backend host, with otherwise clean local connectivity, points
 at your own network path, not the SDK. Check your route to the backend before filing a bug.
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
+:::
+
+### An event with the Host recipient is not received
+
+`OwningClient` replaces `Host`; see [The recipient does not include this client](#the-recipient-does-not-include-this-client).
+
+A receiver with `CrowdyRecipient = "Host"` runs on the Leader on a replicated subsystem. On an actor it is
+dropped with a warning that names Leader Source, unless Leader Source is **Elected Host (Deprecated)**, where
+only the elected host runs it. See [Recipients and routing](../runtime/recipients-and-routing.md#deprecated).
+
+### Where the host subsystem lives
+
+`UCrowdyLeaderSubsystem` replaces `UCrowdyHostSubsystem`; see [The Leader](../runtime/leader.md).
+`UCrowdyHostSubsystem` lives in `CrowdyServices`, so a call into it needs that module in your `Build.cs`, as
+[Module dependency or include errors](#module-dependency-or-include-errors) shows.
 
 ## Gotchas
 

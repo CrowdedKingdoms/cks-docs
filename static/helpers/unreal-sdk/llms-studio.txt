@@ -121,7 +121,9 @@ After a successful sign-in Studio lands on the Setup Wizard, so the guided path 
 
 ## Agreeing to the terms
 
-When Studio asks the server for its access to your app and the account has not yet agreed to the current terms and age confirmation, Studio opens a small window titled **Crowdy Studio: terms and age** over the editor. It is the same prompt a player sees in your game: the documents as links, two check boxes, **Accept** and **Decline**. **Accept** carries on where Studio left off. **Decline**, or closing the window, stops there and Studio reports `Studio needs the terms and the age confirmation accepted for this account.` You see the prompt again only when a document gets a new version. How the same prompt works in a game, and how to draw your own, is on [Authentication](../services/authentication.md#let-the-player-agree-to-the-terms).
+After you sign in, Studio checks whether your account has accepted the developer documents, which you need before you can create an organization or manage one or its apps. If not, it opens **Crowdy Studio: developer terms** with the documents as links, one check box, **Accept** and **Decline**. If the account has no age yet, **Crowdy Studio: about you** asks for your month and year of birth and your country first. Only an adult can accept these documents. **Decline** leaves you signed in and Studio reports `Creating or managing apps needs the developer terms accepted for this account.`; you are asked again the next time you sign in, or the first time a management call is refused for this reason.
+
+When Studio asks the server for its access to your app and the account has not yet agreed to the current player terms, it opens **Crowdy Studio: terms**. It is the same prompt a player sees in your game, and it lists the platform's documents and the app's own. **Accept** carries on where Studio left off. **Decline**, or closing the window, stops there and Studio reports `Studio needs the terms accepted for this account.` You see a prompt again only when a document gets a new version. An age refusal gives no reason, offers no way back to the date, and signs you out of Studio. How the same prompt works in a game, and how to draw your own, is on [Authentication](../services/authentication.md#let-the-player-agree-to-the-terms).
 
 ## Where the session is kept
 
@@ -618,11 +620,11 @@ With none running the page reads "No running session".
 
 What it lists:
 
-- **Session**: the app id, your user id, the game token id, your UUID, the host id, and whether a game token is held (never its value).
+- **Session**: the app id, your user id, the game token id, your UUID, a **Host ID** line (deprecated; see [Deprecated](#deprecated)), and whether a game token is held (never its value).
 - **Teams (N)**: the teams the local player is in, from the runtime cache. Until the game has fetched teams it says so.
 - **Channels (N)**: the channels the client has joined, whether the reliable RPC channels are ready, and the session channel's id.
 - **Avatars (N)**: the local player's avatars, from the cache.
-- **Entities**: the local player id, the host id, and the entities this client owns, by actor name. There is no every-entity list; the owned slice is the one that confirms spawns and ownership while you debug.
+- **Entities**: the local player id, the same deprecated **Host ID** line, and the entities this client owns, by actor name. There is no every-entity list; the owned slice is the one that confirms spawns and ownership while you debug.
 
 ![The Inspector page with no session running](/img/unreal-sdk/studio-inspector.png)
 
@@ -656,7 +658,7 @@ The cook rebakes on its own, so a packaged build is right even if you forget. Pr
 
 Three summary pills: classes, functions, and replicated properties. A search box filters by class, function, or property name, and a **Cards** / **Table** toggle picks the layout.
 
-In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its Ownership and Host Override, read live from the class defaults rather than baked.
+In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its **Owned By**, read live from the class defaults rather than baked. The deprecated **Host Override** chip is described under [Deprecated](#deprecated).
 
 In Table view the same data is one flat table: type, name, routing or notify, flags, id.
 
@@ -674,11 +676,29 @@ It is rewritten by every Rebuild and every cook. Ignore it in your version contr
 
 For the full packaging flow, see the [Packaging guide](../guides/packaging.md).
 
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### The Host ID line
+
+The Leader replaces the host; read who leads with **Get Leader User ID**, as [The Leader](../runtime/leader.md#follow-the-leader) shows.
+
+The Inspector's **Session** and **Entities** lists still show a **Host ID** line. It is the id of the client that writes replicated subsystems: the Leader's entity id by default, or the elected host's when **Leader Source** is **Elected Host (Deprecated)**.
+
+### The Host Override chip
+
+`HostOverride` has no replacement; [Entity component](../runtime/entity-component.md#deprecated) describes it.
+
+A class card shows a **Host Override** chip next to **Owned By** for a class Owned By Player. Like **Owned By**, it is a live value read from the class defaults, not part of the bake.
+
 ## Gotchas
 
 - The Inspector's team, channel, and avatar lists come from the runtime caches. An empty list with a "not populated yet" note means the game has not fetched, not that there is nothing.
 - Refresh View does not rebake. If a marker you just added is missing, press Rebuild.
-- Ownership and Host Override on a class card are live values, not part of the bake.
+- **Owned By** on a class card is a live value, not part of the bake.
 
 ## Related
 

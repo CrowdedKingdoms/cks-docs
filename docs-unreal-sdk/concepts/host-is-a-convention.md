@@ -1,25 +1,45 @@
 ---
 slug: host-is-a-convention
 sidebar_position: 4
-title: The Host Is a Convention
-description: Why the elected host is a coordination convention on the view plane, not a security boundary, and when to reach for the server-validated host check instead.
+title: A Coordinator Is a Convention
+description: Why the client chosen to coordinate the view plane, the Leader, is a convention and not a security boundary.
 ---
 
-# The Host Is a Convention
+# A Coordinator Is a Convention
 
-One client of your app is elected host. The host is the natural place to run shared, world-level logic on the view plane: driving world entities, spawning things that belong to nobody. It is a convention the SDK helps you follow, not a rule the server enforces.
+A client chosen to coordinate the view plane is not a referee. That client is [the Leader](../runtime/leader.md), picked by a Server Object, and it writes replicated subsystems. It is a convention the SDK helps you follow, not a rule the server enforces: the server decides who holds the role, and checks nothing that client then writes.
 
-## Election is a convention, not enforcement
+The deprecated elected host and its host checks are described under [Deprecated](#deprecated).
 
-Host election happens server-side, per user, and the SDK tracks the result locally in `UCrowdyHostSubsystem` (`IsHost()`, `GetHostUserID()`, and the `OnHostElected` event). The identity itself lives with your login session, so it survives level travel.
+<a id="election-is-a-convention-not-enforcement"></a>
 
-What election does not do is protect anything. Nothing on the view plane is server-checked, so any client can lie about its own view state, host or not. A host check answers "who is this app's coordinator right now", never "is this write allowed".
+## Leading is a convention, not enforcement
 
-:::danger[Never gate anything cheat-sensitive on a host check.]
-Neither the client-derived check nor the server-validated one below is an enforcement point. Real enforcement is your server code checking who is asking, on the truth plane. Use host checks to decide who runs shared view-plane logic, and nothing else.
+Choosing the Leader does not protect anything. Nothing on the view plane is server-checked, so any client can lie about its own view state, Leader or not. A Leader check answers "who is this app's coordinator right now", never "is this write allowed".
+
+To ask whether this client leads, use **Is Local Leader**; to ask whether it writes an entity, use **Is Crowdy Entity Locally Owned**. [The Leader](../runtime/leader.md) has both.
+
+:::danger[Never gate anything cheat-sensitive on a Leader check.]
+A check of who coordinates is not an enforcement point. Real enforcement is your server code checking who is asking, on the truth plane. Use a Leader check to decide who runs shared view-plane logic, and nothing else.
 :::
 
-## Two checks, two costs
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### The elected host
+
+The Leader replaces the elected host; [Host Election (Deprecated)](../services/host-election.md) has the host's calls and nodes, with examples.
+
+When [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host) is **Elected Host (Deprecated)**, host election happens server-side, per user, and the SDK tracks the result locally in `UCrowdyHostSubsystem` (`IsHost()`, `GetHostUserID()`, and the `OnHostElected` event). The identity itself lives with your login session, so it survives level travel. Everything this page says about trust applies to the host too: a host check is not an enforcement point either.
+
+The host changes. Bind `OnHostElected` rather than caching the answer at BeginPlay.
+
+### Two checks, two costs
+
+**Is Local Leader** replaces both host checks for choosing who runs shared logic, and anything that must be enforced belongs in a Server Object.
 
 **Client-derived, instant.** `Is Crowdy Entity Host` (`UCrowdyUtilities::IsCrowdyEntityHost`) compares the entity's id with the locally known host id. No round trip. Use it for cosmetic and convenience decisions: showing a button, choosing who plays the ambient logic.
 
@@ -29,21 +49,21 @@ Neither the client-derived check nor the server-validated one below is an enforc
 `bSuccess == false` from `CheckEntityIsHost`, or the `OnFailed` pin, means the answer could not be determined: no host elected yet, a network error, an unresolved entity. It is not the same as "not the host". Do not treat it as a confident no.
 :::
 
-## Host-owned world entities
+### Host-owned world entities
 
-A level-placed entity with `Ownership = Host` is `HostOwned`: whichever client is host at the moment owns it, so every client shares one authority for world and AI objects. The host's writes to such an entity are explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`), never a background diff, so an implicit and an explicit write can never race.
+By default no client writes an entity Owned By World: keep what changes about it in a Server Object, as [Who writes what](../runtime/leader.md#who-writes-what) explains. `HostOverride` has no replacement.
 
-A client-owned entity (`Ownership = LocalClient`) has a `HostOverride` policy: `Allow` (the default) lets the host correct that entity's view state as a super-user, `OwnerOnly` refuses even a host correction. This is precedence by convention. It orders who wins on the view plane; it does not make either value trustworthy.
+Under Elected Host, a level-placed entity Owned By World (or Auto, the default for a placed actor) is `HostOwned`: whichever client is host at the moment writes it, so every client shares one writer for world and AI objects. The host's writes to such an entity are explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`), never a background diff, so an implicit and an explicit write can never race. Changing a property and waiting does nothing on it.
+
+An entity Owned By Player has a `HostOverride` policy: `Allow` (the default) lets the host correct that entity's view state as a super-user, `OwnerOnly` refuses even a host correction. This is precedence by convention. It orders who wins on the view plane; it does not make either value trustworthy. If the value matters, it belongs in your server code and the question does not arise.
 
 ## Gotchas
 
-- Host changes. Bind `OnHostElected` rather than caching the answer at BeginPlay.
-- A host-owned entity is written by explicit pushes. Changing a property and waiting does nothing on it.
-- `HostOverride` is a view-plane tie-breaker. If the value matters, it belongs in your server code and the question does not arise.
+- The Leader changes. Bind **On Leader Changed** rather than caching the answer at BeginPlay.
 
 ## Related
 
-- [Host authority](../runtime/host-authority.md): the calls and nodes, with examples.
+- [The Leader](../runtime/leader.md): who writes shared state.
 - [Entities, Identity, and Ownership](./entities-identity-ownership.md): owner, proxy, and host-owned roles.
 - [Sessions and Presence](./sessions-and-presence.md): a match's host, a different thing your server code keeps.
 - [The Two Planes](./two-planes.md): where enforcement actually lives.

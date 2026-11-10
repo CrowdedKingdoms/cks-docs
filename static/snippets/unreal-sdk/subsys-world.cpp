@@ -20,6 +20,11 @@ public:
 	void AnnounceDawn_Implementation();
 	CROWDY_EVENT(AnnounceDawn)
 
+	// Any client can ask; it runs on the Leader, whose write ships.
+	UFUNCTION(meta = (CrowdyEvent, CrowdyRecipient = "OwningClient"))
+	void RequestNextPhase_Implementation();
+	CROWDY_EVENT(RequestNextPhase)
+
 	UFUNCTION(BlueprintCallable, Category = "Lantern")
 	void AdvanceNight();
 };
@@ -42,6 +47,11 @@ void ULanternNightSubsystem::AnnounceDawn_Implementation()
 {
 	NightPhase = 0;
 	OnRep_NightPhase();
+}
+
+void ULanternNightSubsystem::RequestNextPhase_Implementation()
+{
+	AdvanceNight();
 }
 
 void ULanternNightSubsystem::AdvanceNight()

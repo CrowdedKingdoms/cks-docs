@@ -66,16 +66,17 @@ So in practice there is one model, and this page describes it.
   the wallet is debited as the total crosses each cent, within about a minute of
   the usage. The hourly rows on the Plan and Usage tab itemise what was used and
   what was charged during each hour; they are a statement, not a separate charge.
-- A free app that has never been funded is also **shaped to roughly 1 MB/s** of
-  egress. That cap is lifted by funding the org wallet or enabling
-  [auto-billing](#auto-billing) — not by buying a reservation. Once an
-  organization can be charged, CK does not rate-limit its egress, and spend is
-  bounded by the [caps you set](#spend-caps) rather than by a throughput ceiling.
+- **Nothing slows an app for being free.** CK does not rate-limit any app's
+  egress, funded or not. An app past a free allowance whose organization cannot be
+  charged is denied rather than slowed (`insufficient_funds`, see
+  [What "access denied" means](#what-access-denied-means)), and a funded app's
+  spend is bounded by the [caps you set](#spend-caps). Until 2026-11-09 an unfunded
+  app was also capped at about 1 MB/s; it no longer is.
 
-**What counts as a billed byte.** Egress only: bytes the service delivers to your
-clients. Ingress — what your clients send — is metered and visible in usage, but
-does not count toward the monthly volume or its allowance. Volume is measured as
-wire bytes at the network interface, so it includes the transport and network
+**What counts as a billed byte.** Both directions, each against its own monthly
+allowance and at its own rate on the rate card: egress, the bytes the service
+delivers to your clients, and ingress, the bytes your clients send to it (priced
+since 2026-09-06). Volume is measured as wire bytes at the network interface, so it includes the transport and network
 headers each frame carries, and it is counted after any compression the service
 applies. A `MESSAGE_BUNDLE` datagram carrying several messages is one frame and is
 metered once, in either direction. A client-side byte counter will not match it. The full basis is in the
@@ -239,7 +240,7 @@ the other:
 
 Reserving one does not reserve the other.
 
-Three things a reservation is **not**:
+Two things a reservation is **not**:
 
 1. **Not a ceiling.** It obliges CK to keep that much capacity in service for
    you; it does not cap what you may send. Use above the reserved rate is metered
@@ -247,9 +248,6 @@ Three things a reservation is **not**:
 2. **Not a data allowance.** The monthly fee buys **capacity, not volume**. It is
    charged *in addition to* metered usage and includes no bytes of its own —
    reserving 5 MB/s does not make the first 5 MB/s free.
-3. **Not how you lift the free-tier cap.** Funding a wallet does that (see
-   [Free tier](#free-tier)). Before 2026-09-01 a reservation doubled as a
-   rate-limit bypass; it no longer does.
 
 Billed monthly from the org wallet whether or not the capacity is used; upgrades
 are prorated for the current month, and lowering or clearing a reservation charges
