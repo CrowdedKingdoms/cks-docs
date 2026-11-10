@@ -18,11 +18,11 @@ When a map should draw its remote players as a crowd. A map that sets nothing ke
 The switch is on a **Crowdy Map Profile** data asset, under **Actor Management**. For Oakford:
 
 1. In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**, and name it `DA_OakfordProfile`.
-2. Open it. Under **Actor Management**, set **Backend Class** to **Crowdy Mass Rendering Backend**.
+2. Open it. Under **Remote Entities**, set **Backend Class** to **Crowdy Mass Rendering Backend**.
 3. Leave **Backend Config** empty for now. The backend then reads everything from the project settings below.
 4. Open **Project Settings, Plugins, Crowdy SDK**, find **Map Profiles**, and add the Oakford map with `DA_OakfordProfile` as its profile. Use **Default Profile** instead to draw every map through Mass.
 
-![The DA_OakfordProfile Details panel with Actor Management expanded, Backend Class set to CrowdyMassRenderingBackend, Backend Config set to None, and Enable Networking ticked](/img/unreal-sdk/mass-map-profile-backend.png)
+![The DA_OakfordProfile Details panel with Remote Entities expanded, Backend Class set to CrowdyMassRenderingBackend, Backend Config set to None, and Handle Events and Spawns ticked](/img/unreal-sdk/mass-map-profile-backend.png)
 
 The map profile page covers the asset and how a profile is found: [Create the asset](../runtime/map-profile.md#create-the-asset) and [Assign the profile](../runtime/map-profile.md#assign-the-profile).
 
@@ -43,17 +43,17 @@ The rest of the Mass module stays out of the way on such a map too. Its two per-
 
 In C++, `UCrowdySDKDeveloperSettings::ProfileDrawsCrowdRows(Profile)` tells you whether a profile selects a backend that draws crowd rows.
 
-**Backend Class** and **Backend Config** are greyed out when `bUseCrowdyActorTracker` is off on the profile. Without the tracker there is no backend at all.
+**Backend Class** and **Backend Config** are greyed out when **Draw Remote Entities** (`bUseCrowdyActorTracker`) is off on the profile. Without the tracker there is no backend at all.
 
 :::caution[Backend Config must match the Backend Class.]
-The Mass backend ignores a **Backend Config** of another class without a word and reads the project settings instead, so none of its overrides apply. (The actor pool backend is the one that refuses a mismatched config and then draws nothing.) Pair **Crowdy Mass Rendering Backend** with a **Crowdy Mass Backend Config** or with nothing.
+Saving the profile reports a mismatch. At play, the Mass backend ignores a **Backend Config** of another class without a word and reads the project settings instead, so none of its overrides apply. (The actor pool backend is the one that refuses a mismatched config and then draws nothing.) Pair **Crowdy Mass Rendering Backend** with a **Crowdy Mass Backend Config** or with nothing.
 :::
 
 **Success signal.** Two clients on the Oakford map: the other player appears as a crowd row and moves. If nothing appears, start at "Nothing appears at all" on [Fix a crowd that does not look right](./troubleshooting.md).
 
 ## Start from the shipped profile
 
-`/CrowdySDK/Mass/Data/DA_CrowdyMassDefaultProfile` is a ready-made profile that selects the Mass backend with an empty **Backend Config** and **Enable Networking** on. Use it as a starting point, or to try Mass before you author your own.
+`/CrowdySDK/Mass/Data/DA_CrowdyMassDefaultProfile` is a ready-made profile that selects the Mass backend with an empty **Backend Config** and every switch on. Use it as a starting point, or to try Mass before you author your own.
 
 Nothing registers it for you. Point **Map Profiles** at it, as the **Default Profile** to draw every map through Mass or as the entry for one map, and that map is on Mass.
 

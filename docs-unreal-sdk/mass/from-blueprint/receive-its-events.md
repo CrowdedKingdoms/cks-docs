@@ -73,7 +73,7 @@ An event that has a parameter named `CrowdyMassTarget`, `Then` or `OutputDelegat
 
 - **Inbound events are rate limited.** A target can receive 30 events a second, with a burst of 60. See [Run your code on a crowd row](../run-your-code-on-a-crowd-row.md) for what the limit is for.
 - **Recompile after reshaping an event.** A bound graph is compiled against the event as it was. If you add or change a parameter, the bind is refused with an error that tells you to recompile the binding Blueprint.
-- **The event still needs a recipient that reaches rows.** Only the two multicast recipients reach a machine that draws the player as a crowd row or a near tier actor. An `OwningClient` or `Host` event lands on one machine, which holds the player as a real actor. See [Recipients and Routing](../../runtime/recipients-and-routing.md).
+- **The event still needs a recipient that reaches rows.** Only the two multicast recipients reach a machine that draws the player as a crowd row or a near tier actor. An `OwningClient` event (or a deprecated `Host` event, under Elected Host) lands on one machine, which holds the player as a real actor. See [Recipients and Routing](../../runtime/recipients-and-routing.md).
 
 ## Related
 

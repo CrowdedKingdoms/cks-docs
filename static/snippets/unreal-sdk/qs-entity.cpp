@@ -36,9 +36,9 @@ ALantern::ALantern()
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
 	Light->SetupAttachment(Trigger);
 
-	// The client that places the lantern owns it at once; a host-owned entity waits for the host election.
+	// The client that places the lantern owns it and writes its state.
 	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
-	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+	CrowdyEntity->OwnedBy = ECrowdyOwnedBy::Player;
 }
 
 void ALantern::BeginPlay()

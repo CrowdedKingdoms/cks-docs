@@ -16,8 +16,7 @@ public:
 
 ALanternPost::ALanternPost()
 {
-	// A level-placed post: event-only, the same NetID on every client, and one shared authority, the elected host.
-	CrowdyEntity->Mode = ECrowdyEntityMode::Static;
+	// A level-placed post: event-only, the same NetID on every client, and owned by the world, so no client writes it.
 	CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::Stable;
-	CrowdyEntity->Ownership = ECrowdyOwnership::Host;
+	CrowdyEntity->OwnedBy = ECrowdyOwnedBy::World;
 }

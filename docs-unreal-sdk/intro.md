@@ -9,7 +9,19 @@ description: What the Crowdy Unreal SDK is, the two planes of state it is built 
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.24**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.25**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+
+## What 2.25 changes
+
+2.25 removes the elected host from the default setup. A project upgraded from 2.24 keeps working, and the host surface still compiles with deprecation warnings.
+
+- **No elected host by default.** Shared state is written by the [Leader](./runtime/leader.md), one client chosen by a Server Object, and an entity says who writes it with **Owned By**: Player, World or Leader.
+- **Movement replicates by default.** A pawn with a movement component sends its movement with no setup, and a remote character animates and aims from it. See [Continuous State](./runtime/continuous-state.md).
+- **Your own values beside the movement.** Mark a property `CrowdyContinuous` and it travels with each movement update.
+- **Owning Client reaches the entity's writer.** The Host recipient is deprecated. See [Recipients and Routing](./runtime/recipients-and-routing.md).
+- **Player safety.** Contacts, blocks, reports, the age screen and the recording state, on [Player Safety](./services/player-safety.md).
+
+[Deprecated in 2.25](./guides/deprecated.md) lists everything 2.25 deprecates and what replaces it, [What's Changed](./guides/whats-changed.md) has the full list, and the plugin's `MIGRATION.md` has the steps to upgrade a project.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
@@ -20,13 +32,16 @@ Gameplay can be driven entirely from Blueprint, but the plugin itself compiles a
 Everything the SDK replicates lives on one of two planes, and the whole guide leans on the split.
 
 1. **The view plane (CrowdyState).** Fast, client-owned state such as movement, animation, and transient effects. The client that owns an entity writes its state and everyone else sees it. Nothing here is checked by a server.
-2. **The elected host is a convention.** One client is elected host to coordinate the view plane. It is a helper for shared logic, not a rule enforcer.
-3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK reaches it from C++ through [Server Logic](./exec/overview.md).
-4. **The planes touch in one way.** A client asks the server's code for a change and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input.
+2. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK reaches it from C++ through [Server Logic](./exec/overview.md).
+
+Two rules follow from the split:
+
+- **The Leader is a convention.** One client, the [Leader](./runtime/leader.md), writes shared view-plane state such as a replicated subsystem. It is a helper for shared logic, not a rule enforcer.
+- **The planes touch in one way.** A client asks the server's code for a change and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input.
 
 Read [The Two Planes](./concepts/two-planes.md) before you decide where a new piece of state belongs.
 
-:::caution[The host is a convention the SDK helps you follow, not a server that enforces rules.]
+:::caution[The Leader is a convention the SDK helps you follow, not a server that enforces rules.]
 :::
 
 ## Entities
@@ -38,7 +53,7 @@ Almost everything on the view plane is an **entity**: an actor with a `UCrowdyEn
 Work through it in order the first time.
 
 1. **Start**: [Installation](./installation.md) and the [Quickstart](./quickstart.md).
-2. **Concepts**: [The Two Planes](./concepts/two-planes.md), [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md), [Sessions and Presence](./concepts/sessions-and-presence.md), [The Host Is a Convention](./concepts/host-is-a-convention.md).
+2. **Concepts**: [The Two Planes](./concepts/two-planes.md), [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md), [Sessions and Presence](./concepts/sessions-and-presence.md), [A Coordinator Is a Convention](./concepts/host-is-a-convention.md).
 3. **Crowdy Studio**: [sign in and connect your app](./studio/overview.md) from inside the editor.
 4. **Runtime (view plane)**: [map profiles](./runtime/map-profile.md), entities, RPC events, Crowdy State.
 5. **Server Logic (truth plane)**: [server-owned state on ck-exec and the code that changes it](./exec/overview.md), from Blueprint or C++.

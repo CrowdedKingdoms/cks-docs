@@ -18,7 +18,7 @@ wrong.
 
 You are iterating on an RPC handler or a Crowdy State property and want to confirm the send and receive
 code paths without launching a second client, you are about to test something that only shows up with two
-real players (host election, ownership, targeted delivery), or something replicated is not showing up and
+real players (who leads, ownership, targeted delivery), or something replicated is not showing up and
 you need to see where the SDK stopped.
 
 ## Single-client RPC loopback
@@ -68,8 +68,8 @@ this yourself, it explains why a mirror exists at all rather than a same-actor r
 
 ## Two-PIE-client setup
 
-The loopback switches cover the common case. Some things only show up with two real clients: which one gets
-elected host, an ownership transfer, a targeted or spatial send that must reach one client and not the
+The loopback switches cover the common case. Some things only show up with two real clients: which one becomes
+the Leader, an ownership transfer, a targeted or spatial send that must reach one client and not the
 other.
 
 :::caution[Two PIE clients need two distinct real accounts.]
@@ -89,8 +89,9 @@ session, so two clients work, but a third would restore the second one's account
 extra ones as packaged clients with `-crowdysession` (below).
 
 Once both clients are running, confirm the setup actually worked before you trust anything else you see:
-each client should report a different local player identity, and exactly one client should be the elected
-host.
+each client should report a different local player identity, and exactly one client should be the
+[Leader](../runtime/leader.md) (`Is Local Leader`). The Leader needs your app's server code deployed once;
+until then there is none.
 
 ### Two packaged or standalone clients
 

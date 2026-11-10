@@ -50,8 +50,8 @@ Password is the right default for a build machine, a bot, or an agent, and for a
 |---|---|
 | `Login(Email, Password, OnSuccess, OnError)` | Password sign-in. Persists the session so a later launch can restore it. |
 | `Register(Email, Password, OnSuccess, OnError)` | Creates the account and signs in. An address that already has an account is refused with `EMAIL_ALREADY_REGISTERED`, not silently converted to a login. |
-| `BeginMagicLinkSignIn(Email, OnSuccess, OnError)` | Opens a loopback listener on 127.0.0.1, emails the link, and completes itself when the player clicks it. `OnError` on failure or timeout. Nothing else to call. |
-| `RequestLoginLink(Email, RedirectUri, OnLinkSent, OnError)`, `CompleteLoginLink(Token, OnSuccess, OnError)` | The two steps behind the one call above, for a flow you drive yourself. `FOnLoginLinkSent` carries one `bSent`, always true so an address cannot be probed. |
+| `BeginMagicLinkSignIn(Email, OnSuccess, OnError)` | Opens a loopback listener on 127.0.0.1 under a random path for this sign-in, emails the link, and completes itself when the player clicks it, so a web page cannot reach the listener with another account's token. `OnError` on failure or timeout. Nothing else to call. |
+| `RequestLoginLink(Email, RedirectUri, OnLinkSent, OnError)`, `CompleteLoginLink(Token, OnSuccess, OnError)` | The two steps behind the one call above, for a flow you drive yourself. Give each sign-in its own unguessable `RedirectUri`, because a fixed one lets any web page deliver another account's token to your game. `FOnLoginLinkSent` carries one `bSent`, always true so an address cannot be probed. |
 | `GetAvailableLoginProviders(OnResult, OnError)` | The enabled providers (`FOnLoginProvidersReceived`, a string array). Public: no session needed. Build the sign-in buttons from it. |
 | `BeginSocialSignIn(Provider, OnSuccess, OnError)` | Opens the provider's consent page in the system browser, never an embedded view, and completes when the redirect lands on the loopback listener. |
 | `RestoreSession(OnSuccess, OnError)` | Restores a saved session and re-mints. Returns false at once, and calls `OnError`, when nothing is saved. |
@@ -59,12 +59,14 @@ Password is the right default for a build machine, a bot, or an agent, and for a
 | `IsSignedIn()` | Signed in right now: a sign-in or restore completed and its app token is in memory. |
 | `RefreshAppToken()` | Rotate the app token by hand. It also happens automatically before expiry. |
 | `GetMyIdentities(OnResult, OnError)`, `BeginLinkIdentity(Provider, OnResult, OnError)`, `UnlinkIdentity(IdentityId, OnResult, OnError)` | Linked sign-in methods; below. |
-| `RecordPlayerConsents(bAcceptLegal, bAttestAgeOfMajority, OnRecorded, OnError)`, `DeclineLegalAcceptance()` | Store the player's agreement and let a held sign-in finish, or fail it. Only for a game that draws its own prompt; [Let the player agree to the terms](#let-the-player-agree-to-the-terms). |
-| `IsLegalAcceptancePending()`, `GetLegalDocuments()` | Whether a sign-in is waiting for the player's agreement; the documents to link, as `FCrowdyLegalDocument` rows (`Title`, `Url`). |
+| `RecordPlayerConsents(bAcceptLegal, bAttestAgeOfMajority, OnRecorded, OnError)`, `DeclineLegalAcceptance()` | Store the player's agreement and let a held sign-in finish, or fail it. The server ignores the attestation. Only for a game that draws its own prompt; [Let the player agree to the terms](#let-the-player-agree-to-the-terms). |
+| `RecordPlayerAge(BirthYear, BirthMonth, CountryCode, bParentalConfirmation, OnRecorded, OnError)`, `DeclineAgeEntry()` | Store the player's age and country and let a held sign-in finish, or fail it. Only for a game that draws its own screen. |
+| `IsLegalAcceptancePending()`, `IsAgeEntryPending()`, `IsAgeEntryLocked()` | Whether a sign-in is waiting for the player's agreement or age; whether this install is locked for a day after an age refusal. |
+| `RequestLegalDocuments(OnDone)`, `GetLegalDocuments()` | The documents to link, as `FCrowdyLegalDocument` rows (`Title`, `Url`): the current ones and the app's own, or those this SDK release knew. |
 | `RequestPasswordReset`, `ResendConfirmationEmail`, `ChangePassword`, `AddPassword`, `DeleteAccount`, `SignOutEverywhere` | The player's account settings; [Account settings](#account-settings). |
 | `GetMyAccess(OnResult, OnError)`, `ClaimFreeAccess(OnSuccess, OnError)` | The player's own access to this app, and claiming the app's free access; [When the player has no access yet](#when-the-player-has-no-access-yet). |
 
-Events on `UCrowdyAuthentication`, all Blueprint-assignable: `OnLogin` (`FOnAuthLoginEvent`) and `OnRegister` (`FOnAuthRegisterEvent`) with an `FCrowdyAuthResult`; `OnLoginFailed` (`FOnAuthLoginFailed`) and `OnRegisterFailed` (`FOnAuthRegisterFailed`) with a message; `OnSessionRestored` (`FOnAuthSessionRestored`) and `OnSessionRestoreFailed` (`FOnAuthSessionRestoreFailed`); `OnAppTokenRefreshed` (`FOnAppTokenRefreshed`), with no parameters, after a proactive or reactive rotation; and `OnLegalAcceptanceRequired` (`FOnLegalAcceptanceRequired`) and `OnLegalAcceptanceEnded` (`FOnLegalAcceptanceEnded`), with no parameters, when a sign-in starts and stops waiting for the player to agree to the terms.
+Events on `UCrowdyAuthentication`, all Blueprint-assignable: `OnLogin` (`FOnAuthLoginEvent`) and `OnRegister` (`FOnAuthRegisterEvent`) with an `FCrowdyAuthResult`; `OnLoginFailed` (`FOnAuthLoginFailed`) and `OnRegisterFailed` (`FOnAuthRegisterFailed`) with a message; `OnSessionRestored` (`FOnAuthSessionRestored`) and `OnSessionRestoreFailed` (`FOnAuthSessionRestoreFailed`); `OnAppTokenRefreshed` (`FOnAppTokenRefreshed`), with no parameters, after a proactive or reactive rotation; and `OnLegalAcceptanceRequired` (`FOnLegalAcceptanceRequired`) and `OnLegalAcceptanceEnded` (`FOnLegalAcceptanceEnded`), with no parameters, when a sign-in starts and stops waiting for the player to agree to the terms; `OnAgeRequired` (`FOnAgeRequired`) and `OnAgeEntryEnded` (`FOnAgeEntryEnded`) the same for the player's age. `RecordPlayerAge` answers on `FOnPlayerAgeRecorded`.
 
 `FCrowdyAuthResult` has two fields: `UserID`, the player's `int64` id, and `GameToken`, the session token you never read.
 
@@ -97,7 +99,7 @@ A Blueprint Game Instance's **Event Init** runs before the SDK's subsystems exis
 A response can arrive quickly enough to be missed by a handler bound after the call returns. The per-call delegates are bound as arguments, so they are always in place; for the multicast events, bind before the first sign-in: in `Init` after `Super::Init()` in C++, from the Game Mode's Event BeginPlay in Blueprint.
 :::
 
-In Blueprint, five latent sign-in nodes wrap the rich surface (a sixth, **Record Player Consents** (`UCrowdyAuth_RecordPlayerConsents`), is for a game that draws its own terms screen; its pins are `FRecordPlayerConsentsDelegateOnSuccess` and `FRecordPlayerConsentsDelegateOnError`), each with `On Success` (a `Result`) and `On Error` (a `Message`) pins and no delegate wiring: **Login** (`UCrowdyAuth_Login`), **Register** (`UCrowdyAuth_Register`), **Magic Link Sign In** (`UCrowdyAuth_BeginMagicLinkSignIn`), **Social Sign In** (`UCrowdyAuth_BeginSocialSignIn`), and **Restore Session** (`UCrowdyAuth_RestoreSession`). Their pin delegate types are `FLoginDelegateOnSuccess`, `FLoginDelegateOnError`, `FRegisterDelegateOnSuccess`, `FRegisterDelegateOnFailure`, `FBeginMagicLinkSignInDelegateOnSuccess`, `FBeginMagicLinkSignInDelegateOnError`, `FBeginSocialSignInDelegateOnSuccess`, `FBeginSocialSignInDelegateOnError`, `FRestoreSessionDelegateOnSuccess`, and `FRestoreSessionDelegateOnError`, should you bind one from C++.
+In Blueprint, five latent sign-in nodes wrap the rich surface (**Record Player Consents** (`UCrowdyAuth_RecordPlayerConsents`) and **Record Player Age** (`UCrowdyAuth_RecordPlayerAge`) are for a game that draws its own screens), each with `On Success` (a `Result`) and `On Error` (a `Message`) pins and no delegate wiring: **Login** (`UCrowdyAuth_Login`), **Register** (`UCrowdyAuth_Register`), **Magic Link Sign In** (`UCrowdyAuth_BeginMagicLinkSignIn`), **Social Sign In** (`UCrowdyAuth_BeginSocialSignIn`), and **Restore Session** (`UCrowdyAuth_RestoreSession`). Their pin delegate types are `FLoginDelegateOnSuccess`, `FLoginDelegateOnError`, `FRegisterDelegateOnSuccess`, `FRegisterDelegateOnFailure`, `FBeginMagicLinkSignInDelegateOnSuccess`, `FBeginMagicLinkSignInDelegateOnError`, `FBeginSocialSignInDelegateOnSuccess`, `FBeginSocialSignInDelegateOnError`, `FRestoreSessionDelegateOnSuccess`, and `FRestoreSessionDelegateOnError`, should you bind one from C++.
 
 ### Register
 
@@ -164,35 +166,40 @@ A server can disable or rename a provider; a hard-coded button then opens a cons
 
 The server hands out no gameplay token until the signed-in player has agreed to the current terms and has an age. A new version of a document asks again. What the server requires and how it is stored is on [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country); this section is what the SDK does about it and what you can change.
 
-:::caution[Since 2026-11-04]
-Crowded Kingdoms admits players from 13, and a player's age comes from their date of birth, not from a confirmation box: the documents are the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html), and the age confirmation the prompt below asks for records nothing. An account with no age is refused `AGE_REQUIRED` until it gives its birth date and country with `recordPlayerAge`, which this plugin does not ask for yet; an account that confirmed its age before that date keeps it. See [Age, country and who may play](/management-api/age-and-territory).
-:::
+A player's age comes from their date of birth. An account with no age is refused `AGE_REQUIRED`, and one that confirmed its age before 2026-11-04 keeps it. See [Age, country and who may play](/management-api/age-and-territory).
 
 ### What the player sees by default
 
-You write nothing. When a sign-in, sign-up, restore, or token refresh is refused for this reason, the SDK holds it instead of failing it, and opens a prompt over the game viewport in the Crowded Kingdoms colors: the five documents as links, one checkbox to agree to them, one to confirm the age, and **Accept** and **Decline**. **Accept** is enabled once both boxes are ticked.
+You write nothing. When a sign-in, sign-up, restore, or token refresh is refused for this reason, the SDK holds it instead of failing it, and opens a prompt over the game viewport in the Crowded Kingdoms colors.
+
+An account with no age sees the age screen first. It asks for the month and year of birth and the country, picks nothing, and shows no age. A date that needs it then shows one line for the player to confirm that a parent or guardian agreed. **Not now** fails the sign-in with `Sign-in needs your date of birth and country.`. A refusal replaces the form with the reason's text and a **Close** button, and the sign-in fails. It offers no way back to the date, and the same install is not asked again for a day.
+
+Then the terms prompt lists the platform's current documents and the app's own as links, with one checkbox to agree to them, and **Accept** and **Decline**. **Accept** is enabled once the box is ticked and the list has loaded.
 
 - **Accept** records the player's agreement, closes the prompt, and finishes the sign-in they started: your `OnLogin`, `OnRegister`, `OnSessionRestored`, or `OnAppTokenRefreshed` handler runs exactly as it would have without the prompt.
-- **Decline** closes the prompt and fails that sign-in with `Sign-in needs the terms and the age confirmation.` through its usual failure path (`OnError` and the failed event), so your sign-in screen shows it like any other refusal.
+- **Decline** closes the prompt and fails that sign-in with `Sign-in needs the terms to be accepted.` through its usual failure path (`OnError` and the failed event), so your sign-in screen shows it like any other refusal.
 - If the agreement cannot be recorded (the network dropped, say), the prompt shows the error and stays up, and the sign-in stays held.
 
 The prompt also appears in the middle of a session when a document gets a new version: the next token refresh is refused, held, and the prompt opens over the game. Declining it leaves the current app token to run out.
 
 Only one sign-in waits at a time. While one waits, the SDK does not rotate the app token, and a newer sign-in that is refused takes the place of the older one, which fails first.
 
-To see the prompt without an account that still needs it, run `crowdy.auth.consent.preview` in the console of a development build. It opens the same prompt over the game; **Accept** and **Decline** only close it, and nothing is recorded. The command is not in Shipping builds.
+To see the prompts without an account that still needs them, run `crowdy.auth.consent.preview` or `crowdy.auth.age.preview` in the console of a development build. Each opens the same prompt over the game; its buttons only close it, and nothing is recorded. `crowdy.auth.age.unlock` lifts the one-day lock after you test a refusal. The commands are not in Shipping builds.
+
+A sign-in refused for good, because of the player's age, their country, or an app that is not set up for players under 18 yet, fails with text you can show as it is, and stops token rotation. `CrowdyCppPlayerRefusalText` holds the wording. It names no age and gives no reason, as the platform requires.
 
 ### Draw your own prompt
 
 A game with its own sign-in screens can turn the built-in prompt off and show the same choice in its own style. Clear **Show Consent Prompt** (`bShowConsentPrompt`, on by default) under **Project Settings, Plugins, Crowdy SDK, Authentication**, then handle the hold yourself:
 
-1. Bind `OnLegalAcceptanceRequired` on the Crowdy Authentication subsystem before the first sign-in. It fires once per hold, with no parameters.
-2. Show the documents from `GetLegalDocuments()`, an array of `FCrowdyLegalDocument` (`Title`, `Url`), as links, in that order, with two checkboxes: one to agree to the documents, one for the age.
-3. When the player ticks both and presses accept, call `RecordPlayerConsents(true, true, ...)`. If they decline, call `DeclineLegalAcceptance()`.
-4. Close your UI on `OnLegalAcceptanceEnded`. It fires whenever nothing is held any more, however the hold ended, so a recorded consent, a decline, and a sign-out all end up in one place.
+1. Bind `OnLegalAcceptanceRequired` and `OnAgeRequired` on the Crowdy Authentication subsystem before the first sign-in. Each fires once per hold, with no parameters. With the prompt off and neither bound, a sign-in that needs an age fails, and one that needs terms waits.
+2. For the terms, call `RequestLegalDocuments(OnDone)` and show the array of `FCrowdyLegalDocument` (`Title`, `Url`) it answers as links, in that order, with one checkbox. It includes the app's own documents. `GetLegalDocuments()` is only what this release of the SDK knew.
+3. When the player ticks it and presses accept, call `RecordPlayerConsents(true, false, ...)`. If they decline, call `DeclineLegalAcceptance()`.
+4. For the age, ask on a screen that follows [the platform's rules](/management-api/age-and-territory#the-age-screen), then call `RecordPlayerAge(Year, Month, CountryCode, bParentalConfirmation, ...)` or `DeclineAgeEntry()`. Skip the screen while `IsAgeEntryLocked()` is true, and call `DeclineAgeEntry()` instead.
+5. Close your UI on `OnLegalAcceptanceEnded` and `OnAgeEntryEnded`. Each fires whenever nothing is held any more, however the hold ended.
 
-:::danger[Record consent only from the player's own accept.]
-`RecordPlayerConsents` stores the player's agreement on their account. Never call it for them, from a timer, or with a box that was pre-ticked: the call does nothing unless both arguments are true, and both must come from boxes the player ticked.
+:::danger[Record consent and age only from the player's own answer.]
+`RecordPlayerConsents` and `RecordPlayerAge` store what the player said on their account. Never call them for them, from a timer, or with a box that was pre-ticked. The age screen shows no age, picks no answer, and shows the parental line only for a date that makes the player 13 to 17. An age refusal offers no way back to the date. An account that answers under 13 is deleted.
 :::
 
 <Tabs groupId="lang">
@@ -227,7 +234,7 @@ void ULanternGameInstance::OnTermsAccepted(bool bAgreedToDocuments, bool bConfir
 
 	FOnAuthError OnError;
 	OnError.BindDynamic(this, &ULanternGameInstance::HandleConsentError);
-	GetSubsystem<UCrowdyAuthentication>()->RecordPlayerConsents(true, true, FOnLegalConsentsRecorded(), OnError);
+	GetSubsystem<UCrowdyAuthentication>()->RecordPlayerConsents(true, false, FOnLegalConsentsRecorded(), OnError);
 }
 
 void ULanternGameInstance::OnTermsDeclined()
@@ -236,14 +243,14 @@ void ULanternGameInstance::OnTermsDeclined()
 }
 ```
 
-`ShowTermsScreen` builds its list from `UCrowdyAuthentication::GetLegalDocuments()`, which is static and needs no subsystem. `HandleConsentError` shows the message and leaves the screen up so the player can try again: when recording fails, the sign-in stays held.
+`ShowTermsScreen` builds its list from `RequestLegalDocuments`, which answers on `FOnLegalDocuments`. `HandleConsentError` shows the message and leaves the screen up so the player can try again: when recording fails, the sign-in stays held.
 
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
 In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and binds **Bind Event to On Legal Acceptance Required** to a custom event that creates your terms widget and adds it to the viewport, and **Bind Event to On Legal Acceptance Ended** to one that removes it. The widget fills its document list from **Get Legal Documents**, a pure node returning an array of **Crowdy Legal Document** (`Title`, `Url`).
 
-The widget's accept button runs a branch on its two check boxes, and only when both are true calls the latent **Record Player Consents** node with **Accept Legal** and **Attest Age Of Majority** set true. Its **On Error** pin carries a `Message` to show; **On Success** needs nothing, because the held sign-in resumes and reaches the nodes you already wired. The decline button calls **Decline Legal Acceptance** on the Crowdy Authentication subsystem. **Is Legal Acceptance Pending** reads whether a sign-in is waiting right now, for a widget that opens late.
+The widget's accept button calls the latent **Record Player Consents** node with **Accept Legal** set true, once its check box is ticked. Its **On Error** pin carries a `Message` to show; **On Success** needs nothing, because the held sign-in resumes and reaches the nodes you already wired. The decline button calls **Decline Legal Acceptance** on the Crowdy Authentication subsystem. **Is Legal Acceptance Pending** reads whether a sign-in is waiting right now, for a widget that opens late.
 
 </TabItem>
 </Tabs>
@@ -287,7 +294,7 @@ The Game Mode Blueprint needs a Boolean variable `bCanPlay`. **Event BeginPlay**
 | `GetUserID()` | The signed-in user's id, `int64`. |
 | `GetUUID()`, `GetID()` | This client's actor identity as a string and as an `FGuid`. |
 
-Its events `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) and `OnHostIDUpdated` (`FOnHostIDUpdated`) announce a new client identity and a change of the elected view-plane host; the host one belongs to [Host election](../runtime/host-authority.md). The other two, for a paused app and for ended access, are the next two sections. Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
+Its event `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) announces a new client identity. Two more, for a paused app and for ended access, are the next two sections. The deprecated `OnHostIDUpdated` is under [Deprecated](#deprecated). Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
 
 ### When the app is paused
 
@@ -529,6 +536,16 @@ A signed-in player can attach more ways to sign in. `GetMyIdentities` lists them
 :::caution[The server refuses to unlink a player's last remaining sign-in method.]
 Expect the refusal in a UI that lists identities with a remove button; do not treat it as an error to retry.
 :::
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### OnHostIDUpdated
+
+**On Leader Changed**, on [The Leader](../runtime/leader.md#follow-the-leader), replaces it, and carries user ids, not entity ids. `OnHostIDUpdated` (`FOnHostIDUpdated`) on `UCrowdyGameSession` announces a change of the host: the Leader by default, the elected view-plane host under Elected Host. [Host election](./host-election.md) has the rest.
 
 ## Gotchas
 

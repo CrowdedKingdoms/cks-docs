@@ -2,7 +2,7 @@
 slug: state-meta-keys
 sidebar_position: 7
 title: Crowdy State Metadata Keys
-description: "The metadata a UPROPERTY carries to replicate on the Crowdy State view plane: the five keys, their defaults, and what a property may hold."
+description: "The metadata a UPROPERTY carries to replicate on the Crowdy State view plane: the six keys, their defaults, and what a property may hold."
 ---
 
 import SurfaceTable from '@site/src/components/SurfaceTable';
@@ -37,7 +37,7 @@ void OnRep_Stance();
 The manifest carries the symbol and its header; the accepted values, defaults, and behavior below come from
 the header directly.
 
-`CrowdyState` takes no value and is required. It marks the property for Crowdy State; the other four keys
+`CrowdyState` takes no value and is required. It marks the property for Crowdy State; the other five keys
 do nothing without it. Its legal place is any `UPROPERTY`, never a `UFUNCTION` or `UCLASS`.
 
 `CrowdyOnRep` takes the name of a parameterless notify function and has no default. It runs on the receiver
@@ -58,7 +58,14 @@ changed property always ships, marked or not, marked properties are simply re-se
 Blueprint "Crowdy Replication" dropdown pre-checks Heartbeat the first time a variable enters Replicated
 mode, as a convenience; the underlying mechanism is the same opt-in metadata either way.
 
-:::note[`CrowdyOwnerOnly`, `CrowdyManualDirty`, and `CrowdyHeartbeat` are presence markers. You add the bare key to turn each on; they take no value. The code tests only whether the key is present, so do not write `= true` -- and `= false` would still count as on. `CrowdyOnRep` is the one key that takes a value, the notify function's name.]
+`CrowdyContinuous` takes no value and defaults to off. The value rides the entity's movement updates instead
+of going as a delta: sent on change and on every keyframe, applied on arrival. It applies to actor-class
+properties on a class that replicates movement. Anywhere else, or together with `CrowdyOwnerOnly` or
+`CrowdyManualDirty`, it logs a warning and the property replicates as ordinary Crowdy State. `CrowdyHeartbeat`
+changes nothing on it. See
+[Send your own values with the movement](/unreal-sdk/runtime/continuous-state#send-your-own-values-with-the-movement).
+
+:::note[`CrowdyOwnerOnly`, `CrowdyManualDirty`, `CrowdyHeartbeat`, and `CrowdyContinuous` are presence markers. You add the bare key to turn each on; they take no value. The code tests only whether the key is present, so do not write `= true` -- and `= false` would still count as on. `CrowdyOnRep` is the one key that takes a value, the notify function's name.]
 :::
 
 :::note[`CrowdyState` is deliberately not spelled `CrowdyReplicate`. That string already belongs to the RPC side, as an alias of the Blueprint marker `CrowdyReplicates`. Reusing it here would make one key mean two different systems and break RPC-versus-state discovery. If you came from the RPC metadata keys page expecting the two families to mirror each other by name, they do not, on purpose. See [RPC metadata keys](./rpc-meta-keys.md).]
@@ -70,7 +77,7 @@ Crowdy State covers plain values and plain structs: numbers, bools, enums, `FNam
 
 A struct type that carries a native net serializer (`FVector_NetQuantize`, `FRotator`, and the rest of the `_NetQuantize` family) quantizes on the wire automatically, with no key to set. See [type-driven quantization](/unreal-sdk/runtime/crowdy-state#accepted).
 
-The Blueprint "Crowdy Replication" dropdown offers **None** and **Replicated**; **Replicated** writes these keys for you. A `CrowdyModel` or `CrowdyContainer` key left on a property from the removed Game Model API does nothing; see [Move from Game Models](../exec/move-from-game-models.md#upgrade-steps).
+The Blueprint "Crowdy Replication" dropdown offers **None**, **Replicated** and **Replicated (Continuous)**; the last two write these keys for you. A `CrowdyModel` or `CrowdyContainer` key left on a property from the removed Game Model API does nothing; see [Move from Game Models](../exec/move-from-game-models.md#upgrade-steps).
 
 :::warning[`HasMetaData`-backed discovery helpers, including the one behind this header, answer false in a cooked build, because cooked builds strip metadata. A runtime check routes through the baked registry instead, never through live metadata.]
 :::
@@ -85,6 +92,6 @@ The Blueprint "Crowdy Replication" dropdown offers **None** and **Replicated**; 
 
 ## Related
 
-- [Crowdy State](/unreal-sdk/runtime/crowdy-state): owner diffing, host precedence, world entities, and the
+- [Crowdy State](/unreal-sdk/runtime/crowdy-state): owner diffing, host precedence under Elected Host, world entities, and the
   keyframe baseline.
 - [RPC metadata keys](./rpc-meta-keys.md)

@@ -96,6 +96,24 @@ Two properties under **Crowdy SDK, Developer, Server Objects** set how long a Se
 
 Both apply from the next Play, and to the editor's developer connections. A dropped connection is always reopened; there is no setting for that.
 
+### Leader Source
+
+`LeaderSource` (**Leader Source**, an `ECrowdyLeaderSource`) is under **Crowdy SDK, Replication** and is yours to set. It decides who writes shared state. Under **Server Object**, the default, no client writes an entity Owned By World and the Leader writes replicated subsystems. See [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host). The **Elected Host (Deprecated)** value and `HostPollIntervalSeconds` are under [Deprecated](#deprecated).
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### Leader Source: Elected Host
+
+**Server Object**, the default value of [Leader Source](#leader-source), replaces it, and [The Leader](../runtime/leader.md) teaches what it does. **Elected Host (Deprecated)** (`ECrowdyLeaderSource::ElectedHost`, `LeaderSource=ElectedHost` in the ini) keeps the old elected host: it writes World entities and replicated subsystems. The whole elected host goes in a later release.
+
+### HostPollIntervalSeconds
+
+Nothing replaces it, because under **Server Object** the SDK does not poll for a host. `HostPollIntervalSeconds` (Network category, written by Config Sync) sets how often the SDK polls for the elected host and only matters when Leader Source is **Elected Host (Deprecated)**. The generated table above still lists it, because the property is still there.
+
 ## Gotchas
 
 - The class is `Config=Game`. A property you change in code at runtime through the settings object itself

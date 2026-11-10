@@ -11,7 +11,7 @@ Each step shows the values and the order. [Draw a crowd with Mass](../draw-a-cro
 
 The player is `ALanternPlayer`, a character class with a `Torch` point light and a `ULanternPlayerExecutor`. The executor sends `FLanternPlayerState`, which holds `Location`, `Rotation` and `bTorchLit`. Build it as [Continuous State](../../runtime/continuous-state.md#a-custom-executor) does, not as the [Quickstart](../../quickstart.md) leaves it. The crowd reads `Location` and `Rotation` to place a row. See [Make a character draw as a crowd row](../make-a-character-draw-as-a-crowd-row.md).
 
-`BP_LanternPlayer` is your own Blueprint subclass of `ALanternPlayer`. It needs a skeletal mesh and the movement and input you already have, not a bare Character. Its Crowdy Entity Component is set to **Dynamic**, **Player Derived** and **Local Client**. You also need an idle, walk, run, sitting, fallen, wave and cheer clip for its skeleton.
+`BP_LanternPlayer` is your own Blueprint subclass of `ALanternPlayer`. It needs a skeletal mesh and the movement and input you already have, not a bare Character. Its Crowdy Entity Component sends its movement (a Character does by default, **Replicate Movement** **Auto**), with **Player Derived** and Owned By **Player**. You also need an idle, walk, run, sitting, fallen, wave and cheer clip for its skeleton.
 
 Two parts need C++: the `Build.cs` lines, and the torch data under [Brighten the torch](#brighten-the-torch), which is a fragment, a trait, a processor and a field registration. Every other step has a Blueprint half and a C++ half that do the same thing.
 
@@ -42,7 +42,7 @@ There is no plugin to enable. See [Turn Mass on for a map](../turn-mass-on-for-a
 
 1. In the Content Browser, click **Add**, then **Miscellaneous**, then **Data Asset**, and pick **Crowdy Map Profile**. Name it `DA_OakfordProfile`.
 2. Open it. Under **Actor Management**, set **Backend Class** to **Crowdy Mass Rendering Backend**.
-3. Leave **Enable Networking** ticked and **Backend Config** empty. The backend then reads **Project Settings, Plugins, Crowdy Mass**.
+3. Leave every switch ticked and **Backend Config** empty. The backend then reads **Project Settings, Plugins, Crowdy Mass**.
 4. In **Project Settings, Plugins, Crowdy SDK**, open **Map Profiles** and add an entry that maps the Oakford map to `DA_OakfordProfile`. See [Assign the profile](../../runtime/map-profile.md#assign-the-profile).
 
 You could also start from the shipped profile `/CrowdySDK/Mass/Data/DA_CrowdyMassDefaultProfile`, which already selects the Mass backend. Every other map keeps the actor pool.
@@ -161,7 +161,7 @@ Bind `OnSit` to the sit key.
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-1. In `BP_LanternPlayer`, add the **X** key event. From **Pressed**, add **Is Crowdy Entity Locally Controlled** and a **Branch**, so only the pawn you control writes.
+1. In `BP_LanternPlayer`, add the **X** key event. From **Pressed**, add **Is Crowdy Entity Locally Owned** and a **Branch**, so only the pawn you control writes.
 2. On true, add a second **Branch** on an **Equal (Enum)** that compares **Get Stance** to `Sitting`. On true, call **Set Stance** with `Standing`. On false, call **Set Stance** with `Sitting`.
 
 [Blueprint snippet: mass-sit-stance, see /bp/unreal-sdk/mass-sit-stance.txt]

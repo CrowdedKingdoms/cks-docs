@@ -10,21 +10,21 @@ import TabItem from '@theme/TabItem';
 
 # Make a character draw as a crowd row
 
-A character becomes a crowd row on other machines without a second version of it. You make the class a Dynamic Crowdy entity, send a state struct whose field names the crowd can read, give the class a skinned mesh, and check the result with one console command. By the end `ALanternPlayer` appears in Oakford's square as a moving row on every other player's machine.
+A character becomes a crowd row on other machines without a second version of it. You make the class a Crowdy entity that replicates movement, send a state struct whose field names the crowd can read, give the class a skinned mesh, and check the result with one console command. By the end `ALanternPlayer` appears in Oakford's square as a moving row on every other player's machine.
 
 ## When you need this
 
 When a map selects Mass (see [Turn Mass on for a map](./turn-mass-on-for-a-map.md)) and you want a class, usually the player pawn, drawn as a row. This page starts from `ALanternPlayer`, a character whose `ULanternPlayerExecutor` sends `FLanternPlayerState`, built as in [Continuous State](../runtime/continuous-state.md#a-custom-executor). `BP_LanternPlayer` is your Blueprint subclass of `ALanternPlayer`.
 
-## Make the class a Dynamic entity
+## Make the class an entity that replicates movement
 
 Add a **Crowdy Entity Component** to `ALanternPlayer`, or to `BP_LanternPlayer` if you work in Blueprint, and set:
 
 | Setting | Value | Why |
 |---|---|---|
-| **Mode** | **Dynamic** | Streams the executor's snapshot every replication interval. **Static** is event-only and moves nothing. |
+| **Replicate Movement** | **Auto** | Streams the executor's snapshot every replication interval. **Auto** is on for a Character, so leave it. **Off** is event-only and moves nothing. |
 | **Identity Policy** | **Player Derived** | For a player pawn: the id comes from the signed-in account, so only one actor per client can use it, the locally controlled primary pawn. |
-| **Ownership** | **Local Client** | This client owns the entity. The options are **Local Client** and **Host**, and **Host** is the default. |
+| **Owned By** | **Player** | This client owns the entity. The options are **Auto**, **Player** and **World**, and **Auto** is the default: World when placed in the level, Player when spawned. |
 | **State Executor** | An executor whose state struct has the fields below | Builds the snapshot sent every interval. Unset means the SDK's transform-only default. |
 | **Auto Register** | on | Joins the continuous channel at `BeginPlay`. |
 
@@ -181,7 +181,7 @@ With it on, every class is built from itself. It pushes aside per-class bindings
 ## Gotchas
 
 - The Mass backend skips your own locally owned entity. Use **Render Local Owner** or an area spawner to see a row on one client; see [Check it with one client](./turn-mass-on-for-a-map.md#check-it-with-one-client).
-- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A Dynamic entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
+- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A moving entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
 - `crowdy.mass.derive` and `crowdy.mass.derive.force` are compiled out of Shipping builds; see [Fix a crowd that does not look right](./troubleshooting.md).
 
 ## Related
