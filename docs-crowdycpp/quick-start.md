@@ -138,6 +138,11 @@ By default the SDK owns one network thread and you drain notifications with
 handled automatically — see [Replication client](/crowdycpp/replication-client)
 for the details and the thread-free manual-pump mode.
 
+A player who sends no gameplay input for the app's idle timeout (15 minutes unless the
+app sets its own) is released by the server, and the connection moves to
+`ConnState::Inactive` (CrowdyCPP 0.77.0). That is final: nothing reconnects until you
+call `connect()` again, which a game does on the player's next input.
+
 ## 4. Join the world and tick
 
 `WorldSession` layers SDK-managed game state over the connection: your actor

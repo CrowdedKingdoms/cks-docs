@@ -211,6 +211,35 @@ period (≈5 s) and then deletes the session and ignores further packets. See
 **[Operations → Load shedding](/replication-api/operations)**. Browser clients on
 the GraphQL UDP proxy are migrated automatically and never see this message.
 
+## Session released — `COMMAND_SESSION_RELEASED` (28)
+
+A server sends `COMMAND_SESSION_RELEASED` (28) when it has ended your session and will
+not answer it again. Like `COMMAND_RECONNECT` it is non-spatial and always its own
+datagram, so the first byte is reliably `28`.
+
+| Identifier  | Bits | Bytes | Type  | Description                                                                                          |
+| ----------- | ---- | ----- | ----- | ---------------------------------------------------------------------------------------------------- |
+| messageType | 8    | 1     | enum  | `COMMAND_SESSION_RELEASED` (28).                                                                     |
+| reason      | 8    | 1     | uint8 | Why the session ended (below).                                                                       |
+| hmac        | 256  | 32    | bytes | HMAC-SHA256 over the two leading bytes (type and reason), keyed on the 64-octet game token string.   |
+
+**Verify the HMAC before acting and ignore the datagram if it does not match.** The
+reason is inside the signed prefix, so it cannot be rewritten in flight.
+
+| reason | Name            | What to do                                                                                                                                                                                                                                                                                       |
+| ------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | `DEAUTHORIZED`  | The platform ended the session. Re-query `serverWithLeastClients` with the same token if the player is still playing; a token that was revoked is refused there.                                                                                                                                 |
+| 1      | `STALE`         | The server heard nothing from you for too long. If the player is still playing, re-query `serverWithLeastClients` and reconnect.                                                                                                                                                                 |
+| 2      | `TOKEN_EXPIRED` | The game token expired, and every server would refuse it. Refresh the app token, then re-query `serverWithLeastClients`.                                                                                                                                                                         |
+| 3      | `OVERLOAD`      | The server is shedding load. Re-query `serverWithLeastClients` and reconnect, as for `COMMAND_RECONNECT`.                                                                                                                                                                                        |
+| 4      | `REBALANCE`     | The server is evening out load across the fleet. Re-query `serverWithLeastClients` and reconnect.                                                                                                                                                                                                |
+| 5      | `IDLE`          | The player sent no gameplay input for the app's idle timeout (`App.effectiveIdleTimeoutSeconds` on the Game API: 15 minutes unless the app sets its own). **Final:** do not reconnect until the player acts again. Heartbeats and keyframes that repeat an unchanged state do not count as input. |
+
+Reason 5 arrives from replication server v0.44.0. Treat a reason you do not know like
+`STALE`. Browser clients never see this message: the GraphQL UDP proxy reconnects for
+them, or for reason 5 emits the connection event `IDLE_TIMEOUT` and ends the stream, and
+the binary relay closes its WebSocket with code 4410.
+
 ## Message Bundle per Datagram
 
 The message bundle type simply puts multiple messages in a datagram as size allows.
