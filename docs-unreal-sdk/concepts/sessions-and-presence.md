@@ -39,5 +39,5 @@ The SDK's own session API (Create, Join, Leave and End on the Game Model subsyst
 ## Related
 
 - [The Two Planes](./two-planes.md): why the server, not your client, keeps the record of a match.
-- [The Host Is a Convention](./host-is-a-convention.md): what the elected view-plane host does and does not decide.
+- [A Coordinator Is a Convention](./host-is-a-convention.md): what a coordinating client, the Leader, does and does not decide.
 - [Channels](../runtime/channels.md): the session channel and named channels.

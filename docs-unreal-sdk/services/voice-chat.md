@@ -111,7 +111,7 @@ Event BeginPlay calls **Set Voice Chat Distance** with **Chunks** set to 1.
 </TabItem>
 </Tabs>
 
-Nearby text has a distance of its own on every line; see [Nearby Text Chat](./nearby-text-chat.md).
+Nearby text has a distance of its own on every line; see [Nearby Text Chat](./nearby-text-chat.md). Who a player hears and who hears them is theirs to choose; see [Player Safety](./player-safety.md).
 
 ## Reading the microphone
 

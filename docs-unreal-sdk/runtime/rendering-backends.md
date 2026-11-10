@@ -14,7 +14,7 @@ A rendering backend turns the [continuous state](./continuous-state.md) a remote
 
 ## When you touch this
 
-When a Dynamic entity moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd; see [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md). A Static entity never comes through here: its proxy is the actor its spawn event made, driven by Crowdy State and events, and a client that joined after the spawn builds it from a repeat of that event.
+When an entity that replicates movement moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd; see [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md). An entity that sends no movement never comes through here: its proxy is the actor its spawn event made, driven by Crowdy State and events, and a client that joined after the spawn builds it from a repeat of that event.
 
 ## The default: the actor pool
 
@@ -48,10 +48,12 @@ When an entity's spawn event already made an actor of the entity's class, the po
 A pool that is full grows by one actor at a time, spawned during play with collision off until it is activated. At the cap, a new entity of that class waits: it is activated as soon as another entity of the class leaves, or, if its spawn event already made an actor for it, that actor is kept and drawn instead of being replaced. Nothing is dropped. The cap is there so a flood of made-up entity ids from a misbehaving peer cannot make your client spawn without limit; raise it if you legitimately expect more than 256 live remote entities of one class.
 
 :::caution[A custom executor needs a matching policy. The default policy reads FCrowdyActorState and refuses anything else.]
-`UCrowdyTransformRepPolicy` skips an update whose struct is not `FCrowdyActorState`, so a Dynamic entity whose executor sends its own struct stands still until its profile names a policy that reads it. `UCrowdyRepApplicationPolicy` has two pure virtuals and requires a subclass; `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is.
+`UCrowdyTransformRepPolicy` skips an update whose struct is not `FCrowdyActorState`, so an entity that replicates movement and whose executor sends its own struct stands still until its profile names a policy that reads it. `UCrowdyRepApplicationPolicy` has two pure virtuals and requires a subclass; `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is.
 :::
 
 ### The replication application policy
+
+A policy of your own can animate a character the way the default does. Keep one `CrowdyActorPool::FProxyMotion` per slot, call `CrowdyActorPool::ApplyProxyMotion` after placing the actor each frame, and `CrowdyActorPool::ResetProxyMotion` when the slot is released. `CrowdyActorPool::IsPlaceable` refuses a position no actor can stand at, so check it on values from another client.
 
 The policy is what moves a remote player's proxy. Continuous state is how pawns, players, and AI move, so a policy's first job is to take the location and rotation out of each update and put the proxy where the owner was at `RenderTimeMs`. The shipped `UCrowdyTransformRepPolicy` does exactly that for `FCrowdyActorState`, and for a pawn that only moves it is all you need. You write your own only when your executor sends more than the transform, and then you apply the transform yourself first and your extra fields after, because a custom policy replaces the shipped one rather than adding to it: `UCrowdyActorPoolBackend::ResolvePolicyClass` instantiates the config's class instead of `UCrowdyTransformRepPolicy`, so a policy that never sets location and rotation leaves every proxy under it standing still.
 
@@ -69,7 +71,7 @@ The policy is what moves a remote player's proxy. Continuous state is how pawns,
 
 Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most 0.2 seconds beyond the newest; after that it holds the value extrapolated to 0.2 seconds. The step is measured over at least the average gap of the last four samples (50 ms when only two are held), so two updates that arrive almost together after a sender hitch extrapolate at the sender's normal pace instead of throwing the proxy far ahead for a frame. A render time older than the oldest sample holds the oldest sample; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
 
-The reason a proxy built on it does not jitter is the render time itself: the actor manager renders at the estimated server time minus the interpolation delay (100 ms), so the proxy is always drawn a little behind the newest sample, between two samples it already holds, and never snaps to the latest one as it lands. Extrapolation only runs when an update is late, and its cap keeps a lost stream from sliding a proxy across the map.
+The reason a proxy built on it does not jitter is the render time itself: the actor manager renders at the estimated server time minus the interpolation delay (**Interpolation Delay** in the [map profile](./map-profile.md)'s Remote Entities group, 100 ms by default), so the proxy is always drawn a little behind the newest sample, between two samples it already holds, and never snaps to the latest one as it lands. Extrapolation only runs when an update is late, and its cap keeps a lost stream from sliding a proxy across the map.
 
 #### The example: the same shape, with your own field added
 
@@ -98,15 +100,9 @@ Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`),
 
 ## What a pooled proxy does and does not do
 
-:::warning[A pooled Dynamic proxy never sees the spawn event's InitialState.]
-The spawn event creates a proxy actor and broadcasts `OnCrowdySpawned` with the payload; the actor pool then treats that actor as an orphan, destroys it, and swaps in a pre-warmed pooled actor that never received it. Anything a proxy needs to look right must be a class default or a field of the replicated state struct, never a one-time spawn value.
-:::
-
-:::warning[The owner of a client-spawned Dynamic entity sees two visuals.]
-The pool is fed only by inbound network state, so the owner ends up with the local actor it drives directly and the pooled proxy the server echoes back, interpolation-delayed. There is no per-entity flag to choose. Hide one side yourself, in the entity's own code: `SetActorHiddenInGame` on the local actor when `IsLocallyOwned()` if the round-tripped proxy is the one that should show. With **Enable Owner Tracking** on (the default) the local player's own avatar is echoed and drawn the same way; turning it off suppresses that one echo and no other owned entity's.
-:::
-
-- A proxy's `GetNetID()` and `GetRole()` work: the backend assigns the identity to the pooled actor's component when it checks it out. `RemoteProxy` is the role it reports.
+- The proxy of a spawned entity is the actor its spawn event made, with what `OnCrowdySpawned` gave it, in either arrival order (see [Entities and spawning](./entities-and-spawning.md#receiving-a-spawn-on-a-remote-client)). A client that never received the spawn event, such as one that joined after an entity that replicates movement spawned, draws a pooled actor that has only class defaults and the replicated state.
+- The owner of an entity is not shown a pooled copy driven by the server's echo of its own updates; **Render Local Owner** (`bRenderLocalOwner`) on the Actor Pool Backend Config brings that copy back.
+- A proxy's `GetNetID()`, `GetRole()` and `GetOwnerID()` work: the backend assigns the identity to the pooled actor's component when it checks it out, and a spawn event that arrives afterwards fills in the owner. `RemoteProxy` is the role it reports.
 
 ## Swapping at runtime
 
@@ -114,7 +110,7 @@ The pool is fed only by inbound network state, so the owner ends up with the loc
 
 ## Writing a backend
 
-Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and three optional:
+Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and six optional:
 
 | Override | Required | Contract |
 |---|---|---|
@@ -125,8 +121,13 @@ Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendCo
 | `InitializeBackend(World, Config)` | no | Acquire subsystems, read the config. Return false, after logging the reason and the remedy, when you cannot draw with what you were given; the manager refuses you rather than installing you. |
 | `DeinitializeBackend()` | no | Release what you held. |
 | `IsInstanceActive(SlotId)` | no | Whether `SlotId` holds something drawn. Return false when `ActivateInstance` could not acquire a resource (a full pool), and the actor manager calls `ActivateInstance` again once capacity may have freed or the entity registers. The default, true, never retries. |
+| `TakeSpawnData(UUID, InitialState)` | no | Only on a backend whose `DrawsEntitiesAsCrowdRows()` is true: the spawn event of an entity that replicates movement, with no actor spawned for it. Land the data on its representation. |
+| `ReleaseDestroyedInstance(SlotId, UUID)` | no | A destroy event named the entity. Return true when you stopped drawing it; the default returns false. |
+| `GetBackendConfigClass()` | no | The config class your backend reads, so saving a map profile that pairs your backend with another config reports it. Read off the class default object; the default, null, skips the check. |
 
 `DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. The Crowdy Mass Rendering Backend that ships in the SDK is the one backend that returns true; choose it as the map profile's **Backend Class** and see [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md).
+
+A backend that returns true is also the only body of an entity that replicates movement on its map: a spawn event for one spawns no actor and calls `TakeSpawnData(UUID, InitialState)` instead, which you override to land the data on your representation now, or once the entity's first update has made it. Spawn events can be forged, so bound anything you hold for an entity not drawn yet. `ReleaseDestroyedInstance(SlotId, UUID)` is the other half: a destroy event names the entity (`SlotId` is `INDEX_NONE` when no slot holds it), and returning true says you stopped drawing it, so the actor manager draws it again only from an update that arrives after the half-second destroy window. The defaults do nothing and return false, which is right for a backend that draws actors: the destroyed actor going away is how its slot notices.
 
 `SlotId` is a stable index the actor manager assigns for the instance's lifetime; keep your per-instance state in arrays indexed by it.
 
@@ -139,7 +140,7 @@ The actor manager is already the single caller of `ActivateInstance` and `Deacti
 - `BackendClass` alone draws the default executor's movement through `UCrowdyTransformRepPolicy`. A custom state struct needs `BackendConfig` with a `ReplicationPolicyClass` that reads it, and that policy replaces the shipped one: apply `Location` and `Rotation` yourself before anything else, or every proxy stands still.
 - A policy built on `TInterpolatedField` is the smooth choice for anything that moves. Sample it at `RenderTimeMs`, never at the newest sample: the delay is what hides the network.
 - `bUseCrowdyActorTracker` off on the profile means no tracker, no manager, and no backend at all.
-- A pooled proxy's spawn-time look comes from class defaults or the state struct, never the spawn payload.
+- A spawned entity's proxy has its spawn payload only on clients that received the spawn event; elsewhere its look comes from class defaults or the state struct.
 - A pool at its cap warns once per class, naming the class and `MaxPoolSizePerClass`; each entity it could not draw is a `crowdy.pool.trace` line, not a warning, since it is retried. Raise `MaxPoolSizePerClass` if you see the warning. On 2.16.0 and earlier, a pool never grew past `DefaultPoolSizePerClass` (8), every entity past that was dropped with a warning and never retried, and its spawn-event actor was destroyed first; see [What's Changed](../guides/whats-changed.md#2026-09-26-sdk-v2170).
 - A class that arrives over the wire before it is loaded cannot be drawn; see Preloaded Entity Classes on [Entities and spawning](./entities-and-spawning.md).
 

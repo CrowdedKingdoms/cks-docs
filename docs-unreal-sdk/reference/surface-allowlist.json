@@ -201,9 +201,49 @@
     "note": "The built-in consent prompt and the brand palette it draws with; the prompt is opened by the SDK, and a game that draws its own prompt uses the events and functions on UCrowdyAuthentication."
   },
   {
-    "id": "SCrowdyConsentPrompt::SetAgeChecked",
+    "id": "SCrowdyConsentPrompt::SetDocuments",
     "reason": "internal",
-    "note": "The built-in consent prompt and the brand palette it draws with; the prompt is opened by the SDK, and a game that draws its own prompt uses the events and functions on UCrowdyAuthentication."
+    "note": "Fills the built-in consent prompt; the prompt is opened by the SDK."
+  },
+  {
+    "id": "SCrowdyConsentPrompt::SetLoadingDocuments",
+    "reason": "internal",
+    "note": "Holds the built-in consent prompt's Accept button until its list has loaded."
+  },
+  {
+    "id": "FCrowdyCppLegalDocument",
+    "reason": "internal",
+    "note": "The bridge row behind FCrowdyLegalDocument."
+  },
+  {
+    "id": "FCrowdyCppLegalDocumentsResult",
+    "reason": "internal",
+    "note": "The bridge result behind RequestLegalDocuments."
+  },
+  {
+    "id": "CrowdyCppDeviceId",
+    "reason": "internal",
+    "note": "The install's random id, sent on sign-up and a recorded age; the authentication page describes the effect."
+  },
+  {
+    "id": "CrowdyCppRequestNeedsDeviceId",
+    "reason": "internal",
+    "note": "Picks the two calls that carry the install's id."
+  },
+  {
+    "id": "FCrowdyCppClient::ListLegalDocuments",
+    "reason": "internal",
+    "note": "The bridge call behind RequestLegalDocuments."
+  },
+  {
+    "id": "UCrowdyAuthentication::ClearAgeEntryLock",
+    "reason": "internal",
+    "note": "Behind the crowdy.auth.age.unlock console command, for testing a refusal."
+  },
+  {
+    "id": "UCrowdyAuthentication::IsAccessRefused",
+    "reason": "internal",
+    "note": "Lets the built-in age prompt tell a refusal from another failure."
   },
   {
     "id": "SCrowdyConsentPrompt::SetBusy",
@@ -2566,9 +2606,44 @@
     "note": "Election plumbing the SDK calls when a host response arrives."
   },
   {
-    "id": "UCrowdyReplicatedSubsystemLibrary::RegisterReplicatedSubsystemInto",
+    "id": "ACrowdyLeaderOwnedTestActor",
     "reason": "internal",
-    "note": "The injectable core the game-instance base and the tests use; the world-resolving wrappers are on replicated-subsystems."
+    "note": "Headless test fixture for Owned By Leader; not shipped as API."
+  },
+  {
+    "id": "ACrowdyLeaderMovingTestActor",
+    "reason": "internal",
+    "note": "Headless test fixture for Owned By Leader; not shipped as API."
+  },
+  {
+    "id": "FCrowdyActorId::ForOwner",
+    "reason": "internal",
+    "note": "The id an owner sends under; the SDK derives it, and ownership-transfer describes it without the call."
+  },
+  {
+    "id": "FCrowdyActorId::TryReadOwnerTaggedNetID",
+    "reason": "internal",
+    "note": "Reads the NetID back out of an owner's id, for the SDK's id conversion."
+  },
+  {
+    "id": "CrowdyActorPool::RestoreProxyMovement",
+    "reason": "internal",
+    "note": "The SDK calls it when a client takes an entity over."
+  },
+  {
+    "id": "UCrowdyEntityComponent::HasInjectedIdentity",
+    "reason": "internal",
+    "note": "Tells a placed body from a handed one for the actor manager."
+  },
+  {
+    "id": "UCrowdyEntitySubsystem::MakeLeaderOwned",
+    "reason": "internal",
+    "note": "Registration plumbing for a record Owned By Leader."
+  },
+  {
+    "id": "UCrowdyEntitySubsystem::RefusesLeaderBody",
+    "reason": "internal",
+    "note": "The rule the pool backend and spawn events share; the Leader page states it."
   },
   {
     "id": "UCrowdyReplicatedSubsystemLibrary::UnregisterReplicatedSubsystemInto",
@@ -3276,14 +3351,39 @@
     "note": "Wire-level send below the entity component, which keeps its own actors present; recipients-and-routing documents the supported paths."
   },
   {
-    "id": "UCrowdySDKSubsystem::K2_DispatchGameEvent",
+    "id": "FCrowdyRPC::DecideOwnerRoute",
     "reason": "internal",
-    "note": "Raw wire send with explicit chunk coordinates; the documented paths are CrowdyEvents, Send Crowdy Event and the entity component's SendEvent."
+    "note": "The route to an entity's writer, table-tested; recipients-and-routing describes the routes."
   },
   {
-    "id": "UCrowdySDKSubsystem::DispatchActorUpdate",
+    "id": "UCrowdyActorTracker::HasHeardCurrentWireId",
     "reason": "internal",
-    "note": "Wire-level send below the entity component, C++ only; recipients-and-routing documents the supported paths."
+    "note": "Feeds the route to an entity's writer; recipients-and-routing describes the effect."
+  },
+  {
+    "id": "FMovedWireId",
+    "reason": "internal",
+    "note": "Private bookkeeping for an entity that changed hands."
+  },
+  {
+    "id": "UCrowdyEntitySubsystem::IsWireIdUnheard",
+    "reason": "internal",
+    "note": "Feeds the route to an entity's writer; recipients-and-routing describes the effect."
+  },
+  {
+    "id": "UCrowdyEntitySubsystem::DispatchGameEventToClientAt",
+    "reason": "internal",
+    "note": "Sends the spatial event an Owning Client call goes out as; recipients-and-routing describes the effect."
+  },
+  {
+    "id": "UCrowdyEntitySubsystem::ResolveEventAddressee",
+    "reason": "internal",
+    "note": "Picks the client an Owning Client call names; recipients-and-routing describes the effect."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::K2_DispatchGameEvent",
+    "reason": "internal",
+    "note": "Raw wire send with explicit chunk coordinates; the documented paths are CrowdyEvents and Send Crowdy Event."
   },
   {
     "id": "UCrowdySDKSubsystem::DispatchGameEvent",
@@ -7304,5 +7404,172 @@
     "id": "UCrowdyKitActorSubsystem::TakeUpdates",
     "reason": "internal",
     "note": "The tracker hands the subsystem each batch of kit actor updates on the game thread; nothing for a game to call."
-  }
+  },
+  {
+    "id": "FCrowdyPresenceReply",
+    "reason": "internal",
+    "note": "The answer the Crowdy SDK's Leader type gets from the root type; nothing for a game to read."
+  },
+  {
+    "id": "FCrowdyLeaderState",
+    "reason": "internal",
+    "note": "The empty state struct of the Crowdy SDK's Leader type; a game reads the Leader through UCrowdyLeaderSubsystem."
+  },
+  {
+    "id": "UCrowdyLeaderSubsystem::HandleConnectionLost",
+    "reason": "internal",
+    "note": "Bound to the SDK's connection events so a client leaves the Leader type; nothing for a game to call."
+  },
+  {
+    "id": "UCrowdyLeaderSubsystem::HandleConnectionUp",
+    "reason": "internal",
+    "note": "Bound to the SDK's connection events so a client joins the Leader type; nothing for a game to call."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::GetLeaderDefinition",
+    "reason": "internal",
+    "note": "The definition of the Crowdy SDK's Leader type, which the SDK deploys for you."
+  },
+  {
+    "id": "FCrowdyEntityRecord::IsReplicatedSubsystem",
+    "reason": "internal",
+    "note": "How the SDK tells a replicated subsystem's record from an actor's; a game asks IsCrowdyEntityLocallyOwned."
+  },
+  {
+    "id": "ECrowdyReplicateMovement",
+    "reason": "internal",
+    "note": "A saved setting nothing reads yet; it gets a page when the entity component starts using it."
+  },
+  {
+    "id": "FCrowdySDKCustomVersion",
+    "reason": "internal",
+    "note": "The SDK's save version, used by its own Serialize; What's Changed describes its effect on packages."
+  },
+  {
+    "id": "FHeldSpawnData",
+    "reason": "mass",
+    "note": "Spawn data the Mass backend keeps for an entity whose row does not exist yet; private bookkeeping."
+  },
+  {
+    "id": "UCrowdyEntityComponent::MapLegacySettings",
+    "reason": "internal",
+    "note": "The load mapping from Ownership and Mode for assets saved before Owned By; public so headless tests can check it."
+  },
+  {
+    "id": "UCrowdyEntityComponent::ResolveReplicatesMovement",
+    "reason": "internal",
+    "note": "The rule for a saved setting nothing reads yet; public so headless tests can check it."
+  },
+  {
+    "id": "UCrowdyEntityComponent::IsPawnWithMovement",
+    "reason": "internal",
+    "note": "A class fact for a saved setting nothing reads yet; public so headless tests can check it."
+  },
+  {
+    "id": "UCrowdyEntityComponent::DeliverSpawnData",
+    "reason": "internal",
+    "note": "The entity subsystem hands a spawned entity its spawn data; game code receives it through On Crowdy Spawned."
+  },
+  {
+    "id": "UCrowdyEntityComponent::EnablePresence",
+    "reason": "internal",
+    "note": "Spawn Crowdy Entity turns this on for the entities it spawns; nothing for a game to call."
+  },
+  {
+    "id": "ICrowdyReplicationSource::SendPresence",
+    "reason": "internal",
+    "note": "The auto replicator asks a presence entity to repeat its spawn event; nothing for a game to call."
+  },
+  {
+    "id": "CrowdyActorPool::DisableProxyMovement",
+    "reason": "internal",
+    "note": "The actor pool switches off a drawn copy's own movement; shared by the pool's activation paths."
+  },
+  {
+    "id": "UCrowdyActorManager::ActivateParked",
+    "reason": "internal",
+    "note": "The entity subsystem activates an update that waited for its class; nothing for a game to call."
+  },
+  {
+    "id": "UCrowdyActorManager::HandleRemoteDestroyEvent",
+    "reason": "internal",
+    "note": "The entity subsystem tells the rendering backend that a destroy event arrived; nothing for a game to call."
+  },
+  {
+    "id": "UCrowdyEntitySubsystem::SetActorManager",
+    "reason": "internal",
+    "note": "The actor manager binds itself to the entity subsystem; nothing for a game to call."
+  },
+  {
+    "id": "UCrowdyEntitySubsystem::WasRecentlyDestroyed",
+    "reason": "internal",
+    "note": "The window in which a late update cannot redraw a destroyed entity; read by the SDK and its tests."
+  },
+  {
+    "id": "UCrowdyHostSubsystem::HostIDForUser",
+    "reason": "internal",
+    "note": "The host id for a signed-in user id, shared by the host subsystem's paths and its tests."
+  },
+  {
+    "id": "UCrowdyUtilities::IsRecordLocallyOwned",
+    "reason": "internal",
+    "note": "The registry half of Is Crowdy Entity Locally Owned, public so headless tests can check it."
+  },
+  { "id": "SCrowdyAgePrompt", "reason": "internal", "note": "The built-in age screen; the SDK and Studio open it." },
+  { "id": "FCrowdyCppClient::HasDeveloperAcceptance", "reason": "internal", "note": "Studio checks the developer documents with it; the Studio sign-in page describes the effect." },
+  { "id": "FCrowdyCppClient::ListDeveloperDocuments", "reason": "internal", "note": "Studio lists the developer documents with it." },
+  { "id": "FCrowdyCppClient::RecordDeveloperConsents", "reason": "internal", "note": "Studio records the developer documents with it." },
+  { "id": "UCrowdyAuthentication::IsAgeEntryLockedFor", "reason": "internal", "note": "The age lock for a screen outside a game instance; Studio uses it." },
+  { "id": "UCrowdyAuthentication::LockAgeEntryFor", "reason": "internal", "note": "The age lock for a screen outside a game instance; Studio uses it." },
+  { "id": "SCrowdyAgePrompt::CanContinue", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::Continue", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::DateNeedsParentalLine", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::Decline", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::GetBirthMonth", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::GetBirthYear", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::GetCountryCode", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::GetError", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::GetInitialFocus", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::HasParentalConfirmation", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::IsShowingRefusal", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::NeedsParentalLine", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::SetBusy", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::SetError", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::ShowRefusal", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "SCrowdyAgePrompt::SLATE_BEGIN_ARGS", "reason": "internal", "note": "Part of the built-in age screen; the SDK and Studio open it." },
+  { "id": "FCrowdyAppRecording::ParseFromJson", "reason": "internal", "note": "Reads the server's answer; a game gets the parsed value." },
+  { "id": "FCrowdyCommunicationSettings::ParseFromJson", "reason": "internal", "note": "Reads the server's answer; a game gets the parsed value." },
+  { "id": "FCrowdyContactRequest::ParseFromJson", "reason": "internal", "note": "Reads the server's answer; a game gets the parsed value." },
+  { "id": "FCrowdyPlayerBlock::ParseFromJson", "reason": "internal", "note": "Reads the server's answer; a game gets the parsed value." },
+  { "id": "FCrowdyPlayerContact::ParseFromJson", "reason": "internal", "note": "Reads the server's answer; a game gets the parsed value." },
+  { "id": "FCrowdySafetyError::FromFailure", "reason": "internal", "note": "Builds the error a safety call reports; a game reads it." },
+  { "id": "UCrowdySafety::HasWarnedAboutRecording", "reason": "internal", "note": "Only compiled for automation tests." },
+  { "id": "UCrowdySafety::SetVoiceCapturing", "reason": "internal", "note": "The SDK calls it when the microphone opens or closes." },
+  { "id": "crowdy.mass.crowdsim.extras", "reason": "internal", "note": "Developer test harness the SDK uses to verify itself; not part of the authoring surface." },
+  { "id": "ACrowdyStateSizeTestActor", "reason": "internal", "note": "Headless test fixture for the Crowdy State size limit; not shipped as API." },
+  { "id": "UCrowdyStateSizeTestSubsystem", "reason": "internal", "note": "Headless test fixture for the Crowdy State size limit; not shipped as API." },
+  { "id": "FOnActorAppearedExtras", "reason": "internal", "note": "Carries a new remote actor's extras from the tracker to the event router; a game marks properties CrowdyContinuous instead." },
+  { "id": "FOnCrowdyUpdateExtras", "reason": "internal", "note": "Carries an actor update's extras to the event router; a game marks properties CrowdyContinuous instead." },
+  { "id": "CrowdyUpdateExtras::AddEntry", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::AppendContinuousEntry", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::AppendEntry", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::FindEntry", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::FitsBesideState", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::ForEachEntry", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::GetMalformedCount", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::IsReceiveEnabled", "reason": "internal", "note": "Reads crowdy.net.receive.updateextras, which the console variables page documents." },
+  { "id": "CrowdyUpdateExtras::IsWellFormed", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::ReadContinuousEntry", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::ReportMalformed", "reason": "internal", "note": "The actor update's extras codec; the SDK writes and reads the entries for CrowdyContinuous properties." },
+  { "id": "CrowdyUpdateExtras::sizeof", "reason": "internal", "note": "A compile-time size check in the extras codec that the header scan reads as a function." },
+  { "id": "UCrowdyGameSession::GetAppWriterID", "reason": "internal", "note": "Who writes replicated subsystems, for the SDK's own routing; a game asks the Leader subsystem (Get Leader User ID, Is Local Leader)." },
+  { "id": "UCrowdyEntitySubsystem::GetAppWriterID", "reason": "internal", "note": "Who writes replicated subsystems, for the SDK's own routing; a game asks the Leader subsystem (Get Leader User ID, Is Local Leader)." },
+  { "id": "CrowdyAutoReplication::ShouldCarryExtras", "reason": "internal", "note": "The send side's choice of when an update carries CrowdyContinuous values; the continuous state page describes the behaviour." },
+  { "id": "FCrowdyActorUpdate::ResolveExtras", "reason": "internal", "note": "Points a pooled update at its extras bytes on receive." },
+  { "id": "FCrowdyRepLayout::HasContinuous", "reason": "internal", "note": "Whether a class's replicated layout has a CrowdyContinuous property; the SDK reads it when replication starts." },
+  { "id": "UCrowdyAutoReplicator::CarriesUpdatesOf", "reason": "internal", "note": "Which entity's movement updates the replicator sends, used to attach CrowdyContinuous values to them." },
+  { "id": "UCrowdyAutoReplicator::SetExtras", "reason": "internal", "note": "Hands the replicator the CrowdyContinuous bytes for its next update." },
+  { "id": "UCrowdyEntityComponent::NoteContinuousCarrier", "reason": "internal", "note": "Tells the Crowdy State replicator that this entity's movement updates carry its CrowdyContinuous values." },
+  { "id": "UCrowdyEventRouter::DispatchContinuousExtras", "reason": "internal", "note": "The receive side of CrowdyContinuous; a game reaches it only through its properties and OnRep functions." },
+  { "id": "UCrowdyStateReplicator::SetContinuousOnMovement", "reason": "internal", "note": "Moves CrowdyContinuous properties onto an entity's movement updates when it replicates movement." }
 ]

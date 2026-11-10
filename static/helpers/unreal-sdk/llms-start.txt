@@ -5,7 +5,19 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.24**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.25**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+
+## What 2.25 changes
+
+2.25 removes the elected host from the default setup. A project upgraded from 2.24 keeps working, and the host surface still compiles with deprecation warnings.
+
+- **No elected host by default.** Shared state is written by the [Leader](./runtime/leader.md), one client chosen by a Server Object, and an entity says who writes it with **Owned By**: Player, World or Leader.
+- **Movement replicates by default.** A pawn with a movement component sends its movement with no setup, and a remote character animates and aims from it. See [Continuous State](./runtime/continuous-state.md).
+- **Your own values beside the movement.** Mark a property `CrowdyContinuous` and it travels with each movement update.
+- **Owning Client reaches the entity's writer.** The Host recipient is deprecated. See [Recipients and Routing](./runtime/recipients-and-routing.md).
+- **Player safety.** Contacts, blocks, reports, the age screen and the recording state, on [Player Safety](./services/player-safety.md).
+
+[Deprecated in 2.25](./guides/deprecated.md) lists everything 2.25 deprecates and what replaces it, [What's Changed](./guides/whats-changed.md) has the full list, and the plugin's `MIGRATION.md` has the steps to upgrade a project.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
@@ -16,13 +28,16 @@ Gameplay can be driven entirely from Blueprint, but the plugin itself compiles a
 Everything the SDK replicates lives on one of two planes, and the whole guide leans on the split.
 
 1. **The view plane (CrowdyState).** Fast, client-owned state such as movement, animation, and transient effects. The client that owns an entity writes its state and everyone else sees it. Nothing here is checked by a server.
-2. **The elected host is a convention.** One client is elected host to coordinate the view plane. It is a helper for shared logic, not a rule enforcer.
-3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK reaches it from C++ through [Server Logic](./exec/overview.md).
-4. **The planes touch in one way.** A client asks the server's code for a change and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input.
+2. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK reaches it from C++ through [Server Logic](./exec/overview.md).
+
+Two rules follow from the split:
+
+- **The Leader is a convention.** One client, the [Leader](./runtime/leader.md), writes shared view-plane state such as a replicated subsystem. It is a helper for shared logic, not a rule enforcer.
+- **The planes touch in one way.** A client asks the server's code for a change and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input.
 
 Read [The Two Planes](./concepts/two-planes.md) before you decide where a new piece of state belongs.
 
-:::caution[The host is a convention the SDK helps you follow, not a server that enforces rules.]
+:::caution[The Leader is a convention the SDK helps you follow, not a server that enforces rules.]
 :::
 
 ## Entities
@@ -34,7 +49,7 @@ Almost everything on the view plane is an **entity**: an actor with a `UCrowdyEn
 Work through it in order the first time.
 
 1. **Start**: [Installation](./installation.md) and the [Quickstart](./quickstart.md).
-2. **Concepts**: [The Two Planes](./concepts/two-planes.md), [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md), [Sessions and Presence](./concepts/sessions-and-presence.md), [The Host Is a Convention](./concepts/host-is-a-convention.md).
+2. **Concepts**: [The Two Planes](./concepts/two-planes.md), [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md), [Sessions and Presence](./concepts/sessions-and-presence.md), [A Coordinator Is a Convention](./concepts/host-is-a-convention.md).
 3. **Crowdy Studio**: [sign in and connect your app](./studio/overview.md) from inside the editor.
 4. **Runtime (view plane)**: [map profiles](./runtime/map-profile.md), entities, RPC events, Crowdy State.
 5. **Server Logic (truth plane)**: [server-owned state on ck-exec and the code that changes it](./exec/overview.md), from Blueprint or C++.
@@ -67,9 +82,14 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.24.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the plugin from its public repository on GitHub, [CrowdedKingdoms/CrowdySDK-Unreal](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal):
 
-:::note[The release you install must match the version this guide describes (2.24).]
+- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.25.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.25.0`; rename that folder to `CrowdySDK`.
+- **Or with git:** `git clone --branch v2.25.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
+
+The repository's root is the plugin root: the folder you download is the one that goes at `Plugins/CrowdySDK` in Step 2.
+
+:::note[The release you install must match the version this guide describes (2.25).]
 :::
 
 From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
@@ -115,7 +135,7 @@ Enabling `CrowdySDK` brings in all twelve modules in this table, including the t
 |---|---|---|
 | `CrowdySDK` | Runtime | The top-level subsystem: login, connection, voice toggle. |
 | `CrowdyReplication` | Runtime | Entities, RPC events, Crowdy State, map profiles, project settings. |
-| `CrowdyServices` | Runtime | Authentication, teams, channels, avatars, host election. |
+| `CrowdyServices` | Runtime | Authentication, teams, channels, avatars. |
 | `CrowdyNet` | Runtime | The UDP transport, the API client, and the routing enums. |
 | `CrowdyVoice` | Runtime | Microphone capture, encode and decode, playback. |
 | `CKSharedTypes` | Runtime | Shared data types used across modules. |
@@ -175,6 +195,16 @@ Until you run Config Sync for the first time, the project has no Backend of its 
 :::warning[Do not type your app id and API URLs into Project Settings by hand.]
 The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
 :::
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### Host election
+
+[The Leader](./runtime/leader.md) replaces host election. `CrowdyServices` also holds the deprecated host subsystem, described on [Host Election (Deprecated)](./services/host-election.md).
 
 ## Related
 
@@ -269,7 +299,7 @@ void ULanternGameInstance::HandleLogin(bool bSuccess, FString Message)
 
 void ULanternGameInstance::HandleConnected()
 {
-	// From here on entities register on the wire and a host is elected.
+	// From here on entities register on the wire.
 	UE_LOG(LogTemp, Log, TEXT("Connected to the app"));
 }
 ```
@@ -303,7 +333,7 @@ Sign in from the Game Mode, not from a Game Instance Blueprint's **Event Init**:
 
 ## 1. Make your player a Crowdy entity
 
-Your player pawn is the first entity, before any lantern, because it is what makes you exist to the server. A pawn with a `UCrowdyEntityComponent` in **Dynamic** mode sends an actor update every replication interval (ten a second on the shipped profile), and a heartbeat at least once a second while it stands still; the server registers your position from those updates, and from then on you are a recipient of everything sent near you. The component needs three settings changed from their defaults: **Mode** Dynamic (the continuous channel; the default, Static, is for things that do not move), **Identity Policy** Player Derived (the identity is derived from the signed-in account, so it is the same on every client and on every launch; only valid on the locally controlled pawn), and **Ownership** Local Client (this client simulates the pawn; a pawn the Game Mode spawns is owned by the client that spawned it whatever this reads, so Local Client is the honest value; the default, Host, is for a level-placed world entity, which sends nothing until the elected host is known). Leave **State Executor** empty: the SDK's default executor snapshots the pawn's location and rotation, which is all this page needs.
+Your player pawn is the first entity, before any lantern, because it is what makes you exist to the server. A pawn with a `UCrowdyEntityComponent` on a Character sends an actor update every replication interval (ten a second on the shipped profile), and a heartbeat at least once a second while it stands still; the server registers your position from those updates, and from then on you are a recipient of everything sent near you. A character sends its movement by default, because **Replicate Movement** is **Auto**, which is on for a pawn with a movement component and off for anything else. The component needs two settings changed from their defaults: **Identity Policy** Player Derived (the identity is derived from the signed-in account, so it is the same on every client and on every launch; only valid on the locally controlled pawn), and **Owned By** Player (this client simulates the pawn; a pawn the Game Mode spawns is the spawner's under the default, Auto, as well, so Player only says it plainly; Auto makes an actor placed in the level the world's, which no client writes by default). Leave **State Executor** empty: the SDK's default executor snapshots the pawn's location and rotation, which is all this page needs.
 
 The identity is derived once and nothing re-derives it later: at `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, which for a pawn the Game Mode spawns during play is the `RestartPlayer` call that spawned it. A pawn spawned by the Game Mode on the first frame begins play before the sign-in has answered, and its first updates leave before the server is ready for them, so the Game Mode starts players as spectators and the connected handler spawns the pawn instead. **On UDP Connection Success** fires once the server has assigned you and its readiness wait has elapsed (the SDK times that, you never do), and every update the pawn sends after it counts.
 
@@ -343,11 +373,10 @@ ALanternPlayer::ALanternPlayer()
 	Torch = CreateDefaultSubobject<UPointLightComponent>(TEXT("Torch"));
 	Torch->SetupAttachment(RootComponent);
 
-	// Dynamic sends the transform every interval, Player Derived names the entity after the signed-in user, Local Client makes this client its sender.
+	// A character sends its movement by default; Player Derived names the entity after the signed-in user, Owned By Player makes this client its sender.
 	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
-	CrowdyEntity->Mode = ECrowdyEntityMode::Dynamic;
 	CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::PlayerDerived;
-	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+	CrowdyEntity->OwnedBy = ECrowdyOwnedBy::Player;
 }
 ```
 
@@ -402,11 +431,11 @@ void ALanternGameMode::HandleConnected()
 
 One more Blueprint, the Character, and the Game Mode from step 0.
 
-1. **The Character.** Open the template's `BP_ThirdPersonCharacter`, or your own Character that already moves; a new Blueprint with **Character** as its parent has no body and no input, so do not start from one. In the Components panel click **Add** and choose **Crowdy Entity Component**. In its Details panel, under **Crowdy SDK, Entity Component**, set **Mode** to **Dynamic**, **Identity Policy** to **Player Derived**, and **Ownership** to **Local Client**. Two rows appear once Mode is Dynamic, **State Executor** and **Auto Register**: leave the executor at None and Auto Register ticked; a third, **Host Override**, appears once Ownership is Local Client: leave it at Allow. Add a **Point Light** named `Torch` while you are there; a later page drives it.
+1. **The Character.** Open the template's `BP_ThirdPersonCharacter`, or your own Character that already moves; a new Blueprint with **Character** as its parent has no body and no input, so do not start from one. In the Components panel click **Add** and choose **Crowdy Entity Component**. In its Details panel, under **Crowdy SDK, Entity Component**, set **Identity Policy** to **Player Derived** and **Owned By** to **Player**; **Replicate Movement** stays at **Auto**, which sends a Character's movement. Two rows appear while movement is replicated, **State Executor** and **Auto Register**: leave the executor at None and Auto Register ticked; a third, **Host Override**, appears once Owned By is Player: it is deprecated, see [Deprecated](#deprecated). Add a **Point Light** named `Torch` while you are there; a later page drives it.
 2. **The Game Mode.** Open the Game Mode Blueprint from step 0. Set **Default Pawn Class** to your Character and tick **Start Players as Spectators** under **Game Mode**.
 3. **The spawn.** In the same Game Mode's event graph, from **Event BeginPlay**, get the **Crowdy SDK Subsystem** and **Bind Event to On UDP Connection Success** to a custom event `OnConnected` (the same **Bind Event** shape the [Authentication](./services/authentication.md#after-sign-in) page uses for On Login). A graph has one **Event BeginPlay** and step 0 already uses it, so run the event into a **Sequence** node: the bind on its first pin, the sign-in from step 0 on its second. `OnConnected` calls **Restart Player** with **Get Player Controller** (index 0) on its New Player pin. In a map the player travels to later, the connection is already up and On UDP Connection Success does not fire again, so on a third Sequence pin check **Get UDP Connection State** and, when it is **Connected**, call **Restart Player** the same way.
 
-![The entity component's Details panel at its defaults: change Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
+![The entity component's Details panel at its defaults: change Replicate Movement, Identity Policy, and Owned By](/img/unreal-sdk/entity-mode-identity.png)
 
 [Blueprint snippet: qs-player-spawn, see /bp/unreal-sdk/qs-player-spawn.txt]
 
@@ -416,7 +445,7 @@ One more Blueprint, the Character, and the Game Mode from step 0.
 **Success signal.** Press Play. The map sits still under a fixed camera until `Connected to the app`, then your character spawns at a Player Start and you can move it. With `crowdy.entity.trace 1` on, the log shows the pawn's entity registering on the wire right after the connection comes up.
 
 :::caution[A pawn that begins play before the sign-in has answered derives its identity from user id 0.]
-Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs.
+Nothing warns. Two such clients conflate into one player. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs.
 :::
 
 ## 2. See yourself
@@ -433,7 +462,7 @@ The other way to see the same thing is two real clients. Open two Play in Editor
 
 ## 3. Light a lantern
 
-An entity is an actor with a `UCrowdyEntityComponent`. Two of the component's defaults are what most level-placed things want: **Static** mode (event-only; the other mode, **Dynamic**, streams a state snapshot every replication interval, as your pawn does) and a **Stable** identity every client derives the same way. This example changes the third: it sets **Ownership** to Local Client, so the client that placed the lantern owns it the moment it registers. With the default, Host, an entity is owned by the elected host, and `IsLocallyOwned()` stays false until the host is known, which happens after the sign-in above completes.
+An entity is an actor with a `UCrowdyEntityComponent`. Two of the component's defaults are what most level-placed things want: **Replicate Movement** at **Auto** (off for a plain actor, so event-only; **On** streams a state snapshot every replication interval, as your pawn does by default) and a **Stable** identity every client derives the same way. This example changes the third: it sets **Owned By** to Player, so the client that placed the lantern owns it the moment it registers. With the default, Auto, a lantern placed in the level is the world's, which no client writes by default, and `IsLocallyOwned()` is false on every client.
 
 The lantern is a sphere trigger with a point light on it. On the client that owns it, the light turns blue; on every other client it keeps its default colour. That is the ownership question, asked once at `BeginPlay`.
 
@@ -479,9 +508,9 @@ ALantern::ALantern()
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
 	Light->SetupAttachment(Trigger);
 
-	// The client that places the lantern owns it at once; a host-owned entity waits for the host election.
+	// The client that places the lantern owns it and writes its state.
 	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
-	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+	CrowdyEntity->OwnedBy = ECrowdyOwnedBy::Player;
 }
 
 void ALantern::BeginPlay()
@@ -497,7 +526,7 @@ void ALantern::BeginPlay()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Actor Blueprint, click **Add** in the Components panel and choose **Crowdy Entity Component**, then set its **Ownership** to **Local Client** in the Details panel. In the event graph:
+In the Actor Blueprint, click **Add** in the Components panel and choose **Crowdy Entity Component**, then set its **Owned By** to **Player** in the Details panel. In the event graph:
 
 [Blueprint snippet: qs-entity, see /bp/unreal-sdk/qs-entity.txt]
 
@@ -508,7 +537,7 @@ In the Actor Blueprint, click **Add** in the Components panel and choose **Crowd
 
 ## 4. Send one RPC event
 
-An RPC event is a function you mark with `CrowdyEvent`. You call it like any function; the SDK runs the matching receiver on the other clients. The recipient decides who: `SpatialMulticast` (everyone in range, the default), `Multicast` (everyone on the session channel), `OwningClient`, or `Host`. A spatial event is addressed by position, and a client's position is the one its pawn's updates registered: this works now because step 1 put you on the map, and it reaches only clients whose pawns did the same.
+An RPC event is a function you mark with `CrowdyEvent`. You call it like any function; the SDK runs the matching receiver on the other clients. The recipient decides who: `SpatialMulticast` (everyone in range, the default), `Multicast` (everyone on the session channel), or `OwningClient` (only the client that writes the target entity). A spatial event is addressed by position, and a client's position is the one its pawn's updates registered: this works now because step 1 put you on the map, and it reaches only clients whose pawns did the same.
 
 The lantern's event is `Flicker`: walking into the lantern blinks its light off and on for a moment, and every client in range sees the blink. Only the owning client reacts to the overlap; on a `SpatialMulticast` event the owner runs the body itself and sends it to everyone in range, so a proxy's copy of the overlap must not send a second one.
 
@@ -570,7 +599,7 @@ Now the blink comes from the looped-back receive instead of the local run, and t
 
 ## 5. Replicate one property
 
-A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. On the lantern, which step 3 made Local Client owned, the owner assigns and stops: the SDK diffs the property every tick, ships the change to every proxy, then runs the `CrowdyOnRep` function there. That is the client-owned pattern, in either entity mode, Static or Dynamic. A host-owned entity is different: the lantern post on the [identity page](./concepts/entities-identity-ownership.md#example), or any placed actor left at **Ownership** = Host, never ships a plain assignment; mark the property `CrowdyManualDirty` and call `MarkStateDirty` on the entity component after each write (or give it `CrowdyHeartbeat`), as [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) explains.
+A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. On the lantern, which step 3 made the player's, the owner assigns and stops: the SDK diffs the property every tick, ships the change to every proxy, then runs the `CrowdyOnRep` function there. That is the client-owned pattern, whether or not the entity sends movement. A world entity is different: the lantern post on the [identity page](./concepts/entities-identity-ownership.md#example), or any placed actor left at **Owned By** Auto or set to World, has no writer by default, so a plain assignment ships nothing and every client ignores Crowdy State sent for it. Keep what changes about it in a Server Object; see [The Leader](./runtime/leader.md#who-writes-what).
 
 The flicker in step 4 is a moment: a client that joins afterwards never sees it. The lantern's lit state is different, it has to be the same on every client, late joiners included, so it is a replicated property, `bLit`. Walking out of the lantern flips it, and `OnRep_Lit` applies it to the light wherever the value lands. The SDK runs the owner's notify too, on the tick that ships the change; calling it here as well makes the light react on the same frame. That is safe because `OnRep_Lit` only applies the current value.
 
@@ -596,7 +625,7 @@ void ALantern::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		return;
 	}
-	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself. A host-owned entity needs CrowdyManualDirty and MarkStateDirty.
+	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself.
 	bLit = !bLit;
 	OnRep_Lit();
 }
@@ -617,7 +646,7 @@ There is no node for this; it is a setting on the variable.
 3. Set it to **Replicated**. A **RepNotify** field appears; the editor creates an `OnRep_Lit` function for you. In it, call **Set Visibility** on `Light` with `Lit`.
 4. Compile. The variable's Get and Set nodes now show the replication badge in their corner.
 
-From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. That is the client-owned pattern, the lantern's. On a host-owned actor (Ownership left at Host) a plain Set ships nothing: tick **Update manually** in the same dropdown and call **Mark Crowdy State Dirty** with the variable on its Property Name pin after each Set; see [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push). See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
+From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. That is the client-owned pattern, the lantern's. On an actor placed in the level, **Owned By** is Auto, which resolves to World, and no client writes a World actor by default: a Set on it ships nothing, and **Mark Crowdy State Dirty** on it only logs a warning that names Leader Source. Set **Owned By** to Player, as step 3 did, or keep that value in a Server Object; see [The Leader](./runtime/leader.md#who-writes-what). See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
 
 </TabItem>
 </Tabs>
@@ -696,9 +725,9 @@ ALantern::ALantern()
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
 	Light->SetupAttachment(Trigger);
 
-	// The client that places the lantern owns it at once; a host-owned entity waits for the host election.
+	// The client that places the lantern owns it and writes its state.
 	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
-	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+	CrowdyEntity->OwnedBy = ECrowdyOwnedBy::Player;
 }
 
 void ALantern::BeginPlay()
@@ -734,7 +763,7 @@ void ALantern::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		return;
 	}
-	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself. A host-owned entity needs CrowdyManualDirty and MarkStateDirty.
+	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself.
 	bLit = !bLit;
 	OnRep_Lit();
 }
@@ -744,6 +773,18 @@ void ALantern::OnRep_Lit()
 	Light->SetVisibility(bLit);
 }
 ```
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### Host Override
+
+Nothing replaces **Host Override**, because host corrections end with the elected host: leave it at its default, **Allow**, on the Character from [step 1](#1-make-your-player-a-crowdy-entity).
+
+The row appears on the Crowdy Entity Component once **Owned By** is **Player**. It matters only when Leader Source is **Elected Host (Deprecated)**, where it decides whether the elected host may correct that entity's Crowdy State; see [Host Election (Deprecated)](./services/host-election.md#what-the-host-writes).
 
 ## Gotchas
 
@@ -758,7 +799,7 @@ void ALantern::OnRep_Lit()
 ## Next steps
 
 - [The Two Planes](./concepts/two-planes.md): decide where each new piece of state goes.
-- [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md): owner, proxy, host, and what Ownership chooses.
+- [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md): owner, proxy, and what Owned By chooses.
 - [Sessions and presence](./concepts/sessions-and-presence.md): what the server counts as a present player, and when it stops.
 - [Continuous state](./runtime/continuous-state.md): what your pawn sends every interval, and how to send more than the transform.
 - [Entities and spawning](./runtime/entities-and-spawning.md): spawn entities at runtime and receive them on remote clients.
@@ -789,13 +830,13 @@ Ask one question: can a malicious client benefit from lying about this value? If
 
 | State | Plane | Mechanism | Owning page |
 |---|---|---|---|
-| Movement | View | Dynamic entity mode, continuous state channel | [Continuous state](./runtime/continuous-state.md) |
+| Movement | View | Replicate Movement, continuous state channel | [Continuous state](./runtime/continuous-state.md) |
 | Animation blend state | View | `meta=(CrowdyState)` property, diffed on change | [Crowdy State](./runtime/crowdy-state.md) |
 | A one-shot trigger (muzzle flash, impact) | View | `meta=(CrowdyEvent)` RPC, not a state field | [RPC events](./runtime/rpc-events-cpp.md) |
 | Hit points, inventory, currency | Truth | Your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
 | Match score | Truth | A hub for the match in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
 | A chat line | View | `CrowdyEvent` with the `Multicast` recipient, session channel | [Channels](./runtime/channels.md) |
-| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. A placed door is host-owned, so the flag is also `CrowdyManualDirty` and the host calls `MarkStateDirty` after each write. If the door gates progress (a lock), the lock state belongs in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
+| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. A placed door is Owned By World and no client writes it by default, so the flag belongs in your server code, or on a door a player owns. If the door gates progress (a lock), the lock state belongs in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [The Leader](./runtime/leader.md#who-writes-what) |
 | A player's display name | View | `CrowdyState` property; route it through the avatars service if it must persist | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [Avatars](./services/avatars.md) |
 
 :::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
@@ -808,11 +849,11 @@ Two of the three are `meta=(...)` keys; the entity is a component. One canonical
 
 | Marker | Goes on | Canonical example | Owning page |
 |---|---|---|---|
-| `CrowdyEntity` | A `UCrowdyEntityComponent` on an `AActor` (the component is the marker; set `Ownership`) | `qs-entity` | [Entities, identity, ownership](./concepts/entities-identity-ownership.md) |
-| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`Ownership` = Local Client, the lantern) the owner assigns and calls the notify itself; on a host-owned entity (`Ownership` = Host, the default a placed actor keeps) a plain assignment never ships: add `CrowdyManualDirty` and call `MarkStateDirty` after each write, or add `CrowdyHeartbeat` | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
-| `CrowdyEvent` + `CrowdyRecipient` | A `UFUNCTION` named `X_Implementation`, plus `CROWDY_EVENT(X)`; recipient is one of `SpatialMulticast`, `Multicast`, `OwningClient`, `Host` | `qs-event` | [RPC events](./runtime/rpc-events-cpp.md#routing-keys) |
+| `CrowdyEntity` | A `UCrowdyEntityComponent` on an `AActor` (the component is the marker; set `OwnedBy`) | `qs-entity` | [Entities, identity, ownership](./concepts/entities-identity-ownership.md) |
+| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`OwnedBy` = Player, the lantern) the owner assigns and calls the notify itself; on a world entity (`OwnedBy` = World, or Auto, the default, on a placed actor) no client writes it by default and `MarkStateDirty` on it only logs a warning naming Leader Source, so keep what changes in a Server Object | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [The Leader](./runtime/leader.md#who-writes-what) |
+| `CrowdyEvent` + `CrowdyRecipient` | A `UFUNCTION` named `X_Implementation`, plus `CROWDY_EVENT(X)`; recipient is one of `SpatialMulticast`, `Multicast`, `OwningClient` | `qs-event` | [RPC events](./runtime/rpc-events-cpp.md#routing-keys) |
 
-Four rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([Crowdy State](./runtime/crowdy-state.md)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `Ownership` to Local Client: a host-owned entity (`Ownership` = Host, the default a placed actor keeps: Static, Stable, level-placed) never ships a plain `CrowdyState` write, so mark the property `CrowdyManualDirty` and call `MarkStateDirty` after each write, or give it `CrowdyHeartbeat` ([the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push)).
+Four rules the examples assume: the first thing a client needs is its own pawn as a movement-replicating (`ReplicateMovement` Auto sends for a Character), `PlayerDerived`, `Player`-owned entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([Crowdy State](./runtime/crowdy-state.md)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `OwnedBy` to Player: a world entity (`OwnedBy` = World, or Auto, the default, on a placed actor: sending no movement, Stable, level-placed) has no writer by default, so keep what changes about it in a Server Object ([The Leader](./runtime/leader.md#who-writes-what)).
 
 ## Three things that break silently in a cooked build
 
@@ -832,7 +873,7 @@ Config Sync in Crowdy Studio writes the Network category of `UCrowdySDKDeveloper
 
 | Never hand-type | Owned by you (fine to edit) | Owning page |
 |---|---|---|
-| `Environment`, `DiscoveryUrl`, `AppID`, `OrgId`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds` | `MapProfiles`, `DefaultProfile`, `BakedRegistry`, `PreloadedEntityClasses`, `IDOverrides`, `ClassIDOverrides` | [Config Sync](./studio/config-sync.md#what-config-sync-writes-and-what-you-own), [Project settings](./reference/project-settings.md) |
+| `Environment`, `DiscoveryUrl`, `AppID`, `OrgId`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds` | `MapProfiles`, `DefaultProfile`, `BakedRegistry`, `PreloadedEntityClasses`, `IDOverrides`, `ClassIDOverrides` | [Config Sync](./studio/config-sync.md#what-config-sync-writes-and-what-you-own), [Project settings](./reference/project-settings.md) |
 
 Do not copy the plugin's `[CoreRedirects]` into the project's `DefaultEngine.ini` either; `Plugins/CrowdySDK/Config/DefaultCrowdySDK.ini` already carries them. [Packaging](./guides/packaging.md#6-coreredirects-ship-with-the-plugin).
 
@@ -909,11 +950,27 @@ The full table, including behavior switches and diagnostic commands, is on [Cons
 | Rule | Owning page |
 |---|---|
 | Every id is `int64`; the app id travels as a JSON string and the SDK encodes it, never you | [The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code) |
-| The host is a convention, not enforcement; never gate cheat-sensitive state on it | [Host is a convention](./concepts/host-is-a-convention.md), [Host authority](./runtime/host-authority.md) |
+| The Leader is a convention, not enforcement; never gate cheat-sensitive state on it | [Host is a convention](./concepts/host-is-a-convention.md), [The Leader](./runtime/leader.md) |
 | Presence is the player's actor: a client with no fresh actor is at no position and receives no spatial event | [Sessions and presence](./concepts/sessions-and-presence.md#presence-is-the-players-actor) |
-| A world subsystem null-checks `GetGameInstance()` in `Initialize()`; it is null in the transient world at engine start | [Host authority](./runtime/host-authority.md#the-host-subsystem), [Replicated subsystems](./runtime/replicated-subsystems.md) |
+| A world subsystem null-checks `GetGameInstance()` in `Initialize()`; it is null in the transient world at engine start | [Replicated subsystems](./runtime/replicated-subsystems.md) |
 | An array parameter on a delegate handler is `const TArray<T>&`; a by-value parameter does not match and `AddDynamic` will not compile | [Teams](./services/teams.md) |
 | A `Multicast` call has a 1024-byte payload budget and is dropped loudly, never truncated; large payloads go on `SpatialMulticast` | [RPC events](./runtime/rpc-events-cpp.md#containers-and-their-bounds) |
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
+:::
+
+Never write new code against these; when you meet them in an existing project, move it to the replacement.
+
+### The Host recipient
+
+`OwningClient` replaces `CrowdyRecipient = "Host"`; see [Recipients and routing](./runtime/recipients-and-routing.md#deprecated). A saved `Host` still routes: it runs on the Leader on a replicated subsystem, and on an actor it is dropped with a warning unless Leader Source is **Elected Host (Deprecated)**.
+
+### The elected host
+
+The [Leader](./runtime/leader.md) and Server Objects replace it, under the default Leader Source, **Server Object**. Only under **Elected Host (Deprecated)** does the elected host write a World entity, through the `CrowdyManualDirty` plus `MarkStateDirty` route; see [Crowdy State](./runtime/crowdy-state.md#deprecated). `HostPollIntervalSeconds` is read only under Elected Host; like the rest of the Network category, Config Sync owns it, so never hand-type it. [Host Election (Deprecated)](./services/host-election.md) has the rest.
 
 ## Related
 

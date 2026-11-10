@@ -53,7 +53,7 @@ In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** ge
 </TabItem>
 </Tabs>
 
-Every connecting client running this asks the server to create the channel. A real game has one client create it, the host for instance, or calls `GetChannels` first and creates only on a miss; the server's creation policy is the real gate on who may.
+Every connecting client running this asks the server to create the channel. A real game has one client create it, the Leader for instance, or calls `GetChannels` first and creates only on a miss; the server's creation policy is the real gate on who may.
 
 `JoinChannel(ChannelId, ...)` joins an open channel and `RequestToJoinChannel` files a request on a `Request` channel; `LeaveChannel` leaves. The creator is already a member and needs neither, though the local cache (`HasCachedChannels`, `IsPlayerInChannel`) does not show the new channel until `GetMyChannels` has run.
 
@@ -121,9 +121,9 @@ The lantern's `PublishLit`, called from the owner-gated overlap, publishes a one
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-From **Event ActorBeginOverlap**, behind an **Is Crowdy Entity Locally Controlled** branch (the owner gate the C++ has): a **Crowdy Channels** subsystem getter feeds the `Target`, **Get VillageChannelId** (the Integer64 variable the create graph set) the `Channel Id`, and a one-element **Make Array** the `Payload` byte array of **Publish Channel Message**. The array's one element is the lit byte, 0 in the figure; wire your lit flag into it. It is a plain call with no result pins.
+From **Event ActorBeginOverlap**, behind an **Is Crowdy Entity Locally Owned** branch (the owner gate the C++ has): a **Crowdy Channels** subsystem getter feeds the `Target`, **Get VillageChannelId** (the Integer64 variable the create graph set) the `Channel Id`, and a one-element **Make Array** the `Payload` byte array of **Publish Channel Message**. The array's one element is the lit byte, 0 in the figure; wire your lit flag into it. It is a plain call with no result pins.
 
-<Blueprint src="ch-publish" title="Event ActorBeginOverlap, Is Crowdy Entity Locally Controlled, Branch, Crowdy Channels, Get VillageChannelId, Make Array, Publish Channel Message" />
+<Blueprint src="ch-publish" title="Event ActorBeginOverlap, Is Crowdy Entity Locally Owned, Branch, Crowdy Channels, Get VillageChannelId, Make Array, Publish Channel Message" />
 
 </TabItem>
 </Tabs>

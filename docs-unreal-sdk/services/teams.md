@@ -338,7 +338,6 @@ same one.
 - [Authentication](./authentication.md): a signed-in player is what every team call needs.
 - [Avatars](./avatars.md)
 - [Voice chat](./voice-chat.md)
-- [Host election](./host-election.md)
 - [Channels](../runtime/channels.md): a sibling group-like system that shares the same permission table.
 - [Teams and Channels in Crowdy Studio](../studio/teams-and-channels.md): the same data, authored ahead of time.
 - [Play together](./play-together.md): parties and guilds, a team and its chat channel as the Game Kit's other clients make them.

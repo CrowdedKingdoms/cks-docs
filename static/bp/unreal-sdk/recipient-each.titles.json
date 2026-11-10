@@ -4,7 +4,7 @@
 		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
 		"title": "RequestRelight\nCustom Event",
 		"title_drawn": true,
-		"crowdy_subtitle": "Crowdy Host\nExecutes on Host"
+		"crowdy_subtitle": "Crowdy Owning Client\nExecutes Locally Only"
 	},
 	{
 		"name": "K2Node_VariableGet_0",

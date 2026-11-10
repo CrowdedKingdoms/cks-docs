@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-30T19:29:04Z",
-  "sdk_version": "2.22.0",
+  "generated_from": "2026-11-07T12:24:10Z",
+  "sdk_version": "2.24.0",
   "table": "settings",
   "columns": [
     {
@@ -550,6 +550,18 @@
       "property": "ClassIDOverrides",
       "type": "TArray<FCrowdyClassIDOverride>",
       "category": "Crowdy SDK|Type ID Overrides",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::LeaderSource",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "LeaderSource",
+      "type": "ECrowdyLeaderSource",
+      "category": "Crowdy SDK|Replication",
       "config": true,
       "written_by": "you",
       "module": "CrowdyReplication",

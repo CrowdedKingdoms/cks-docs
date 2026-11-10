@@ -40,12 +40,12 @@ The meta keys are read from the receiver at scan time and baked into a registry,
 | Meta key | Value | Default when omitted |
 |---|---|---|
 | `CrowdyEvent` | none | Required. Marks the function as a receiver. |
-| `CrowdyRecipient` | An `ECrowdyEventRecipient` enumerator name: `SpatialMulticast`, `Multicast`, `OwningClient`, `Host` | `SpatialMulticast` |
+| `CrowdyRecipient` | An `ECrowdyEventRecipient` enumerator name: `SpatialMulticast`, `Multicast`, `OwningClient` | `SpatialMulticast` |
 | `CrowdyDecay` | An `ECrowdyDecayRate` name | `No_Decay`. Spatial only. |
 | `CrowdyDistance` | An `ECrowdyReplicationDistance` name | `Eight_Chunks`. Spatial only. |
 | `CrowdyChannel` | A channel name | Empty, the app's session channel. Multicast only. |
 
-Who each recipient reaches, and over which transport, is on [Recipients and routing](./recipients-and-routing.md). One more key, `CrowdyAction`, declares that the parameters describe a one-shot action; it changes nothing for an actor that runs the body itself and matters only to a backend that holds the entity as data.
+Who each recipient reaches, and over which transport, is on [Recipients and routing](./recipients-and-routing.md). The deprecated `Host` recipient is described under [Deprecated](#deprecated). One more key, `CrowdyAction`, declares that the parameters describe a one-shot action; it changes nothing for an actor that runs the body itself and matters only to a backend that holds the entity as data.
 
 ## Parameters
 
@@ -98,6 +98,18 @@ crowdy.rpc.loopback 1        deliver your own sends to your own receiver, for a 
 crowdy.rpc.dumpfn BP_Hero_C MyEvent   print one function's routing info
 ```
 
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### The Host recipient
+
+`CrowdyRecipient = "Host"` is replaced by `OwningClient`, from the [Routing keys](#routing-keys) table, or by a Server Object for logic that must be enforced.
+
+A receiver declared with `Host` (`ECrowdyEventRecipient::Host`) still routes and warns when its metadata is read. On a replicated subsystem it runs on the [Leader](./leader.md); on an actor it runs only under Leader Source **Elected Host (Deprecated)**. [Recipients and routing](./recipients-and-routing.md#deprecated) has the delivery detail.
+
 ## Gotchas
 
 - `SpatialMulticast` runs the body on the caller too, so guard the call with `IsLocallyOwned()`; a proxy's copy of the trigger must not send a second one.
@@ -109,6 +121,6 @@ crowdy.rpc.dumpfn BP_Hero_C MyEvent   print one function's routing info
 ## Related
 
 - [RPC events in Blueprint](./rpc-events-blueprint.md): the same system with a checkbox instead of a macro.
-- [Recipients and routing](./recipients-and-routing.md): the four recipients, chunks, decay, and targeted sends.
+- [Recipients and routing](./recipients-and-routing.md): the recipients, chunks, decay, and targeted sends.
 - [Channels](./channels.md): where a `Multicast` call travels.
 - [RPC types](../reference/rpc-types.md) and [RPC meta keys](../reference/rpc-meta-keys.md).

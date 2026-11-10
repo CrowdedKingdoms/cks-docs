@@ -1,13 +1,12 @@
 // Lantern.h
-UFUNCTION(meta = (CrowdyEvent, CrowdyRecipient = "Host"))
+UFUNCTION(meta = (CrowdyEvent, CrowdyRecipient = "OwningClient"))
 void RequestRelight_Implementation();
 CROWDY_EVENT(RequestRelight)
 
 // Lantern.cpp
 void ALantern::RequestRelight_Implementation()
 {
-	Light->SetVisibility(true);
+	// This runs on the owner, so a plain write ships to every proxy.
 	bLit = true;
-	// The host does not own this lantern; the mark is the host push that makes the owner adopt it.
-	CrowdyEntity->MarkStateDirty(TEXT("bLit"));
+	OnRep_Lit();
 }
