@@ -54,6 +54,8 @@ type App {
   claimOwnerKeys: [String!]!
   minPlayerAge: Int
   effectiveMinPlayerAge: Int!
+  idleTimeoutSeconds: Int
+  effectiveIdleTimeoutSeconds: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
   org: Organization
@@ -205,6 +207,14 @@ The youngest age the app admits, 13 to 18, when it asks more than the platform's
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>effectiveMinPlayerAge</b></code>](#effective-min-player-age)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-min-player-age */} 
 The youngest age the app admits now: the higher of minPlayerAge and the platform's minimum (18 until players 13 and over are admitted, then 13). A player's country can require more (territoryPolicies); younger players are refused AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET at mint.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>idleTimeoutSeconds</b></code>](#idle-timeout-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #idle-timeout-seconds */} 
+The app's own gameplay idle timeout in seconds, when it sets one: 0 turns the timeout off, otherwise 60 to 86400. null uses the platform default (effectiveIdleTimeoutSeconds). Set with updateApp (manage&#x005F;apps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>effectiveIdleTimeoutSeconds</b></code>](#effective-idle-timeout-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-idle-timeout-seconds */} 
+Seconds a realtime session may go without gameplay input (movement, messages, edits, voice; keep-alives and keyframes that repeat an unchanged state do not count) before the replication server releases it with reason idle. 900 (15 minutes) unless the app sets its own; 0 means never. A released player is not reconnected automatically: the SDKs report the session inactive and the game reconnects on the next player input.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
