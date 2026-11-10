@@ -188,7 +188,7 @@ mutation {
 
 What each client sees: [the release on the wire](/replication-api/wire-formats#session-released--command_session_released-28)
 (native clients), [`IDLE_TIMEOUT`](/game-api/graphql-udp-proxy-api#realtime-connection-events) on the
-GraphQL UDP proxy, and the `inactive` realtime status in [CrowdyJS](/crowdyjs/overview).
+GraphQL UDP proxy, and the `inactive` realtime status in [CrowdyJS](/crowdyjs/readme).
 
 ### d. Choose where the app runs
 
