@@ -16,7 +16,7 @@ and `UCrowdyUtilities`, an entity and session helper library. All of it lives in
 
 When you want the SDK to open and close your widgets instead of doing it by hand, when a Blueprint-only
 project needs to receive game events or actor updates without binding a delegate in C++, or when gameplay
-code needs an entity's id, owner, or host state and you would rather call a library function than reach
+code needs an entity's id or owner and you would rather call a library function than reach
 into the entity component yourself.
 
 Nothing else in the SDK requires any of this. CrowdyState and RPC work with none of
@@ -110,22 +110,38 @@ UI-specific, but it lives in the same module.
 | `GetCrowdyEntityRole` | An entity's `ECrowdyRole` |
 | `DoesCrowdyEntityOwn` | Whether one actor owns another, by Crowdy identity |
 | `GetCrowdyEntityComponent` | An actor's entity component, falling back to `FindComponentByClass` when the actor does not implement `ICrowdyEntityComponentProvider` |
-| `IsCrowdyEntityLocallyControlled`, `IsCrowdyEntityPlayerControlled` (and its exec-flow twin `SwitchIsCrowdyEntityPlayerControlled`) | Local or player control checks |
+| `IsCrowdyEntityLocallyOwned` (and its exec-flow twin `SwitchIsCrowdyEntityLocallyOwned`) | Whether this client writes an entity actor or a replicated subsystem |
+| `IsCrowdyEntityPlayerControlled` (and its exec-flow twin `SwitchIsCrowdyEntityPlayerControlled`) | Player control check |
 | `CrowdyIsRemoteProxy` (and its exec-flow twin `SwitchCrowdyIsRemoteProxy`) | Whether this is a remote proxy of the entity |
 | `K2_SendCrowdyEvent` (display name **Send Crowdy Event**; C++-only template `SendCrowdyEvent<T>` for the same call without the Blueprint thunk) | Sends a game event struct with `Recipient`, `DecayRate`, and `ReplicationDistance` |
-| `CrowdyHasAuthority` (exec-flow, **Switch Crowdy Has Authority**) / `GetCrowdyHasAuthority` (pure, **Crowdy Has Authority**) | True when this client is the host |
 | `CrowdyIsConnectedToServer` | Whether the realtime connection is up |
-| `CrowdyGetHostID` | The current host's id |
-| `IsCrowdyEntityHost` | Whether this actor is the host player's own entity (its id equals the host id). For "owned by the host" compare `GetCrowdyEntityOwnerID` with `CrowdyGetHostID` |
+
+The deprecated host and authority functions are listed under [Deprecated](#deprecated).
 
 :::warning[DoesCrowdyEntityOwn compares Crowdy ownership, not AActor::GetOwner.]
 The name invites Unreal's actor-owner meaning, but this checks Crowdy entity ownership instead; it will
 not agree with `AActor::GetOwner()` for an entity whose Unreal owner was never set to match.
 :::
 
-`IsCrowdyEntityHost` and `IsCrowdyEntityLocallyControlled` both fold in host election state. See
-[Host election](./host-election.md) and [Host authority](../runtime/host-authority.md) for what "host"
-means before relying on either.
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### Utilities library functions
+
+[The Leader](../runtime/leader.md) teaches what replaces each of these, and `IsCrowdyEntityLocallyOwned` above is the question to ask before a write.
+
+| Function | Does |
+|---|---|
+| `IsCrowdyEntityLocallyControlled` | Deprecated: forwards to `IsCrowdyEntityLocallyOwned` |
+| `CrowdyHasAuthority` (exec-flow, **Switch Crowdy Has Authority**) / `GetCrowdyHasAuthority` (pure, **Crowdy Has Authority**) | Deprecated: true when this client is the host (the Leader, by default). Ask `IsCrowdyEntityLocallyOwned` about the entity you write instead |
+| `CrowdyGetHostID` | Deprecated: the current host's id (the Leader's, by default). Use `GetLeaderUserID` on the Crowdy Leader Subsystem. |
+| `IsCrowdyEntityHost` | Deprecated: whether this actor is the host player's own entity (its id equals the host id). Use `IsLocalLeader` for a one-machine gate. `IsCrowdyEntityLocallyOwned` is a different question: it is true on every client for its own avatar. |
+
+Under Elected Host, `IsCrowdyEntityHost` and `IsCrowdyEntityLocallyOwned` both fold in host election
+state. See [Host Election (Deprecated)](./host-election.md) for what "host" means before relying on either.
 
 ## Gotchas
 
@@ -142,6 +158,6 @@ means before relying on either.
 
 ## Related
 
-- [Host election](./host-election.md) and [Host authority](../runtime/host-authority.md): what
-  `IsCrowdyEntityHost` and `IsCrowdyEntityLocallyControlled` fold in.
+- [The Leader](../runtime/leader.md): who `IsCrowdyEntityLocallyOwned` reports as the writer of a
+  replicated subsystem.
 - [Channels](../runtime/channels.md): the message plane the reception layer's subscriptions ride.

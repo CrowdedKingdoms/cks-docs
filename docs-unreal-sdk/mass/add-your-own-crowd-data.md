@@ -110,7 +110,7 @@ The fragment is on the row. Now the replicated value has to reach it.
 
 ### Mark the property
 
-Declare the property on `ALanternPlayer` and mark it `CrowdyState`. Add `CrowdyHeartbeat` so a player who arrives late is sent the current value on the next keyframe instead of waiting for it to change. The keyframe needs the map profile's **State Keyframe Interval (Seconds, 0 = off)** to be non-zero. [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) covers the heartbeat in full.
+Declare the property on `ALanternPlayer` and mark it `CrowdyState`. Add `CrowdyHeartbeat` so a player who arrives late is sent the current value on the next keyframe instead of waiting for it to change. The keyframe needs the **Keyframe Interval** under the map profile's **Crowdy State** to be non-zero. [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) covers the heartbeat in full.
 
 In Oakford the sit key (`OnSit`) is the only thing that sets `TorchBrightness`: 0.3 while the player sits and 1.0 while they stand.
 
@@ -194,6 +194,16 @@ It prints one block. Paste the whole block when you report a problem.
 `IsStateFragmentFieldRegistered` answers whether your own registration ran at all, which is otherwise silent. The command is a diagnostic for development builds; [Fix a crowd that does not look right](./troubleshooting.md) says which builds.
 
 Landing a value makes it available, not visible. Acting on it takes a processor like the one above, or a Blueprint field read.
+
+## Land spawn data on the row
+
+On a Mass map an entity that replicates movement, spawned with `SpawnEntity`, has no actor on other clients: its row is its body, so `OnCrowdySpawned` does not fire there. Its `InitialState` goes through the fields you registered with `RegisterStateFragmentField` instead. Each property of the `InitialState` struct that a registered field names, declared as the type that field reads, reaches that field's ingestor once, with the same context and the same rules as a replicated value. A property that no field names, or that carries a field's name as another type, is dropped without a warning.
+
+To land a spawn value, give your `InitialState` struct a property with the field's name. The same field then serves both roads: a Crowdy State property of that name on the class, and the spawn data. `UCrowdyMassEntitySubsystem::ApplySpawnState(UUID, State)` is the call the SDK makes for you, once the row exists: the spawn event usually arrives before the entity's first update, so the backend holds the data until then, for up to 1024 entities at once and, once that many are waiting, for 15 seconds each. A row takes its spawn data once; a repeat of the spawn event is ignored. When a field is fed by both roads it holds whichever value arrived last, and on the rare occasion an update beats the spawn event that can be the spawn value, so use spawn data for values that are fixed at spawn.
+
+Spawn data is matched by the C++ name of each property, so declare the `InitialState` struct in C++: a Blueprint struct's members carry generated names and match no field.
+
+Whether an entity is a moving one is read from its class's default `ReplicateMovement`. A class whose component sends no movement by default and is set to `On` at runtime still gets its actor from the spawn event, and a row beside it once it moves; set `ReplicateMovement` on the class instead.
 
 ## Read a value that rides your position payload
 

@@ -47,9 +47,9 @@ players you sign in yourself: your organization provides the terms its players p
 answers for their age and conduct, keeps its org tokens and signing keys secure, and pays for
 everything they use.
 
-Until your organization has accepted the current version, every sign-in (both options), every
-refresh of a managed player's token and `provisionManagedPlayers` answer
-`ORG_LEGAL_ACCEPTANCE_REQUIRED`. Neither the player nor your server can fix that: tell the
+Until your organization has accepted the current version, every sign-in (both options) and
+`provisionManagedPlayers` answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`, and so does the refresh of any
+sign-in that began while your organization held no acceptance. Neither the player nor your server can fix that: tell the
 player sign-in is unavailable and do not retry. Reading, renaming, disabling, signing out and
 deleting your players keep working.
 
@@ -59,8 +59,9 @@ staff cannot accept it for you. Studio offers the acceptance to whoever may make
 acceptance and `viewerMayAcceptTerms`, and `acceptManagedPlayerTerms(orgId, version)` records
 it with an admin's session; a version that is not the current one answers `CONFLICT`. The SDKs
 do not wrap the acceptance. If the addendum is revised in a way you must accept again, its
-version changes, `termsAccepted` turns false, and sign-ins stop until an admin accepts the new
-version.
+version changes, `termsAccepted` turns false, and new sign-ins stop until an admin accepts the new
+version. Players already signed in keep playing: their tokens refresh until their sign-in's length
+runs out (Addendum section 1.5; Game API since 2026-11-10).
 
 ## Option 1: an org token from your server
 
@@ -199,8 +200,8 @@ const access = await game.portal.exchangeManagedPlayerAssertion({ appId: APP_ID,
 Each sign-in lasts `sessionTtlSeconds` (default and maximum: your organization's settings,
 24 hours and 7 days unless an operator changed them). Until then the device refreshes its app
 token as usual (`refreshGameplayToken` in CrowdyJS, `refreshAppToken` in GraphQL); after it, the
-refresh is refused and the device asks you for a new sign-in. A refresh is also refused, with
-`ORG_LEGAL_ACCEPTANCE_REQUIRED`, while your organization has not accepted the current addendum.
+refresh is refused and the device asks you for a new sign-in. A new addendum version does not cut a
+sign-in short: a refresh passes on the acceptance your organization held when the player signed in.
 
 To stop a player:
 
@@ -280,8 +281,8 @@ recorded, voice and video included unless you leave them out (API Terms §6.4a).
 Crowded Kingdoms admits players from 13 since 2026-11-04, managed players included. Your
 organization's part is in the current
 [Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html)
-(section 2.3, "Age and Country"). It has a new version since that date, which an admin of your
-organization accepts once more; until then your sign-ins answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`
+(section 2.3, "Age and Country"). An admin of your organization accepts each new version once
+more; until then new sign-ins answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`
 ([above](#before-the-first-sign-in-accept-the-addendum)).
 
 At every sign-in, send the player's age and country: `ageYears` and `country` on

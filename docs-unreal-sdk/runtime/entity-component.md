@@ -24,14 +24,13 @@ All `EditAnywhere`, so a constructor, a Blueprint's Class Defaults, or a placed 
 
 | Setting | Default | One line |
 |---|---|---|
-| `Mode` (`ECrowdyEntityMode`) | Static | Static is event-only. Dynamic also streams the `StateExecutor` snapshot every replication interval. Unrelated to ownership and to Crowdy State, which work in either mode. |
+| `ReplicateMovement` (`ECrowdyReplicateMovement`) | Auto | Auto is on for a pawn with a movement component (a Character, for one) and off for anything else. On streams the `StateExecutor` snapshot every replication interval, so a plain actor that should move must set it. Off sends no movement. Unrelated to ownership, events and Crowdy State, which work either way. The deprecated `Mode` it replaces is under [Deprecated](#deprecated). |
 | `IdentityPolicy` (`ECrowdyIdentityPolicy`) | Stable | Stable, PlayerDerived, or Random. Read only when the actor resolves its own identity; a runtime spawn ignores it. |
-| `Ownership` (`ECrowdyOwnership`) | Host | Host: the elected host owns it (`Role = HostOwned`). LocalClient: this client owns it (`Role = Owner`). Level-placed actors only. |
-| `HostOverride` (`ECrowdyHostOverride`) | Allow | For a LocalClient entity: may the host correct its Crowdy State as a super-user (Allow), or never (OwnerOnly). Hidden when Ownership is Host. |
+| `OwnedBy` (`ECrowdyOwnedBy`) | Auto | Who writes the entity. Player: this client owns it (`Role = Owner`). World: no client writes it (`Role = HostOwned`); it applies to an actor placed in the level, and one spawned during play belongs to its spawner. Leader: whichever client [leads](./leader.md#an-npc-the-leader-simulates), placed or spawned. Auto: World when placed, Player when spawned. Read back in Blueprint as **Get Owned By**. |
 | `StateHeartbeat` (`ECrowdyStateHeartbeat`) | Inherit | Inherit follows the map profile's keyframe; Off never emits a keyframe for this entity. On-change replication is unaffected. |
 | `bAutoApproveOwnershipRequests` | off | The current authority grants any transfer request at once instead of raising `OnOwnershipRequested`. |
-| `StateExecutor` (`UActorUpdateExecutor`) | none | Dynamic only. Builds the snapshot; unset means the SDK's transform-only default. |
-| `bAutoRegister` | on | Dynamic only. Join the continuous channel at `BeginPlay`; off means you call `StartReplication` yourself. |
+| `StateExecutor` (`UActorUpdateExecutor`) | none | Only when movement is replicated. Builds the snapshot; unset means the SDK's transform-only default. |
+| `bAutoRegister` | on | Only when movement is replicated. Join the continuous channel at `BeginPlay`; off means you call `StartReplication` yourself. |
 | `DestroyDelay` (float) | 0 | Seconds between `OnCrowdyDestroyed` and the actor being destroyed. |
 
 ## Callables
@@ -41,16 +40,16 @@ Category **Crowdy SDK, Entity Component** in the Blueprint palette.
 | Function | One line |
 |---|---|
 | `GetNetID()` | The entity's shared id, as an `FGuid`. |
-| `GetOwnerID()` | The owning player's id; invalid for a host-owned entity. |
+| `GetOwnerID()` | The owning player's id; invalid for a World (`HostOwned`) entity. |
 | `GetRole()` | `ECrowdyRole`: `Owner`, `RemoteProxy`, `HostOwned`, or `None` before registration. |
-| `IsLocallyOwned()` | True when this client is the authority: it owns the entity, or the entity is host-owned and this client is the host. The question to ask before owner work. |
-| `GetMode()`, `GetOwnership()`, `GetHostOverridePolicy()`, `GetStateHeartbeat()` | The settings above, read back. There is no getter for `IdentityPolicy`. |
-| `StartReplication()`, `StopReplication()` | Join or leave the continuous channel. Meaningful for a Dynamic entity this client owns; `bAutoRegister` calls the first one for you. |
-| `SendEvent(Payload, Scope)` | Sends a struct payload addressed at this entity. `ECrowdyEventScope::Everyone` runs the entity's handlers on every client, `OwnerOnly` only on the owner. The lower-level sibling of a `CrowdyEvent`; see [Recipients and routing](./recipients-and-routing.md). |
+| `IsLocallyOwned()` | True when this client writes the entity, which means it owns it. False on every client for a World entity. The question to ask before owner work. **Is Crowdy Entity Locally Owned** asks the same of any actor or replicated subsystem without fetching the component. |
+| `ReplicatesMovement()` | Blueprint node **Replicates Movement**. True when this entity sends its movement, with Auto resolved. `ReplicatesMovementFor(ActorClass)` asks the same of a class's component template, which has no owner. |
+| `GetStateHeartbeat()` | The setting above, read back. There is no getter for `IdentityPolicy`. |
+| `StartReplication()`, `StopReplication()` | Join or leave the continuous channel. Meaningful for an entity that replicates movement and this client owns; `bAutoRegister` calls the first one for you. |
 | `MarkStateDirty(PropertyName)`, `MarkAllStateDirty()` | Schedule one, or every, `CrowdyManualDirty` property to ship on the next replication tick. See [Crowdy State: marking state from outside the actor](./crowdy-state.md#marking-state-from-outside-the-actor). |
 | `DestroyEntity()` | Broadcast the destroy event and destroy the owner after `DestroyDelay`. The same path as the subsystem's `DestroyEntity(Actor)` and `UCrowdyUtilities::DestroyCrowdyEntity`. |
 
-`IsLocallyOwned()` here takes no argument and answers for the authority; `UCrowdyEntitySubsystem::IsLocallyOwned(NetID)` answers a narrower question about the record's owner id and does not count the host of a host-owned entity. Do not treat them as interchangeable.
+`IsLocallyOwned()` here takes no argument and answers for the client that writes the entity; `UCrowdyEntitySubsystem::IsLocallyOwned(NetID)` answers a narrower question about the record's owner id. Do not treat them as interchangeable. The deprecated callables (`GetMode`, `GetOwnership`, `GetHostOverridePolicy`, `SendEvent`) are under [Deprecated](#deprecated).
 
 ## Events
 
@@ -79,9 +78,9 @@ In the spawned lantern's Blueprint, at **Event BeginPlay**, **Get Crowdy Entity 
 
 ## Asking a different question than IsLocallyOwned
 
-The [Quickstart](../quickstart.md) and the identity page both branch on `IsLocallyOwned()`. The accessor family answers finer questions: `GetRole()` distinguishes the owner from the host of a host-owned entity from a proxy, which the boolean cannot. The example grades the post's light by role.
+The [Quickstart](../quickstart.md) and the identity page both branch on `IsLocallyOwned()`. The accessor family answers finer questions: `GetRole()` distinguishes the owner from a World entity (`HostOwned`, which no client writes by default) from a proxy, which the boolean cannot. The example grades the post's light by role.
 
-Four more `UCrowdyUtilities` nodes ask role questions without fetching the component: `CrowdyIsRemoteProxy(Entity)` (**Crowdy Is Remote Proxy**) is true when the entity's role is `RemoteProxy`, and `IsCrowdyEntityPlayerControlled(TargetActor)` (**Is Crowdy Entity Player Controlled**) is true for an actor with a Dynamic entity component or a registered remote-proxy record; `SwitchCrowdyIsRemoteProxy` and `SwitchIsCrowdyEntityPlayerControlled` are the same two answers as exec pins.
+Four more `UCrowdyUtilities` nodes ask role questions without fetching the component: `CrowdyIsRemoteProxy(Entity)` (**Crowdy Is Remote Proxy**) is true when the entity's role is `RemoteProxy`, and `IsCrowdyEntityPlayerControlled(TargetActor)` (**Is Crowdy Entity Player Controlled**) is true for an actor with an entity component that replicates movement or a registered remote-proxy record; `SwitchCrowdyIsRemoteProxy` and `SwitchIsCrowdyEntityPlayerControlled` are the same two answers as exec pins.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -112,22 +111,62 @@ C++ only, pure, and the same functions the SDK's own identity resolution calls. 
 
 | Static | What it answers |
 |---|---|
-| `DeriveAuthority(Ownership, LocalPlayerID, OutRole, OutOwnerID)` | The role and owner id an `Ownership` value produces. |
-| `ResolveEffectiveOwnership(AuthoredOwnership, bIsLevelPlaced)` | Why a runtime spawn is always owned by its spawner. |
+| `ResolveOwnedBy(OwnedBy, Ownership, bIsLevelPlaced)` | The owner identity resolution applies: Player, World or Leader, never Auto. A runtime spawn is always its spawner's. |
+| `DeriveOwner(ResolvedOwnedBy, LocalPlayerID, OutRole, OutOwnerID)` | The role and owner id a resolved owner produces. |
 | `ResolveActorInstanceGuid(Actor)` | The engine's per-placement guid, the Stable identity seed. |
 | `ShouldUsePlacementGuid(bIsLevelPlaced, bHasInstanceGuid)`, `SelectPlacementGuid(AtRegister, Live)` | When that guid may be used, and why the snapshot taken at `OnRegister` wins over a live read in a cooked build. |
 | `ComputeStableNetID(bOutUsedPathFallback)` | The Stable NetID for this actor, and whether it fell back to hashing the path. |
 | `DoesOwnershipMatch(OwnerRole, OwnerNetID, TargetRole, TargetOwnerID, HostID)` | The ownership test behind `UCrowdyUtilities::DoesCrowdyEntityOwn`; fails closed when a host-owned side has no host id. |
 | `ClassifyPlayerDerivedIdentity(Facts)`, `DescribePlayerDerivedIdentity(Verdict)` | Which condition made PlayerDerived fall back to Random, and the sentence the warning uses. |
-| `ShouldReportHostOwnedAutoRegister(Mode, bAutoRegister, Role)`, `DescribeHostElectionState(bHostKnown, bLocalClientIsHost)` | The two authoring diagnostics: a Dynamic host-owned entity ends `BeginPlay` sending nothing, and what this client currently knows about the host. |
+| `ShouldReportHostOwnedAutoRegister(bInReplicatesMovement, bInAutoRegister, Role)` | The authoring diagnostic for a World (`HostOwned`) entity that replicates movement and so ends `BeginPlay` sending nothing. |
 | `GetClassID()` | The class hash carried on spawn events. |
 
 `InitIdentity`, `AssignPooledIdentity`, `ClearIdentity`, `MarkPooledDormant`, and `IsPooledDormant` are the injection points the entity subsystem and the actor pool use; game code has no reason to call them.
 
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### Deprecated settings
+
+`ReplicateMovement` replaces `Mode` and `OwnedBy` replaces `Ownership`, both under [Settings](#settings); `HostOverride` has no replacement, and state that must be protected belongs in a [Server Object](../concepts/two-planes.md). The Details panel shows `Mode` and `Ownership` read-only, so a C++ constructor is the only place still setting them.
+
+| Setting | Default | One line |
+|---|---|---|
+| `Mode` (`ECrowdyEntityMode`) | Static | Dynamic is `ReplicateMovement` On, Static is Off. Consulted only while `ReplicateMovement` is Auto, so a constructor that still sets it keeps its meaning. Shown only then, and only when it is Dynamic. |
+| `Ownership` (`ECrowdyOwnership`) | Host | Local Client is `OwnedBy` Player, Host is Auto. Consulted only while `OwnedBy` is Auto, and only for an actor placed in the level. Shown only while `OwnedBy` is Auto, and only when it is Local Client. |
+| `HostOverride` (`ECrowdyHostOverride`) | Allow | Host corrections end with the elected host. For a Player entity: may the host correct its Crowdy State as a super-user (Allow), or never (OwnerOnly). Shown only when Owned By is Player. An honest client sends a host correction only under Elected Host, and under Server Object an owner drops every host-sourced update, so the setting has nothing to refuse. |
+
+### Deprecated callables
+
+Each one names its replacement; the current callables are under [Callables](#callables).
+
+| Function | One line |
+|---|---|
+| `GetMode()` | Use `ReplicatesMovement()`. It still works and reads the setting; true gives `Dynamic`. |
+| `GetOwnership()` | Reads the deprecated `Ownership`. Read `OwnedBy` (**Get Owned By**) instead: Local Client is Player, Host is Auto. |
+| `GetHostOverridePolicy()` | Reads the deprecated `HostOverride`. No replacement. |
+| `SendEvent(Payload, Scope)` | Use **Send Crowdy Event** (`UCrowdyUtilities::SendCrowdyEvent`), which takes a Recipient: Everyone is Spatial Multicast, OwnerOnly is Owning Client. See [Recipients and routing](./recipients-and-routing.md). |
+
+### Deprecated identity helpers
+
+`ResolveOwnedBy` and `DeriveOwner`, under [Advanced: the static identity helpers](#advanced-the-static-identity-helpers), replace these. The `Ownership` argument of `ResolveOwnedBy` is the deprecated setting that Auto falls back to when a C++ constructor still sets it.
+
+| Static | What it answers |
+|---|---|
+| `DeriveAuthority(Ownership, LocalPlayerID, OutRole, OutOwnerID)`, `ResolveEffectiveOwnership(AuthoredOwnership, bIsLevelPlaced)` | The role, owner id and applied ownership for the deprecated `Ownership`. |
+| `DescribeHostElectionState(bHostKnown, bLocalClientIsHost)` | The authoring diagnostic that says, under Elected Host, what this client currently knows about the host. |
+
+### Under Elected Host
+
+The [Leader](./leader.md) replaces the elected host. On a project whose **Leader Source** is still **Elected Host (Deprecated)**, the elected host writes an entity Owned By World, so `IsLocallyOwned()` is also true on the host for such an entity; `UCrowdyEntitySubsystem::IsLocallyOwned(NetID)` does not count the host. The rest is on [Host Election](../services/host-election.md).
+
 ## Gotchas
 
 - `OnCrowdyOwnershipAssigned` is announced on the tick after registration, deliberately, so a bind in the actor's own `BeginPlay` is not too late.
-- A Dynamic entity with `Ownership = Host` and `bAutoRegister` on leaves `BeginPlay` sending nothing: auto-register only starts the channel for an entity this client owns outright. The log says so once per component.
+- A placed entity that replicates movement, Owned By World (or Auto), with `bAutoRegister` on leaves `BeginPlay` sending nothing: auto-register only starts the channel for an entity this client owns outright. The log says so once per component.
 - `DestroyEntity()` exists in three places with three signatures and one behaviour. Use whichever you already hold a reference for.
 - The enum getters return the setting, not a live derivation. `GetRole()` is the live answer.
 
@@ -137,4 +176,4 @@ C++ only, pure, and the same functions the SDK's own identity resolution calls. 
 - [Entities and spawning](./entities-and-spawning.md): the subsystem's spawn, destroy, and lookup calls.
 - [Ownership transfer](./ownership-transfer.md): the static nodes that replace calling the two receivers.
 - [Crowdy State](./crowdy-state.md): the properties `MarkStateDirty` serves.
-- [Continuous state](./continuous-state.md): `Mode`, `StateExecutor`, and `bAutoRegister`.
+- [Continuous state](./continuous-state.md): `ReplicateMovement`, `StateExecutor`, and `bAutoRegister`.

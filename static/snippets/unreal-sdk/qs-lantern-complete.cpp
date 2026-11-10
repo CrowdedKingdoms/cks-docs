@@ -54,9 +54,9 @@ ALantern::ALantern()
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
 	Light->SetupAttachment(Trigger);
 
-	// The client that places the lantern owns it at once; a host-owned entity waits for the host election.
+	// The client that places the lantern owns it and writes its state.
 	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
-	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+	CrowdyEntity->OwnedBy = ECrowdyOwnedBy::Player;
 }
 
 void ALantern::BeginPlay()
@@ -92,7 +92,7 @@ void ALantern::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		return;
 	}
-	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself. A host-owned entity needs CrowdyManualDirty and MarkStateDirty.
+	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself.
 	bLit = !bLit;
 	OnRep_Lit();
 }

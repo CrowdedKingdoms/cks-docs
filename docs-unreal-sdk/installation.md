@@ -20,9 +20,14 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.24.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the plugin from its public repository on GitHub, [CrowdedKingdoms/CrowdySDK-Unreal](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal):
 
-:::note[The release you install must match the version this guide describes (2.24).]
+- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.25.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.25.0`; rename that folder to `CrowdySDK`.
+- **Or with git:** `git clone --branch v2.25.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
+
+The repository's root is the plugin root: the folder you download is the one that goes at `Plugins/CrowdySDK` in Step 2.
+
+:::note[The release you install must match the version this guide describes (2.25).]
 :::
 
 From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
@@ -68,7 +73,7 @@ Enabling `CrowdySDK` brings in all twelve modules in this table, including the t
 |---|---|---|
 | `CrowdySDK` | Runtime | The top-level subsystem: login, connection, voice toggle. |
 | `CrowdyReplication` | Runtime | Entities, RPC events, Crowdy State, map profiles, project settings. |
-| `CrowdyServices` | Runtime | Authentication, teams, channels, avatars, host election. |
+| `CrowdyServices` | Runtime | Authentication, teams, channels, avatars. |
 | `CrowdyNet` | Runtime | The UDP transport, the API client, and the routing enums. |
 | `CrowdyVoice` | Runtime | Microphone capture, encode and decode, playback. |
 | `CKSharedTypes` | Runtime | Shared data types used across modules. |
@@ -128,6 +133,16 @@ Until you run Config Sync for the first time, the project has no Backend of its 
 :::warning[Do not type your app id and API URLs into Project Settings by hand.]
 The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
 :::
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### Host election
+
+[The Leader](./runtime/leader.md) replaces host election. `CrowdyServices` also holds the deprecated host subsystem, described on [Host Election (Deprecated)](./services/host-election.md).
 
 ## Related
 
