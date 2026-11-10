@@ -269,7 +269,9 @@ the caller is already signed in to). Until v1.88.0 none of them revoked
 anything, and this page said so as if it were a feature.
 
 **Rate limits.** Every public sign-in mutation is limited per address and per
-client; `login` counts *failures* per address -- ten in fifteen minutes answers
+client, except `register`, which is limited per address only (five sign-ups an
+hour for one email address; no per-client limit since ck-api v2.63.0); `login`
+counts *failures* per address -- ten in fifteen minutes answers
 `RATE_LIMITED` (429), and the reset email is the way out. The masked mutations
 (`requestPasswordReset`, `resendConfirmationEmail`, `requestLoginLink`) stay
 masked when limited: their usual success shape, no side effect.
