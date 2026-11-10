@@ -39,6 +39,26 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-10 (a realtime session ends after 15 minutes without gameplay input)
+
+- **The replication server ends a player's session after 15 minutes without gameplay input, and the SDKs do
+  not reconnect it.** Gameplay input is movement, world edits, messages, voice and video; keep-alives and
+  keyframes that repeat an unchanged state do not count. **Every existing app has the 15-minute default.** Set
+  your own with `updateApp`'s `idleTimeoutSeconds` (60 to 86400 seconds, `0` for never, `null` for the
+  default) or the **Idle timeout** card in Crowdy Studio; `App.effectiveIdleTimeoutSeconds` reads the result.
+  See [Decide how long an idle player stays connected](/management-api/game-setup#c4-decide-how-long-an-idle-player-stays-connected).
+- **What a client sees.** A native client receives `COMMAND_SESSION_RELEASED` (28) with reason 5, `IDLE`
+  ([wire format](/replication-api/wire-formats#session-released--command_session_released-28), replication
+  server v0.44.0); the binary relay closes with 4410; the GraphQL UDP proxy emits the connection event
+  `IDLE_TIMEOUT` (`retryable: false`) and ends the stream. CrowdyJS 18.26.0 reports the realtime status
+  `inactive`, CrowdyCPP 0.77.0 `ConnState::Inactive` and CrowdyPy 0.25.0 `ConnState.INACTIVE`. Reconnect on
+  the player's next input. An older SDK sees a failed connection and may reconnect a player who is not there.
+- **A quiet session stays on its server.** The GraphQL UDP proxy and the binary relay moved a session to
+  another server after 30 seconds without traffic from it, which in a quiet world happened every 30 seconds
+  to a player standing still. They now move a session only when its server stops serving, or when the server
+  has answered none of what the client sent for 30 seconds. The proxy page also said an unused session is
+  released after 30 seconds; it is 120. See [GraphQL UDP proxy](/game-api/graphql-udp-proxy-api).
+
 ## 2026-11-10 (sign-ups are no longer limited per network address)
 
 - **One network address can create any number of accounts.** `register` was limited to 30 sign-ups an hour from

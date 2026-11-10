@@ -122,6 +122,7 @@ header). Because the session is **app-scoped**, the most common one is a missing
 | `AUTH_REQUIRED` | `false` | Missing or invalid token on the connection. |
 | `TOKEN_EXPIRED` | `false` | The app-scoped token passed its `expiresAt`. `refreshAppToken` (or re-portal) and reconnect. |
 | `UDP_PROXY_CONNECTION_FAILED` | `true` | The proxy could not open a UDP session (for example the app is runtime-denied). Safe to retry. |
+| `IDLE_TIMEOUT` | `false` | The player sent no gameplay input for the app's idle timeout (`App.effectiveIdleTimeoutSeconds`: 15 minutes unless the app sets its own), so the game server released the session. `status` is `inactive` and the stream ends. Subscribe again on the player's next input, not before. |
 
 ### 2. Register your actor in a chunk
 
@@ -201,7 +202,7 @@ mutation { disconnectUdpProxy }
 
 Unsubscribing from `udpNotifications` stops delivery but does **not** release
 the UDP session.  Call `disconnectUdpProxy` explicitly, or the server will
-release it after 30 seconds of inactivity.
+release it after 120 seconds with no traffic either way.
 
 ## Complete flow (two clients)
 
@@ -252,8 +253,11 @@ sendActorUpdate (seq=2, state) ──▶  UDP ACTOR_UPDATE_REQUEST ──▶
 
 - **`appId`** is the app (world) identifier in the spatial wire header — an
   int64 at byte offset 1, distinct from chunk X/Y/Z coordinates.
-- The proxy auto-reconnects to the game server if no traffic is seen for 30s.
-  The subscription stays open but notifications pause until reconnection.
+- The proxy reconnects your session to another game server when its server stops
+  serving, or when you have been sending for 30 seconds and the server has answered
+  none of it. The subscription stays open but notifications pause until then. A
+  session that is merely quiet stays where it is: a player standing still in a world
+  where nothing happens hears nothing, and that is not a fault (since 2026-11-10).
 - **Server load shedding is handled for you.** If the assigned game server runs
   hot it can ask connected clients to move to a different server. The proxy
   intercepts that signal and transparently re-selects a server and re-authorizes

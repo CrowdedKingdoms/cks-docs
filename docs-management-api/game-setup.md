@@ -164,6 +164,32 @@ game needs, and **[Age, country and who may play](/management-api/age-and-territ
 checks every sign-in passes. Documents of your app's own, which its players accept on top of the
 platform's, are set with `setAppRequiredDocuments` ([Legal documents](/management-api/legal-documents)).
 
+### c.4 Decide how long an idle player stays connected
+
+A player's realtime session ends after **15 minutes without gameplay input** (since 2026-11-10),
+and every SDK reports it as inactive instead of reconnecting. Gameplay input is what a player
+does: moving, editing the world, sending messages, voice and video. Keep-alives and keyframes that
+repeat an unchanged state do not count, so a client left open on a menu ends like one that was
+closed without signing out. Reconnect on the player's next input.
+
+Every app has the 15-minute default until it sets its own `idleTimeoutSeconds`: 60 to 86400
+seconds, `0` to turn the timeout off, or `null` to go back to the default.
+`effectiveIdleTimeoutSeconds` reads the result. A change applies to players already connected
+within about a minute. In Crowdy Studio it is the app's **Idle timeout** card.
+
+```graphql
+mutation {
+  updateApp(appId: "42", input: { idleTimeoutSeconds: 1800 }) {
+    idleTimeoutSeconds
+    effectiveIdleTimeoutSeconds
+  }
+}
+```
+
+What each client sees: [the release on the wire](/replication-api/wire-formats#session-released--command_session_released-28)
+(native clients), [`IDLE_TIMEOUT`](/game-api/graphql-udp-proxy-api#realtime-connection-events) on the
+GraphQL UDP proxy, and the `inactive` realtime status in [CrowdyJS](/crowdyjs/overview).
+
 ### d. Choose where the app runs
 
 Your app needs a **Game API** to serve runtime traffic, and there is one way to get it: the **shared platform**. Publish with `publishAppToShared` and the app is immediately served by that tier's shared Game API fleet, scoped by your `appId`, in the datacenter you chose when you created it. You do not provision VMs or wait for a stack.
@@ -298,6 +324,7 @@ Two things about that call, both of which return a clear error rather than faili
 3. **The Studio agent policy**, if you use the agent: it is fail-closed on a rebuilt fleet and reports `AGENT_APP_KILLED` until an operator enables it for your app.
 4. **The org runtime wallet** — `app(appId){ runtimeStatus runtimeDenialReason }`. A denied wallet stops server code independently of every permission above, with its own message.
 5. **Who the game is for** — `app(appId){ minPlayerAge effectiveMinPlayerAge replayLoggingEnabled }`. An app that admits players under 18 keeps its safety log on ([c.3](#c3-decide-who-the-game-is-for)).
+6. **How long an idle player stays connected** — `app(appId){ effectiveIdleTimeoutSeconds }`: 900 (15 minutes) unless you set your own ([c.4](#c4-decide-how-long-an-idle-player-stays-connected)). A game whose players watch without acting for long stretches sets a longer one, or `0`.
 
 ---
 

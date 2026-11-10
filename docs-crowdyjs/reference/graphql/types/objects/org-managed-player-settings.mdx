@@ -77,7 +77,7 @@ Where the current addendum is published.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsAccepted</b></code>](#terms-accepted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-accepted */} 
-Whether the organization has accepted the current version. Until it has, its managed players are neither created nor signed in and their app tokens do not refresh (ORG&#x005F;LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED).
+Whether the organization has accepted the current version. Until it has, its managed players are neither created nor signed in (ORG&#x005F;LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED); a player signed in under an earlier acceptance keeps playing until its session expires.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsAcceptedVersion</b></code>](#terms-accepted-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-accepted-version */} 
