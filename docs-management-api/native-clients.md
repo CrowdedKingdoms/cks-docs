@@ -105,6 +105,10 @@ describes, and record them with `recordPlayerAge`. It answers `LEGAL_ACCEPTANCE_
 player has agreed to the current required documents: show your own checkboxes and call
 `recordPlayerConsents` with the session token; `playerLegalAcceptance` says whether that is still
 needed. See [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
+Last, since Game API v2.65.0, it answers `EMAIL_CONFIRMATION_REQUIRED` for a password account made
+since 2026-11-11 that has not confirmed its email: tell the player to open the link `register`
+emailed, offer `resendConfirmationEmail(email)`, and mint again when they say they have
+([Authentication](/management-api/authentication#a-new-account-confirms-its-email)).
 Send an `x-ck-device-id` header (a random id the install keeps) on `register` and
 `recordPlayerAge`, so an age refusal locks that device rather than its network.
 
