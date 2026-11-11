@@ -43,7 +43,10 @@ auto login = identity.auth().login("player@example.com", password);
 gameplay token is issued until the player has an age and has agreed to the current required
 legal documents, the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
 [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html); the mint in step 2
-answers `AGE_REQUIRED` or `LEGAL_ACCEPTANCE_REQUIRED` until then. Show your own checkboxes, linking each document
+answers `AGE_REQUIRED` or `LEGAL_ACCEPTANCE_REQUIRED` until then, and since ck-api v2.65.0
+`EMAIL_CONFIRMATION_REQUIRED` (`graphql::emailConfirmationRequiredOf`, 0.78.0) for a password account
+made since 2026-11-11 that has not confirmed its email: tell the player to open the emailed link and
+offer `auth().resendConfirmationEmail(email)`. Show your own checkboxes, linking each document
 (`auth().playerLegalDocuments()`, and the app's own `auth().appRequiredDocuments(appId)`), and
 record the player's answer with the session token:
 
