@@ -48,7 +48,9 @@ and hosted sign-in checks the player's country, then their age, then the documen
 accepted (Game API v2.60.0): see [Age, country and who may play](/management-api/age-and-territory)
 for the first two, which answer `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED` and
 `AGE_REQUIREMENT_NOT_MET`, and [Legal documents](/management-api/legal-documents) for the third,
-including documents of your app's own.
+including documents of your app's own. Since Game API v2.65.0 a fourth check follows: a password
+account made since 2026-11-11 confirms its email first (`EMAIL_CONFIRMATION_REQUIRED`; see
+[Authentication](/management-api/authentication#a-new-account-confirms-its-email)).
 
 The documents are the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
 [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html), and any your app
@@ -290,6 +292,9 @@ requires the identity session token and returns `SCOPE_MISSING` for an app token
   on `exchangePortalCode` — Crowded Kingdoms is not available where the player is, their age is
   not known, or they are younger than the app allows there. See
   [Age, country and who may play](/management-api/age-and-territory).
+- `EMAIL_CONFIRMATION_REQUIRED` on the same three (Game API v2.65.0) — a password account made
+  since 2026-11-11 has not confirmed its email; `resendConfirmationEmail` sends the link again.
+  See [Authentication](/management-api/authentication#a-new-account-confirms-its-email).
 - `SAFETY_LOG_REQUIRED` — a player under 18, in an app whose safety log is off. See
   [the safety log](/replication-api/input-logging#the-safety-log).
 - `SAFETY_MODERATOR_REQUIRED` — a player under 18, in an app whose organization has no appointed

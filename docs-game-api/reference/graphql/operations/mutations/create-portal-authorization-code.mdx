@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Create a one-time, PKCE-bound portal authorization code (browser handoff). The Overworld identity origin (holding the SESSION token) calls this; redirect the player to the destination game carrying the code, which the game exchanges via exchangePortalCode. Refused like mintAppToken before any code exists: TERRITORY&#x005F;NOT&#x005F;SUPPORTED, AGE&#x005F;REQUIRED, AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET and LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED, and for a player under 18 SAFETY&#x005F;LOG&#x005F;REQUIRED (the app keeps no safety log) then SAFETY&#x005F;MODERATOR&#x005F;REQUIRED (its organization has no safety moderator), with the same neutral messages. Requires a SESSION token.
+Create a one-time, PKCE-bound portal authorization code (browser handoff). The Overworld identity origin (holding the SESSION token) calls this; redirect the player to the destination game carrying the code, which the game exchanges via exchangePortalCode. Refused like mintAppToken before any code exists: TERRITORY&#x005F;NOT&#x005F;SUPPORTED, AGE&#x005F;REQUIRED, AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET, LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED and EMAIL&#x005F;CONFIRMATION&#x005F;REQUIRED, and for a player under 18 SAFETY&#x005F;LOG&#x005F;REQUIRED (the app keeps no safety log) then SAFETY&#x005F;MODERATOR&#x005F;REQUIRED (its organization has no safety moderator), with the same neutral messages. Requires a SESSION token.
 
 
 ```graphql

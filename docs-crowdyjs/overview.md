@@ -162,6 +162,10 @@ before minting; `client.auth.playerLegalAcceptance({ appId })` says whether that
 needed. Ask the date of birth and the country on [a neutral screen](/management-api/age-and-territory#the-age-screen)
 and send them with `auth.register({ …, birthDate, country, parentalConfirmation })`, or
 `auth.recordPlayerAge({ birthDate, country, parentalConfirmation })` for an account with none.
+Since ck-api v2.65.0 (CrowdyJS 18.27.0) a password account made since 2026-11-11 also confirms its
+email first: the three calls answer `EMAIL_CONFIRMATION_REQUIRED`
+(`isEmailConfirmationRequiredError`). Studio asks on the first row; on the others, tell the player
+to open the emailed link and offer `client.auth.resendConfirmationEmail(email)`.
 The gate's other refusals read with `territoryNotSupportedOf`, `ageRequiredOf`,
 `ageRequirementNotMetOf` (it surfaces no age), `safetyLogRequiredOf` and, from 18.25.0,
 `safetyModeratorRequiredOf`. See
