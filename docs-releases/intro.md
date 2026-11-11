@@ -39,6 +39,21 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-11 (a new account confirms its email before it plays)
+
+- **A password account made since 2026-11-11 gets no gameplay token until it confirms its email
+  address.** `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` answer
+  `EMAIL_CONFIRMATION_REQUIRED` (403), the last of the player's checks, until the player opens the
+  link `register` emailed. Accounts made before then and players an organization manages are not
+  asked. Game API v2.65.0.
+- **What to do.** A browser game using hosted sign-in does nothing: Studio tells the player and
+  resends the link. A native client that signs players up tells them to open the link, offers
+  `resendConfirmationEmail(email)` (public, callable without an `Origin`, always `true`), and mints
+  again. The SDKs read the refusal: CrowdyJS 18.27.0 `isEmailConfirmationRequiredError` (and new
+  `auth.resendConfirmationEmail` and `auth.confirmEmail`), CrowdyCPP 0.78.0
+  `graphql::emailConfirmationRequiredOf`, CrowdyPy 0.26.0 `is_email_confirmation_required_error`.
+  See [Authentication](/management-api/authentication#a-new-account-confirms-its-email).
+
 ## 2026-11-10 (a realtime session ends after 15 minutes without gameplay input)
 
 - **The replication server ends a player's session after 15 minutes without gameplay input, and the SDKs do

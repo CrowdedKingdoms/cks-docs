@@ -221,6 +221,34 @@ Two behaviours to code against, because both are easy to meet by accident:
   the birth date (`AGE_REQUIRED` without it). See
   [Signing up](/management-api/age-and-territory#signing-up).
 
+## A new account confirms its email
+
+`register` creates an unconfirmed account, emails it a confirmation link, and returns a
+session token that works at once for everything but gameplay. **Since 2026-11-11 (Game API
+v2.65.0) a password account made from that date gets no gameplay token until it confirms its
+address**: `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` answer
+`EMAIL_CONFIRMATION_REQUIRED` (403), the last of the
+[player's checks](/management-api/age-and-territory). Accounts made before 2026-11-11 and
+players an organization manages are not asked.
+
+- **A browser game** does nothing: Studio's hosted sign-in tells the player, resends the link,
+  and issues the code once they have confirmed.
+- **A native client** that signs players up with `register` tells the player to open the link,
+  offers to send it again, and mints again when they say they have:
+
+```graphql
+mutation Resend($email: String!) {
+  resendConfirmationEmail(email: $email)   # always true; rate-limited
+}
+```
+
+`resendConfirmationEmail` is public, and a client that sends no `Origin` header may call it. It
+answers `true` whether or not the address has an unconfirmed account, so it cannot be used to
+find accounts. The link opens Studio, which calls `confirmEmail(token)`. The SDKs read the
+refusal: CrowdyJS `isEmailConfirmationRequiredError` (18.27.0), CrowdyCPP
+`graphql::emailConfirmationRequiredOf` (0.78.0) and CrowdyPy
+`is_email_confirmation_required_error` (0.26.0).
+
 ## Managing passwords
 
 Four mutations, and which one applies is decided by **what the caller has
