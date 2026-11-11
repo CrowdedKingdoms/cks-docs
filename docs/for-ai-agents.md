@@ -79,7 +79,9 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
 - **Who may play (Game API v2.60.0):** every sign-up, mint and refresh checks the player's
   country, then their age, then their documents: `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED`,
   `AGE_REQUIREMENT_NOT_MET`, and `LEGAL_ACCEPTANCE_REQUIRED` with `extensions.missingDocuments`;
-  for a player under 18, also `SAFETY_LOG_REQUIRED` and `SAFETY_MODERATOR_REQUIRED` (v2.61.0).
+  for a player under 18, also `SAFETY_LOG_REQUIRED` and `SAFETY_MODERATOR_REQUIRED` (v2.61.0);
+  last, `EMAIL_CONFIRMATION_REQUIRED` for a password account made since 2026-11-11 that has not
+  confirmed its email (v2.65.0; `resendConfirmationEmail` sends the link again).
   None is fixed by retrying: an age refusal names no age and locks the same client or player for
   24 hours.
   Crowded Kingdoms admits players from 13 (since 2026-11-04). See

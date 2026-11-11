@@ -16,6 +16,9 @@ this order:
    the player is younger than the app allows where they are.
 3. **Documents:** `LEGAL_ACCEPTANCE_REQUIRED` until the player has accepted the platform's
    documents and the app's own ([Legal documents](legal-documents)).
+4. **Email (Game API v2.65.0):** `EMAIL_CONFIRMATION_REQUIRED` for a password account made since
+   2026-11-11 until it confirms its email address
+   ([Authentication](authentication#a-new-account-confirms-its-email)).
 
 A sign-up checks the country and the age before the account exists.
 
@@ -254,6 +257,7 @@ your organization's server; CrowdyJS and CrowdyPy type the assertion's claims
 | `AGE_REQUIRED` | 403 | The player's age is not known: an account with no age, a browser sign-up without `birthDate`, or a managed player signed in without `ageYears`. | Ask the age ([the age screen](#the-age-screen)), then `recordPlayerAge`, or sign the managed player in with `ageYears` and `country`. |
 | `AGE_REQUIREMENT_NOT_MET` | 403 | The player is younger than the app allows where they are, or under 13; or a developer under 18; or the same device, client, Minecraft account or managed player was refused so recently ([the retry lock](#the-age-screen)). No extensions. | Tell the player they cannot play this, without a reason, an age or a way to try again. Do not retry with another date or age. |
 | `LEGAL_ACCEPTANCE_REQUIRED` | 403 | Documents are missing (`extensions.missingDocuments`). | [Legal documents](legal-documents#the-refusal). |
+| `EMAIL_CONFIRMATION_REQUIRED` | 403 | A password account made since 2026-11-11 has not confirmed its email (Game API v2.65.0). | Ask the player to open the emailed link; `resendConfirmationEmail` sends it again ([Authentication](authentication#a-new-account-confirms-its-email)). |
 | `SAFETY_LOG_REQUIRED` | 403 | A player under 18, in an app whose safety log is off: at the mint, and since Game API v2.61.1 when Studio's hosted sign-in issues the code. | The app's admins turn it on ([the safety log](/replication-api/input-logging#the-safety-log)). Tell the player the game cannot admit them yet. |
 | `SAFETY_MODERATOR_REQUIRED` | 403 | A player under 18, in an app whose organization has no appointed moderator (Game API v2.61.0; at the hosted sign-in's code too since v2.61.1). | The organization gives a member a role that grants `moderate_safety` ([Moderators](/game-api/safety-reports#moderators)). Tell the player the game cannot admit them yet, naming no age. |
 | `CONFLICT` | 409 | `recordPlayerAge` on an account that has an age. | Read `me { ageBracket }`; do not ask again. |
