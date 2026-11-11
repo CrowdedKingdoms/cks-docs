@@ -58,7 +58,10 @@ again on the player's next input.
    the [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
    [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html); until then
    minting raises `AGE_REQUIRED` or `LEGAL_ACCEPTANCE_REQUIRED`
-   (`crowdypy.is_legal_acceptance_required_error`). Show
+   (`crowdypy.is_legal_acceptance_required_error`). Since ck-api v2.65.0 it also raises
+   `EMAIL_CONFIRMATION_REQUIRED` (`crowdypy.is_email_confirmation_required_error`, 0.26.0) for a
+   password account made since 2026-11-11 that has not confirmed its email: tell the player to
+   open the emailed link and offer `auth.resend_confirmation_email(email)`. Show
    your own checkboxes, linking each document (`auth.player_legal_documents()` and the
    app's own `auth.app_required_documents(app_id)`), then call
    `auth.record_player_consents(accept_legal=True, app_id=...)`.
