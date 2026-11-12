@@ -126,10 +126,14 @@ The kit, `ckx-sdk` and `crowdy-client-sdk` are released with the platform's comp
 toolchain release it was copied from. Use the latest release: versions ending in `-dev.N` or
 `-test.N` are for our internal environments.
 
-Kit 0.6.0 carries `ckx-sdk` 0.13.0 (compute toolchain v1.16.0, ck-exec 0.20.0): a player's
-[erasure and data export hooks](players-and-safety), `players.blocked`, `safety.report` and the
-`age_bracket` on `players.get`. A crate on an older `ckx-sdk` builds and runs, and its hubs answer
-"not implemented" to the erasure and the export.
+Kit 0.7.1 carries `ckx-sdk` 0.14.1 (compute toolchain v1.17.1, ck-exec 0.20.0): `World::set_chunk`,
+`set_voxels` batches of up to 4,096 voxels at one write unit per started 64, the node API budgets in
+`limits::node`, and request bodies small enough in fuel that a mod's 4,096-voxel batch fits its 20
+million (0.14.0 ran out past about 750 writes). See [world and platform
+data](world-and-platform-data). Kit 0.6.0 (`ckx-sdk` 0.13.0) added a player's [erasure and data export
+hooks](players-and-safety), `players.blocked`, `safety.report` and the `age_bracket` on
+`players.get`; a crate on an older `ckx-sdk` builds and runs, and its hubs answer "not implemented" to
+the erasure and the export.
 
 ## Contributing
 
