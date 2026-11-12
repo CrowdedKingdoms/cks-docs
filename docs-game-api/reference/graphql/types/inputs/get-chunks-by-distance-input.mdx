@@ -15,16 +15,19 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Arguments for getChunksByDistance: selects chunks within a cubic (Chebyshev-distance) radius around a center chunk, with pagination.
+Arguments for getChunksByDistance: selects the stored chunks in a region, either a cube (centerCoordinate and maxDistance) or a box (lowChunk and highChunk), with pagination. A cube is ordered by Chebyshev distance from its center, then x, y, z; a box by x, y, z.
 
 
 ```graphql
 input GetChunksByDistanceInput {
   appId: BigInt!
-  centerCoordinate: ChunkCoordinatesInput!
-  maxDistance: Int!
+  centerCoordinate: ChunkCoordinatesInput
+  maxDistance: Int
+  lowChunk: ChunkCoordinatesInput
+  highChunk: ChunkCoordinatesInput
   limit: Int
   skip: Int
+  since: DateTime
 }
 ```
 
@@ -35,20 +38,32 @@ input GetChunksByDistanceInput {
 Id of the app whose chunks to search (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>centerCoordinate</b></code>](#center-coordinate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #center-coordinate */} 
-Center chunk of the search cube.
+#### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>centerCoordinate</b></code>](#center-coordinate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary " text="input"/> {/* #center-coordinate */} 
+Center chunk of the search cube. With maxDistance; leave both out to search a box (lowChunk and highChunk) instead.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>maxDistance</b></code>](#max-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-distance */} 
-Cube 'radius' in chunks measured as Chebyshev distance: matches chunks whose x, y and z each differ from the center by at most this many chunks (a (2&#x002A;maxDistance+1)^3 cube). Integer, 1-8 inclusive.
+#### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>maxDistance</b></code>](#max-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-distance */} 
+Cube 'radius' in chunks measured as Chebyshev distance: matches chunks whose x, y and z each differ from the center by at most this many chunks (a (2&#x002A;maxDistance+1)^3 cube). Integer, 1-8 inclusive. With centerCoordinate.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>lowChunk</b></code>](#low-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary " text="input"/> {/* #low-chunk */} 
+One corner of a search box, with highChunk, instead of a cube: for streaming only the slab a step uncovers. Corners are normalized per axis, and the box may cover at most 4,913 chunks (the cube maxDistance 8 reads).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>highChunk</b></code>](#high-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary " text="input"/> {/* #high-chunk */} 
+The opposite corner of the search box, with lowChunk; both corners are inclusive.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #limit */} 
-Maximum number of chunks to return. Defaults to 1000 when omitted. Must be &#x003E;= 0.
+Maximum number of chunks to return. Defaults to 1000 when omitted or 0; a cube at maxDistance 8 holds up to 4,913. Must be &#x003E;= 0.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>skip</b></code>](#skip)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #skip */} 
 Number of chunks to skip for pagination. Defaults to 0 when omitted. Must be &#x003E;= 0.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GetChunksByDistanceInput.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #since */} 
+Optional inclusive lower time bound: only chunks whose updatedAt is at or after it, i.e. chunks whose stored grid, chunk state or LODs were written since (updateChunk, updateChunkState, updateChunkLods). Single voxel edits do not move a chunk's updatedAt; read those with listVoxelUpdatesByDistance's since.
 
 
 

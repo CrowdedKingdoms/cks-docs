@@ -232,8 +232,16 @@ into a grid nested inside it:
 - a chunk no grid covers at all is refused.
 
 This holds for every voxel write: `updateVoxel`, `sendVoxelUpdate`, `updateChunk`
-(as a player), a [mod's](/exec/mods) `set_voxels`, and a client's own realtime
-voxel update, which the replication servers refuse with `UNAUTHORIZED`. Only
+(as a player), a [mod's](/exec/mods) `set_voxels` and `set_chunk`, and a client's own realtime
+voxel update, which the replication servers refuse with `UNAUTHORIZED`.
+
+**Knowing before you send.** To grey out a build tool, or draw claim borders, before an edit is
+refused, read the area's grids with `gameApps.nearbyGrids`: from Game API v2.67.0 each grid
+carries `permissionKeys`, your own unexpired keys on it (another player's are
+`nearbyPermissions`, an app admin's read). For a chunk, take the covering grid with the smallest
+box (the lower `gridId` on a tie): the edit goes through when that grid's `permissionKeys` include
+`update_voxel_data` and your tier carries it. Refresh after a grant or a claim changes; a decision
+can lag up to 15 seconds on the replication servers, so the refusal stays the final word. Only
 building works this way. `access`, `teleport`, `use_voice_chat` and
 `use_video_chat` are still granted by **any** covering grid where the player holds
 them, so a player keeps moving and talking inside a plot they cannot build on.
