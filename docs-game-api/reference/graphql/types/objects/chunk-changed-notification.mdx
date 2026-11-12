@@ -1,0 +1,68 @@
+---
+id: chunk-changed-notification
+title: ChunkChangedNotification
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A chunk near you was replaced as a whole (a hub's or mod's world.set&#x005F;chunk; Buddy v0.45.0): read it again with getChunk, or getChunksByDistance with since. It comes instead of a voxel update per voxel. Received via the udpNotifications subscription.
+
+
+```graphql
+type ChunkChangedNotification {
+  appId: BigInt!
+  chunkX: BigInt!
+  chunkY: BigInt!
+  chunkZ: BigInt!
+  distance: Int!
+  updatedAtMs: BigInt!
+  sequenceNumber: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkChangedNotification.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The ID of the app the chunk is in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkChangedNotification.<b>chunkX</b></code>](#chunk-x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #chunk-x */} 
+The X coordinate of the replaced chunk.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkChangedNotification.<b>chunkY</b></code>](#chunk-y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #chunk-y */} 
+The Y coordinate of the replaced chunk.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkChangedNotification.<b>chunkZ</b></code>](#chunk-z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #chunk-z */} 
+The Z coordinate of the replaced chunk.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkChangedNotification.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #distance */} 
+Chunk replication distance (0-8) the notification was fanned out over.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkChangedNotification.<b>updatedAtMs</b></code>](#updated-at-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at-ms */} 
+The stored chunk's new updatedAt, in epoch milliseconds: a copy at least this new is current.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkChangedNotification.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #sequence-number */} 
+Correlation byte from the datagram tail (always 0 today).
+
+
+
+
+### Implemented By
+
+[`UdpNotification`](/reference/graphql/types/unions/udp-notification.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>
