@@ -658,7 +658,7 @@ Semantics, stated as contract:
 
 **146** is server → client only (replication server v0.45.0). It tells the players near a chunk
 that the chunk was **replaced as a whole** (a hub's or mod's `world.set_chunk`, Game API
-v2.68.0), so they read it again instead of receiving a voxel update per voxel. It uses the long
+v2.68.1), so they read it again instead of receiving a voxel update per voxel. It uses the long
 form shell, signed like every other server → client spatial notification: `chunk` is the chunk,
 `uuid` is empty, `distance` is the radius of the fan-out (8) and `decay` is `0`. It passes block
 lists like voxel edits do. The `payload` region is:

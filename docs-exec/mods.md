@@ -87,7 +87,7 @@ a call, 20 calls a second, and a module of at most 4 MiB.
   covering that chunk (the mod's grid, or a smaller grid nested in it, which decides its own
   chunks); and `grids.get` and `grids.check_permission` for its own grid. It has no player data
   and no permission grants. `world.set_voxels` takes up to 4,096 writes and `world.set_chunk`
-  replaces a whole chunk (Game API v2.68.0; see [world and platform
+  replaces a whole chunk (Game API v2.68.1; see [world and platform
   data](world-and-platform-data)). Use `ckx-sdk` 0.14.1 or later for large batches: 0.14.0 built
   each write as a JSON tree and ran out of a mod's 20 million fuel past about 750 writes;
   0.14.1 sends 4,096 in about 10 million.
@@ -101,7 +101,7 @@ a call, 20 calls a second, and a module of at most 4 MiB.
   chunk. Events can be lost. `voxels` reports every write the Game API makes (`updateVoxel`,
   `updateChunk`, a rollback, and `world.set_voxels` and `world.set_chunk` from the app's hubs and
   from mods, the mod's own included, so a mod that writes on every `voxels` event never stops),
-  and, from Game API v2.68.0 with replication servers v0.45.0, players' realtime voxel edits
+  and, from Game API v2.68.1 with replication servers v0.45.0, players' realtime voxel edits
   (`sendVoxelUpdate`); several edits of one chunk may arrive as one event.
 - **Nothing else**: a mod calls no other node, subscribes to no topic, and sends no realtime
   events. Only players call it.
