@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Lists recorded voxel edits for all chunks within a cubic (Chebyshev) radius of a center chunk, grouped per chunk and ordered by increasing distance, paginated over chunks. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
+Lists recorded voxel edits for the chunks of a region, grouped per chunk and paginated over chunks: a cube (center +/- maxDistance, by increasing distance) or a box between two corners (lowChunk and highChunk, at most 4,913 chunks, by x, y, z). It reads the edit log alone, so chunks whose grid was never stored are included. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
 
 
 ```graphql
@@ -36,4 +36,4 @@ listVoxelUpdatesByDistance(
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>VoxelUpdatesByDistanceResponse</b></code>](/reference/graphql/types/objects/voxel-updates-by-distance-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Result of listVoxelUpdatesByDistance: per-chunk groups of voxel edits ordered by increasing distance from the center, plus an echo of the pagination applied.
+Result of listVoxelUpdatesByDistance: per-chunk groups of voxel edits (a cube ordered by increasing distance from its center, a box by x, y, z), plus the pagination applied.
