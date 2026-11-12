@@ -135,13 +135,15 @@ a `GenericErrorResponse` with the same `sequenceNumber` (here `7`). See
 ## 4. Read world data
 
 `getChunksByDistance` loads chunks around a center within a chunk radius (`maxDistance`
-1–8, Chebyshev):
+1–8, Chebyshev), or in a box between two corner chunks (`lowChunk`, `highChunk`, inclusive,
+at most 4,913 chunks; Game API v2.67.0):
 
 ```graphql
 query Chunks($input: GetChunksByDistanceInput!) {
   getChunksByDistance(input: $input) {
-    # See the SDL for the full response shape (chunks + the echoed limit/skip window).
-    __typename
+    chunks { coordinates { x y z } updatedAt voxels voxelStates { x y z voxelType stateBase64 } }
+    limit
+    skip
   }
 }
 ```
@@ -157,6 +159,18 @@ query Chunks($input: GetChunksByDistanceInput!) {
   }
 }
 ```
+
+Pages are stable: a cube's chunks come back nearest the center first and a box's in coordinate
+order, ties broken by coordinates, and the response echoes the `limit` and
+`skip` it applied (`limit` defaults to 1,000), so read the next page with `skip + limit` until a
+page comes back shorter than `limit`. When a player steps one chunk along an axis, read only
+the slab the step uncovers as a box: at range 8 that is 289 chunks, not 4,913. Add `since` to
+read only chunks written since then (their grid, state or LODs; a single voxel edit does not move
+a chunk's `updatedAt`), and read the voxel edits since then with `listVoxelUpdatesByDistance`,
+which takes the same cube or box and `since`. It also returns the edits recorded for a chunk the
+server never stored as a grid, which neither chunk read returns: a player's edit in a fresh chunk
+is recorded, and needs no whole-chunk write to survive a reload. `listVoxels` pages one chunk's
+edits by position (`limit` up to 65,536, `skip`).
 
 End the session with `mutation { disconnectUdpProxy }` when leaving the world.
 Unsubscribing alone stops delivery but does not close the server-side session.

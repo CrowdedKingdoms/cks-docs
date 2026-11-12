@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Lists recorded voxel edits for a single chunk (optionally only those at/after `since`), newest first. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
+Lists the recorded voxel edits of a single chunk (optionally only those at/after `since`), one per voxel position, ordered by position and paged by limit (default and most 65,536) and skip. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
 
 
 ```graphql
