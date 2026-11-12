@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Scan a region for grids. Player-safe: returns bounds only, no permission keys and no impersonation userId.
+Scan a region for grids. Player-safe: returns each grid's bounds and the caller's own permission keys, and takes no userId.
 
 
 ```graphql
