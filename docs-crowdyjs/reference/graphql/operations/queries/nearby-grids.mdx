@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-List every grid overlapping a chunk-coordinate bounding box, returning gridId and bounds only. Player-safe: no permission keys and no impersonation userId. Requires an app-scoped token for the same app.
+List every grid overlapping a chunk-coordinate bounding box: its gridId, its bounds and the caller's own permission keys on it. Player-safe: another user's keys need nearbyGridPermissions (app admin). The grid that decides a voxel edit in a chunk is the smallest box covering it (the lower gridId on a tie), and the edit needs update&#x005F;voxel&#x005F;data there. Requires an app-scoped token for the same app.
 
 
 ```graphql
@@ -36,4 +36,4 @@ The app and the low/high chunk corners of the region to scan (corners are normal
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>NearbyGrid</b></code>](/reference/graphql/types/objects/nearby-grid.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A grid overlapping a scanned region (returned by nearbyGrids). Bounds only — no permission keys.
+A grid overlapping a scanned region (returned by nearbyGrids): its bounds and the caller's own permission keys on it.

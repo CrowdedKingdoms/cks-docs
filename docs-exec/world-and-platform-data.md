@@ -66,7 +66,8 @@ fn plant(ctx: &Ctx, at: ChunkPos, player: u64) -> Result<()> {
 |---|---|---|
 | `ctx.world().chunk(at)` | `world.read` | The chunk's dense voxel grid and metadata blob, or `None`. |
 | `ctx.world().voxels(at)` | `world.read` | Voxels written into the chunk, up to 2,048, each with its time (`updated_at`) and author (`created_by`: a player's id, or `"0"` for your app's own code). |
-| `ctx.world().set_voxels(&writes)` | `world.write` | Up to 16 voxels written together (all or none; a voxel listed twice keeps the later write), written as the app and shown to nearby players. Positions and types are yours to define: each `voxel` axis and each `voxel_type` is any signed 16-bit value (`i16`), and the platform checks no narrower range. Each voxel's state is at most 1 KiB; a batch with anything else is refused whole. Your app's own writes are not held to the [wilderness setting](/game-api/grids-and-permissions); a mod's are, as its owner's. |
+| `ctx.world().set_voxels(&writes)` | `world.write` | Up to 4,096 voxels written together (Game API v2.68.0, `ckx-sdk` 0.14; 16 before), all or none (a voxel listed twice keeps the later write), written as the app and shown to nearby players, each as a voxel update. Their states together may hold 2 MiB. Positions and types are yours to define: each `voxel` axis and each `voxel_type` is any signed 16-bit value (`i16`), and the platform checks no narrower range. Each voxel's state is at most 1 KiB; a batch with anything else is refused whole. Your app's own writes are not held to the [wilderness setting](/game-api/grids-and-permissions); a mod's are, as its owner's. |
+| `ctx.world().set_chunk(at, &grid, &states)` | `world.write` | Replaces a chunk (Game API v2.68.0, `ckx-sdk` 0.14): its 4,096-byte grid (one type byte per voxel, index `x + y*16 + z*256`) and up to 4,096 voxel states, and every voxel written into it before goes, so it reads back exactly as written; its state blob stays. Nearby players get one notice to read the chunk again (`chunkChanged` in the SDKs) instead of a voxel update per voxel: the cheap way to change most of a chunk. Mods hear it as `voxels`. |
 | `ctx.world().set_chunk_state(at, state)` | `world.write` | Sets a chunk's opaque state blob (at most 64 KiB; `None` clears it), the same one `updateChunkState` writes. It costs one write per 4 KiB. |
 | `ctx.world().actors(at)` | `world.read` | Actors in a chunk, from live presence (up to 200). |
 | `ctx.world().actors_near(at, xz, y)` | `world.read` | Actors within `xz` chunks across (at most 3) and `y` up and down (at most 1), up to 500. |
@@ -108,7 +109,18 @@ A refused operation returns a `CallError` whose `status` says why:
 | `Denied` | The type did not declare the scope. |
 | `NotFound` | No such player in the app (or none with access, for writes and grants), or no such grid, group or tier in the app. |
 | `AppError` | Bad input: too many writes, a state over its cap, an unknown permission key, a grid your code did not create, a suspension in the past or over a year. The message says which. |
-| `RateLimited` | The app sent more than the platform allows. Reads and writes are counted separately, and each voxel in a batch counts as one write. Retry with backoff. |
+| `RateLimited` | The app sent more than the platform allows (below). Retry with backoff. |
+
+**The budget.** The Game API allows each app, on each of its servers, 200 read and 50 write units a
+second, in a bucket holding two seconds' worth; your app's own code and its players' mods draw on
+separate buckets. A call costs one unit, except writes: `world.set_voxels` costs one per started 64
+voxels, `world.set_chunk` one plus one per started 64 states, and `world.set_chunk_state` one per
+started 4 KiB. So a 4,096-voxel batch is 64 writes, about a second of the bucket.
+`ckx_sdk::limits::node` has the numbers. Before Game API v2.68.0 each voxel cost one write.
+
+**Fuel.** A mod's call has 20 million fuel. `ckx-sdk` 0.14.1 sends a 4,096-voxel batch in about 10
+million (0.14.0 built each write as a JSON tree and ran out past about 750); a hub's default budget is
+50 million.
 
 `ctx.node(op, json)` sends an operation with a JSON body directly, for anything the typed calls
 do not cover.

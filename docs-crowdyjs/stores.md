@@ -181,8 +181,12 @@ is best-effort by design — sequence numbers are uint8 correlation ids.
 
 The client-side source of truth for chunks and voxels:
 
-- `ensureAround(center, radius)` bulk-loads via `getChunksByDistance`
-  (in-flight deduped), then **hydrates each newly loaded chunk** with
+- `ensureAround(center, radius)` reads **only the chunks it does not hold yet**,
+  as boxes (`getChunksByDistance` with `lowChunk`/`highChunk`, CrowdyJS 18.30.0
+  and Game API v2.67.0): a step along one axis at range 8 reads the 289 chunks it
+  uncovers rather than 4,913. Each box is read in pages of the size the server
+  says it applied; a chunk two pages return is applied once
+  (`duplicatePageChunks`). It is in-flight deduped, then **hydrates each newly loaded chunk** with
   `getChunk`. Its `voxelStates` carry every voxel edit recorded for the
   chunk, each with its type: a hub's or mod's `world.set_voxels`,
   `updateVoxel`, other players' realtime voxel updates (ck-api v2.33.0). The
@@ -192,14 +196,29 @@ The client-side source of truth for chunks and voxels:
   edits. A chunk the store has already loaded keeps its cache when a later
   bulk load returns it again (CrowdyJS 18.2.0; earlier releases put the
   stored grid back over the hydrated edits as the player moved). A chunk the
-  server has never stored comes back from neither read, even when edits were
-  recorded for it.
+  server has never stored comes back from neither chunk read (`getChunk`,
+  `getChunksByDistance`), even when edits were recorded for it;
+  `listVoxelUpdatesByDistance` returns those edits (`catchUp` applies them to
+  the chunks the store holds).
 - Realtime `voxelUpdate` notifications merge into the cache automatically:
-  dense grid write, typed state decode, revision bump, `onChunkChanged`.
+  dense grid write, typed state decode, revision bump, `onChunkChanged`. A
+  `chunkChanged` (a hub's or mod's `world.set_chunk`) reads the chunk again
+  (`reloadReplacedChunks`), and when the realtime connection comes back the store
+  catches up on its last area from 30 s before the drop (`catchUp(since)`,
+  `catchUpOnReconnect`): the chunks rewritten since then and those with edits
+  since then (CrowdyJS 18.30.0).
 - `setVoxel(...)` applies locally first (optimistic) and replicates over the
-  UDP path with your typed voxel state. With `optimistic: false` nothing changes
+  UDP path with your typed voxel state, **paced**: at most `maxEditsInFlight`
+  (128) unanswered and `maxEditsPerSecond` (250) sent, the rest waiting in order
+  (`queuedEdits`, `editsInFlight`); the server drops a session's traffic above 500
+  messages a second without a word. An edit the server refuses (`UNAUTHORIZED` for
+  a voxel the player may not edit), one the transport does not take, and one whose
+  echo does not come back within `editTimeoutMs` (10 s) is **undone** and reported
+  to `onEditRefused` with its `reason` and whether the voxel was `restored`
+  (CrowdyJS 18.30.0; before, it stayed on screen). With `optimistic: false` nothing changes
   locally until the server's echo of the edit arrives, which the store then
-  applies, so the cache holds only what the server accepted.
+  applies, so the cache holds only what the server accepted. Realtime edits are
+  recorded by the server: only seeded chunks are written back.
 - **Deterministic worldgen write-back**: chunks the server has never stored
   are handed to your `onMissing(coord)` hook; returned grids are seeded
   locally and persisted through a throttled write-back queue (one chunk per

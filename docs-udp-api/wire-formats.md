@@ -42,6 +42,8 @@ MESSAGE_BUNDLE_SIGNED = 30;         // server -> client: a bundle with ONE trail
 CHANNEL_MESSAGE_RANGED_REQUEST = 32; // client -> server: publish to a channel, delivered only near an origin chunk; server v0.35.0+
 CHANNEL_AUDIO_REQUEST = 35;        // client -> server: send audio to a channel; server v0.37.0+
 CHANNEL_AUDIO_NOTIFICATION = 36;   // server -> client: deliver channel audio; server v0.37.0+
+COMMAND_RECONNECT_BOUND = 44;      // server -> client: COMMAND_RECONNECT bound to this assignment's nonce; server v0.45.0+
+COMMAND_SESSION_RELEASED_BOUND = 45; // server -> client: COMMAND_SESSION_RELEASED bound to the nonce; server v0.45.0+
 // other values in 19–127 are unused / reserved or internal server-to-server
 ```
 
@@ -66,10 +68,11 @@ SINGLE_ACTOR_MESSAGE = 142; // see "Single Actor Message" below; reuses the long
 CLIENT_VIDEO_PACKET_2 = 143;       // client -> server: one webcam video FRAGMENT (see "Video payload"); needs use_video_chat
 CLIENT_VIDEO_NOTIFICATION_2 = 144; // server -> client: the same bytes with 143 rewritten to 144 and the tail re-signed (as 134 -> 135)
 ACTOR_LEFT_NOTIFICATION_2 = 145;   // server -> client only: an actor is no longer present (see "Actor left")
-// 146–255 — reserved for future spatial types
+CHUNK_CHANGED_NOTIFICATION = 146;  // server -> client only: a chunk was replaced as a whole; read it again (see "Chunk changed"); server v0.45.0+
+// 147–255 — reserved for future spatial types
 ```
 
-Long HMAC spatial layout (below) applies to types **128–140** (`ACTOR_UPDATE_REQUEST` … `GENERIC_SPATIAL_1`), to `SINGLE_ACTOR_MESSAGE` (142), which reuses the same layout (the server ignores its `distance`/`decay rate` fields), and to **143–145** (video and actor-left). In code, `isClientLongSpatialMessageType(t)` is true for `128 <= t <= 140`, for `142` and for `143`; `144` and `145` are server-only — a client that sends them is dropped like any other server-only opcode. `SHORT_SPATIAL_MESSAGE` (141) is reserved for a future compact layout and is **not yet implemented** (no server handler). The non-spatial `CLIENT_ACTOR_HEARTBEAT` (26) also **reuses this exact layout** so the same HMAC/parsing applies — but it is a local-only keep-alive (no fan-out); see "Actor presence and heartbeats" below.
+Long HMAC spatial layout (below) applies to types **128–140** (`ACTOR_UPDATE_REQUEST` … `GENERIC_SPATIAL_1`), to `SINGLE_ACTOR_MESSAGE` (142), which reuses the same layout (the server ignores its `distance`/`decay rate` fields), and to **143–146** (video, actor-left and chunk-changed). In code, `isClientLongSpatialMessageType(t)` is true for `128 <= t <= 140`, for `142` and for `143`; `144`, `145` and `146` are server-only — a client that sends them is dropped like any other server-only opcode. `SHORT_SPATIAL_MESSAGE` (141) is reserved for a future compact layout and is **not yet implemented** (no server handler). The non-spatial `CLIENT_ACTOR_HEARTBEAT` (26) also **reuses this exact layout** so the same HMAC/parsing applies — but it is a local-only keep-alive (no fan-out); see "Actor presence and heartbeats" below.
 
 UUIDs are client generated 32 byte UTF8 strings. The null termination byte (33rd slot) is not sent.
 
@@ -211,6 +214,44 @@ period (≈5 s) and then deletes the session and ignores further packets. See
 **[Operations → Load shedding](/replication-api/operations)**. Browser clients on
 the GraphQL UDP proxy are migrated automatically and never see this message.
 
+Test vector: token `abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+/` gives
+`16c80d2cee8977578129f7295001cd1bea65dd11be3f518560529cb298ce5fc42b`. The HMAC covers the
+type byte alone; CrowdyCPP before 0.81.0 computed it over the type byte followed by the token,
+so it ignored every reconnect command.
+
+### Bound control frames — `COMMAND_RECONNECT_BOUND` (44) and `COMMAND_SESSION_RELEASED_BOUND` (45)
+
+`COMMAND_RECONNECT` and `COMMAND_SESSION_RELEASED` sign fixed bytes, so one captured from a
+session verifies again for as long as the game token lives. From replication server v0.45.0 a
+client can bind them to its current assignment: it draws 8 random bytes (a **control nonce**)
+for each assignment and sends them after the flags in `CLIENT_CAPABILITIES`, with bit 1
+(`BOUND_CONTROL = 2`) set (see "Signed bundles" below). The server then sends this client the
+bound forms instead of 22 and 28:
+
+```
+44: [1B type=44][8B nonce][32B HMAC over the first 9 bytes]                (41 bytes)
+45: [1B type=45][1B reason][8B nonce][32B HMAC over the first 10 bytes]    (42 bytes)
+```
+
+The HMAC is HMAC-SHA256 keyed on the 64-octet game token, as for 22 and 28. **Verify the HMAC,
+then compare the nonce with the one this assignment sent: drop a frame with another nonce** —
+it was captured from an earlier assignment and sent again. A verified 45 means what 28 with that
+reason means; reason 5 (`IDLE`) is final. Like 22 and 28, both are always their own datagram.
+Draw a new nonce for each assignment (and send the capabilities again), so the frames of one
+session never verify in the next.
+
+Test vectors (token as above, nonce `0102030405060708`):
+
+```
+44:          2c010203040506070801da5c2e0f16ec592bd41e81286527373b1ecabb591bcc7f6481dfdb6ed2a5c2
+45 reason 5: 2d050102030405060708fae450e083640dfdf23fd6cd963aef35d6f50be32304624468258dc7d8c18edf
+```
+
+A client keeps accepting 22 and 28: an older server, and the Game API's GraphQL proxy and binary
+relay toward a browser, still send them, and a client cannot tell an older server from a replay.
+So an idle release in the legacy form still deserves the guard the SDKs apply (one that arrives
+within a minute of this client's own gameplay input reconnects instead of ending the session).
+
 ## Session released — `COMMAND_SESSION_RELEASED` (28)
 
 A server sends `COMMAND_SESSION_RELEASED` (28) when it has ended your session and will
@@ -270,7 +311,10 @@ Since replication server v0.30.0 a client can ask for its downlink bundles to be
 signed **once** instead of once per member. It sends `CLIENT_CAPABILITIES` (29): the
 long-form spatial layout below (so the usual session and HMAC checks apply), chunk
 `(0,0,0)`, distance 0, no actor UUID, and a 4-byte little-endian flags word as the
-app payload; bit 0 (`BUNDLE_SIGNED = 1`) means "I parse `MESSAGE_BUNDLE_SIGNED`". The
+app payload; bit 0 (`BUNDLE_SIGNED = 1`) means "I parse `MESSAGE_BUNDLE_SIGNED`". Bit 1
+(`BOUND_CONTROL = 2`, server v0.45.0+) means "send me 44 and 45 instead of 22 and 28", and the
+8-byte control nonce follows the flags (a 12-byte payload); a server reads the nonce only with
+the bit set, and an older one reads only the flags. The
 server binds the flags to the worker that serves this client's flow and forgets them
 when the session goes, so a client sends the message **after every assignment,
 reassignment and token refresh, and again every ~15 s** (the SDKs do). Until it lands
@@ -609,6 +653,25 @@ Semantics, stated as contract:
 5. **No acknowledgement, no retransmit.** Keep your own staleness reaper (the
    SDKs use 12 s without an update) as the fallback for a lost datagram; 145 is
    the fast path, not the only path.
+
+### Chunk changed (`CHUNK_CHANGED_NOTIFICATION`)
+
+**146** is server → client only (replication server v0.45.0). It tells the players near a chunk
+that the chunk was **replaced as a whole** (a hub's or mod's `world.set_chunk`, Game API
+v2.68.0), so they read it again instead of receiving a voxel update per voxel. It uses the long
+form shell, signed like every other server → client spatial notification: `chunk` is the chunk,
+`uuid` is empty, `distance` is the radius of the fan-out (8) and `decay` is `0`. It passes block
+lists like voxel edits do. The `payload` region is:
+
+| Offset | Bytes | Field       | Meaning                                                                                   |
+| ------ | ----- | ----------- | ----------------------------------------------------------------------------------------- |
+| 0      | 8     | `updatedAt` | int64 little-endian epoch milliseconds: the stored chunk's new `updatedAt`.               |
+| 8      | …     | reserved    | May be absent or longer in a later revision; ignore.                                     |
+
+Read the chunk again (`getChunk`, or a region read with `since`). A copy you hold whose
+`updatedAt` is that new or newer already has the change. Older clients ignore 146 (an unknown
+type) and see the change only on their next read. The Game API's GraphQL proxy delivers it as the
+`ChunkChangedNotification` member of `udpNotifications`, and the binary relay passes it through.
 
 ## Distance Field
 

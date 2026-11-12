@@ -82,18 +82,27 @@ A mod is a hub with the platform's mod limits: 32 MiB of memory, 20 million fuel
 a call, 20 calls a second, and a module of at most 4 MiB.
 
 - **Its grid, through the node API**: `world.chunk`, `world.voxels`, `world.actors` and
-  `world.actors_radius` inside the grid's bounds; `world.set_voxels` inside them, in each
-  chunk while its owner holds `update_voxel_data` on the most specific grid covering that
-  chunk (the mod's grid, or a smaller grid nested in it, which decides its own chunks); and `grids.get` and `grids.check_permission`
-  for its own grid. It has no player data and no permission grants.
+  `world.actors_radius` inside the grid's bounds; `world.set_voxels` and `world.set_chunk`
+  inside them, in each chunk while its owner holds `update_voxel_data` on the most specific grid
+  covering that chunk (the mod's grid, or a smaller grid nested in it, which decides its own
+  chunks); and `grids.get` and `grids.check_permission` for its own grid. It has no player data
+  and no permission grants. `world.set_voxels` takes up to 4,096 writes and `world.set_chunk`
+  replaces a whole chunk (Game API v2.68.0; see [world and platform
+  data](world-and-platform-data)). Use `ckx-sdk` 0.14.1 or later for large batches: 0.14.0 built
+  each write as a JSON tree and ran out of a mod's 20 million fuel past about 750 writes;
+  0.14.1 sends 4,096 in about 10 million.
+- **When it runs**: a switched-on mod starts when a player is in its grid: when it is switched on
+  with a player already inside, when a player appears there, and when one walks in from outside
+  (Game API v2.66.0). A player's realtime presence is what counts (their actor updates); the game
+  needs no heartbeat call for it. Before v2.66.0 a mod switched on with players already inside
+  waited for their next movement event, or for a call.
 - **What happens in its grid**: `Hub::on_world` receives the grid's world events in batches:
   actors moving into or out of a chunk (`actors`) and voxel changes (`voxels`), each with its
-  chunk. An actor arriving starts a mod that is switched on but not running. Events can be lost.
-  `voxels` reports the writes the Game API makes: `updateVoxel`, `updateChunk`, a rollback, and
-  `world.set_voxels` from the app's hubs and from mods, the mod's own included (so a mod that
-  writes on every `voxels` event never stops). A player's realtime voxel edit
-  (`sendVoxelUpdate`) produces no event yet; read the chunk's edits with `world.voxels` when
-  your mod needs them.
+  chunk. Events can be lost. `voxels` reports every write the Game API makes (`updateVoxel`,
+  `updateChunk`, a rollback, and `world.set_voxels` and `world.set_chunk` from the app's hubs and
+  from mods, the mod's own included, so a mod that writes on every `voxels` event never stops),
+  and, from Game API v2.68.0 with replication servers v0.45.0, players' realtime voxel edits
+  (`sendVoxelUpdate`); several edits of one chunk may arrive as one event.
 - **Nothing else**: a mod calls no other node, subscribes to no topic, and sends no realtime
   events. Only players call it.
 

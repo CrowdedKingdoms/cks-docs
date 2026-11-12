@@ -32,6 +32,18 @@ algorithm below (same key, same `prefix || token` message). Channel notification
 
 :::
 
+:::info[Control frames: no token appended]
+
+The control frames carry an HMAC over their **leading bytes alone**, keyed on the token, with
+no token appended to the message: `COMMAND_RECONNECT` (22) over `[22]`,
+`COMMAND_SESSION_RELEASED` (28) over `[28][reason]`, and from replication server v0.45.0 the
+bound forms over their nonce too: `COMMAND_RECONNECT_BOUND` (44) over `[44][nonce]` and
+`COMMAND_SESSION_RELEASED_BOUND` (45) over `[45][reason][nonce]`, where the nonce is the 8 bytes
+this client sent in `CLIENT_CAPABILITIES` for its current assignment. Drop a bound frame whose
+nonce is not your current one. See [wire formats](/replication-api/wire-formats#bound-control-frames--command_reconnect_bound-44-and-command_session_released_bound-45).
+
+:::
+
 ## Algorithm
 
 - **HMAC:** HMAC-SHA256 (RFC 2104 with SHA-256). Tag length: **32 bytes**.
