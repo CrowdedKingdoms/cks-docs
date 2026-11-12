@@ -7,7 +7,7 @@ description: "Every node, setting, property, recipient and asset the Unreal SDK 
 
 # Deprecated in 2.25
 
-Everything on this page still works in this release. Each item warns when you compile it, or is hidden from menus so new
+The items in the tables after the first still exist in this release, except that **Elected Host (Deprecated)** elects nobody. Each item warns when you compile it, or is hidden from menus so new
 work does not pick it up, and is removed in a later release, which will say so first. Every other page in these docs
 teaches only the current way; where a page still describes a deprecated item, it does so in a section called
 **Deprecated** at its end.
@@ -16,17 +16,27 @@ To find what your project uses, run the searches in the plugin's `MIGRATION.md` 
 `Content` and `Plugins` folders, and build your C++ with the new version: each deprecated symbol names its replacement
 in the compiler warning.
 
+## Removed after 2.25.0
+
+These were deprecated in 2.25 and are gone. A project that still uses one fails to compile in C++ and shows a broken node in a Blueprint. [What's Changed](./whats-changed.md) has the steps.
+
+| Removed | Use instead | Documented |
+|---|---|---|
+| **Get Host User ID**, **Is Host Set**, **Crowdy Get Host ID**, `UCrowdyHostSubsystem::GetHostID` | **Get Leader User ID** on **Get Crowdy Leader Subsystem** (0 means no Leader) | [The Leader](../runtime/leader.md) |
+| **Is Host** | **Is Local Leader** | [The Leader](../runtime/leader.md) |
+| **On Host Elected** | **On Leader Changed**, which gives user ids, not entity ids | [The Leader](../runtime/leader.md#follow-the-leader) |
+| **Is Crowdy Entity Host**, **Is Crowdy Entity Host (Server)**, `CheckEntityIsHost` | **Is Local Leader**; anything that must be enforced belongs in a Server Object | [The Leader](../runtime/leader.md) |
+| **Crowdy Has Authority**, **Switch Crowdy Has Authority** | **Is Local Leader**; for a gate on a write to an entity or subsystem you own, **Switch Is Crowdy Entity Locally Owned** on that entity | [The Leader](../runtime/leader.md#checking-who-writes-an-entity) |
+| **Is Crowdy Entity Locally Controlled** | **Is Crowdy Entity Locally Owned** | [The Leader](../runtime/leader.md#checking-who-writes-an-entity) |
+| `UCrowdyHostSubsystem` (**Crowdy Host Subsystem**) and the setting `HostPollIntervalSeconds` | The Leader subsystem. Nothing polls for a host, so the setting has nothing to set. | [The Leader](../runtime/leader.md) |
+
 ## Who writes shared state
 
 | Deprecated | Use instead | Documented |
 |---|---|---|
-| **Leader Source** set to **Elected Host (Deprecated)** | **Server Object**, the default: a Leader chosen by a Server Object type the SDK deploys. Deploy your server code once and restart its root. | [The Leader](../runtime/leader.md), [Deprecated](../runtime/leader.md#deprecated) |
-| **Get Host ID**, **Get Host User ID**, **Is Host Set**, **Crowdy Get Host ID** | **Get Leader User ID** on **Get Crowdy Leader Subsystem** (0 means no Leader) | [The Leader](../runtime/leader.md), [Host Election (Deprecated)](../services/host-election.md) |
-| **Is Host** | **Is Local Leader** | [The Leader](../runtime/leader.md) |
-| **On Host Elected**, **On Host ID Updated** | **On Leader Changed**, which gives user ids, not entity ids | [The Leader](../runtime/leader.md) |
-| **Is Crowdy Entity Host**, **Is Crowdy Entity Host (Server)**, `CheckEntityIsHost` | **Is Local Leader**; anything that must be enforced belongs in a Server Object | [Host Election (Deprecated)](../services/host-election.md) |
-| **Crowdy Has Authority**, **Switch Crowdy Has Authority** | **Switch Is Crowdy Entity Locally Owned** on the entity or subsystem you write | [The Leader](../runtime/leader.md#checking-who-writes-an-entity) |
-| **Is Crowdy Entity Locally Controlled** | **Is Crowdy Entity Locally Owned** | [Entity component](../runtime/entity-component.md) |
+| **Leader Source** set to **Elected Host (Deprecated)** | **Server Object**, the default: a Leader chosen by a Server Object type the SDK deploys. Deploy your server code once and restart its root. Elected Host elects nobody now: the Leader subsystem does not start and no client writes a World entity or a replicated subsystem. | [The Leader](../runtime/leader.md), [Deprecated](../runtime/leader.md#deprecated) |
+| **Get Host ID** on the game session and the entity subsystem | **Get Leader User ID** on **Get Crowdy Leader Subsystem** (0 means no Leader) | [The Leader](../runtime/leader.md) |
+| **On Host ID Updated** | **On Leader Changed**, which gives user ids, not entity ids | [The Leader](../runtime/leader.md) |
 | Marking Crowdy State dirty on an entity you do not own (the host push) | Write state on the client that owns the entity, or keep it in a Server Object | [Crowdy State](../runtime/crowdy-state.md#deprecated) |
 
 ## The entity component
@@ -62,4 +72,3 @@ in the compiler warning.
 
 - [What's Changed](./whats-changed.md): what changed in each release and what to do about it.
 - [The Leader](../runtime/leader.md): who writes shared state now.
-- [Host Election (Deprecated)](../services/host-election.md): the elected host, for projects that keep it for now.

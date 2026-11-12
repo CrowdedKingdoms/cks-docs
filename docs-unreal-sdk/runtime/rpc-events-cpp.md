@@ -1,6 +1,6 @@
 ---
 slug: rpc-events-cpp
-sidebar_position: 4
+sidebar_position: 5
 title: RPC Events in C++
 description: Declare a CrowdyEvent receiver, generate its call site with CROWDY_EVENT, and know which parameter types, sizes, and references make it across the wire.
 ---
@@ -108,7 +108,7 @@ crowdy.rpc.dumpfn BP_Hero_C MyEvent   print one function's routing info
 
 `CrowdyRecipient = "Host"` is replaced by `OwningClient`, from the [Routing keys](#routing-keys) table, or by a Server Object for logic that must be enforced.
 
-A receiver declared with `Host` (`ECrowdyEventRecipient::Host`) still routes and warns when its metadata is read. On a replicated subsystem it runs on the [Leader](./leader.md); on an actor it runs only under Leader Source **Elected Host (Deprecated)**. [Recipients and routing](./recipients-and-routing.md#deprecated) has the delivery detail.
+A receiver declared with `Host` (`ECrowdyEventRecipient::Host`) still routes and warns when its metadata is read. On a replicated subsystem it runs on the [Leader](./leader.md); on an actor it runs nowhere, because no host is elected under Leader Source **Elected Host (Deprecated)** either. [Recipients and routing](./recipients-and-routing.md#deprecated) has the delivery detail.
 
 ## Gotchas
 

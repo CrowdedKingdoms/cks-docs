@@ -1538,7 +1538,7 @@ Two checks happen before the cap and cost no allowance: whether the event is mea
 
 `OwningClient` replaces `Host`; see [Which events reach a row](#which-events-reach-a-row).
 
-A `Host` event never reaches a row either. Under Leader Source **Elected Host (Deprecated)** it is delivered to the elected host as a request addressed to an actor; on an actor, by default, it is dropped with a warning. A `Host` event that arrives for an entity a client holds as a row is dropped and logged, at most once a second, the same as a targeted `OwningClient` one.
+A `Host` event never reaches a row either. On an actor it is dropped with a warning under Server Object, and goes nowhere under Leader Source **Elected Host (Deprecated)**, where no host is elected. A `Host` event that arrives for an entity a client holds as a row is dropped and logged, at most once a second, the same as a targeted `OwningClient` one.
 
 ## Gotchas
 

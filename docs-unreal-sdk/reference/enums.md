@@ -147,7 +147,7 @@ Thirteen enums the manifest reports are excluded from the table above: two are d
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. These values still exist, but Elected Host elects nobody, and they are removed in a later release.]
 [Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
 :::
 
@@ -196,17 +196,17 @@ Header: `Replication/Components/CrowdyEntityComponent.h`.
 
 | Value | Meaning |
 | --- | --- |
-| `Host` | Hidden from the dropdowns. On a replicated subsystem it runs on the [Leader](../runtime/leader.md). On an actor it is dropped with a warning naming Leader Source, unless Leader Source is Elected Host, where only the elected host runs it and may act on any entity it has locally. |
+| `Host` | Hidden from the dropdowns. On a replicated subsystem it runs on the [Leader](../runtime/leader.md). On an actor it is dropped with a warning naming Leader Source under Server Object, and goes nowhere under Elected Host, because no host is elected. |
 
 ### ECrowdyLeaderSource::ElectedHost
 
-`ServerObject`, under [ECrowdyLeaderSource](#ecrowdyleadersource), replaces it; the whole elected host goes in a later release.
+`ServerObject`, under [ECrowdyLeaderSource](#ecrowdyleadersource), replaces it; the setting goes in a later release.
 
 | Value | Meaning |
 | --- | --- |
-| `ElectedHost` | Shown as Elected Host (Deprecated). The elected host writes World entities and replicated subsystems, as before. |
+| `ElectedHost` | Shown as Elected Host (Deprecated). Nobody is elected: the Leader subsystem does not start, and no client writes a World entity or a replicated subsystem. |
 
-Under it, an entity whose `ECrowdyRole` is `HostOwned` is written by whoever is host and reassigned on host migration, so an entity Owned By `World` is the elected host's to write.
+Under it, an entity whose `ECrowdyRole` is `HostOwned`, such as one Owned By `World`, has no writer.
 
 ## Gotchas
 

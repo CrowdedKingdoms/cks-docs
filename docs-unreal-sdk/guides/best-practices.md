@@ -73,11 +73,11 @@ To ask "do I lead", use `UCrowdyLeaderSubsystem::IsLocalLeader()`; to ask "do I 
 
 ### The elected host and its checks
 
-The Leader and `IsLocalLeader()` replace the elected host and its checks, and the gate itself belongs in your server code; [Host Election (Deprecated)](../services/host-election.md) has the server-validated check in full.
+The Leader and `IsLocalLeader()` replace the elected host and its checks, and the gate itself belongs in your server code. `UCrowdyHostSubsystem`, `IsCrowdyEntityHost` and the server-validated `CheckEntityIsHost` are removed; even the answer of a host check only told you who was host, and no more of an anti-cheat boundary than a Leader check is.
 
-On a project that sets Leader Source to **Elected Host (Deprecated)**, the elected host takes the Leader's job and also drives world entities. The deprecated host functions report the Leader by default. Two checks answer "am I the host" under Elected Host, at two trust levels. `UCrowdyHostSubsystem::IsHost()`, `GetHostID()`, and `GetHostUserID()` are the local view, free and immediate, and right for choosing which client runs setup. `UCrowdyHostSubsystem::CheckEntityIsHost` is the server-validated sibling of the client-derived `UCrowdyUtilities::IsCrowdyEntityHost` compare: for the local player it asks the server directly, and for another actor it resolves that actor's owner on the server and compares it to the elected host. Use it when the caller cannot afford a spoofed or stale answer, and remember that even its answer only tells you who is host. A host check is no more an anti-cheat boundary than a Leader check.
+The SDK no longer polls for a host, so on a project that sets Leader Source to **Elected Host (Deprecated)** nobody is elected and no client drives world entities.
 
-Under Elected Host, `IsLocallyOwned()` fails closed for a World entity while no host is elected yet.
+Under Elected Host, `IsLocallyOwned()` is false for a World entity, because no host is ever elected.
 
 ### Host Override
 

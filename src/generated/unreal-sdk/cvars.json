@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-12T15:56:51Z",
+  "sdk_version": "2.25.0",
   "table": "cvars",
   "columns": [
     {
@@ -195,7 +195,7 @@
       "kind": "variable",
       "role": "trace",
       "trace": true,
-      "help": "When non-zero, logs CrowdyServices activity: authentication, teams, avatars, persistence, host subsystem, utilities, and Blueprint reception. Off by default.",
+      "help": "When non-zero, logs CrowdyServices activity: authentication, teams, avatars, persistence, utilities, and Blueprint reception. Off by default.",
       "module": "CrowdyServices",
       "editor": false,
       "allowlist": ""
@@ -406,6 +406,17 @@
       "trace": false,
       "help": "Asks for HTTP/2 on the SDK's own requests, falling back to HTTP/1.1 when the server does not offer it; 0 leaves the engine's HTTP version. LogHttp stays at Error while an SDK request is in flight, because the curl report the engine logs for a failed HTTP/2 request includes its headers, bearer token included.",
       "module": "CrowdyCppBridge",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.idlequietseconds",
+      "name": "crowdy.net.idlequietseconds",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Seconds without keyboard, mouse, touch or gamepad input before the client stops its ping and keyframe heartbeat, so the server can release an idle session; 0 keeps them going.",
+      "module": "CrowdySDK",
       "editor": false,
       "allowlist": ""
     },

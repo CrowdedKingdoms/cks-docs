@@ -1,6 +1,6 @@
 ---
 slug: leader
-sidebar_position: 11
+sidebar_position: 9
 title: The Leader
 description: Who writes shared view state, the Leader that writes replicated subsystems and NPCs, the deploy it needs, how to check and follow who leads, what happens when the Leader leaves, and the Leader Source setting.
 ---
@@ -45,11 +45,11 @@ For a World entity the answer is false on every client, because no client writes
 
 Two more helpers on `UCrowdyUtilities` answer ownership questions without a round trip. `DoesCrowdyEntityOwn(OwnerActor, TargetActor)` is true when the first actor's player owns the second. `CrowdyIsConnectedToServer` says whether there is a connection at all.
 
-The deprecated **Crowdy Has Authority** nodes are described under [Deprecated](#deprecated).
+**Switch Crowdy Has Authority** and **Crowdy Has Authority** are gone. They asked whether this client is the host, with no entity to ask about: use **Is Local Leader** for the same question, true on one client only. Use **Switch Is Crowdy Entity Locally Owned** only to gate a write to an entity or subsystem you own, and put logic that must be enforced in a Server Object.
 
 ## Follow the Leader
 
-`UCrowdyLeaderSubsystem` is a game-instance subsystem. `GetLeaderUserID()` is the Leader's user id, 0 while there is none or it is not known yet. `IsLocalLeader()` says whether this client leads. `OnLeaderChanged` (`FOnCrowdyLeaderChanged`, `NewLeaderUserID`, `PreviousLeaderUserID`, on the game thread) fires when the lead moves, and a user id of 0 means there is no Leader.
+`UCrowdyLeaderSubsystem` is a game-instance subsystem in the `CrowdyExec` module, so a C++ caller adds `CrowdyExec` to its `Build.cs` and includes `CrowdyLeaderSubsystem.h`. `GetLeaderUserID()` is the Leader's user id, 0 while there is none or it is not known yet. `IsLocalLeader()` says whether this client leads. `OnLeaderChanged` (`FOnCrowdyLeaderChanged`, `NewLeaderUserID`, `PreviousLeaderUserID`, on the game thread) fires when the lead moves, and a user id of 0 means there is no Leader.
 
 Bind the event rather than reading the answer once at `BeginPlay`: the Leader is not known that early on a fresh sign-in, and it changes when the Leader leaves. A map loaded after the Leader is known hears no change, so also read the answer once.
 
@@ -133,32 +133,17 @@ In C++, `UCrowdyEntitySubsystem::GetWriterID(Record)` returns the client that wr
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. The Elected Host setting still exists, elects nobody, and is removed in a later release.]
 [Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
 :::
 
-### Crowdy Has Authority
-
-**Switch Is Crowdy Entity Locally Owned** on the entity or subsystem you write replaces both nodes; see [Checking who writes an entity](#checking-who-writes-an-entity).
-
-`GetCrowdyHasAuthority` (**Crowdy Has Authority**) and `CrowdyHasAuthority` (**Switch Crowdy Has Authority**) answer whether this client is the host at all, with no entity to ask about; ask about the entity or subsystem you are about to write instead, and put logic with nothing to write in a Server Object.
-
 ### Elected Host
 
-The default Leader Source, **Server Object**, and the Leader this page teaches replace the elected host; [Host Election (Deprecated)](../services/host-election.md) has the rest.
+The default Leader Source, **Server Object**, and the Leader this page teaches replace the elected host. The SDK no longer polls for a host, so under **Elected Host (Deprecated)** nobody is elected either. The setting goes in a later release.
 
-With **Leader Source** set to **Elected Host (Deprecated)**, one client is elected host, writes World entities and replicated subsystems, and runs Host events. There is no Leader: `GetLeaderUserID()` stays 0. Under Server Object the SDK does not poll for a host, a Host event on an actor is dropped, and a Host event on a replicated subsystem runs on the Leader; sending a Host event with no writer logs the same warning that names this setting.
+With **Leader Source** set to **Elected Host (Deprecated)**, no client writes a World entity or a replicated subsystem, a Host event on an actor goes nowhere, and the Leader subsystem does not start (it logs a warning that names this setting), so `GetLeaderUserID()` stays 0 and `IsLocalLeader()` is false. Under Server Object, sending a Host event with no writer logs a warning that names this setting. Move what the host used to do to a Server Object, or to the Leader under Server Object.
 
-To keep the host for now, for example because a World entity in your game is simulated on one client, set Elected Host (Deprecated). An entity Owned By Leader then follows the host. The setting is written to `Config/DefaultGame.ini`:
-
-```ini
-[/Script/CrowdyReplication.CrowdySDKDeveloperSettings]
-LeaderSource=ElectedHost
-```
-
-Under Server Object the deprecated host functions report the Leader: **Get Host User ID**, **Is Host**, **On Host Elected**, **Is Crowdy Entity Host**, and **Is Crowdy Entity Host (Server)** for your own avatar.
-
-In C++, `UCrowdySDKDeveloperSettings::UsesElectedHost()` reads the setting. Under Elected Host, `GetWorldOwnerID()`, and so `GetWriterID` for a World entity, returns the host.
+In C++, `UCrowdySDKDeveloperSettings::UsesElectedHost()` reads the setting.
 
 ## Gotchas
 

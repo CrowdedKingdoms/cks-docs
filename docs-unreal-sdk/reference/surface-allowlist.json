@@ -2596,16 +2596,6 @@
     "note": "Interfaces between the SDK's own subsystems (or the UInterface shell of one a game implements); ICrowdyEventSource and ICrowdyEntityComponentProvider are described where a game would implement them."
   },
   {
-    "id": "UCrowdyHostSubsystem::IsReady",
-    "reason": "internal",
-    "note": "Election plumbing the SDK calls when a host response arrives."
-  },
-  {
-    "id": "UCrowdyHostSubsystem::SetHostUserID",
-    "reason": "internal",
-    "note": "Election plumbing the SDK calls when a host response arrives."
-  },
-  {
     "id": "ACrowdyLeaderOwnedTestActor",
     "reason": "internal",
     "note": "Headless test fixture for Owned By Leader; not shipped as API."
@@ -3927,6 +3917,11 @@
   },
   {
     "id": "FCrowdyCppClient::RunOp",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::RunOpMsgpack",
     "reason": "internal",
     "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
   },
@@ -7506,11 +7501,6 @@
     "note": "The window in which a late update cannot redraw a destroyed entity; read by the SDK and its tests."
   },
   {
-    "id": "UCrowdyHostSubsystem::HostIDForUser",
-    "reason": "internal",
-    "note": "The host id for a signed-in user id, shared by the host subsystem's paths and its tests."
-  },
-  {
     "id": "UCrowdyUtilities::IsRecordLocallyOwned",
     "reason": "internal",
     "note": "The registry half of Is Crowdy Entity Locally Owned, public so headless tests can check it."
@@ -7571,5 +7561,29 @@
   { "id": "UCrowdyAutoReplicator::SetExtras", "reason": "internal", "note": "Hands the replicator the CrowdyContinuous bytes for its next update." },
   { "id": "UCrowdyEntityComponent::NoteContinuousCarrier", "reason": "internal", "note": "Tells the Crowdy State replicator that this entity's movement updates carry its CrowdyContinuous values." },
   { "id": "UCrowdyEventRouter::DispatchContinuousExtras", "reason": "internal", "note": "The receive side of CrowdyContinuous; a game reaches it only through its properties and OnRep functions." },
-  { "id": "UCrowdyStateReplicator::SetContinuousOnMovement", "reason": "internal", "note": "Moves CrowdyContinuous properties onto an entity's movement updates when it replicates movement." }
+  { "id": "UCrowdyStateReplicator::SetContinuousOnMovement", "reason": "internal", "note": "Moves CrowdyContinuous properties onto an entity's movement updates when it replicates movement." },
+  { "id":"CrowdyNativeExec::JsonToMsgpack","reason":"internal","note":"Converts JSON to MessagePack for the SDK bridge to its native client; the SDK calls it for the Game API and Server Object paths." },
+  { "id":"CrowdyNativeExec::MsgpackToJson","reason":"internal","note":"Converts a MessagePack reply back to JSON for the SDK bridge to its native client; the SDK calls it on each answer." },
+  { "id":"CrowdyNativeExec::StatusName","reason":"internal","note":"Names a native call status for the SDK bridge's log lines." },
+  { "id":"UCrowdyCppReplicationSubsystem::NewSendTicket","reason":"internal","note":"Hands out the next send ticket the SDK uses to match a send with its receipt." },
+  { "id":"FCrowdyTrackedSend","reason":"internal","note":"The sent, acknowledged or refused report for one send ticket; the SDK's own subsystems consume it, such as the voxel world matching an edit." },
+  { "id":"ECrowdyTrackedSendEvent","reason":"internal","note":"What happened to one tracked send; the SDK's own subsystems read it." },
+  { "id":"FOnCrowdyTrackedSend","reason":"internal","note":"The delegate that carries a tracked send report to the SDK's own subsystems." },
+  { "id":"FCrowdyCppSendReceipt","reason":"internal","note":"The native client's receipt for one send ticket; the SDK turns it into the tracked send report." },
+  { "id":"ECrowdyCppSendReceiptKind","reason":"internal","note":"The kind of receipt the native client gave for one send ticket; the SDK reads it." },
+  { "id":"FChunkChangedNotification","reason":"internal","note":"The wire message that tells clients a hub or mod replaced a whole chunk; the voxel world reacts to it, and games see On Chunk Changed." },
+  { "id":"EFetchAgain","reason":"internal","note":"The voxel world's record of whether a fetched chunk must be fetched again." },
+  { "id":"FChunkState","reason":"internal","note":"The voxel world's per-chunk bookkeeping." },
+  { "id":"FFollower","reason":"internal","note":"One actor the voxel world is following and the range it keeps loaded." },
+  { "id":"FLiveEdit","reason":"internal","note":"A live edit as the realtime notification carries it, held by the voxel world." },
+  { "id":"FPendingEdit","reason":"internal","note":"One of the player's own edits waiting for its answer, held by the voxel world." },
+  { "id":"FReload","reason":"internal","note":"One Reload Chunk request the voxel world is waiting to finish." },
+  { "id":"UCrowdyVoxelWorld::HandleChunkChanged","reason":"internal","note":"The voxel world's handler for the whole-chunk change notification." },
+  { "id":"UCrowdyVoxelWorld::HandleLiveEdit","reason":"internal","note":"The voxel world's handler for another player's live edit." },
+  { "id":"UCrowdyVoxelWorld::HandleTrackedSend","reason":"internal","note":"The voxel world's handler for the answer to one of its edit sends." },
+  { "id":"UCrowdyStateReplicator::SetLocalPlayerIdle","reason":"internal","note":"Stops the keyframe heartbeat while the local player is idle; the SDK calls it from its idle tracking." },
+  { "id":"UCrowdyCompilerTestDeprecatedAsyncAction","reason":"internal","note":"A hidden test fixture for the SDK's own compiler tests; it never appears in the palette." },
+  { "id":"UCrowdyCompilerTestDeprecatedAsyncAction::DeprecatedTestNode","reason":"internal","note":"The test fixture's factory; hidden and deprecated by design." },
+  { "id":"UCrowdyCompilerTestDeprecatedAsyncAction::OnDone","reason":"internal","note":"The test fixture's output pin." },
+  { "id":"UCrowdyCompilerTestDeprecatedDelegateOwner::OnDeprecatedTest","reason":"internal","note":"A hidden test fixture's deprecated delegate for the SDK's own compiler tests." }
 ]

@@ -162,11 +162,11 @@ Never write new code against these; when you meet them in an existing project, m
 
 ### The Host recipient
 
-`OwningClient` replaces `CrowdyRecipient = "Host"`; see [Recipients and routing](./runtime/recipients-and-routing.md#deprecated). A saved `Host` still routes: it runs on the Leader on a replicated subsystem, and on an actor it is dropped with a warning unless Leader Source is **Elected Host (Deprecated)**.
+`OwningClient` replaces `CrowdyRecipient = "Host"`; see [Recipients and routing](./runtime/recipients-and-routing.md#deprecated). A saved `Host` still routes: it runs on the Leader on a replicated subsystem, and on an actor it is dropped with a warning under Server Object, and goes nowhere under Leader Source **Elected Host (Deprecated)**, where no host is elected.
 
 ### The elected host
 
-The [Leader](./runtime/leader.md) and Server Objects replace it, under the default Leader Source, **Server Object**. Only under **Elected Host (Deprecated)** does the elected host write a World entity, through the `CrowdyManualDirty` plus `MarkStateDirty` route; see [Crowdy State](./runtime/crowdy-state.md#deprecated). `HostPollIntervalSeconds` is read only under Elected Host; like the rest of the Network category, Config Sync owns it, so never hand-type it. [Host Election (Deprecated)](./services/host-election.md) has the rest.
+The [Leader](./runtime/leader.md) and Server Objects replace it, under the default Leader Source, **Server Object**. The SDK no longer polls for a host, so under **Elected Host (Deprecated)** nobody is elected and no client writes a World entity; see [Crowdy State](./runtime/crowdy-state.md#deprecated). The host subsystem, `IsHost`, `CheckEntityIsHost` and `HostPollIntervalSeconds` are removed: use **Is Local Leader**, or put the logic in a Server Object.
 
 ## Related
 

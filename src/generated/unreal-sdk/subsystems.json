@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-12T15:56:51Z",
+  "sdk_version": "2.25.0",
   "table": "subsystems",
   "columns": [
     {
@@ -271,12 +271,12 @@
       "allowlist": ""
     },
     {
-      "id": "UCrowdyHostSubsystem",
-      "class": "UCrowdyHostSubsystem",
-      "base": "UWorldSubsystem",
-      "outer": "World",
+      "id": "UCrowdyClaims",
+      "class": "UCrowdyClaims",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
       "module": "CrowdyServices",
-      "page": "services/host-election",
+      "page": "runtime/chunk-claims",
       "editor": false,
       "allowlist": ""
     },
@@ -287,6 +287,16 @@
       "outer": "GameInstance",
       "module": "CrowdyServices",
       "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyMods",
+      "class": "UCrowdyMods",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
       "editor": false,
       "allowlist": ""
     },
@@ -341,6 +351,26 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyVoxels",
+      "class": "UCrowdyVoxels",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "runtime/voxel-chunks",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoxelWorld",
+      "class": "UCrowdyVoxelWorld",
+      "base": "UTickableWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyServices",
+      "page": "runtime/voxel-chunks",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UVoiceChatSubsystem",
       "class": "UVoiceChatSubsystem",
       "base": "UTickableWorldSubsystem",
@@ -356,7 +386,7 @@
       "base": "UGameInstanceSubsystem",
       "outer": "GameInstance",
       "module": "CrowdyExec",
-      "page": "runtime/leader",
+      "page": "guides/troubleshooting",
       "editor": false,
       "allowlist": ""
     },

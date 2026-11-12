@@ -16,7 +16,7 @@ The introduction, installation, quickstart and the page for AI agents.
 
 The ideas the rest of the SDK documentation assumes: the two planes of state, entities, sessions, the Leader, and how Blueprint and C++ share one surface.
 
-- [Concepts as one file (24 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-concepts.txt)
+- [Concepts as one file (22 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-concepts.txt)
 - [The Two Planes](https://docs.crowdedkingdoms.com/unreal-sdk/concepts/two-planes): Why the SDK splits networked state into a fast, client-owned view plane and a server-enforced truth plane, and how to tell which one a field belongs to.
 - [Entities, Identity, and Ownership](https://docs.crowdedkingdoms.com/unreal-sdk/concepts/entities-identity-ownership): How every networked actor gets a NetID that every client agrees on, who is allowed to write its view state, and the difference between an owner and a proxy.
 - [Sessions and Presence](https://docs.crowdedkingdoms.com/unreal-sdk/concepts/sessions-and-presence): What the word session means in the SDK, how the server decides a player is present, and where a match, a lobby or a room lives.
@@ -37,24 +37,27 @@ Connect your app to your project and author teams, channels, grids, and more fro
 
 ## Runtime SDK
 
-The view plane in game: signing the player in, map profiles, entities and spawning, the entity component, RPC events and their routing, Crowdy State, continuous state, the Leader and ownership transfer, replicated subsystems, rendering backends, channels, the connection, and video frames.
+The view plane in game, in the order you learn it: signing the player in and the connection, entities and the entity component, RPC events and their routing, Crowdy State and continuous state, the Leader and ownership transfer, replicated subsystems, channels, map profiles and rendering backends, then the voxel world (chunks, claims, mods) and video frames.
 
-- [Runtime SDK as one file (237 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-runtime.txt)
+- [Runtime SDK as one file (303 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-runtime.txt)
 - [Player Sign-in](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/player-sign-in): The smallest sign-in that gets a player onto the wire: one call from the Game Instance in C++, or one small widget in Blueprint. Everything else about accounts and tokens is on the Authentication page.
-- [Map Profiles](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/map-profile): The data asset that switches the SDK on for a map, how the SDK finds it, what each field controls, and the one field the shipped default leaves empty.
+- [Connection and Reconnect](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/connection-and-reconnect): How the realtime connection comes up, what it reports while it is up, how it reconnects on its own when it drops, what happens when a player goes idle, the events a game reacts to, bundled sends, and the per-frame receive budget.
 - [Entities and Spawning](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/entities-and-spawning): Spawn an entity at runtime so every client sees the same actor, destroy it everywhere, and understand how a remote client rebuilds an entity it has never met.
 - [Entity Component](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/entity-component): Every callable, event, and setting on UCrowdyEntityComponent, one line each, with the two examples that show the accessor family and the lifecycle events.
-- [RPC Events in C++](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/rpc-events-cpp): Declare a CrowdyEvent receiver, generate its call site with CROWDY_EVENT, and know which parameter types, sizes, and references make it across the wire.
 - [RPC Events in Blueprint](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/rpc-events-blueprint): Tick Crowdy Replicates on a Custom Event, pick a recipient, and call it like any other event; the body runs on every recipient with no second node.
+- [RPC Events in C++](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/rpc-events-cpp): Declare a CrowdyEvent receiver, generate its call site with CROWDY_EVENT, and know which parameter types, sizes, and references make it across the wire.
 - [Recipients and Routing](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/recipients-and-routing): The CrowdyEvent recipients, what a chunk is and how far a spatial event travels, what reliable means on the channel path, and the targeted sends for callers with no actor.
 - [Crowdy State](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/crowdy-state): Mark a property CrowdyState and the owning client diffs it every tick and ships the change to every proxy; the five metadata keys, the notify, the keyframe, what a property may be and what is rejected at discovery, the static Mark Crowdy State Dirty nodes, how to see a property that silently dropped out, and the deprecated host push and host precedence.
 - [Continuous State](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/continuous-state): Replicate Movement: the transform and aim snapshot the owner sends every replication interval with nothing to write, how a remote character animates, when that default is enough, and the custom executor path for a snapshot that carries more.
 - [The Leader](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/leader): Who writes shared view state, the Leader that writes replicated subsystems and NPCs, the deploy it needs, how to check and follow who leads, what happens when the Leader leaves, and the Leader Source setting.
 - [Ownership Transfer](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/ownership-transfer): Move an entity's owner at runtime with a request and a grant: the three static nodes, the two subsystem events, what happens to in-flight state, and why ignoring a request is the rejection.
 - [Replicated Subsystems](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/replicated-subsystems): Give a world or game-instance subsystem Crowdy State properties and CrowdyEvent functions by inheriting one of two bases, the enrollment order that must hold, and the two things a subsystem cannot do that an actor can.
-- [Rendering Backends](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/rendering-backends): How a remote entity's continuous state becomes something on screen: the two backends the SDK ships (the default actor pool and the Crowdy Mass Rendering Backend), the policy class you subclass to apply your own state struct, the pool policy, and how to write a backend of your own.
 - [Channels](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/channels): Named, non-spatial message groups: create and join one, ban a member, publish raw bytes to every member, receive them, and understand the session channel every client joins and the three kinds of traffic that ride it.
-- [Connection and Reconnect](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/connection-and-reconnect): How the realtime connection comes up, what it reports while it is up, how it reconnects on its own when it drops, the two events a game reacts to, bundled sends, and the per-frame receive budget.
+- [Map Profiles](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/map-profile): The data asset that switches the SDK on for a map, how the SDK finds it, what each field controls, and the one field the shipped default leaves empty.
+- [Rendering Backends](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/rendering-backends): How a remote entity's continuous state becomes something on screen: the two backends the SDK ships (the default actor pool and the Crowdy Mass Rendering Backend), the policy class you subclass to apply your own state struct, the pool policy, and how to write a backend of your own.
+- [Voxel Chunks](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/voxel-chunks): Fetch the platform's voxel chunks or keep a live voxel world around your players, read each voxel's type and state, edit voxels with every edit confirmed or taken back, place cells in your level and draw them: the nodes, what a chunk holds, how its axes map onto Unreal, failures, and what it costs.
+- [Chunk Claims](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/chunk-claims): Let players claim a chunk of the voxel world as their own, give it back, find who has claimed what, and check whether a player may build in a chunk: the nodes, what a claim grants, each result, and what a search costs.
+- [Mods](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/mods): What a player's own server code on their land is for, and how to install it, call it, read it and switch it off from your game, with a guestbook on a plot as the example: the nodes, who may do what, each result, and what a mod costs its owner.
 - [Video Frames](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/video-frames): Receive another player's webcam frames as whole encoded images: bind once, read the bytes, tell senders apart by the exact id, and decode them yourself.
 
 ## Crowds with Mass
@@ -153,7 +156,7 @@ This section is split into 4 files, each readable whole.
 
 Sign-in and account settings, player names, teams, playing together with parties, chat, emotes and spectating, avatars, voice and the optional UI hooks. The deprecated host election is listed last.
 
-- [Player Services as one file (179 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-services.txt)
+- [Player Services as one file (167 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-services.txt)
 - [Authentication](https://docs.crowdedkingdoms.com/unreal-sdk/services/authentication): Sign a player in with a password, a magic link, or a social provider, what the SDK hands back, the two tokens it holds for you and why you never see the one that talks to the game, session persistence, sign-out, account settings (password, email, delete, sign out everywhere), linked identities, the player's own access and claiming free access, and what to show when the app is paused, the player's access ends or the account is blocked.
 - [Player Names](https://docs.crowdedkingdoms.com/unreal-sdk/services/player-names): Read a player's public name by User ID for a nametag, read up to 100 at once for a roster, and let the signed-in player choose their own, with the Name Taken refusal, in C++ and Blueprint.
 - [Teams](https://docs.crowdedkingdoms.com/unreal-sdk/services/teams): Persistent, server-owned player groups with membership, roles, and permissions: the cache for instant UI, the per-call and async-action surfaces, and why runtime code and Crowdy Studio edit the same rows.
@@ -163,13 +166,12 @@ Sign-in and account settings, player names, teams, playing together with parties
 - [Nearby Text Chat](https://docs.crowdedkingdoms.com/unreal-sdk/services/nearby-text-chat): Send a line of text to the players near you and hear theirs: how far a line reaches, who sent it, what Sent means, refusals, limits, and how it differs from channel chat.
 - [Player Safety](https://docs.crowdedkingdoms.com/unreal-sdk/services/player-safety): A player's own controls in your app: who hears and sees them, contacts, blocks, a parent's consent, and reports to the app's moderators.
 - [UI Interfaces](https://docs.crowdedkingdoms.com/unreal-sdk/services/ui-interfaces): Optional hooks for plugging your own HUD, player, and minigame classes into the SDK, the Blueprint reception layer that forwards events and actor updates to delegates, and the entity and session utility library.
-- [Host Election (Deprecated)](https://docs.crowdedkingdoms.com/unreal-sdk/services/host-election): Deprecated in 2.25. The server's own answer to whether an actor is the elected host: the host subsystem's getters and event, and the server-validated check for the moment a local answer is not enough to act on.
 
 ## Guides
 
 Where state goes, how to test locally, how to package, what to do when it breaks, the sample project, and what changed since the July docs.
 
-- [Guides as one file (266 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-guides.txt)
+- [Guides as one file (275 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-guides.txt)
 - [Best Practices](https://docs.crowdedkingdoms.com/unreal-sdk/guides/best-practices): Where a piece of state belongs, who decides an outcome, what a per-entity loop costs, and what the Leader is for. The rules every other page assumes you already know, stated once in the abstract.
 - [Testing Locally](https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally): How to exercise RPC and Crowdy State replication with a single Play in Editor client using the loopback console variables, how to set up a genuine two-client PIE session and its account caveats, the per-area trace console variables worth reaching for first, and a short debugging loop.
 - [Packaging and Shipping](https://docs.crowdedkingdoms.com/unreal-sdk/guides/packaging): A pre-cook checklist for setup mistakes that pass in the editor and only break in a packaged build: the baked registry, map profiles, project settings, what Shipping strips, and the plugin's own CoreRedirects.
@@ -182,7 +184,7 @@ Where state goes, how to test locally, how to package, what to do when it breaks
 
 Lookup tables, generated from the SDK surface where it has the data: subsystems, async actions, delegates, console variables, settings, metadata keys, enums, log categories, the RPC parameter type rules, and the surface file itself.
 
-- [Reference as one file (71 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-reference.txt)
+- [Reference as one file (70 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-reference.txt)
 - [Classes and Subsystems](https://docs.crowdedkingdoms.com/unreal-sdk/reference/subsystems): The 24 subsystem classes a game fetches from GetGameInstance or GetWorld, one line of purpose each, grouped by module, with a link to where each one is explained in full.
 - [Blueprint Async Actions](https://docs.crowdedkingdoms.com/unreal-sdk/reference/async-actions): Every latent Blueprint node the SDK ships, grouped by the page that explains it, with the node's display name and the completion pins it exposes.
 - [Blueprint Delegates](https://docs.crowdedkingdoms.com/unreal-sdk/reference/delegates): Every dynamic multicast delegate the SDK exposes to Blueprint, grouped by the class that owns it, with its signature type and the page that explains when it fires.

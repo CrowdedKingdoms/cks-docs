@@ -353,7 +353,7 @@ nothing deprecated.
   longer draws a pooled copy of its own entity unless **Render Local Owner** is set, and **Destroy Crowdy
   Entity** stops sending at once. See [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning).
 - **No phantom host after sign-out**: **Is Host Set** is false and **Get Host ID** is invalid once the
-  player signs out. See [Host Election](/unreal-sdk/services/host-election#after-sign-out).
+  player signs out. See [What's Changed](/unreal-sdk/guides/whats-changed).
 - **Packaged installs**: the plugin zip carries the SDK's `Config/` folder and its CoreRedirects, and the
   plugin builds with UAT BuildPlugin again.
 - **`MIGRATION.md`** ships at the plugin root: for each release from 2.24.0, what changed and the exact

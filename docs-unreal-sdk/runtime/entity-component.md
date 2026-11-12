@@ -161,7 +161,7 @@ Each one names its replacement; the current callables are under [Callables](#cal
 
 ### Under Elected Host
 
-The [Leader](./leader.md) replaces the elected host. On a project whose **Leader Source** is still **Elected Host (Deprecated)**, the elected host writes an entity Owned By World, so `IsLocallyOwned()` is also true on the host for such an entity; `UCrowdyEntitySubsystem::IsLocallyOwned(NetID)` does not count the host. The rest is on [Host Election](../services/host-election.md).
+The [Leader](./leader.md) replaces the elected host. The SDK no longer polls for a host, so on a project whose **Leader Source** is still **Elected Host (Deprecated)** no host is elected, and `IsLocallyOwned()` is false on every client for an entity Owned By World.
 
 ## Gotchas
 

@@ -62,7 +62,7 @@ The cook rebakes on its own, so a packaged build is right even if you forget. Pr
 
 Three summary pills: classes, functions, and replicated properties. A search box filters by class, function, or property name, and a **Cards** / **Table** toggle picks the layout.
 
-In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its **Owned By**, read live from the class defaults rather than baked. The deprecated **Host Override** chip is described under [Deprecated](#deprecated).
+In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its **Owned By**, read live from the class defaults rather than baked. It does not show the deprecated `HostOverride`, which has no replacement; [Entity component](../runtime/entity-component.md#deprecated) describes it.
 
 In Table view the same data is one flat table: type, name, routing or notify, flags, id.
 
@@ -90,14 +90,7 @@ For the full packaging flow, see the [Packaging guide](../guides/packaging.md).
 
 The Leader replaces the host; read who leads with **Get Leader User ID**, as [The Leader](../runtime/leader.md#follow-the-leader) shows.
 
-The Inspector's **Session** and **Entities** lists still show a **Host ID** line. It is the id of the client that writes replicated subsystems: the Leader's entity id by default, or the elected host's when **Leader Source** is **Elected Host (Deprecated)**.
-
-### The Host Override chip
-
-`HostOverride` has no replacement; [Entity component](../runtime/entity-component.md#deprecated) describes it.
-
-A class card shows a **Host Override** chip next to **Owned By** for a class Owned By Player. Like **Owned By**, it is a live value read from the class defaults, not part of the bake.
-
+The Inspector's **Session** and **Entities** lists still show a **Host ID** line. It is the id of the client that writes replicated subsystems: the Leader's entity id, which reads empty when **Leader Source** is **Elected Host (Deprecated)**, because nobody is elected.
 ## Gotchas
 
 - The Inspector's team, channel, and avatar lists come from the runtime caches. An empty list with a "not populated yet" note means the game has not fetched, not that there is nothing.

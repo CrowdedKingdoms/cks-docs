@@ -237,7 +237,7 @@ The two lantern files after steps 3 to 5, for comparison with your own:
 
 Nothing replaces **Host Override**, because host corrections end with the elected host: leave it at its default, **Allow**, on the Character from [step 1](#1-make-your-player-a-crowdy-entity).
 
-The row appears on the Crowdy Entity Component once **Owned By** is **Player**. It matters only when Leader Source is **Elected Host (Deprecated)**, where it decides whether the elected host may correct that entity's Crowdy State; see [Host Election (Deprecated)](./services/host-election.md#what-the-host-writes).
+The row appears on the Crowdy Entity Component once **Owned By** is **Player**. It has nothing to refuse now: the SDK no longer polls for an elected host, so no host corrects that entity's Crowdy State.
 
 ## Gotchas
 

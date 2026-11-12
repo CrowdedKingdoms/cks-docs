@@ -1,6 +1,6 @@
 ---
 slug: rpc-events-blueprint
-sidebar_position: 5
+sidebar_position: 4
 title: RPC Events in Blueprint
 description: Tick Crowdy Replicates on a Custom Event, pick a recipient, and call it like any other event; the body runs on every recipient with no second node.
 ---
@@ -75,11 +75,9 @@ What the checkbox generates is a call to `UCrowdyReplicatedEventLibrary::CrowdyD
 
 **Owning Client** replaces **Host**, as listed under [Pick the recipient](#pick-the-recipient); [Recipients and routing](./recipients-and-routing.md#deprecated) has the delivery detail.
 
-**Host** is no longer in the dropdown; a saved value still works and warns when compiled. On a replicated subsystem it runs on the [Leader](./leader.md). On an actor it is dropped with a warning that names Leader Source, unless Leader Source is **Elected Host (Deprecated)**, where only the elected host runs it and another client's call becomes a request to the host. Like Owning Client, the body runs only where the recipient says, so do not add a second local call.
+**Host** is no longer in the dropdown; a saved value still works and warns when compiled. On a replicated subsystem it runs on the [Leader](./leader.md). On an actor it is dropped with a warning that names Leader Source under Server Object, and it goes nowhere under **Elected Host (Deprecated)**, because no host is elected. Like Owning Client, the body runs only where the recipient says, so do not add a second local call.
 
-:::caution[Under Elected Host, Host runs the call on whatever instance it holds, regardless of who owns that entity, and tells nobody else.]
-There is no ownership gate on the host. If the rest of the session must see the outcome of a Host event, the host sends a second, Multicast or Spatial Multicast event with the result.
-:::
+On a replicated subsystem there is no ownership gate: the Leader runs the call whoever sent it. If the rest of the session must see the outcome, the Leader sends a second, Multicast or Spatial Multicast event with the result.
 
 ## Gotchas
 

@@ -124,7 +124,6 @@ All of it lands on one settings class, `UCrowdySDKDeveloperSettings`, which you 
 | `GameApiWsUrl` | The same endpoint with a WebSocket scheme. |
 | `UDPProtocol` | The Connection tab. |
 | `UDPTimeoutSeconds` | The Connection tab (6 to 120 seconds). |
-| `HostPollIntervalSeconds` | The Connection tab (1 to 60 seconds). |
 | `ServerObjectCallTimeoutSeconds` | The Connection tab, under Server Objects, as **Call Timeout** (11 to 120 seconds, default 20). |
 | `ServerObjectOpenTimeoutSeconds` | The Connection tab, under Server Objects, as **Open Timeout** (1 to 60 seconds, default 10). |
 

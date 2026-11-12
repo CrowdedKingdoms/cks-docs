@@ -1,6 +1,6 @@
 ---
 slug: ownership-transfer
-sidebar_position: 12
+sidebar_position: 10
 title: Ownership Transfer
 description: "Move an entity's owner at runtime with a request and a grant: the three static nodes, the two subsystem events, what happens to in-flight state, and why ignoring a request is the rejection."
 ---
@@ -18,7 +18,7 @@ A player takes over a lantern post another player built, a vehicle changes drive
 
 A level-placed entity Owned By World has no writer, so nobody answers a request for it.
 
-An entity [Owned By Leader](./leader.md#an-npc-the-leader-simulates) follows the Leader instead, so requests and grants for it are refused with a warning. A player's avatar never changes hands: a grant for one is ignored.
+An entity [Owned By Leader](./leader.md#an-npc-the-leader-simulates) follows the Leader instead, so requests and grants for it are refused with a warning. A player's avatar is not meant to change hands: the player's own client ignores every grant for their avatar, whatever it says, and every client ignores a grant sent through these nodes. Other clients cannot tell a grant from a modified client apart, as the warning below says.
 
 :::warning[Ownership is a coordination convention on the view plane, not enforcement, and a transfer is transient.]
 No server checks who may request or grant. And a client that first observes the entity after a grant sees the spawn-time owner, or re-baselines from proxy defaults, not necessarily the transferred one. Cheat-sensitive ownership belongs on the [truth plane](../concepts/two-planes.md), in your server code.
@@ -117,7 +117,7 @@ Nothing replaces handing an entity back at runtime: keep state that must change 
 
 ### Under Elected Host
 
-The [Leader](./leader.md) replaces the elected host. On a project whose **Leader Source** is still **Elected Host (Deprecated)**, the host writes an entity Owned By World and answers requests for it; everywhere this page says owner, read host for such an entity. [Host Election](../services/host-election.md#the-server-validated-check) has the server-validated check to run before such a grant.
+The [Leader](./leader.md) replaces the elected host. The SDK no longer polls for a host, so on a project whose **Leader Source** is still **Elected Host (Deprecated)** no host writes an entity Owned By World or answers requests for it. Decide such a grant in a Server Object.
 
 ## Gotchas
 

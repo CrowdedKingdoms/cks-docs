@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-12T15:56:51Z",
+  "sdk_version": "2.25.0",
   "table": "enums",
   "columns": [
     {
@@ -37,7 +37,8 @@
         "Disconnected",
         "Connecting",
         "Connected",
-        "Failed"
+        "Failed",
+        "Inactive"
       ],
       "module": "CrowdySDK",
       "header": "CrowdyConnectionMonitor.h",
@@ -265,7 +266,8 @@
         "Connecting",
         "Connected",
         "Reconnecting",
-        "GateKeep"
+        "GateKeep",
+        "Inactive"
       ],
       "module": "CrowdyNet",
       "header": "CrowdyUDPSubsystem.h",
@@ -406,6 +408,24 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyClaimResult",
+      "name": "ECrowdyClaimResult",
+      "values": [
+        "Success",
+        "NotSignedIn",
+        "NotClaimable",
+        "AlreadyClaimed",
+        "Refused",
+        "Failed",
+        "BadReply"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyCommunicationScope",
       "name": "ECrowdyCommunicationScope",
       "values": [
@@ -492,6 +512,39 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyModBuildStatus",
+      "name": "ECrowdyModBuildStatus",
+      "values": [
+        "Queued",
+        "Building",
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyModResult",
+      "name": "ECrowdyModResult",
+      "values": [
+        "Success",
+        "NotSignedIn",
+        "Denied",
+        "NotFound",
+        "Refused",
+        "Failed",
+        "BadReply"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyProximityChatResult",
       "name": "ECrowdyProximityChatResult",
       "values": [
@@ -554,6 +607,23 @@
       "module": "CrowdyServices",
       "header": "ECrowdyUILayer.h",
       "page": "services/ui-interfaces",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyVoxelResult",
+      "name": "ECrowdyVoxelResult",
+      "values": [
+        "Ok",
+        "NotSignedIn",
+        "Refused",
+        "Failed",
+        "BadReply",
+        "NoAnswer"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyVoxels.h",
+      "page": "runtime/voxel-chunks",
       "editor": false,
       "allowlist": ""
     },

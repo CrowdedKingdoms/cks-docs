@@ -107,15 +107,15 @@ Pan the graph with the right mouse button. Press **Copy nodes**, then Ctrl+V in 
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. The Elected Host setting still exists, elects nobody, and is removed in a later release.]
 [Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
 :::
 
 ### A World entity under Elected Host
 
-A Server Object replaces the elected host as the keeper of what changes about a World entity, as [Who writes what](../runtime/leader.md#who-writes-what) explains; [Host Election (Deprecated)](../services/host-election.md#what-the-host-writes) has the rest.
+A Server Object replaces the elected host as the keeper of what changes about a World entity, as [Who writes what](../runtime/leader.md#who-writes-what) explains. Under Elected Host there is no host to write it either.
 
-When [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host) is **Elected Host (Deprecated)**, the elected host drives and writes an entity Owned By World instead, and `IsLocallyOwned()` is true for it on that client alone.
+When [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host) is **Elected Host (Deprecated)**, nobody is elected, so no client writes an entity Owned By World and `IsLocallyOwned()` is false for it everywhere.
 
 ## Gotchas
 

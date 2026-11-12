@@ -193,18 +193,18 @@ Open Crowdy Studio inside the editor, sign in, pick your app, and run Config Syn
 Until you run Config Sync for the first time, the project has no Backend of its own, so it dials the tier the plugin release you downloaded was built for: Production for a tagged GitHub release. See [Project settings](./reference/project-settings.md#the-default-backend).
 
 :::warning[Do not type your app id and API URLs into Project Settings by hand.]
-The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
+The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
 :::
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. What this section lists is removed in a later release, and Elected Host elects nobody.]
 [Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
 :::
 
 ### Host election
 
-[The Leader](./runtime/leader.md) replaces host election. `CrowdyServices` also holds the deprecated host subsystem, described on [Host Election (Deprecated)](./services/host-election.md).
+[The Leader](./runtime/leader.md) replaces host election. The host subsystem that `CrowdyServices` held is removed.
 
 ## Related
 
@@ -784,7 +784,7 @@ void ALantern::OnRep_Lit()
 
 Nothing replaces **Host Override**, because host corrections end with the elected host: leave it at its default, **Allow**, on the Character from [step 1](#1-make-your-player-a-crowdy-entity).
 
-The row appears on the Crowdy Entity Component once **Owned By** is **Player**. It matters only when Leader Source is **Elected Host (Deprecated)**, where it decides whether the elected host may correct that entity's Crowdy State; see [Host Election (Deprecated)](./services/host-election.md#what-the-host-writes).
+The row appears on the Crowdy Entity Component once **Owned By** is **Player**. It has nothing to refuse now: the SDK no longer polls for an elected host, so no host corrects that entity's Crowdy State.
 
 ## Gotchas
 
@@ -966,11 +966,11 @@ Never write new code against these; when you meet them in an existing project, m
 
 ### The Host recipient
 
-`OwningClient` replaces `CrowdyRecipient = "Host"`; see [Recipients and routing](./runtime/recipients-and-routing.md#deprecated). A saved `Host` still routes: it runs on the Leader on a replicated subsystem, and on an actor it is dropped with a warning unless Leader Source is **Elected Host (Deprecated)**.
+`OwningClient` replaces `CrowdyRecipient = "Host"`; see [Recipients and routing](./runtime/recipients-and-routing.md#deprecated). A saved `Host` still routes: it runs on the Leader on a replicated subsystem, and on an actor it is dropped with a warning under Server Object, and goes nowhere under Leader Source **Elected Host (Deprecated)**, where no host is elected.
 
 ### The elected host
 
-The [Leader](./runtime/leader.md) and Server Objects replace it, under the default Leader Source, **Server Object**. Only under **Elected Host (Deprecated)** does the elected host write a World entity, through the `CrowdyManualDirty` plus `MarkStateDirty` route; see [Crowdy State](./runtime/crowdy-state.md#deprecated). `HostPollIntervalSeconds` is read only under Elected Host; like the rest of the Network category, Config Sync owns it, so never hand-type it. [Host Election (Deprecated)](./services/host-election.md) has the rest.
+The [Leader](./runtime/leader.md) and Server Objects replace it, under the default Leader Source, **Server Object**. The SDK no longer polls for a host, so under **Elected Host (Deprecated)** nobody is elected and no client writes a World entity; see [Crowdy State](./runtime/crowdy-state.md#deprecated). The host subsystem, `IsHost`, `CheckEntityIsHost` and `HostPollIntervalSeconds` are removed: use **Is Local Leader**, or put the logic in a Server Object.
 
 ## Related
 

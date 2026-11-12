@@ -131,18 +131,18 @@ Open Crowdy Studio inside the editor, sign in, pick your app, and run Config Syn
 Until you run Config Sync for the first time, the project has no Backend of its own, so it dials the tier the plugin release you downloaded was built for: Production for a tagged GitHub release. See [Project settings](./reference/project-settings.md#the-default-backend).
 
 :::warning[Do not type your app id and API URLs into Project Settings by hand.]
-The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
+The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
 :::
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. What this section lists is removed in a later release, and Elected Host elects nobody.]
 [Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
 :::
 
 ### Host election
 
-[The Leader](./runtime/leader.md) replaces host election. `CrowdyServices` also holds the deprecated host subsystem, described on [Host Election (Deprecated)](./services/host-election.md).
+[The Leader](./runtime/leader.md) replaces host election. The host subsystem that `CrowdyServices` held is removed.
 
 ## Related
 

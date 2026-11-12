@@ -256,6 +256,7 @@ The SDK is split across modules. Reference the right one for the API you call:
 - `CrowdyReplication`: the entity subsystem (`UCrowdyEntitySubsystem`), the entity component, RPC events.
 - `CrowdyServices`: high-level subsystems and statics: `UCrowdyUtilities`, `UCrowdyTeams`,
   `UCrowdyAvatars`, `UCrowdyChannels`.
+- `CrowdyExec`: `UCrowdyLeaderSubsystem` (`Is Local Leader`, `Get Leader User ID`, `On Leader Changed`), in `CrowdyLeaderSubsystem.h`.
 - `CrowdySDK`: `UCrowdySDKSubsystem` (including voice).
 
 Fix:
@@ -292,7 +293,7 @@ at your own network path, not the SDK. Check your route to the backend before fi
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. The Host recipient still exists, the host subsystem is removed, and Elected Host elects nobody.]
 [Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
 :::
 
@@ -301,14 +302,12 @@ at your own network path, not the SDK. Check your route to the backend before fi
 `OwningClient` replaces `Host`; see [The recipient does not include this client](#the-recipient-does-not-include-this-client).
 
 A receiver with `CrowdyRecipient = "Host"` runs on the Leader on a replicated subsystem. On an actor it is
-dropped with a warning that names Leader Source, unless Leader Source is **Elected Host (Deprecated)**, where
-only the elected host runs it. See [Recipients and routing](../runtime/recipients-and-routing.md#deprecated).
+dropped with a warning that names Leader Source under Server Object, and under **Elected Host (Deprecated)**
+it goes nowhere, because no host is elected. See [Recipients and routing](../runtime/recipients-and-routing.md#deprecated).
 
-### Where the host subsystem lives
+### Where the host subsystem went
 
-`UCrowdyLeaderSubsystem` replaces `UCrowdyHostSubsystem`; see [The Leader](../runtime/leader.md).
-`UCrowdyHostSubsystem` lives in `CrowdyServices`, so a call into it needs that module in your `Build.cs`, as
-[Module dependency or include errors](#module-dependency-or-include-errors) shows.
+`UCrowdyHostSubsystem` is removed. `UCrowdyLeaderSubsystem` replaces it; see [The Leader](../runtime/leader.md). It lives in `CrowdyExec`, not `CrowdyServices`, so a C++ call into it needs `CrowdyExec` in your `Build.cs` and `#include "CrowdyLeaderSubsystem.h"`, as [Module dependency or include errors](#module-dependency-or-include-errors) shows.
 
 ## Gotchas
 

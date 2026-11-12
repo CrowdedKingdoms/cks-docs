@@ -120,6 +120,10 @@ A custom event `OnCreateAccountPressed` runs **Register** with `Email` and `Pass
 </TabItem>
 </Tabs>
 
+#### When the email is not confirmed yet
+
+A password account made since 2026-11-11 gets no gameplay token until the player opens the confirmation link the platform emails them. Until then the sign-in fails with "Confirm your email address to play: open the link we sent you, then sign in again.", **On Email Confirmation Required** (`OnEmailConfirmationRequired`, an `FOnEmailConfirmationRequired` with no parameters) fires on the Crowdy Authentication subsystem, and the token refresh stops instead of retrying. Bind the event beside your sign-in handlers, tell the player to check their inbox, and offer **Resend Confirmation Email** with the address they typed, or ask for it again when you do not have it, as after a restored session ([Account settings](#account-settings)). Once they have confirmed, the next sign-in plays. The event can also fire during play, when a token refresh is refused: no sign-in fails then, the player keeps playing on the current token until it expires, and nothing re-mints it, so send them back to your sign-in screen. Older accounts, and players an organization manages, are not asked.
+
 ### Magic link
 
 One call, `RequestMagicLink`. The SDK opens the loopback listener, sends the email, and completes the sign-in when the player follows the link. There is no second step for you to call, and `OnError` fires if the player never returns.
@@ -545,13 +549,14 @@ Expect the refusal in a UI that lists identities with a remove button; do not tr
 
 ### OnHostIDUpdated
 
-**On Leader Changed**, on [The Leader](../runtime/leader.md#follow-the-leader), replaces it, and carries user ids, not entity ids. `OnHostIDUpdated` (`FOnHostIDUpdated`) on `UCrowdyGameSession` announces a change of the host: the Leader by default, the elected view-plane host under Elected Host. [Host election](./host-election.md) has the rest.
+**On Leader Changed**, on [The Leader](../runtime/leader.md#follow-the-leader), replaces it, and carries user ids, not entity ids. `OnHostIDUpdated` (`FOnHostIDUpdated`) on `UCrowdyGameSession` announces a change of the host, which is the Leader.
 
 ## Gotchas
 
 - Nothing connects until someone signs in. Every entity and event depends on it.
 - A sign-in can wait for the player. While `IsLegalAcceptancePending()` is true none of that sign-in's handlers has fired yet, so do not retry it or time it out; [Let the player agree to the terms](#let-the-player-agree-to-the-terms).
 - `Register` on an existing address is a refusal, `EMAIL_ALREADY_REGISTERED`; offer Login instead.
+- A new password account must confirm its email before it plays: bind **On Email Confirmation Required** and offer **Resend Confirmation Email**; [When the email is not confirmed yet](#when-the-email-is-not-confirmed-yet).
 - The link and social flows need the player to reach a browser or inbox while the game runs; on a machine that cannot, use a password.
 - `OnAppTokenRefreshed` fires on every rotation. You rarely need it; the connection is re-armed for you.
 - **Delete Account** and **Sign Out Everywhere** end this session too: the SDK signs out, and the player signs in again to play.

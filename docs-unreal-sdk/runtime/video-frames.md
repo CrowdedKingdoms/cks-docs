@@ -1,6 +1,6 @@
 ---
 slug: video-frames
-sidebar_position: 17
+sidebar_position: 18
 title: Video Frames
 description: "Receive another player's webcam frames as whole encoded images: bind once, read the bytes, tell senders apart by the exact id, and decode them yourself."
 ---

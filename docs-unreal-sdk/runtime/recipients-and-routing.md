@@ -140,19 +140,13 @@ Any struct is accepted, there is no `_Implementation` naming convention to tie a
 
 `OwningClient` replaces `Host`, as taught under [Targeted: OwningClient](#targeted-owningclient); logic that must be enforced moves to a Server Object.
 
-`Host` (`ECrowdyEventRecipient::Host`, `CrowdyRecipient = "Host"`) is hidden from the dropdowns; a saved value still routes and warns when compiled. On a replicated subsystem it runs on the [Leader](./leader.md). On an actor it needs Leader Source set to **Elected Host (Deprecated)**, see [Leader Source](./leader.md#leader-source-with-or-without-a-host): only the elected host runs it, on whatever instance it holds, whoever owns that entity. A non-host's call becomes a request; the host's own call runs locally. Under the default, Server Object, an actor's Host event is dropped with a warning naming the setting.
+`Host` (`ECrowdyEventRecipient::Host`, `CrowdyRecipient = "Host"`) is hidden from the dropdowns; a saved value still routes and warns when compiled. On a replicated subsystem it runs on the [Leader](./leader.md). On an actor nothing runs it: no host is elected any more, under either [Leader Source](./leader.md#leader-source-with-or-without-a-host), and under the default, Server Object, the call is dropped with a warning. Move host-only logic to a Server Object.
 
-A `Host` event on an actor is delivered as a single-actor message, and a broadcast of one is dropped. On a subsystem there is no single-actor transport, so it arrives over the channel and is gated by identity on receipt. Like a direct message, a Host event can be lost while its target crosses a chunk border.
+A `Host` event on a replicated subsystem arrives over the channel and is gated by identity on receipt, and it has no ownership gate: the Leader runs it whoever sent it.
 
-The Host recipient has no ownership gate: the host may act on any entity it holds.
+### OwningClient on a World entity
 
-:::caution[Under Elected Host, a Host send needs the host's own entity within the sender's known range.]
-The targeted message is addressed to the host's avatar entity and the chunk it stands in. If this client holds no record of that entity, the send logs `Run-On-Host '<name>' dropped ... the host's avatar is not in range` and the call is gone; it is not queued until the host comes into range.
-:::
-
-### OwningClient on a World entity under Elected Host
-
-Under the default Leader Source an `OwningClient` event aimed at a World entity drops with a warning, as [Targeted: OwningClient](#targeted-owningclient) says. Under **Elected Host (Deprecated)** the elected host writes World entities, so it receives the event and runs the body.
+An `OwningClient` event aimed at a World entity drops with a warning, as [Targeted: OwningClient](#targeted-owningclient) says. Under **Elected Host (Deprecated)** no host is elected to write World entities, so nobody receives it.
 
 ## Gotchas
 

@@ -94,8 +94,8 @@ reflected functions.]
 [Recipients and routing](../runtime/recipients-and-routing.md#targeted-owningclient).
 
 :::warning[`CrowdyRecipient = "Host"` is deprecated and warns: use `OwningClient`. On a replicated subsystem it runs on the Leader; on an
-actor it is dropped with a warning that names Leader Source, unless Leader Source is Elected Host, where it
-addresses the elected host. Neither is an enforcement boundary, so do not treat Host-only delivery as a
+actor it is dropped with a warning that names Leader Source under Server Object, and goes nowhere under
+Elected Host, where no host is elected. Neither is an enforcement boundary, so do not treat Host-only delivery as a
 security control.]
 Anyone can hold the Leader or host role at some point in a session. If a call must only take effect for a
 server-validated reason, check that reason on the receiving end; do not rely on the recipient filter alone

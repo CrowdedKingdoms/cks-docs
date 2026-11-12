@@ -37,7 +37,6 @@ You know the shape of what you need (send an event, read a team, find the Leader
   UCrowdyAvatars: "Player profiles and per-app avatar state; only GetMyAvatars writes the local cache.",
   UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
   UCrowdyProximityChat: "Nearby text chat: send a line to the players within a distance of your pawn's chunk, and hear theirs.",
-  UCrowdyHostSubsystem: "Deprecated: use `UCrowdyLeaderSubsystem`. See [Deprecated](#deprecated).",
   UCrowdyLeaderSubsystem: "The Leader: the one client per app that writes replicated subsystems. GetLeaderUserID, IsLocalLeader and OnLeaderChanged. Needs your app's server code deployed once; see [The Leader](/unreal-sdk/runtime/leader).",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
   UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",
@@ -66,7 +65,7 @@ Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`
 
 ## Excluded from this table
 
-Eight of the manifest's 32 subsystem classes do not appear in the table above:
+Eight of the manifest's 31 subsystem classes do not appear in the table above:
 
 - `UCrowdyCppClientSubsystem`, `UCrowdyCppReplicationSubsystem`, `UCrowdySDKBridgeSubsystem`, `UCrowdyWorkerThreadsSubsystem`: the vendored CrowdyCPP bridge and its worker threads. The game-facing surface is `UCrowdySDKSubsystem`; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
 - `UCrowdyConnectionMonitor`: the SDK reconnects on its own after a timeout, so starting the monitor adds a second retry loop. What it reports is covered on [Connection and reconnect](../runtime/connection-and-reconnect.md).
@@ -75,18 +74,17 @@ Eight of the manifest's 32 subsystem classes do not appear in the table above:
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. The host subsystem is removed; what remains here still works until a later release.]
 [Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
 :::
 
-### The host subsystem and the host on the game session
+### The host on the game session
 
-`UCrowdyLeaderSubsystem`, explained on [The Leader](../runtime/leader.md), replaces both. The generated table above still lists `UCrowdyHostSubsystem`, because the class is still there.
+`UCrowdyHostSubsystem` is removed. `UCrowdyLeaderSubsystem`, explained on [The Leader](../runtime/leader.md), replaces it and the host members of the game session.
 
 | Class | What it was for |
 |---|---|
-| `UCrowdyHostSubsystem` | Host election and the server-validated host query. The elected host exists only when Leader Source is Elected Host (Deprecated); otherwise its host functions report the Leader. Every page on it is [Host Election](../services/host-election.md). |
-| `UCrowdyGameSession` | Only its host members are deprecated: `GetHostID` and `OnHostIDUpdated`. Under Elected Host they carry the elected host; use `Get Leader User ID` and `On Leader Changed` instead. |
+| `UCrowdyGameSession` | Only its host members are deprecated: `GetHostID` and `OnHostIDUpdated`. They report the Leader; use `Get Leader User ID` and `On Leader Changed` instead. |
 
 ## Gotchas
 

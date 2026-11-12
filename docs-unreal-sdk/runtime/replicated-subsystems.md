@@ -1,6 +1,6 @@
 ---
 slug: replicated-subsystems
-sidebar_position: 13
+sidebar_position: 11
 title: Replicated Subsystems
 description: Give a world or game-instance subsystem Crowdy State properties and CrowdyEvent functions by inheriting one of two bases, the enrollment order that must hold, and the two things a subsystem cannot do that an actor can.
 ---
@@ -101,7 +101,7 @@ Underneath both is the two-call pattern on `UCrowdyEntitySubsystem`, `RegisterPa
 
 ### Under Elected Host
 
-The [Leader](./leader.md) replaces the elected host. On a project whose **Leader Source** is still **Elected Host (Deprecated)**, the elected host writes every replicated subsystem instead of the Leader; [Host Election](../services/host-election.md) has the rest.
+The [Leader](./leader.md) replaces the elected host. The SDK no longer polls for a host, so on a project whose **Leader Source** is still **Elected Host (Deprecated)** nobody writes a replicated subsystem.
 
 ## Gotchas
 

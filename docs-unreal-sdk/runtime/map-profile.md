@@ -1,6 +1,6 @@
 ---
 slug: map-profile
-sidebar_position: 1
+sidebar_position: 13
 title: Map Profiles
 description: The data asset that switches the SDK on for a map, how the SDK finds it, what each field controls, and the one field the shipped default leaves empty.
 ---
@@ -107,7 +107,7 @@ The map profile's **Remote Entities** group, under [Create the asset](#create-th
 
 ### Under Elected Host
 
-The [Leader](./leader.md) replaces the elected host. On a project whose **Leader Source** is still **Elected Host (Deprecated)**, **Handle Events and Spawns** also switches host election on or off for the map; [Host Election](../services/host-election.md) has the rest.
+The [Leader](./leader.md) replaces the elected host. Nothing polls for a host now, so **Handle Events and Spawns** no longer switches host election on or off for the map, even on a project whose **Leader Source** is still **Elected Host (Deprecated)**.
 
 ## Gotchas
 

@@ -217,11 +217,11 @@ Two read-only diagnostics on `UCrowdyStateReplicator` answer the same questions 
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. The host push still exists but no host is elected, and it is removed in a later release.]
 [Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
 :::
 
-Both subsections apply only when Leader Source is **Elected Host (Deprecated)**, see [Leader Source](./leader.md#leader-source-with-or-without-a-host).
+Both subsections describe Leader Source **Elected Host (Deprecated)**, under which nobody is elected: no client stamps a push host-sourced and no client writes a World entity. See [Leader Source](./leader.md#leader-source-with-or-without-a-host).
 
 <a id="on-an-entity-you-do-not-own-the-host-push"></a>
 
@@ -231,7 +231,7 @@ Nothing replaces the host push, because host corrections end with the elected ho
 
 **Mark Crowdy State Dirty** on an entity another client owns is not a no-op. It becomes a one-shot super-user push: the live value of the named property is read on the next replication tick and broadcast once, with no shadow and no ongoing tracking, stamped host-sourced when the caller is the elected host. It works for any Crowdy State property on that entity, not only the manual-dirty ones, because a host override may need to correct anything. An `OwnerOnly` entity refuses it at the source: the push is dropped before it is sent, and a receiver drops one that arrives anyway. A push too big for one delta is dropped with a warning, its notify does not run, and nothing retries it.
 
-A host-owned world entity is the other case. On the host it is tracked with auto-diff off, so a plain `CrowdyState` property on it never ships on change; the host's mark works only for a `CrowdyManualDirty` property (the `CrowdyHeartbeat` keyframe still restates the rest). Mark a host-owned entity's changing properties manual-dirty, or give them `CrowdyHeartbeat`.
+A host-owned world entity has no writer now, because no host is elected. Keep what changes about it in a Server Object.
 
 The receiver honours a push by the entity's `HostOverride` policy: `Allow` (the default) adopts a host-sourced value into the owner's baseline. A push from a client that is not the host is not stamped, so the real owner drops it, and every other proxy applies it, so the proxies disagree with the owner until the owner's next change. That is the hazard behind the owner gate in [Mark a property](#mark-a-property): a mark issued on a proxy by mistake is a push.
 
@@ -247,7 +247,7 @@ A modified client can stamp its own pushes host-sourced. This orders who wins on
 
 Nothing replaces host precedence; [The Leader](./leader.md#who-writes-what) says who writes each entity under the default Leader Source. By default nothing is stamped host-sourced: every client ignores Crowdy State sent for a World entity, and an owner drops a host-sourced update for an entity it owns, since no honest client sends one. A replicated subsystem is the exception: its Leader stamps what it sends.
 
-When the local client is the elected host, every delta it sends is stamped host-sourced. A receiver that owns the entity adopts a host-sourced value into its own baseline instead of reverting it on the next diff, provided the entity's `HostOverride` is `Allow` (the default); `OwnerOnly` drops even a host correction. A host-owned world entity is driven by the host alone, and only by explicit pushes: its manual-dirty marks and its keyframe, never a background diff. See [Host Election](../services/host-election.md#what-the-host-writes).
+The SDK no longer polls for an elected host, so no honest client stamps a delta host-sourced. A receiver that owns the entity still adopts a host-sourced value into its own baseline instead of reverting it, provided the entity's `HostOverride` is `Allow` (the default); `OwnerOnly` drops even a host correction.
 
 :::warning[Host precedence is a convention with no server-side check. Under Elected Host, a forged host-sourced flag is honoured as real.]
 It orders who wins on the view plane; it does not make either value trustworthy. If the value matters, it belongs in your server code and the question does not arise.
@@ -277,5 +277,4 @@ It orders who wins on the view plane; it does not make either value trustworthy.
 - [RPC events in C++](./rpc-events-cpp.md): containers and object references as event parameters.
 - [The Two Planes](../concepts/two-planes.md): what belongs on the truth plane instead.
 - [The Leader](./leader.md): who writes what, and Leader Source.
-- [Host Election (Deprecated)](../services/host-election.md): the elected host, host-owned entities and the host override.
 - [Ownership transfer](./ownership-transfer.md): making another client the owner instead of pushing over it.

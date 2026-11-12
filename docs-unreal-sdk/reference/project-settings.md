@@ -98,7 +98,7 @@ Both apply from the next Play, and to the editor's developer connections. A drop
 
 ### Leader Source
 
-`LeaderSource` (**Leader Source**, an `ECrowdyLeaderSource`) is under **Crowdy SDK, Replication** and is yours to set. It decides who writes shared state. Under **Server Object**, the default, no client writes an entity Owned By World and the Leader writes replicated subsystems. See [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host). The **Elected Host (Deprecated)** value and `HostPollIntervalSeconds` are under [Deprecated](#deprecated).
+`LeaderSource` (**Leader Source**, an `ECrowdyLeaderSource`) is under **Crowdy SDK, Replication** and is yours to set. It decides who writes shared state. Under **Server Object**, the default, no client writes an entity Owned By World and the Leader writes replicated subsystems. See [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host). The **Elected Host (Deprecated)** value is under [Deprecated](#deprecated).
 
 ## Deprecated
 
@@ -108,11 +108,7 @@ Both apply from the next Play, and to the editor's developer connections. A drop
 
 ### Leader Source: Elected Host
 
-**Server Object**, the default value of [Leader Source](#leader-source), replaces it, and [The Leader](../runtime/leader.md) teaches what it does. **Elected Host (Deprecated)** (`ECrowdyLeaderSource::ElectedHost`, `LeaderSource=ElectedHost` in the ini) keeps the old elected host: it writes World entities and replicated subsystems. The whole elected host goes in a later release.
-
-### HostPollIntervalSeconds
-
-Nothing replaces it, because under **Server Object** the SDK does not poll for a host. `HostPollIntervalSeconds` (Network category, written by Config Sync) sets how often the SDK polls for the elected host and only matters when Leader Source is **Elected Host (Deprecated)**. The generated table above still lists it, because the property is still there.
+**Server Object**, the default value of [Leader Source](#leader-source), replaces it, and [The Leader](../runtime/leader.md) teaches what it does. **Elected Host (Deprecated)** (`ECrowdyLeaderSource::ElectedHost`, `LeaderSource=ElectedHost` in the ini) has no host to elect, because the SDK no longer polls for one, so nothing writes a World entity or a replicated subsystem. The setting goes in a later release.
 
 ## Gotchas
 

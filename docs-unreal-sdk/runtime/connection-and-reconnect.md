@@ -1,8 +1,8 @@
 ---
 slug: connection-and-reconnect
-sidebar_position: 16
+sidebar_position: 1
 title: Connection and Reconnect
-description: How the realtime connection comes up, what it reports while it is up, how it reconnects on its own when it drops, the two events a game reacts to, bundled sends, and the per-frame receive budget.
+description: How the realtime connection comes up, what it reports while it is up, how it reconnects on its own when it drops, what happens when a player goes idle, the events a game reacts to, bundled sends, and the per-frame receive budget.
 ---
 
 import Tabs from '@theme/Tabs';
@@ -27,12 +27,13 @@ A connection indicator in the HUD, a "reconnecting" overlay, a decision about wh
 | `Connected` | Up and carrying traffic. |
 | `Reconnecting` | The connection lost its server and is assigning another. Reported, not acted on: it recovers on its own. |
 | `GateKeep` (shown as Gate Kept) | The server is gatekeeping this client because the app is full. Nothing retries; the player has already been told. |
+| `Inactive` | The server released the session because the player sent no gameplay input for the app's idle timeout. Nothing reconnects until the game calls **Request UDP Access**; see [When the player goes idle](#when-the-player-goes-idle). |
 
 :::note[Poll it. No delegate is needed for a status indicator.]
 `GetUDPConnectionState` is a pure node, safe to read every frame. Reserve the events below for the moments you must react to.
 :::
 
-The events on `UCrowdySDKSubsystem`, all Blueprint-assignable: **On UDP Connection Success** (`OnUDPConnectionSuccess`, an `FOnUDPConnectionSuccess`) whenever the connection comes up, including after a re-assignment, since that is a new session; **On UDP Timed Out** (`OnUDPTimedOut`, an `FOnUDPTimedOut`) when the transport gave up on a re-assignment, with the state at `Reconnecting`; **On UDP Address Notify** (`OnUDPAddressNotify`, an `FOnUDPAddressNotify` with `bSuccess` and `GateKeep`) when the server answers the access request. `RequestUDPAccess()` asks for the connection; the [Quickstart](../quickstart.md) never calls it because the sign-in does. Underneath sits `UCrowdyUDPSubsystem`, whose `GetConnectionState()` is the C++ read that needs no game thread and whose `GetUDPNetworkStats()` returns an `FUDPNetworkStatistics` (bytes and datagrams each way, messages per second, `Ping`, the client-notify counters and loss percentage); `ResetUDPNetworkStats()` zeroes it.
+The events on `UCrowdySDKSubsystem`, all Blueprint-assignable: **On UDP Connection Success** (`OnUDPConnectionSuccess`, an `FOnUDPConnectionSuccess`) whenever the connection comes up, including after a re-assignment, since that is a new session; **On UDP Timed Out** (`OnUDPTimedOut`, an `FOnUDPTimedOut`) when the transport gave up on a re-assignment, with the state at `Reconnecting`; **On UDP Session Inactive** (`OnUDPSessionInactive`, an `FOnUDPSessionInactive`) when the server released an idle player's session, with the state at `Inactive`; **On UDP Address Notify** (`OnUDPAddressNotify`, an `FOnUDPAddressNotify` with `bSuccess` and `GateKeep`) when the server answers the access request. `RequestUDPAccess()` asks for the connection; the [Quickstart](../quickstart.md) never calls it because the sign-in does. In C++, `UCrowdyUDPSubsystem` also carries `OnUDPInactive` (an `FUDPInactive`, not assignable from Blueprint) for the same release. Underneath sits `UCrowdyUDPSubsystem`, whose `GetConnectionState()` is the C++ read that needs no game thread and whose `GetUDPNetworkStats()` returns an `FUDPNetworkStatistics` (bytes and datagrams each way, messages per second, `Ping`, the client-notify counters and loss percentage); `ResetUDPNetworkStats()` zeroes it.
 
 Coming up does more than flip the state: the same handler that broadcasts **On UDP Connection Success** joins the reliable-RPC channels, which is what makes the [session channel](./channels.md) "always joined".
 
@@ -75,6 +76,49 @@ In the Game Mode Blueprint, from **Event BeginPlay**, a **Crowdy SDK Subsystem**
 </TabItem>
 </Tabs>
 
+## When the player goes idle
+
+A player who sends no gameplay input (movement, voxel edits, messages, voice, video) for the app's idle timeout has their session released by the server. The timeout is 15 minutes unless the app sets its own in Crowdy Studio (Idle timeout, 60 seconds to 24 hours, or off). This is not a drop: the SDK sets the state to `Inactive`, broadcasts **On UDP Session Inactive**, leaves the Leader type, and does not reconnect. While inactive the player sends and receives nothing.
+
+So that an idle player can be released at all, the client goes quiet after 30 seconds without keyboard, mouse, touch or gamepad input, counted from the connection coming up at the earliest: it stops the CrowdyState keyframe heartbeat and its 5-second ping, both of which the server counts as input. Values that change still replicate at once, movement still shows, a host's World entities keep their keyframe, and the heartbeat resumes on its next interval after the first input. A player who joins near an idle one sees that player's CrowdyState values once they change or the idle player acts again. `crowdy.net.idlequietseconds` sets the 30 seconds, and 0 keeps the heartbeat and the ping going, which means an idle player is never released.
+
+When to bring the player back is your game's decision. Call **Request UDP Access** (`UCrowdySDKSubsystem::RequestUDPAccess()`) when it decides the player is back, for example on their next key press or mouse move, or from a "You were away" screen. The connection comes back on the same app token, and **On UDP Connection Success** fires as after any reconnect.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// In Init, beside the drop events.
+Sdk->OnUDPSessionInactive.AddDynamic(this, &ULanternGameInstance::HandleIdle);
+
+void ULanternGameInstance::HandleIdle()
+{
+	bAwayFromVillage = true; // Show "You were away"; the next input calls Return().
+}
+
+void ULanternGameInstance::Return()
+{
+	if (!bAwayFromVillage)
+	{
+		return;
+	}
+	bAwayFromVillage = false;
+	GetSubsystem<UCrowdySDKSubsystem>()->RequestUDPAccess();
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+From **Event BeginPlay**, a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Session Inactive**; its custom event sets an `AwayFromVillage` flag and shows the "You were away" widget. The input event that should bring the player back checks the flag, clears it, and calls **Request UDP Access** on the same subsystem.
+
+</TabItem>
+</Tabs>
+
+:::note[Nothing reconnects an idle player for you.]
+A game that never calls **Request UDP Access** after **On UDP Session Inactive** leaves the player offline until they restart. Earlier releases reconnected them automatically, every idle timeout.
+:::
+
 ## When the server refuses a send
 
 A send leaves this client before the server judges it, so a refusal arrives later, on its own. **On Send Refused** on the realtime subsystem (`UCrowdyCppReplicationSubsystem::OnSendRefused`; in Blueprint, **Get Game Instance**, **Get Subsystem (Crowdy Cpp Replication Subsystem)**, **Bind Event to On Send Refused**) fires on the game thread for each one (an `FOnCrowdySendRefused`), with an `FCrowdySendRefusal`: the **Code** and **Code Name**, whether it was a channel message and its **Channel Id**, the **Message Type**, **What** was refused in words and a **Remedy**. The same line goes to the log as a Warning. C++ that reads the bridge's own send errors can turn one into the same struct with `UCrowdyCppReplicationSubsystem::DescribeSendRefusal(Error, OutRefusal)`, which returns false when the server's error names no send this client has on record.
@@ -110,6 +154,7 @@ Five functions on `UCrowdySDKSubsystem` are deprecated (the compiler warns on ea
 ## Gotchas
 
 - `Reconnecting` needs nothing from you. Only `Disconnected` after a timeout does.
+- `Inactive` needs **Request UDP Access** from you, when your game decides the player is back. Do not call it from the **On UDP Session Inactive** handler itself: the player is still away.
 - `GateKeep` is an answer, not a failure. Retrying against a full app asks a server with no room whether it has room.
 - Coming up joins the channels. A Multicast event sent before **On UDP Connection Success** is queued and flushed when the bootstrap finishes; see [Channels](./channels.md).
 - `crowdy.net.send.bundle` and `crowdy.net.recv.signedbundles` changes take effect on the next connect.

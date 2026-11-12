@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-12T15:56:51Z",
+  "sdk_version": "2.25.0",
   "table": "async-actions",
   "columns": [
     {
@@ -500,6 +500,61 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyBuildMod",
+      "node": [
+        "Build Mod"
+      ],
+      "factories": [
+        "BuildMod"
+      ],
+      "class": "UCrowdyBuildMod",
+      "pins": [
+        "OnProgress",
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCallMod",
+      "node": [
+        "Call Mod"
+      ],
+      "factories": [
+        "CallMod"
+      ],
+      "class": "UCrowdyCallMod",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCanEditChunk",
+      "node": [
+        "Can Edit Chunk"
+      ],
+      "factories": [
+        "CanEditChunk"
+      ],
+      "class": "UCrowdyCanEditChunk",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyChannels_AddChannelMember",
       "node": [
         "Add Channel Member"
@@ -896,21 +951,164 @@
       "allowlist": ""
     },
     {
-      "id": "UCrowdyIsEntityHostServer",
+      "id": "UCrowdyClaimChunk",
       "node": [
-        "Is Crowdy Entity Host (Server)"
+        "Claim Chunk"
       ],
       "factories": [
-        "IsCrowdyEntityHostServer"
+        "ClaimChunk"
       ],
-      "class": "UCrowdyIsEntityHostServer",
+      "class": "UCrowdyClaimChunk",
       "pins": [
-        "OnIsHost",
-        "OnIsNotHost",
+        "OnDone",
         "OnFailed"
       ],
       "module": "CrowdyServices",
-      "page": "concepts/host-is-a-convention",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyDeleteMod",
+      "node": [
+        "Delete Mod"
+      ],
+      "factories": [
+        "DeleteMod"
+      ],
+      "class": "UCrowdyDeleteMod",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyDeployMod",
+      "node": [
+        "Deploy Mod"
+      ],
+      "factories": [
+        "DeployMod"
+      ],
+      "class": "UCrowdyDeployMod",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyFetchChunk",
+      "node": [
+        "Fetch Chunk"
+      ],
+      "factories": [
+        "FetchChunk"
+      ],
+      "class": "UCrowdyFetchChunk",
+      "pins": [
+        "OnFetched",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/voxel-chunks",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyFetchChunksAround",
+      "node": [
+        "Fetch Chunks Around"
+      ],
+      "factories": [
+        "FetchChunksAround"
+      ],
+      "class": "UCrowdyFetchChunksAround",
+      "pins": [
+        "OnFetched",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/voxel-chunks",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyFindClaims",
+      "node": [
+        "Find Claims"
+      ],
+      "factories": [
+        "FindClaims"
+      ],
+      "class": "UCrowdyFindClaims",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetGridPermissions",
+      "node": [
+        "Get Grid Permissions"
+      ],
+      "factories": [
+        "GetGridPermissions"
+      ],
+      "class": "UCrowdyGetGridPermissions",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetModLogs",
+      "node": [
+        "Get Mod Logs"
+      ],
+      "factories": [
+        "GetModLogs"
+      ],
+      "class": "UCrowdyGetModLogs",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetModStarter",
+      "node": [
+        "Get Starter"
+      ],
+      "factories": [
+        "GetStarter"
+      ],
+      "class": "UCrowdyGetModStarter",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
       "editor": false,
       "allowlist": ""
     },
@@ -1153,6 +1351,42 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyListMods",
+      "node": [
+        "List Mods"
+      ],
+      "factories": [
+        "ListMods"
+      ],
+      "class": "UCrowdyListMods",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListMyMods",
+      "node": [
+        "List My Mods"
+      ],
+      "factories": [
+        "ListMyMods"
+      ],
+      "class": "UCrowdyListMyMods",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName",
       "node": [
         "Get Player Name"
@@ -1203,6 +1437,42 @@
       ],
       "module": "CrowdyServices",
       "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyReleaseClaim",
+      "node": [
+        "Release Claim"
+      ],
+      "factories": [
+        "ReleaseClaim"
+      ],
+      "class": "UCrowdyReleaseClaim",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyReloadChunk",
+      "node": [
+        "Reload Chunk"
+      ],
+      "factories": [
+        "ReloadChunk"
+      ],
+      "class": "UCrowdyReloadChunk",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/voxel-chunks",
       "editor": false,
       "allowlist": ""
     },
@@ -1339,6 +1609,24 @@
       ],
       "module": "CrowdyServices",
       "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySetModEnabled",
+      "node": [
+        "Set Mod Enabled"
+      ],
+      "factories": [
+        "SetModEnabled"
+      ],
+      "class": "UCrowdySetModEnabled",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
       "editor": false,
       "allowlist": ""
     },

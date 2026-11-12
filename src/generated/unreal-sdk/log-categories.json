@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-12T15:56:51Z",
+  "sdk_version": "2.25.0",
   "table": "log-categories",
   "columns": [
     {

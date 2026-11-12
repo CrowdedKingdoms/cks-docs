@@ -116,32 +116,12 @@ UI-specific, but it lives in the same module.
 | `K2_SendCrowdyEvent` (display name **Send Crowdy Event**; C++-only template `SendCrowdyEvent<T>` for the same call without the Blueprint thunk) | Sends a game event struct with `Recipient`, `DecayRate`, and `ReplicationDistance` |
 | `CrowdyIsConnectedToServer` | Whether the realtime connection is up |
 
-The deprecated host and authority functions are listed under [Deprecated](#deprecated).
+`IsCrowdyEntityLocallyControlled`, `CrowdyHasAuthority`, `GetCrowdyHasAuthority`, `CrowdyGetHostID` and `IsCrowdyEntityHost` are removed; [The Leader](../runtime/leader.md) teaches what replaces each.
 
 :::warning[DoesCrowdyEntityOwn compares Crowdy ownership, not AActor::GetOwner.]
 The name invites Unreal's actor-owner meaning, but this checks Crowdy entity ownership instead; it will
 not agree with `AActor::GetOwner()` for an entity whose Unreal owner was never set to match.
 :::
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Utilities library functions
-
-[The Leader](../runtime/leader.md) teaches what replaces each of these, and `IsCrowdyEntityLocallyOwned` above is the question to ask before a write.
-
-| Function | Does |
-|---|---|
-| `IsCrowdyEntityLocallyControlled` | Deprecated: forwards to `IsCrowdyEntityLocallyOwned` |
-| `CrowdyHasAuthority` (exec-flow, **Switch Crowdy Has Authority**) / `GetCrowdyHasAuthority` (pure, **Crowdy Has Authority**) | Deprecated: true when this client is the host (the Leader, by default). Ask `IsCrowdyEntityLocallyOwned` about the entity you write instead |
-| `CrowdyGetHostID` | Deprecated: the current host's id (the Leader's, by default). Use `GetLeaderUserID` on the Crowdy Leader Subsystem. |
-| `IsCrowdyEntityHost` | Deprecated: whether this actor is the host player's own entity (its id equals the host id). Use `IsLocalLeader` for a one-machine gate. `IsCrowdyEntityLocallyOwned` is a different question: it is true on every client for its own avatar. |
-
-Under Elected Host, `IsCrowdyEntityHost` and `IsCrowdyEntityLocallyOwned` both fold in host election
-state. See [Host Election (Deprecated)](./host-election.md) for what "host" means before relying on either.
 
 ## Gotchas
 

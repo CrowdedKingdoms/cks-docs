@@ -130,7 +130,7 @@ The tracker's events, all on the game thread: `OnRemoteEntityAppeared` (an id se
 
 ## Gotchas
 
-- `IsLocallyOwned` means two different things: on the subsystem it takes a NetID and asks the record; on the component it takes nothing and asks whether this client is the entity's authority, a World entity's host included under Elected Host. See [Entity component](./entity-component.md).
+- `IsLocallyOwned` means two different things: on the subsystem it takes a NetID and asks the record; on the component it takes nothing and asks whether this client is the entity's authority, which no client is for a World entity. See [Entity component](./entity-component.md).
 - A spawned entity is owned by its spawner, full stop. To hand it over, use [Ownership transfer](./ownership-transfer.md).
 - `InitialState` reaches `OnCrowdySpawned` once on each client that receives the spawn event, on the actor that client draws. A late joiner receives it for an entity that sends no movement (from a repeat) but not for one that replicates movement. On a Mass map the latter has no actor there, and its `InitialState` reaches the row's registered Crowdy State fields instead.
 - Two unrelated participants can derive the same NetID (a NetID has 32 bits of real entropy). The incumbent keeps it and the newcomer is refused with a log line; a system that binds state to an id should register through `TryRegisterEntity` and give up its claim when the `ECrowdyEntityRegistration` it returns is `RefusedIdHeldByLiveParticipant` (or `RefusedInvalidNetID` for a record with no usable id) rather than `Registered`.

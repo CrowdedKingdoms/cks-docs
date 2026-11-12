@@ -1,6 +1,6 @@
 ---
 slug: continuous-state
-sidebar_position: 10
+sidebar_position: 8
 title: Continuous State
 description: "Replicate Movement: the transform and aim snapshot the owner sends every replication interval with nothing to write, how a remote character animates, when that default is enough, and the custom executor path for a snapshot that carries more."
 ---

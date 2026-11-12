@@ -192,15 +192,15 @@ The sample project is already set up for you. Sign up for a developer account, t
 
 ## Deprecated
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+:::warning[Deprecated in 2.25. The API this section shows is removed after 2.25.0.]
 [Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
 :::
 
 <a id="host-spawn"></a>
 
-### Host spawn (deprecated API)
+### Host spawn (removed API)
 
-**Switch Is Crowdy Entity Locally Owned**, asked about the entity or subsystem you are about to write, replaces this gate; [Checking who writes an entity](../runtime/leader.md#checking-who-writes-an-entity) on The Leader teaches it. `ASampleHostSwitch` spawns a world object, but only when `UCrowdyUtilities::GetCrowdyHasAuthority(this)` returns true. `GetCrowdyHasAuthority` is deprecated in the current SDK, where it still works and reports the Leader by default, so this gate runs on the Leader.
+**Is Local Leader**, on the Crowdy Leader Subsystem, replaces this gate, because it is true on one client only; [The Leader](../runtime/leader.md#follow-the-leader) teaches it. **Switch Is Crowdy Entity Locally Owned** is a gate on a write to an entity you own, not a replacement for it. `ASampleHostSwitch` spawns a world object, but only when `UCrowdyUtilities::GetCrowdyHasAuthority(this)` returns true. `GetCrowdyHasAuthority` is removed from the current SDK.
 
 ```cpp
 if (UCrowdyUtilities::GetCrowdyHasAuthority(this))
