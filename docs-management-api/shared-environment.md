@@ -89,7 +89,9 @@ its datagram's 75, and the copy of each update that comes back to its sender. It
 Guided mode walks through a game a step at a time, and its
 [scenario library](https://crowdedkingdoms.com/pricing.html#scenarios) starts from 62
 kinds of game at four sizes under 12 usage patterns. Both price at the published rate
-card, hour by hour across a month. It is an estimate, not a quote.
+card, hour by hour across a month. It is an estimate, not a quote. Studio's Pricing page and
+each app's **Usage & Billing** tab run the same estimator, scenarios included, priced at your
+environment's rate card, so the same game gets the same estimate in all three places.
 
 **What counts as a stored input-log byte.** `input_log_storage_byte_hours` is
 measured in recorded bytes: each input counts at its record size — the
