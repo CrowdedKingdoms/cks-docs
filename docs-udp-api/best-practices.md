@@ -29,6 +29,16 @@ Full sequence: [Authenticate and assign](/replication-api/authenticate-and-assig
   `TOKEN_EXPIRED`; mint/refresh and re-assign.
 - On `COMMAND_RECONNECT` (type 22), verify the HMAC and call
   `serverWithLeastClients` again. Do not keep sending to the old host.
+- Bind the control frames to the assignment (replication server v0.45.0): send a new random
+  8-byte nonce in `CLIENT_CAPABILITIES` (bit 1) after each assignment, and accept a
+  `COMMAND_RECONNECT_BOUND` (44) or `COMMAND_SESSION_RELEASED_BOUND` (45) only with that nonce.
+  One carrying another nonce was captured earlier and sent again: drop it. Keep handling the
+  legacy 22 and 28 (older servers, and the Game API's proxy toward browsers still send them), and
+  treat a legacy idle release (28, reason 5) that arrives within a minute of your own gameplay
+  input as a reconnect rather than the end of the session, since a captured one verifies too.
+  [Wire formats](/replication-api/wire-formats#bound-control-frames--command_reconnect_bound-44-and-command_session_released_bound-45).
+- On `CHUNK_CHANGED_NOTIFICATION` (146), read that chunk again: a hub or mod replaced it whole
+  and sends no voxel update per voxel.
 - Handle `WRONG_DATACENTER` by reconnecting to `extensions.gameApiUrl`.
   [Datacenter routing](/game-api/datacenter-routing).
 

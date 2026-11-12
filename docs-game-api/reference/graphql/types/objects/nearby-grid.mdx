@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A grid overlapping a scanned region (returned by nearbyGrids). Bounds only — no permission keys.
+A grid overlapping a scanned region (returned by nearbyGrids): its bounds and the caller's own permission keys on it.
 
 
 ```graphql
@@ -24,6 +24,7 @@ type NearbyGrid {
   gridId: BigInt!
   lowChunk: ChunkCoordinates!
   highChunk: ChunkCoordinates!
+  permissionKeys: [String!]!
 }
 ```
 
@@ -44,6 +45,10 @@ Low (minimum) corner chunk of the grid box.
 
 #### [<code style={{ fontWeight: 'normal' }}>NearbyGrid.<b>highChunk</b></code>](#high-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #high-chunk */} 
 High (maximum) corner chunk of the grid box.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NearbyGrid.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #permission-keys */} 
+The caller's own unexpired permission keys on this grid, sorted; empty when none. These are the grants the server checks: a voxel edit needs update&#x005F;voxel&#x005F;data on the grid that decides its chunk.
 
 
 

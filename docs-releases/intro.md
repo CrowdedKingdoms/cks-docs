@@ -39,6 +39,40 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-11 (mods start for players already there; region reads; realtime edits reach mods; whole-chunk writes; control frames bound to the session; a ChunkStore the game thread can rely on)
+
+- **A switched-on mod starts when a player is in its grid**: when it is switched on with a player
+  already inside, when one appears there, and when one walks in (Game API v2.66.0). A player's
+  realtime presence counts; the game needs no heartbeat call. See [mods](/exec/mods).
+- **Region reads take a box, a `since` and stable pages** (Game API v2.67.0):
+  `getChunksByDistance` and `listVoxelUpdatesByDistance` read a cube (`centerCoordinate`,
+  `maxDistance`) or a box (`lowChunk`, `highChunk`, at most 4,913 chunks), so a step reads only
+  the slab it uncovers; pages are stable and answer the `limit` and `skip` applied; `since` keeps
+  only chunks written since then. `listVoxels` pages (`limit` up to 65,536, `skip`) by position.
+  `gameApps.nearbyGrids` returns your own `permissionKeys` on each grid, so a game can tell before
+  sending whether an edit will go through ([which grid decides](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write)).
+  CrowdyJS 18.28.0, CrowdyCPP 0.80.0 (`domains::ChunkRegion`), CrowdyPy 0.28.0.
+- **Players' realtime voxel edits reach the grid's mods** as `voxels` events, and **hub and mod
+  code writes in bulk**: `world.set_voxels` takes 4,096 writes at one write unit per 64 voxels,
+  and `world.set_chunk` replaces a whole chunk, telling nearby players once to read it again
+  (`CHUNK_CHANGED_NOTIFICATION`, 146) instead of once per voxel. Game API v2.68.1 with replication
+  servers v0.45.0; `ckx-sdk` 0.14.1 (use it for large batches in a mod: 0.14.0 ran out of a mod's
+  fuel past about 750 writes). CrowdyJS 18.29.0 (`chunkChanged`), CrowdyCPP 0.81.0
+  (`Handlers::chunkChanged`), CrowdyPy 0.29.0 (`chunk_changed`). See [world and platform
+  data](/exec/world-and-platform-data) for the budgets.
+- **Reconnect and release frames are bound to the session** (replication servers v0.45.0): a
+  client that sends a control nonce in `CLIENT_CAPABILITIES` gets `COMMAND_RECONNECT_BOUND` (44)
+  and `COMMAND_SESSION_RELEASED_BOUND` (45), and refuses one captured from an earlier assignment.
+  CrowdyCPP 0.81.0 and CrowdyPy 0.29.0 do it, and verify `COMMAND_RECONNECT` (22) with the HMAC the
+  servers send (CrowdyCPP before 0.81.0 ignored every reconnect command). See [wire
+  formats](/replication-api/wire-formats#bound-control-frames--command_reconnect_bound-44-and-command_session_released_bound-45).
+- **ChunkStore**: loads read only what is missing, as boxes, paged; an edit the server refuses, or
+  whose echo never comes, is undone and reported (`onEditRefused`); edits are paced under the
+  session's budget; a replaced chunk is read again, and a reconnect catches up. CrowdyCPP's store
+  runs its loads off the game thread and applies them within a budget per tick, keeps a uniform
+  chunk as one type, and reports changes once per tick with neighbour flags. CrowdyJS 18.30.0,
+  CrowdyCPP 0.82.0, CrowdyPy 0.30.0.
+
 ## 2026-11-11 (a new account confirms its email before it plays)
 
 - **A password account made since 2026-11-11 gets no gameplay token until it confirms its email

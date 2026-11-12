@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Result of listVoxelUpdatesByDistance: per-chunk groups of voxel edits ordered by increasing distance from the center, plus an echo of the pagination applied.
+Result of listVoxelUpdatesByDistance: per-chunk groups of voxel edits (a cube ordered by increasing distance from its center, a box by x, y, z), plus the pagination applied.
 
 
 ```graphql
@@ -31,19 +31,19 @@ type VoxelUpdatesByDistanceResponse {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>chunks</b></code>](#chunks)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ChunkVoxelUpdatesResponse!]!</b></code>](/reference/graphql/types/objects/chunk-voxel-updates-response.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #chunks */} 
-Per-chunk groups of voxel edits, ordered by increasing Chebyshev distance from centerCoordinate.
+Per-chunk groups of voxel edits: for a cube by increasing Chebyshev distance from centerCoordinate, then x, y, z; for a box by x, y, z.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>centerCoordinate</b></code>](#center-coordinate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #center-coordinate */} 
-The center chunk the search was performed around.
+The center chunk of a cube search; for a box, its middle chunk (rounded toward lowChunk).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #limit */} 
-Echo of the chunk `limit` applied to this page, or null if none was supplied.
+The chunk `limit` applied to this page: the one asked for, or 1000 when none (or 0) was.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>skip</b></code>](#skip)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #skip */} 
-Echo of the chunk `skip` applied to this page, or null if none was supplied.
+The chunk `skip` applied to this page: the one asked for, or 0.
 
 
 
