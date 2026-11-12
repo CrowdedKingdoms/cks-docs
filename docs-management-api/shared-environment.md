@@ -82,6 +82,15 @@ applies. A `MESSAGE_BUNDLE` datagram carrying several messages is one frame and 
 metered once, in either direction. A client-side byte counter will not match it. The full basis is in the
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
 
+**Estimating a game's bill.** The pricing page's
+[cost estimator](https://crowdedkingdoms.com/pricing.html#calculator) counts wire bytes
+the way the meter does: each delivered message's 79 bytes of framing and its share of
+its datagram's 75, and the copy of each update that comes back to its sender. Its
+Guided mode walks through a game a step at a time, and its
+[scenario library](https://crowdedkingdoms.com/pricing.html#scenarios) starts from 62
+kinds of game at four sizes under 12 usage patterns. Both price at the published rate
+card, hour by hour across a month. It is an estimate, not a quote.
+
 **What counts as a stored input-log byte.** `input_log_storage_byte_hours` is
 measured in recorded bytes: each input counts at its record size — the
 `sizeBytes` that `inputLogMessages` returns, a fixed header plus the message —
