@@ -44,6 +44,7 @@ CHANNEL_AUDIO_REQUEST = 35;        // client -> server: send audio to a channel;
 CHANNEL_AUDIO_NOTIFICATION = 36;   // server -> client: deliver channel audio; server v0.37.0+
 COMMAND_RECONNECT_BOUND = 44;      // server -> client: COMMAND_RECONNECT bound to this assignment's nonce; server v0.45.0+
 COMMAND_SESSION_RELEASED_BOUND = 45; // server -> client: COMMAND_SESSION_RELEASED bound to the nonce; server v0.45.0+
+CONTROL_BOUND_ACK = 46;            // server -> client: this assignment's control frames come only in the bound forms; server v0.46.0+
 // other values in 19–127 are unused / reserved or internal server-to-server
 ```
 
@@ -240,17 +241,33 @@ reason means; reason 5 (`IDLE`) is final. Like 22 and 28, both are always their 
 Draw a new nonce for each assignment (and send the capabilities again), so the frames of one
 session never verify in the next.
 
+From replication server v0.46.0 the server **acknowledges** the nonce each time it accepts a
+`CLIENT_CAPABILITIES` carrying `BOUND_CONTROL` and a nonce, so a client can tell it is talking to a
+server that sends only the bound forms:
+
+```
+46: [1B type=46][8B nonce][32B HMAC over the first 9 bytes]                (41 bytes)
+```
+
+Verify it as you verify 44 (the HMAC, then the nonce against this assignment's). **After a verified
+46 with this assignment's nonce, drop every `COMMAND_RECONNECT` (22) and `COMMAND_SESSION_RELEASED`
+(28) on that assignment**: that server sends neither, so one that arrives was captured earlier and
+sent again. A 46 with another assignment's nonce changes nothing. Forget the acknowledgement with
+each new assignment; the next server acknowledges its own nonce.
+
 Test vectors (token as above, nonce `0102030405060708`):
 
 ```
 44:          2c010203040506070801da5c2e0f16ec592bd41e81286527373b1ecabb591bcc7f6481dfdb6ed2a5c2
 45 reason 5: 2d050102030405060708fae450e083640dfdf23fd6cd963aef35d6f50be32304624468258dc7d8c18edf
+46:          2e0102030405060708a2587a4b9f7b7a617387df74f45b78ace492b99e376dedff75f88956dbf62f85
 ```
 
-A client keeps accepting 22 and 28: an older server, and the Game API's GraphQL proxy and binary
-relay toward a browser, still send them, and a client cannot tell an older server from a replay.
-So an idle release in the legacy form still deserves the guard the SDKs apply (one that arrives
-within a minute of this client's own gameplay input reconnects instead of ending the session).
+Until an acknowledgement arrives, a client keeps accepting 22 and 28: an older server, and the Game
+API's GraphQL proxy and binary relay toward a browser, still send them, and a client cannot tell an
+older server from a replay. So an idle release in the legacy form still deserves the guard the SDKs
+apply (one that arrives within a minute of this client's own gameplay input reconnects instead of
+ending the session), and CrowdyCPP and CrowdyPy honour one legacy 22 per assignment at most, paced.
 
 ## Session released — `COMMAND_SESSION_RELEASED` (28)
 
