@@ -43,7 +43,7 @@ BASE64-encoded binary state blob for this voxel (decode from base64); null/empty
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelState.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
-When this entry was last written: the recorded voxel edit's time, or the chunk's own write for a state stored with it. A client that also hears realtime voxel updates keeps, per voxel, the newer of this and a notification's time (a realtime edit is recorded at the time its notification carries, replication servers v0.46.0). Null when the read did not apply recorded edits. Game API v2.69.0.
+When this entry was last written: the recorded voxel edit's time, or for a state stored with the chunk, when the chunk's voxels were last written whole (Chunk.voxelsUpdatedAt; the chunk's last write when that is null). A client that also hears realtime voxel updates keeps, per voxel, the newer of this and a notification's time (a realtime edit is recorded at the time its notification carries, replication servers v0.46.0). Null when the read did not apply recorded edits. Game API v2.69.0; stored states dated by the whole-chunk write since v2.70.0.
 
 
 
