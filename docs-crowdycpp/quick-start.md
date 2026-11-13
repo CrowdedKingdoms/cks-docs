@@ -34,10 +34,13 @@ ClientConfig identityCfg;
 identityCfg.httpUrl = "https://ck.example.com";
 CrowdyClient identity(std::move(identityCfg));
 
-// Dev bypass — development/test servers only; production apps use the
-// magic-link or social flows on client.auth().
+// Email and password; the magic-link and social flows are on identity.auth() too.
 auto login = identity.auth().login("player@example.com", password);
 ```
+
+`ClientConfig::maxResponseBytes` (CrowdyCPP 0.85.0) caps a GraphQL response at 128 MiB by
+default, counted after decompression; a larger one fails as `Errc::ResponseTooLarge` before
+it is parsed. The built-in transport takes only `http` and `https` URLs.
 
 **Then the age and the terms** (ck-api v2.35.0 and v2.60.0, CrowdyCPP 0.57.0 and 0.75.0). No
 gameplay token is issued until the player has an age and has agreed to the current required

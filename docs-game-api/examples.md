@@ -144,6 +144,7 @@ query Chunks($input: GetChunksByDistanceInput!) {
     chunks {
       coordinates { x y z }
       updatedAt
+      voxelsUpdatedAt
       voxels
       voxelStates { voxelCoord { x y z } voxelType state updatedAt }
     }
@@ -179,14 +180,25 @@ edits by position (`limit` up to 65,536, `skip`). The edit log keeps one row per
 its latest write, so a chunk's answer is bounded by the positions ever edited in it, not by its
 history.
 
+**A whole-chunk write wins** (Game API v2.70.0). `updateChunk`, and a mod's `world.set_chunk`,
+replace the chunk as a whole: every voxel edit recorded for it at or before the write is
+superseded and removed, so the chunk reads back exactly as written. `voxelsUpdatedAt` says when
+that was. A chunk-state or LOD write moves only `updatedAt` (which `since` reads), not
+`voxelsUpdatedAt`. A chunk not written whole since v2.70.0 has a null `voxelsUpdatedAt`, and an
+edit recorded at any time still shows over its grid there, as before. Because a whole-chunk
+write overwrites, a client that saves a grid it read earlier erases the edits other players made
+since that read: read the chunk again, or merge, before writing it back.
+
 Each voxel state's `updatedAt` (Game API v2.69.0) is when the server recorded that value: the
-edit's time for a recorded edit, the chunk's write for a state stored with its grid. An edit's
-`createdAt` in `listVoxelUpdatesByDistance` is the same time. A client that keeps a cache can
-merge by it: apply a change only when it is at least as new as the value held. Since replication
-server v0.46.0 a realtime edit is recorded with the moment the replication server accepted it,
-so a voxel notification's `epochMillis` and the recorded time of the same edit come from one
-clock (the notification's is a moment later). The SDKs' chunk stores merge this way (CrowdyJS
-18.31.0, CrowdyCPP 0.84.0, CrowdyPy 0.32.0).
+edit's time for a recorded edit, and for a state stored with the chunk, its `voxelsUpdatedAt`
+(the chunk's last write when that is null). An edit's `createdAt` in
+`listVoxelUpdatesByDistance` is the same time. A client that keeps a cache can merge by it: apply
+a change only when it is at least as new as the value held, and treat a voxel with no entry as
+written at `voxelsUpdatedAt`. Since replication server v0.46.0 a realtime edit is recorded with
+the moment the replication server accepted it, so a voxel notification's `epochMillis` and the
+recorded time of the same edit come from one clock (the notification's is a moment later). The
+SDKs' chunk stores merge this way (CrowdyJS 18.31.0, CrowdyCPP 0.84.0, CrowdyPy 0.32.0; dated by
+`voxelsUpdatedAt` since CrowdyJS 18.32.0, CrowdyCPP 0.85.0 and CrowdyPy 0.33.0).
 
 End the session with `mutation { disconnectUdpProxy }` when leaving the world.
 Unsubscribing alone stops delivery but does not close the server-side session.
