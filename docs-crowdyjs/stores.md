@@ -215,7 +215,13 @@ The client-side source of truth for chunks and voxels:
   than the value held is dropped, whatever order changes arrive in, and a time
   more than 5 minutes past this machine's clock counts as 5 minutes ahead. A
   stored copy merges under the changes that arrived while it was read, so an
-  edit made while a chunk loads survives the load.
+  edit made while a chunk loads survives the load. Since CrowdyJS 18.32.0 (Game
+  API v2.70.0) a voxel with no entry in a copy is dated by the chunk's
+  `voxelsUpdatedAt`, its last whole-chunk write (`CachedChunk.storedAt`), so a
+  chunk-state or LOD write no longer drops a newer change; the row's
+  `updatedAt` (`CachedChunk.rowAt`) orders copies, and a catch-up reads a chunk
+  again when it moved. A chunk not written whole since v2.70.0 has a null
+  `storedAt`: its copy and later changes are ordered by arrival.
 - `evict(coord)` and `pruneIf(chunk => ...)` drop chunks for a view that is not a
   cube (a sphere, a column, several players); `pruneBeyond(center, radius)` is the
   cube. A chunk queued for write-back stays. `hydrate(coord)` resolves whether its

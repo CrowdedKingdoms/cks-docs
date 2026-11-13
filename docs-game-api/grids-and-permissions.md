@@ -335,6 +335,12 @@ CrowdyJS and CrowdyCPP runs as the player, so a player's client persists only
 chunks that player may build in; the store sends a refused write-back once, drops
 it and reports it (`onWriteBackFailed`).
 
+A whole-chunk write supersedes every voxel edit recorded for the chunk at or
+before it (Game API v2.70.0), so the chunk reads back exactly as written, and
+`Chunk.voxelsUpdatedAt` records when. A grid read earlier and written back
+therefore erases the edits other players made since that read. Read the chunk
+again (or let the store merge) before writing it whole.
+
 ## Effective permissions
 
 A player's effective permissions on a grid are:
