@@ -39,6 +39,30 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-12 (chunk stores merge by the server's time; the servers acknowledge bound control frames; CrowdyCPP hardening)
+
+- **Each voxel state says when it was recorded** (Game API v2.69.0): `VoxelState.updatedAt` is the
+  edit's time for a recorded edit and the chunk's write for a state stored with its grid, the same
+  time as the edit's `createdAt` in `listVoxelUpdatesByDistance`. Realtime servers v0.46.0 record a
+  realtime edit with the moment they accepted it, so a voxel notification's `epochMillis` and the
+  recorded time come from one clock. See [reading world data](/game-api/examples#4-read-world-data).
+- **The servers acknowledge bound control frames** (realtime servers v0.46.0): a client that sends
+  a control nonce gets `CONTROL_BOUND_ACK` (46), and after it drops every legacy
+  `COMMAND_RECONNECT` (22) and `COMMAND_SESSION_RELEASED` (28) on that assignment, which only a
+  replay could send. CrowdyCPP 0.84.0 and CrowdyPy 0.32.0 do it. See [wire
+  formats](/replication-api/wire-formats#bound-control-frames--command_reconnect_bound-44-and-command_session_released_bound-45).
+- **Chunk stores merge by the server's time**: a change older than the value a voxel holds is
+  dropped whatever order changes arrive in; an edit made while its chunk loads survives the load;
+  another player's edit goes under your unanswered one and shows if yours is refused; an echo
+  matches by its value; a catch-up covers every chunk the store tracks (or boxes you pass);
+  `evict` and `pruneIf` prune any view. CrowdyJS 18.31.1 ([stores](/crowdyjs/stores)), CrowdyCPP
+  0.84.0 ([world session](/crowdycpp/world-session), also a store without a connection and an
+  asynchronous chunk source), CrowdyPy 0.32.0. They need Game API v2.69.0.
+- **CrowdyCPP 0.83.0 hardening** (CrowdyPy 0.31.0): `Json::fromMsgpack()` refuses container map
+  keys (a nested key blew up memory), `dump()` writes NaN as `null` in place, unchanged keyframes
+  of many actors are not gameplay input, a legacy `COMMAND_RECONNECT` is paced, and
+  `voxels().listInRegionCells()` reads a region's edits with only what rebuilds a cell.
+
 ## 2026-11-11 (mods start for players already there; region reads; realtime edits reach mods; whole-chunk writes; control frames bound to the session; a ChunkStore the game thread can rely on)
 
 - **A switched-on mod starts when a player is in its grid**: when it is switched on with a player
