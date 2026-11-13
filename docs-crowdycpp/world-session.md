@@ -93,24 +93,39 @@ every callback runs on the thread that calls `tick()`.
   same and waits. Each chunk's `voxelStates` go over its stored grid: since ck-api
   v2.33.0 they carry every voxel edit recorded for the chunk (a hub's or mod's
   `world.set_voxels`, `updateVoxel`, realtime voxel updates), which its stored
-  `voxels` never hold. A stored copy **replaces** a chunk's states and overlay (a
-  `world.set_chunk` drops the older edits), and this client's unanswered edits are
-  put back over it; a chunk holding a seeded grid not yet written back is never
-  overwritten. `voxelStatesTruncated` and the stored row's `updatedAt`
-  (`storedAtMs`) reach `ChunkData`. An `IChunkSource` of your own reports
-  `voxelStates`, and answers `chunksInBox` (the default reads the bounding cube
+  `voxels` never hold. A stored copy replaces a chunk's states and overlay (a
+  `world.set_chunk` drops the older edits) **under** what the store merged that
+  is newer, and this client's unanswered edits show over it; a chunk holding a
+  seeded grid not yet written back is never overwritten. `voxelStatesTruncated`
+  and the stored row's `updatedAt` (`storedAtMs`) reach `ChunkData`. An
+  `IChunkSource` of your own reports `voxelStates` with each entry's
+  `updatedAtMs`, and answers `chunksInBox` (the default reads the bounding cube
   with `chunksAround`).
-- **Realtime merge**: inbound voxel notifications are applied to the cache
+- **Merging by the server's time** (CrowdyCPP 0.84.0, Game API v2.69.0): each
+  voxel keeps the value the server confirmed last and when (`confirmedAtMs()`):
+  a stored row's write, a voxel state's `updatedAt`, a notification's time, a
+  recorded edit's `createdAt`. A change older than the value held is dropped,
+  whatever order changes arrive in, so an edit that arrives while its chunk loads
+  survives the load; a time more than `Options::maxFutureSkewMs` (5 min) past
+  this machine's clock counts as that much ahead.
+- **Realtime merge**: inbound voxel notifications are merged into the cache
   automatically. A `chunkChanged` (a hub's or mod's `world.set_chunk`) reads the
-  chunk again; after the connection comes back, `catchUp()` reads the last area's
-  edits and rewritten chunks from 30 s before it dropped.
+  chunk again (`hydrateAsync(coord, done)` calls back after a read asked for
+  after the call). After the connection comes back, `catchUp()` reads, from 30 s
+  before it dropped, the edits and rewritten chunks of every chunk the store
+  holds or knows was never stored, in boxes of at most 17³ (an edit in a chunk
+  never stored gives it a slot); `catchUp(since, boxes)` reads the boxes you pass,
+  and `mergeEdits()` merges edits you read yourself.
 - **Edits**: `setVoxel` applies locally and replicates over UDP, **paced**: at most
   `Options::maxEditsInFlight` (128) unanswered and `maxEditsPerSecond` (250) sent,
   the rest waiting in order, already shown. It returns an edit id and takes an
   optional callback with the `EditOutcome`: `Echoed`, `Refused` (the server's
   `errorCode`; `Unauthorized` for a voxel the player may not edit), `NotSent`, or
   `TimedOut` (`editTimeoutMs`, 10 s). An edit that does not end `Echoed` is undone
-  (`restored`) and reported to `onEditRefused` too. `sequenceOf(editId)` gives the
+  (`restored`) and reported to `onEditRefused` too: the voxel shows the next
+  unanswered edit, or the value the server confirmed there (another client's edit
+  that arrived meanwhile goes under the unanswered one). An echo matches its edit
+  by sender, sequence number, voxel, type and state. `sequenceOf(editId)` gives the
   sequence number while it waits. Realtime edits are recorded by the server and
   are not written back. `setVoxel(..., optimistic = false)` changes nothing: the
   edit is applied when the server's echo of it arrives.
@@ -128,8 +143,14 @@ every callback runs on the thread that calls `tick()`.
   `UNAUTHENTICATED`, network, a timeout, a 5xx) is tried again after 0.7, 1.4,
   2.8 and 5.6 s, then dropped. A dropped chunk keeps its local voxels and is no
   longer dirty, and neither kind holds up any other chunk. `onWriteBackFailed`
-  reports each drop as a `ChunkWriteBackFailure`. `pruneBeyond` keeps a dirty
-  chunk until its write-back ends; a later prune evicts it.
+  reports each drop as a `ChunkWriteBackFailure`. `pruneBeyond`, `evict(coord)` and
+  `pruneIf(predicate)` keep a dirty chunk until its write-back ends; a later prune
+  evicts it.
+- **Your own transport** (0.84.0): `ChunkStore(SendFn, source, appId, options)`
+  runs without a `replication::Connection` (feed it notifications with `ingest()`),
+  and an `IAsyncChunkSource` carries the store's GraphQL requests over your
+  engine's HTTP client: the store builds each body and parses each raw answer on
+  its I/O thread.
 - **Storage and change reports**: a chunk whose voxels have one type keeps the
   type alone (`uniform()`); voxel states and overlay voxels share one buffer per
   chunk. Read with `grid()` (no copy), `typeAt`, `stateAt`, `forEachState`,
@@ -143,9 +164,11 @@ every callback runs on the thread that calls `tick()`.
   16×16×16 chunk. An edit it cannot hold (a type outside 0-255, a position
   outside 0-15) goes to the chunk's overlay, and `voxelTypeAt` returns it.
 
-Measured on our builder: 125 chunks with 256 edits each (64-byte states) parse in
-about 26 ms on the store's thread, and the longest tick applying them takes about
-1.1 ms; range 8 (4,913 chunks, most of them air) holds about 2.8 MB.
+Measured on our builder (0.84.0, each edit dated as Game API v2.69.0 does): 125
+chunks with 256 edits each (64-byte states) parse in about 30 ms on the store's
+thread and hold 3.5 MB, and the longest tick applying them takes about 1.6 ms on
+the default 2 ms budget (0.6 ms on a 500 µs one); range 8 (4,913 chunks, most of
+them air) holds about 3 MB.
 - **`WorldSessionConfig::onVoxel(notification, voxel)`** is called for every
   inbound voxel update after `chunks()` has merged it, with the sender and the
   edit's state blob, for a game that keeps its own world or uses other

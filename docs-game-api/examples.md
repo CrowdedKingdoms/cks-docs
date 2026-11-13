@@ -141,7 +141,12 @@ at most 4,913 chunks; Game API v2.67.0):
 ```graphql
 query Chunks($input: GetChunksByDistanceInput!) {
   getChunksByDistance(input: $input) {
-    chunks { coordinates { x y z } updatedAt voxels voxelStates { x y z voxelType stateBase64 } }
+    chunks {
+      coordinates { x y z }
+      updatedAt
+      voxels
+      voxelStates { voxelCoord { x y z } voxelType state updatedAt }
+    }
     limit
     skip
   }
@@ -170,7 +175,18 @@ a chunk's `updatedAt`), and read the voxel edits since then with `listVoxelUpdat
 which takes the same cube or box and `since`. It also returns the edits recorded for a chunk the
 server never stored as a grid, which neither chunk read returns: a player's edit in a fresh chunk
 is recorded, and needs no whole-chunk write to survive a reload. `listVoxels` pages one chunk's
-edits by position (`limit` up to 65,536, `skip`).
+edits by position (`limit` up to 65,536, `skip`). The edit log keeps one row per voxel position,
+its latest write, so a chunk's answer is bounded by the positions ever edited in it, not by its
+history.
+
+Each voxel state's `updatedAt` (Game API v2.69.0) is when the server recorded that value: the
+edit's time for a recorded edit, the chunk's write for a state stored with its grid. An edit's
+`createdAt` in `listVoxelUpdatesByDistance` is the same time. A client that keeps a cache can
+merge by it: apply a change only when it is at least as new as the value held. Since replication
+server v0.46.0 a realtime edit is recorded with the moment the replication server accepted it,
+so a voxel notification's `epochMillis` and the recorded time of the same edit come from one
+clock (the notification's is a moment later). The SDKs' chunk stores merge this way (CrowdyJS
+18.31.0, CrowdyCPP 0.84.0, CrowdyPy 0.32.0).
 
 End the session with `mutation { disconnectUdpProxy }` when leaving the world.
 Unsubscribing alone stops delivery but does not close the server-side session.
