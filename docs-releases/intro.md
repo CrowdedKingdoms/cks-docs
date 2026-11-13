@@ -39,6 +39,25 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-13 (a whole-chunk write wins; response limits in CrowdyCPP)
+
+- **A whole-chunk write supersedes older edits** (Game API v2.70.0): `updateChunk` and a mod's
+  `world.set_chunk` supersede every voxel edit recorded for the chunk at or before them, so the
+  chunk reads back exactly as written, and `Chunk.voxelsUpdatedAt` says when. A chunk-state or
+  LOD write moves only `updatedAt`. A grid read earlier and written back now erases the edits made
+  since that read. A chunk not written whole since v2.70.0 keeps the earlier rule until its next
+  whole write. See [reading world data](/game-api/examples#4-read-world-data) and [writing whole
+  chunks](/game-api/grids-and-permissions#writing-whole-chunks).
+- **Chunk stores date a copy by that write**: a voxel with no entry in a copy is as old as the
+  chunk's `voxelsUpdatedAt`, so a chunk-state or LOD write no longer drops a newer change, and
+  copies are ordered by the row's `updatedAt`. CrowdyJS 18.32.0 ([stores](/crowdyjs/stores)),
+  CrowdyCPP 0.85.0 ([world session](/crowdycpp/world-session)), CrowdyPy 0.33.0. They need Game
+  API v2.70.0.
+- **CrowdyCPP 0.85.0 limits what it reads**: a GraphQL response larger than
+  `ClientConfig::maxResponseBytes` (128 MiB, counted decompressed) fails as `ResponseTooLarge`
+  before it is parsed; the curl transport takes only http and https, and a redirect from https
+  stays on https; a stored-chunk reply is held to `ChunkReadLimits` before it is decoded.
+
 ## 2026-11-12 (chunk stores merge by the server's time; the servers acknowledge bound control frames; CrowdyCPP hardening)
 
 - **Each voxel state says when it was recorded** (Game API v2.69.0): `VoxelState.updatedAt` is the

@@ -29,6 +29,7 @@ type Chunk {
   owner: ID
   createdAt: DateTime!
   updatedAt: DateTime!
+  voxelsUpdatedAt: DateTime
   chunkState: String
   cdnUploadedAt: DateTime
   lods: [LodData!]
@@ -55,7 +56,7 @@ BASE64-encoded binary blob of the dense voxel-type grid. When present, the DECOD
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>voxelStates</b></code>](#voxel-states)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[VoxelState!]!</b></code>](/reference/graphql/types/objects/voxel-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #voxel-states */} 
-Sparse list of per-voxel overrides: the states stored with the chunk (e.g. rotation, atlas, flags) and every voxel edit recorded for it since (the voxel&#x005F;updates log), each with its voxel type, which takes precedence over the type byte in `voxels`. Positions and types are app-defined signed 16-bit values; an entry outside the 16x16x16 grid or the 0-255 type range lives only here. Empty when the chunk has neither.
+Sparse list of per-voxel overrides: the states stored with the chunk (e.g. rotation, atlas, flags) and every voxel edit recorded for it since (the voxel&#x005F;updates log), each with its voxel type, which takes precedence over the type byte in `voxels`. A whole-chunk write (updateChunk, a mod's world.set&#x005F;chunk) supersedes the edits recorded at or before it (`voxelsUpdatedAt`). Positions and types are app-defined signed 16-bit values; an entry outside the 16x16x16 grid or the 0-255 type range lives only here. Empty when the chunk has neither.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>voxelStatesTruncated</b></code>](#voxel-states-truncated)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #voxel-states-truncated */} 
@@ -71,7 +72,11 @@ Timestamp when this chunk row was first created.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
-Timestamp of the most recent write to this chunk.
+Timestamp of the most recent write to this chunk, a chunk-state or LOD write included (getChunksByDistance `since` reads it). For when the voxels were last written, read `voxelsUpdatedAt`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>voxelsUpdatedAt</b></code>](#voxels-updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #voxels-updated-at */} 
+When the chunk's grid and stored voxel states were last written whole (updateChunk, a mod's world.set&#x005F;chunk). Every voxel edit recorded at or before it is superseded, so `voxelStates` holds the stored states (dated with this time) and the edits recorded after it. Chunk-state and LOD writes do not move it. Null when the chunk has not been written whole since Game API v2.70.0: then an edit recorded at any time applies over the grid, as before. A client that merges realtime voxel updates into a copy treats a voxel with no entry as written at this time. Game API v2.70.0.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>chunkState</b></code>](#chunk-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #chunk-state */} 
