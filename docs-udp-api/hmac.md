@@ -38,7 +38,8 @@ The control frames carry an HMAC over their **leading bytes alone**, keyed on th
 no token appended to the message: `COMMAND_RECONNECT` (22) over `[22]`,
 `COMMAND_SESSION_RELEASED` (28) over `[28][reason]`, and from replication server v0.45.0 the
 bound forms over their nonce too: `COMMAND_RECONNECT_BOUND` (44) over `[44][nonce]` and
-`COMMAND_SESSION_RELEASED_BOUND` (45) over `[45][reason][nonce]`, where the nonce is the 8 bytes
+`COMMAND_SESSION_RELEASED_BOUND` (45) over `[45][reason][nonce]` (and from v0.46.0
+`CONTROL_BOUND_ACK` (46) over `[46][nonce]`), where the nonce is the 8 bytes
 this client sent in `CLIENT_CAPABILITIES` for its current assignment. Drop a bound frame whose
 nonce is not your current one. See [wire formats](/replication-api/wire-formats#bound-control-frames--command_reconnect_bound-44-and-command_session_released_bound-45).
 
