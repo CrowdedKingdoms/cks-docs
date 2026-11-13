@@ -198,15 +198,28 @@ The client-side source of truth for chunks and voxels:
   stored grid back over the hydrated edits as the player moved). A chunk the
   server has never stored comes back from neither chunk read (`getChunk`,
   `getChunksByDistance`), even when edits were recorded for it;
-  `listVoxelUpdatesByDistance` returns those edits (`catchUp` applies them to
-  the chunks the store holds).
+  `listVoxelUpdatesByDistance` returns those edits (`catchUp` merges them into
+  every chunk the store tracks, the never-stored ones included).
 - Realtime `voxelUpdate` notifications merge into the cache automatically:
   dense grid write, typed state decode, revision bump, `onChunkChanged`. A
   `chunkChanged` (a hub's or mod's `world.set_chunk`) reads the chunk again
   (`reloadReplacedChunks`), and when the realtime connection comes back the store
-  catches up on its last area from 30 s before the drop (`catchUp(since)`,
-  `catchUpOnReconnect`): the chunks rewritten since then and those with edits
-  since then (CrowdyJS 18.30.0).
+  catches up from 30 s before the drop (`catchUp(since)`, `catchUpOnReconnect`):
+  the chunks rewritten since then and the edits recorded since then, across every
+  chunk it tracks, in boxes of at most 17³ (CrowdyJS 18.31.0; 18.30.0 read the
+  last area). `catchUp(since, boxes)` reads the boxes you pass instead.
+- **Merging by the server's time** (CrowdyJS 18.31.0, Game API v2.69.0). Each
+  voxel keeps the value the server confirmed last and when: a stored row's
+  `updatedAt`, a voxel state's `updatedAt`, a notification's `epochMillis`, a
+  recorded edit's `createdAt` (`confirmedAt(coord, x, y, z)`). A change older
+  than the value held is dropped, whatever order changes arrive in, and a time
+  more than 5 minutes past this machine's clock counts as 5 minutes ahead. A
+  stored copy merges under the changes that arrived while it was read, so an
+  edit made while a chunk loads survives the load.
+- `evict(coord)` and `pruneIf(chunk => ...)` drop chunks for a view that is not a
+  cube (a sphere, a column, several players); `pruneBeyond(center, radius)` is the
+  cube. A chunk queued for write-back stays. `hydrate(coord)` resolves whether its
+  copy was applied (false for a chunk never stored, or one evicted meanwhile).
 - `setVoxel(...)` applies locally first (optimistic) and replicates over the
   UDP path with your typed voxel state, **paced**: at most `maxEditsInFlight`
   (128) unanswered and `maxEditsPerSecond` (250) sent, the rest waiting in order
@@ -215,7 +228,10 @@ The client-side source of truth for chunks and voxels:
   a voxel the player may not edit), one the transport does not take, and one whose
   echo does not come back within `editTimeoutMs` (10 s) is **undone** and reported
   to `onEditRefused` with its `reason` and whether the voxel was `restored`
-  (CrowdyJS 18.30.0; before, it stayed on screen). With `optimistic: false` nothing changes
+  (CrowdyJS 18.30.0; before, it stayed on screen). The voxel then shows your next
+  unanswered edit of it, or the value the server confirmed there: another
+  player's edit that arrived meanwhile goes under your unanswered one and shows
+  when that is refused (CrowdyJS 18.31.0). With `optimistic: false` nothing changes
   locally until the server's echo of the edit arrives, which the store then
   applies, so the cache holds only what the server accepted. Realtime edits are
   recorded by the server: only seeded chunks are written back.
@@ -244,8 +260,9 @@ The client-side source of truth for chunks and voxels:
   `voxelTypeAt` / `voxelStateAt` return the overlay's value for that voxel. A
   game with other addressing reads the raw `voxelUpdate` events instead.
 - Your own accepted edits come back to you as `voxelUpdate`s (replication
-  v0.37.0 echoes every accepted edit to its sender), and the store applies
-  that echo idempotently over its optimistic write.
+  v0.37.0 echoes every accepted edit to its sender). The store matches that echo
+  to its edit by sender, sequence number, voxel, type and state, and it confirms
+  the edit without a second change event.
 
 ### `channelInbox`, `actorInbox`, `events` — messaging
 
