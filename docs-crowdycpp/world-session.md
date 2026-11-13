@@ -97,17 +97,25 @@ every callback runs on the thread that calls `tick()`.
   `world.set_chunk` drops the older edits) **under** what the store merged that
   is newer, and this client's unanswered edits show over it; a chunk holding a
   seeded grid not yet written back is never overwritten. `voxelStatesTruncated`
-  and the stored row's `updatedAt` (`storedAtMs`) reach `ChunkData`. An
-  `IChunkSource` of your own reports `voxelStates` with each entry's
-  `updatedAtMs`, and answers `chunksInBox` (the default reads the bounding cube
-  with `chunksAround`).
+  reaches `ChunkData`, with the chunk's `voxelsUpdatedAt` (its last whole-chunk
+  write, Game API v2.70.0) as `storedAtMs` and the row's `updatedAt` as
+  `rowAtMs` (CrowdyCPP 0.85.0). An `IChunkSource` of your own reports
+  `voxelStates` with each entry's `updatedAtMs`, sets
+  `StoredChunk::voxelsUpdatedAtMs` when it knows the voxels write (left unset,
+  the copy is dated by `updatedAtMs`), and answers `chunksInBox` (the default
+  reads the bounding cube with `chunksAround`). A reply is held to
+  `Options::readLimits` before it is decoded: a grid must be 4,096 bytes, at most
+  65,536 voxel states a chunk and 262,144 a reply, and a state over 64 KiB is
+  dropped with its type kept.
 - **Merging by the server's time** (CrowdyCPP 0.84.0, Game API v2.69.0): each
   voxel keeps the value the server confirmed last and when (`confirmedAtMs()`):
-  a stored row's write, a voxel state's `updatedAt`, a notification's time, a
-  recorded edit's `createdAt`. A change older than the value held is dropped,
-  whatever order changes arrive in, so an edit that arrives while its chunk loads
-  survives the load; a time more than `Options::maxFutureSkewMs` (5 min) past
-  this machine's clock counts as that much ahead.
+  the chunk's whole-chunk write (`voxelsUpdatedAt`; the row's write before
+  0.85.0), a voxel state's `updatedAt`, a notification's time, a recorded edit's
+  `createdAt`. A change older than the value held is dropped, whatever order
+  changes arrive in, so an edit that arrives while its chunk loads survives the
+  load; a time more than `Options::maxFutureSkewMs` (5 min) past this machine's
+  clock counts as that much ahead. A chunk-state or LOD write moves only the
+  row's time, so it drops no newer change.
 - **Realtime merge**: inbound voxel notifications are merged into the cache
   automatically. A `chunkChanged` (a hub's or mod's `world.set_chunk`) reads the
   chunk again (`hydrateAsync(coord, done)` calls back after a read asked for
