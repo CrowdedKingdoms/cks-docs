@@ -39,6 +39,16 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-15 (an actor's uuid is free once it has left)
+
+- **Actor ownership holds on every server** (replication server v0.47.0). A send under an actor uuid
+  that another player is using is refused `UNAUTHORIZED` whichever server each player is on, and the
+  uuid is free as soon as its actor has left (`ActorLeftNotification`).
+- Before this, a player on another server could be refused for several seconds after the leave, and
+  could sometimes send under an actor still in use.
+- What `createActor` adds, and how a new host takes over NPCs:
+  [who may send under an actor's uuid](/game-api/actor-state#who-may-send-under-an-actors-uuid).
+
 ## 2026-11-13 (a whole-chunk write wins; response limits in CrowdyCPP)
 
 - **A whole-chunk write supersedes older edits** (Game API v2.70.0): `updateChunk` and a mod's

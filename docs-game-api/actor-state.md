@@ -42,13 +42,30 @@ has is refused with `ACTOR_EXISTS` (HTTP 409), whose `extensions.ownedByCaller`
 says whether the existing record is yours: if it is, keep using it
 (`updateActor` / `updateActorState`); if not, pick another uuid.
 
-:::caution[A uuid in a spatial message is a label]
-The realtime layer does not check that the actor uuid a client puts in a spatial
-message belongs to that client, so another player's client can send messages under
-your actor's uuid. Treat it as a label for display and interpolation. For anything
-that matters, trust the identity your server code is given (a hub's caller) and the
-owner on the actor record.
-:::
+## Who may send under an actor's uuid
+
+The realtime servers refuse a message sent under an actor uuid that belongs to another player,
+with `UNAUTHORIZED` (UDP error 7). A uuid belongs to another player when either of these holds:
+
+- **They created it** with `createActor`. It stays theirs for as long as the record exists,
+  whether or not they are playing.
+- **They are using it.** Their session sent an actor update or heartbeat under it in the last
+  5 seconds. When they stop, nearby players receive `ActorLeftNotification`, and the uuid is free:
+  the next player to send under it holds it.
+
+This covers every message sent under the sender's own actor: actor updates and heartbeats, voxel
+edits, voice, video, text, events and app-defined messages, and the sender of a channel message.
+A direct message names its target, not its sender, so it is not checked. A player's own sessions
+share that player's actors.
+
+Replication server v0.43.0 introduced this rule. From v0.47.0 it holds whichever server each player
+is on, and a uuid is free as soon as its actor has left.
+
+- **To keep a uuid yours** while you are not using it, record it with `createActor`.
+- **A uuid you did not record passes to whoever sends under it next**, once its actor has left.
+  That is how a new host takes over the NPCs the old one drove ([host discovery](host-discovery)).
+- **For identity that matters**, such as reports, rewards or trades, trust what your server code is
+  given (a hub's caller) and the owner on the actor record, not the uuid alone.
 
 ## Creating an actor
 

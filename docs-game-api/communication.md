@@ -88,7 +88,7 @@ From replication server v0.43.0:
 |---|---|
 | Voice or video with the matching send setting `OFF` | `UNAUTHORIZED` (error 7) |
 | A direct message from a player under 18 | `UNAUTHORIZED` |
-| Any send under an actor id that belongs to another player | `UNAUTHORIZED` |
+| Any send under an actor id that another player created or is using | `UNAUTHORIZED` |
 | Communication between two players when either has blocked the other: voice, video, text, direct messages, channel messages and voice, a player's events and app-defined messages | nothing: dropped |
 | Voice, video, text or a direct message to a player who lacks `use_voice_chat`, `use_video_chat`, `use_text_chat` or `use_direct_messages` in the app | nothing: dropped for that player |
 | Voice or video that the two players' settings do not admit | nothing: dropped for that player |
@@ -100,6 +100,10 @@ From replication server v0.43.0:
 - **A player under 18's settings never go above `CONTACTS`**, whatever is stored.
 - **An actor belongs to its player.** A send under an actor id that another player created, or that
   another player is using, is refused.
+  - "Using" means their session sent an update or heartbeat under it in the last 5 seconds.
+  - Once they stop, nearby players get `ActorLeftNotification` and anyone may send under the id.
+  - From replication server v0.47.0 this holds whichever server each player is on. See
+    [who may send under an actor's uuid](actor-state#who-may-send-under-an-actors-uuid).
 - **What passes:** what your app's code and the platform send (they have no sending player), and a
   player's own traffic to their own sessions.
 - **Changes apply within a second** to the live sessions of every player they concern, both
