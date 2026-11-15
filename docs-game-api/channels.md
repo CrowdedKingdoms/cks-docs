@@ -106,8 +106,9 @@ query {
   the name the CLIENT half gives, never as the visitor: in CrowdyJS,
   `clientHalfActorUuid(gridId, name)`, the first 16 bytes of SHA-256 over
   `crowdy/client-half-actor/v1`, the grid id and the name (each separated by a zero
-  byte), as 32 hex characters. The server does not check that uuid, so treat it as a
-  label for display, not as proof of which mod sent a message.
+  byte), as 32 hex characters. The server refuses it only when it is another player's
+  actor ([who may send under an actor's uuid](actor-state#who-may-send-under-an-actors-uuid)),
+  so treat it as a label for display, not as proof of which mod sent a message.
 - A [grid-scoped token](grid-tokens) may join, leave and post only to its own
   grid's channels.
 
