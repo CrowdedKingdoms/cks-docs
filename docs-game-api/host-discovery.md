@@ -251,6 +251,8 @@ async function heartbeatAndGetHost(
 
 You do not need to implement reassignment yourself. When the current host stops sending actor updates (deliberately or due to network loss), the next call to `gameHost` / `amIGameHost` (after up to ~5 s) reflects a new host. A host that drops *ungracefully* — leaving a stale actor record behind — also ages out automatically once it stops heartbeating (governed by the server's `HOST_ACTOR_FRESHNESS_SECONDS` window). During the brief gap, `gameHost` may still return the old host or may return `null` — treat that as a transient state and retry on the next poll.
 
+**Taking over the old host's NPCs.** If the new host sends under the same NPC actor uuids, the realtime servers refuse those sends (`UNAUTHORIZED`) while the old host is still using them. Each one is free once its `ActorLeftNotification` arrives, about 5 s after the old host's last update, and from then on it is the new host's. Do not record shared NPC uuids with `createActor`: a recorded uuid stays its creator's, so no other host could ever send under it. See [who may send under an actor's uuid](actor-state#who-may-send-under-an-actors-uuid).
+
 ## See also
 
 - **[GraphQL schema reference](/game-api/reference/graphql-overview)** — auto-generated reference for every Game API operation, including `gameHost`, `amIGameHost`, and the `GameHost` type.
