@@ -834,7 +834,7 @@ enum UdpErrorCode {
   CANNOT_DELETE_DEFAULT_WORLD_GRID
   GRID_HAS_NESTED_CHILDREN
   """
-  The app-scoped gameplay token has expired. Refresh it (same app, via refreshAppToken) before it lapses, or re-portal through the Overworld for a fresh token, then re-authorize the realtime session.
+  The app-scoped gameplay token has expired. Refresh it (same app, via refreshAppToken) before it lapses, or sign in again for a fresh token (hosted sign-in, or mintAppToken with the session), then re-authorize the realtime session.
   """
   TOKEN_EXPIRED
   """
@@ -1092,7 +1092,7 @@ One datacenter an app can be created in. The `code` is exactly what createApp ta
 """
 type PlaceableDatacenter {
   """
-  Datacenter code, e.g. 'or' or 'va'. Pass this verbatim as createApp's input.datacenter; it is compared lowercase.
+  Datacenter code, e.g. 'va'. Pass this verbatim as createApp's input.datacenter; it is compared lowercase.
   """
   code: String!
   """
@@ -1385,11 +1385,11 @@ type App {
   """Lifecycle state (DRAFT/LIVE/ARCHIVED). See AppStatus."""
   status: AppStatus!
   """
-  Browser destination (origin/URL) a player is redirected to when they portal into this app from the Overworld. Used to route the player and to validate portal redirect URIs.
+  Browser destination (origin/URL) of this app: where a player is sent to enter it from another page, and the page Crowdy Studio's Live code opens. Also accepted, by origin, as a redirect URI for hosted sign-in.
   """
   launchUrl: String
   """
-  True for first-party/trusted apps: portal entry skips the consent screen. The Overworld (app 1) is trusted. Studio admins cannot set this; it is platform-controlled.
+  True for a trusted app: createPortalAuthorizationCode (Studio's hosted sign-in, or a launcher's PKCE handoff) issues its code without the player's consent grant, so no consent screen is shown. Set by Crowded Kingdoms; studio admins cannot set it. mintAppToken, which a client holding the session calls directly, never asks for consent.
   """
   isTrusted: Boolean!
   """
@@ -1517,7 +1517,7 @@ type App {
 }
 
 """
-Controls where an app can be discovered. Independent of AppStatus (the marketplace additionally requires status=LIVE).
+Whether an app is listed in the public marketplace. Independent of AppStatus: the marketplace lists only PUBLIC, LIVE apps. Visibility never decides who may play; the app's access tiers do (a free default tier admits every player, and without one a player needs a grant).
 """
 enum AppVisibility {
   """
@@ -1525,29 +1525,27 @@ enum AppVisibility {
   """
   PUBLIC
   """
-  Hidden from marketplace listings but accessible to anyone who knows the direct org/app slug link.
+  Not listed in the marketplace; anyone with its org and app slugs can look it up (appBySlug).
   """
   UNLISTED
   """
-  Hidden from the marketplace; visible only to org members and users with an access grant.
+  Not listed in the marketplace. It hides the app from listings only: appBySlug and app(appId) still return it, and it refuses no player (the app's access tiers decide who may play).
   """
   PRIVATE
 }
 
 """
-Lifecycle state of an app. Independent of AppVisibility; the public marketplace requires status=LIVE.
+Lifecycle state of an app. Independent of AppVisibility; the public marketplace lists only LIVE apps. Only ARCHIVED changes who may play; otherwise the app's access tiers decide.
 """
 enum AppStatus {
   """
-  Work-in-progress: invisible to non-members and never listed in the marketplace. Selectable manually via updateApp; new apps default to LIVE.
+  Work in progress: never listed in the marketplace. It refuses no player; to keep players out, remove the app's free default access tier and grant access explicitly. Set via updateApp; new apps default to LIVE.
   """
   DRAFT
-  """
-  Published and purchasable/playable; eligible for the public marketplace when visibility=PUBLIC.
-  """
+  """Published; listed in the public marketplace when visibility=PUBLIC."""
   LIVE
   """
-  Soft-deleted via archiveApp: retained but read-only and excluded from the marketplace. Reversible by setting status back to DRAFT or LIVE.
+  Soft-deleted via archiveApp: retained but read-only and excluded from the marketplace. While archived, players are refused app tokens and refreshes; holders of manage_apps or moderate_safety on its organization still get one. Reversible by setting status back to DRAFT or LIVE.
   """
   ARCHIVED
 }
@@ -1648,7 +1646,7 @@ enum AppRuntimeStatus {
 }
 
 """
-A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
+A short-lived, app-scoped gameplay token (portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
 """
 type AppTokenResponse {
   """
@@ -1660,7 +1658,7 @@ type AppTokenResponse {
   """The app this token is confined to, as a String."""
   appId: String!
   """
-  ISO-8601 UTC expiry. Call `refreshAppToken` (same app) before this, or re-portal through the Overworld for a different app.
+  ISO-8601 UTC expiry. Call `refreshAppToken` (same app) before this. A different app needs its own token: a hosted sign-in for that app, or mintAppToken with the session.
   """
   expiresAt: String!
   """
@@ -1704,7 +1702,7 @@ type PortalAuthorizationCode {
 }
 
 """
-A user's standing consent for an app to receive app-scoped tokens via the Overworld portal (the “connected apps” list).
+A user's standing consent for an app to receive app-scoped tokens through a portal authorization code (the “connected apps” list).
 """
 type AppAuthorizationGrant {
   grantId: ID!
@@ -1720,19 +1718,21 @@ type AppAuthorizationGrant {
 }
 
 """
-Whether portaling into an app requires a consent prompt on the Overworld.
+Whether portaling into an app requires a consent prompt from the identity origin (Studio’s hosted sign-in, or a launcher holding the session).
 """
 type PortalConsentState {
   """App id, as a String."""
   appId: String!
   """App display name."""
   appName: String
-  """True for first-party/trusted apps (consent is always skipped)."""
+  """
+  True for a trusted app (set by Crowded Kingdoms): consent is never asked.
+  """
   trusted: Boolean!
   """True if the user already has an active grant for this app."""
   alreadyGranted: Boolean!
   """
-  True if the Overworld must show a consent screen (untrusted app, not yet granted) before creating a portal code.
+  True if the identity origin must show a consent screen (untrusted app, not yet granted) before creating a portal code.
   """
   consentRequired: Boolean!
 }
@@ -7678,7 +7678,7 @@ type Query {
     includeRevoked: Boolean = false
   ): [AppCodeAdmission!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
   """
-  Whether portaling the calling user into an app needs a consent prompt. Trusted (first-party) apps and already-granted apps return consentRequired=false. The Overworld calls this before createPortalAuthorizationCode. Requires a SESSION token.
+  Whether portaling the calling user into an app needs a consent prompt. Trusted apps and already-granted apps return consentRequired=false. The identity origin (Studio's hosted sign-in, or a launcher holding the session) calls this before createPortalAuthorizationCode. Requires a SESSION token.
   """
   portalConsent(
     """
@@ -9820,7 +9820,7 @@ type Mutation {
     idempotencyKey: String
   ): Boolean!
   """
-  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=DRAFT unless overridden in the input.
+  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=LIVE unless overridden in the input. Neither setting decides who may play; the access tiers do.
   """
   createApp(
     """Details for the app to create."""
@@ -9847,7 +9847,7 @@ type Mutation {
     idempotencyKey: String
   ): App! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
   """
-  Super admin only (also requires the management API to be enabled for this deployment). Overrides an app visibility platform-wide, e.g. to take down (PRIVATE/UNLISTED) or relist (PUBLIC) an app. Throws ForbiddenException for non-super-admins or when management APIs are disabled. Throws if the app id does not exist.
+  Super admin only (also requires the management API to be enabled for this deployment). Overrides an app's visibility platform-wide, to hide it from the marketplace (PRIVATE/UNLISTED) or relist it (PUBLIC). It does not stop play: players keep getting app tokens. Archiving the app (archiveApp) or suspending players' access does that. Throws ForbiddenException for non-super-admins or when management APIs are disabled. Throws if the app id does not exist.
   """
   setAppVisibility(
     """Numeric id of the app whose visibility to override."""
@@ -9885,7 +9885,7 @@ type Mutation {
   """
   mintAppToken(input: MintAppTokenInput!): AppTokenResponse!
   """
-  Create a one-time, PKCE-bound portal authorization code (browser handoff). The Overworld identity origin (holding the SESSION token) calls this; redirect the player to the destination game carrying the code, which the game exchanges via exchangePortalCode. Refused like mintAppToken before any code exists: TERRITORY_NOT_SUPPORTED, AGE_REQUIRED, AGE_REQUIREMENT_NOT_MET, LEGAL_ACCEPTANCE_REQUIRED and EMAIL_CONFIRMATION_REQUIRED, and for a player under 18 SAFETY_LOG_REQUIRED (the app keeps no safety log) then SAFETY_MODERATOR_REQUIRED (its organization has no safety moderator), with the same neutral messages. Requires a SESSION token.
+  Create a one-time, PKCE-bound portal authorization code (browser handoff). The identity origin that holds the player's SESSION token (Studio's hosted sign-in, or a native launcher) calls this; redirect the player to the destination game carrying the code, which the game exchanges via exchangePortalCode. An untrusted app needs the player's consent grant first (authorizeApp), else FORBIDDEN prefixed CONSENT_REQUIRED. Refused like mintAppToken before any code exists: TERRITORY_NOT_SUPPORTED, AGE_REQUIRED, AGE_REQUIREMENT_NOT_MET, LEGAL_ACCEPTANCE_REQUIRED and EMAIL_CONFIRMATION_REQUIRED, and for a player under 18 SAFETY_LOG_REQUIRED (the app keeps no safety log) then SAFETY_MODERATOR_REQUIRED (its organization has no safety moderator), with the same neutral messages. Requires a SESSION token.
   """
   createPortalAuthorizationCode(input: CreatePortalAuthorizationCodeInput!): PortalAuthorizationCode!
   """
@@ -9893,7 +9893,7 @@ type Mutation {
   """
   exchangePortalCode(input: ExchangePortalCodeInput!): AppTokenResponse!
   """
-  Rotate the calling app token for a fresh one (same app, extended TTL) and revoke the old. Call before the current token expires to keep playing without bouncing back through the Overworld. Allowed for app-scoped tokens; re-checks entitlement. NATIVE CLIENTS: pass `currentServer` (the ip4 + clientPort serverWithLeastClients gave you) and the new token is authorized on that same Buddy -- read `authorizedServer` on the response: when it is set, keep your UDP session and just switch tokens; when it is null, call serverWithLeastClients for a fresh placement. `authorizedServer` is null when the node is gone, draining, Full, on the wrong shard -- or when it is NearCapacity / running hot and a Ready sibling has room: a refresh is the cheapest moment to rebalance a resident, so expect to be moved occasionally under load. Without `currentServer` the new token is not known to any Buddy until you call serverWithLeastClients.
+  Rotate the calling app token for a fresh one (same app, extended TTL) and revoke the old. Call before the current token expires to keep playing without signing in again. Allowed for app-scoped tokens; re-checks entitlement. NATIVE CLIENTS: pass `currentServer` (the ip4 + clientPort serverWithLeastClients gave you) and the new token is authorized on that same Buddy -- read `authorizedServer` on the response: when it is set, keep your UDP session and just switch tokens; when it is null, call serverWithLeastClients for a fresh placement. `authorizedServer` is null when the node is gone, draining, Full, on the wrong shard -- or when it is NearCapacity / running hot and a Ready sibling has room: a refresh is the cheapest moment to rebalance a resident, so expect to be moved occasionally under load. Without `currentServer` the new token is not known to any Buddy until you call serverWithLeastClients.
   """
   refreshAppToken(
     """
@@ -9902,7 +9902,7 @@ type Mutation {
     currentServer: CurrentServerInput
   ): AppTokenResponse!
   """
-  Record the user's consent for an (untrusted) app to receive app-scoped tokens via the portal. Called from the Overworld consent screen before createPortalAuthorizationCode. Idempotent. Requires a SESSION token.
+  Record the user's consent for an (untrusted) app to receive app-scoped tokens via the portal. Called from the consent screen (Studio's hosted sign-in shows one) before createPortalAuthorizationCode. Idempotent. Requires a SESSION token.
   """
   authorizeApp(input: AuthorizeAppInput!): AppAuthorizationGrant!
   """
@@ -12010,7 +12010,7 @@ input CreateAppInput {
   """
   slug: String!
   """
-  Datacenter the app will live in, e.g. 'or' or 'va'. Query placeableDatacenters for the accepted codes and whether each can currently hold an app. REQUIRED and permanent: an app is distributed on app_id, so all of its data lives on one node in one datacenter and that is fixed when the id is minted. Creation FAILS if the datacenter is unknown to this deployment or holds no capacity, rather than creating an app that cannot be routed. There is no default — the instance answering this call may be in a different datacenter from the one you want. Moving an app afterwards is an operator action.
+  Datacenter the app will live in, e.g. 'va'. Query placeableDatacenters for the accepted codes and whether each can currently hold an app. REQUIRED and permanent: an app is distributed on app_id, so all of its data lives on one node in one datacenter and that is fixed when the id is minted. Creation FAILS if the datacenter is unknown to this deployment or holds no capacity, rather than creating an app that cannot be routed. There is no default — the instance answering this call may be in a different datacenter from the one you want. Moving an app afterwards is an operator action.
   """
   datacenter: String!
   """Optional short plain-text description for listings."""
@@ -12103,7 +12103,7 @@ input MintAppTokenInput {
 }
 
 """
-Input for createPortalAuthorizationCode: the Overworld (identity origin, holding the session token) mints a one-time code the destination game exchanges for an app token. Browser handoff path; pair with a PKCE verifier held by the destination game origin.
+Input for createPortalAuthorizationCode: the identity origin holding the session token (Studio's hosted sign-in, or a native launcher) mints a one-time code the destination game exchanges for an app token. Browser handoff path; pair with a PKCE verifier held by the destination game origin.
 """
 input CreatePortalAuthorizationCodeInput {
   """Numeric id of the target app the player is portaling into."""
@@ -12115,7 +12115,7 @@ input CreatePortalAuthorizationCodeInput {
   """PKCE method: "S256" (default, recommended) or "plain"."""
   codeChallengeMethod: String
   """
-  Where to redirect the player after issuing the code. Must match the target app's configured launch_url origin when set.
+  Where to redirect the player after issuing the code. Must match, by origin, one of the target app's registered redirect URIs or its launch URL; an app with neither refuses every code.
   """
   redirectUri: String!
 }
@@ -12145,7 +12145,7 @@ input CurrentServerInput {
 }
 
 """
-Approve (consent to) an app receiving app-scoped tokens via the Overworld portal.
+Approve (consent to) an app receiving app-scoped tokens through a portal authorization code.
 """
 input AuthorizeAppInput {
   """App to authorize."""

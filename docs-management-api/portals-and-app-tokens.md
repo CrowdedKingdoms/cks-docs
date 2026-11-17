@@ -188,7 +188,7 @@ Each app is an OAuth-style client with platform-controlled settings:
 
 | Field | Meaning |
 |---|---|
-| `isTrusted` | First-party apps skip the consent screen. **The identity hub (app 1) is trusted.** Platform-controlled — studio admins cannot set it. |
+| `isTrusted` | A trusted app skips the consent screen in hosted sign-in. Set by Crowded Kingdoms; studio admins cannot set it. |
 | `redirectUris` | Allow-list of redirect URIs for hosted sign-in (origin-matched). **Also the API's CORS allow-list for the app**: a browser on an origin listed here may call the API; one that is not gets no CORS headers. An empty list disallows browser entry. Edit under Studio > Apps > Settings > Sign-in & redirect URIs; honoured on every API instance within ten seconds, no restart. |
 | `clientType` | `"public"` (browser/PKCE, no secret) or `"confidential"` (server-side). |
 | `launchUrl` | Browser destination a player is sent to when they portal into the app, and the page Studio's **Live code** opens. Set it to wherever you host the game ([Host your game](/build-a-game/host-your-game)); Studio shows it as **Launch URL**. |
