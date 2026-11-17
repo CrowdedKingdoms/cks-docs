@@ -6,11 +6,11 @@ slug: intro
 
 # Build a collaborative canvas game
 
-This tutorial walks you through building a **multiplayer pixel canvas** on Crowded Kingdoms — step by step, at the wire level: sign in, mint an app token, subscribe to the realtime stream, send actor and voxel updates, and read them back.
+This tutorial walks you through building a **multiplayer pixel canvas** on Crowded Kingdoms — step by step, at the wire level: sign in for an app token, subscribe to the realtime stream, send actor and voxel updates, and read them back.
 
 ## What you'll build
 
-- **Auto guest login** on first visit (no login form), then an **app-scoped token** minted before gameplay
+- **Sign in with Crowded Kingdoms**: one button, Crowded Kingdoms' hosted page, and an **app-scoped token** back (the game never sees a password)
 - **Mouse-controlled dot** as your actor in the world
 - **Click to paint** ground cells that persist in the game database
 - **Viewport edge scroll** when you reach the window boundary
@@ -45,7 +45,7 @@ Open [http://localhost:5175](http://localhost:5175), sign in with Crowded Kingdo
 Where a chapter below shows the raw call, the repository shows the same thing
 through World Stores: `src/platform/realtime/WorldStores.ts` (presence, chunks),
 `src/scenes/program-pixi/PaintScene.ts` (painting, persistence), `src/platform/network/NetworkManager.ts`
-(hosted sign-in, minting, rotation). Read the tutorial for the mechanism and the repository for the
+(hosted sign-in, token rotation). Read the tutorial for the mechanism and the repository for the
 architecture.
 
 Crowded Kingdoms does not host games. When yours is ready, you build it and serve it from a
@@ -76,7 +76,7 @@ See also [Connecting game clients](/management-ui/client-integration).
 ## Chapters
 
 1. [Project setup](/build-a-game/01-project-setup) — connectivity and config
-2. [Auto guest auth](/build-a-game/02-auto-guest-auth) — register, then mint an app-scoped token
+2. [Sign in with Crowded Kingdoms](/build-a-game/02-sign-in) — hosted sign-in returns an app-scoped token
 3. [Connect & bootstrap](/build-a-game/03-connect-and-bootstrap) — app token → UDP proxy
 4. [Canvas coordinates](/build-a-game/04-canvas-coordinates) — world → chunk/voxel
 5. [Actor presence](/build-a-game/05-actor-presence) — mouse → dot

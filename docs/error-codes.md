@@ -233,7 +233,7 @@ authorized fails with a `FORBIDDEN` error whose **message is prefixed `CONSENT_R
 message carries the marker. Resolve it on the identity origin that holds the session (for a
 browser game, Studio's hosted `/authorize` does this) by checking
 `portalConsent(appId) { consentRequired }` and recording approval with `authorizeApp(input:{ appId })`
-before retrying. **Trusted apps** (the identity hub, app 1) skip consent entirely. CrowdyJS
+before retrying. **Trusted apps** skip consent entirely; Crowded Kingdoms sets trust, and a studio cannot. CrowdyJS
 detects this proactively: `client.portal.handleAuthorizeRequest` throws
 `PortalConsentRequiredError` (pass `grantConsent: true` to approve). The requested
 `redirectUri` must also be in the app's `redirectUris` allow-list, or the call is rejected

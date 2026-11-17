@@ -10,9 +10,9 @@ Supplement to **[Create your first app](/management-ui/create-your-first-app)** 
 
 ## Sign in
 
-- Sign in with **email and a password**, a **magic link** (enter your email; Crowded Kingdoms sends a one-time link), or a **social provider** (e.g. Google). These are peers on one email-keyed account, not alternatives: an account created by magic link can add a password later. A magic-link or social account is **created automatically on first sign-in**.
+- Sign in with **email and a password** or a **magic link** (enter your email; Crowded Kingdoms sends a one-time link). These are peers on one email-keyed account, not alternatives: an account created by magic link can add a password later. A magic-link account is **created automatically on first sign-in**. Crowded Kingdoms offers no social provider yet; Studio shows a **Continue with** button for each provider once one is turned on.
 - The portal stores a session token for GraphQL requests after sign-in.
-- One account can link **multiple sign-in methods** (e.g. a Google identity and a magic-link email); they resolve to the same account by verified email.
+- One account can link **multiple sign-in methods** (a password, a magic-link email, and a social identity once one is offered); they resolve to the same account by verified email.
 - After sign-in, users **with no organization** land on **My Orgs** (`/orgs`) with a split path: share **User ID** to join an existing org, or **create a new organization**.
 
 For the underlying mutations (`login`/`register`, `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`), see the **[Management API → Sign in](/management-api/authentication)**.

@@ -209,7 +209,7 @@ Server-side automation (with a studio/org token) typically:
 # then an access tier, then give the tier a price.
 query Datacenters { placeableDatacenters { datacenters { code placeable } } }
 
-mutation NewApp { createApp(input: { orgId: "10", name: "My Game", slug: "my-game", datacenter: "or" }) { appId } }
+mutation NewApp { createApp(input: { orgId: "10", name: "My Game", slug: "my-game", datacenter: "va" }) { appId } }
 
 mutation NewTier {
   createAccessTier(input: { appId: "42", name: "Premium", permissionKeys: ["access"] }) { tierId }
@@ -252,7 +252,7 @@ complete a checkout; wallet credit reconciles via webhook, not the redirect.
 - **Consent gate on the portal handoff.** Minting a browser portal code for an **untrusted**
   app fails with a `FORBIDDEN` error whose message is prefixed `CONSENT_REQUIRED` until the
   user authorizes it. Check `portalConsent(appId)` and call `authorizeApp` first; trusted
-  apps (the identity hub, app 1) skip consent. The requested `redirectUri` must also be in
+  apps skip consent. The requested `redirectUri` must also be in
   the app's `redirectUris` allow-list. See [Error codes → Consent](/overview/error-codes#consent).
 - **Silent drops on native UDP.** A failed HMAC or bad token can be dropped with no NAK —
   do not treat silence as packet loss. (Not applicable to the GraphQL proxy path.)
