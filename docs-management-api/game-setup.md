@@ -33,13 +33,13 @@ Creating an app **automatically provisions a free, default access tier** holding
 
 ```graphql
 mutation {
-  createApp(input: { orgId: "ACME_ORG_ID", name: "My World", slug: "my-world", datacenter: "or", status: LIVE, visibility: PUBLIC }) {
+  createApp(input: { orgId: "ACME_ORG_ID", name: "My World", slug: "my-world", datacenter: "va", status: LIVE, visibility: PUBLIC }) {
     appId
   }
 }
 ```
 
-`createApp` requires the **`manage_apps`** permission on the org (org owners have it by default). `datacenter` is required and permanent, because all of an app's data lives in one datacenter: pass a `code` that `placeableDatacenters` lists with `placeable: true`. `status` is one of `DRAFT`, `LIVE`, `ARCHIVED`; `visibility` is `PUBLIC`, `UNLISTED`, or `PRIVATE` (only `PUBLIC` + `LIVE` apps surface in the marketplace).
+`createApp` requires the **`manage_apps`** permission on the org (org owners have it by default). `datacenter` is required and permanent, because all of an app's data lives in one datacenter: pass a `code` that `placeableDatacenters` lists with `placeable: true`. `status` is one of `DRAFT`, `LIVE`, `ARCHIVED`; `visibility` is `PUBLIC`, `UNLISTED`, or `PRIVATE` (only `PUBLIC` + `LIVE` apps surface in the marketplace). Status and visibility decide only whether the app is listed, not who may play: a `DRAFT` or `PRIVATE` app admits every player while it has a free default tier, and only an `ARCHIVED` app refuses players. Who plays is your choice, through the app's access tiers ([section 2](#2-how-players-get-access)).
 
 **Manage the app over its lifecycle** (also `manage_apps`):
 
@@ -71,7 +71,7 @@ mutation {
 
 Tier operations require the **`manage_access_tiers`** permission. Edit or retire tiers with `updateAccessTier(tierId, input)` and `archiveAccessTier(tierId)`, and list an app's tiers (no auth) with `appAccessTiers(appId)`.
 
-> **Opting out of open‑by‑default:** if you do **not** want anonymous/auto access, remove (or never create) a tier that is both `isFree` **and** `isDefault`. Players then only get access through an explicit grant (below).
+> **Opting out of open‑by‑default:** if you do **not** want anonymous/auto access, remove (or never create) a tier that is both `isFree` **and** `isDefault`. Players then only get access through an explicit grant (below). A player the free tier already admitted keeps that grant until you revoke it (`revokeAppAccess`), so close an app before players find it, or revoke them afterwards. Members of your organization who hold `manage_apps` or `moderate_safety` get in without a grant.
 
 The four code keys (`write_server_code`, `run_server_code`,
 `write_client_code`, `run_client_code`) are **not** in the generated default
@@ -247,8 +247,8 @@ Crowded Kingdoms can also block an account across the whole platform, on every a
 
 ## 3. The player's flow
 
-1. **Register or log in** through the Management API (`register` / `login`) — returns the **identity session token**. (Browser games can use the SDK's guest/anonymous auth; see **[CrowdyJS](/crowdyjs/intro)** and the **[Build a game](/build-a-game/intro)** tutorial.)
-2. **Mint an app token** for this app — `mintAppToken` (native/same-origin) or the browser portal flow (`client.portal`). This is the **app-scoped token** used for gameplay; the session token is rejected by the Game API. The first mint auto-grants access on free tiers. See **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**.
+1. **Sign in.** A browser game sends the player to Studio's hosted sign-in (`client.portal.signIn`) and gets the app-scoped token back, so it skips step 2; see the **[Build a game](/build-a-game/intro)** tutorial. A native client registers or logs in through the Management API (`register` / `login`) and holds the **identity session token**.
+2. **Mint an app token** for this app with `mintAppToken` (native or first-party). This is the **app-scoped token** used for gameplay; the session token is rejected by the Game API. The first token a player gets auto-grants access on free tiers. See **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**.
 3. **Connect** with [CrowdyJS](/crowdyjs/intro), the [Unreal SDK](/unreal-sdk/intro), or a raw UDP client, pointed at the app's `gameApiUrl` (returned by the mint), sending the app-scoped token as the Bearer.
 4. **Play** — send actor, voxel, text, audio, and client‑event updates. The Game API and Buddy authorize each message against the player's tier and grid permissions. Refresh the app token (`refreshAppToken`) before it expires.
 

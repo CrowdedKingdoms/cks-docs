@@ -34,8 +34,8 @@ sign in                 ->  identity SESSION token
 
 ## Step 1 — Sign in
 
-There is no password. A native client runs one of the
-[the sign-in flows](/management-api/authentication) and stores the returned
+A native client runs one of
+[the sign-in flows](/management-api/authentication) (email and password, or a magic link) and stores the returned
 **session token** in the OS secure store (Keychain, Android Keystore, Windows
 DPAPI/Credential Manager, libsecret) — not a plaintext file.
 
@@ -52,7 +52,8 @@ token → `completeLoginLink(token)`. The token arrives only by email; an automa
 test should `register` an account it holds the password to rather than trying to
 skip the inbox.
 
-**Social / OIDC.** Drive the OAuth dance in the **system browser** —
+**Social / OIDC.** Crowded Kingdoms offers no social provider yet (`availableLoginProviders`
+is empty); this applies once one is turned on. Drive the OAuth dance in the **system browser** —
 `ASWebAuthenticationSession` (iOS/macOS), Chrome Custom Tabs (Android), or AppAuth
 — never an embedded webview (which can capture credentials):
 
@@ -162,8 +163,8 @@ the hub.
    # { "input": { "code": "<one-time>", "codeVerifier": "<verifier>" } }
    ```
 
-Untrusted apps require consent first (`portalConsent` → `authorizeApp`); the
-identity hub (app 1) is trusted and skips it. See
+Untrusted apps require consent first (`portalConsent` → `authorizeApp`); a
+trusted app skips it. Pattern A and B mints (`mintAppToken`) never ask for consent. See
 [Consent and the OAuth client registry](/management-api/portals-and-app-tokens#consent-and-the-oauth-client-registry).
 
 ### Which pattern?

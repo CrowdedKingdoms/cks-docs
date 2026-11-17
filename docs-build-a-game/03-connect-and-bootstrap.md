@@ -12,14 +12,14 @@ Initialize the game client and open the UDP proxy subscription.
 
 ## Steps
 
-1. Authenticate and **mint the app-scoped token** (chapter 2)
-2. Call `client.serverStatus.gameClientBootstrap('1')` — version info, UDP status, `me`
+1. Sign in and hold the **app-scoped token** (chapter 2)
+2. Call `client.serverStatus.gameClientBootstrap(APP_ID)` with your app's id — version info, UDP status, `me`
 3. Call `client.udp.connect()` — opens proxy session to least-loaded Buddy
 4. Call `client.udp.subscribe({ ... })` — receive realtime notifications
 
 :::note[Gameplay uses the app-scoped token]
 Everything from `gameClientBootstrap` onward is a Game API / realtime call and runs
-on the **app-scoped token** minted in [chapter 2](/build-a-game/02-auto-guest-auth),
+on the **app-scoped token** from the sign-in in [chapter 2](/build-a-game/02-sign-in),
 not the identity session token. `client.udp.connect()` assigns a Buddy via
 `serverWithLeastClients` under the hood; an identity session token is rejected
 (`APP_TOKEN_REQUIRED` on the realtime subscription, `INVALID_APP_ID` on the

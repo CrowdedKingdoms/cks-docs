@@ -12,8 +12,8 @@ Combine all chapters into one shippable game.
 
 ## Checklist
 
-- [ ] Auto guest auth on load
-- [ ] App-scoped token minted after auth, refreshed before expiry
+- [ ] Hosted sign-in on load (finish a returning sign-in, or restore an earlier token)
+- [ ] App-scoped token refreshed before expiry
 - [ ] UDP connected and subscribed
 - [ ] Mouse moves local dot; remote dots visible
 - [ ] Click paints with color palette
