@@ -1,0 +1,53 @@
+---
+id: data-out-rate-band
+title: DataOutRateBand
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One delivery-rate band of an app's data out this calendar month, as the ledger last priced it: each connection's minute is split at the band edges, and data out that belongs to no connection (API responses, module egress) is the first band.
+
+
+```graphql
+type DataOutRateBand {
+  upToBitsPerSecond: String
+  priceCents: Float!
+  bytes: String!
+  freeBytes: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DataOutRateBand.<b>upToBitsPerSecond</b></code>](#up-to-bits-per-second)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #up-to-bits-per-second */} 
+This band's exclusive upper edge in bits per second, as a decimal string; null on the last band.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DataOutRateBand.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #price-cents */} 
+This band's price in cents per decimal GB, fixed for the month at the app's first data out in it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DataOutRateBand.<b>bytes</b></code>](#bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #bytes */} 
+Bytes of data out in this band so far this month.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DataOutRateBand.<b>freeBytes</b></code>](#free-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #free-bytes */} 
+Of those bytes, how many the free monthly allowance covered (it is spent from the first band up).
+
+
+
+
+### Member Of
+
+[`AppUsageProjection`](/reference/graphql/types/objects/app-usage-projection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

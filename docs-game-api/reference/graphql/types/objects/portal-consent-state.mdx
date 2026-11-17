@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Whether portaling into an app requires a consent prompt on the Overworld.
+Whether portaling into an app requires a consent prompt from the identity origin (Studio’s hosted sign-in, or a launcher holding the session).
 
 
 ```graphql
@@ -40,7 +40,7 @@ App display name.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PortalConsentState.<b>trusted</b></code>](#trusted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #trusted */} 
-True for first-party/trusted apps (consent is always skipped).
+True for a trusted app (set by Crowded Kingdoms): consent is never asked.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PortalConsentState.<b>alreadyGranted</b></code>](#already-granted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #already-granted */} 
@@ -48,7 +48,7 @@ True if the user already has an active grant for this app.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PortalConsentState.<b>consentRequired</b></code>](#consent-required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #consent-required */} 
-True if the Overworld must show a consent screen (untrusted app, not yet granted) before creating a portal code.
+True if the identity origin must show a consent screen (untrusted app, not yet granted) before creating a portal code.
 
 
 
