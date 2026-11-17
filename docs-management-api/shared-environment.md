@@ -107,21 +107,38 @@ card in your account and on the
 reports an app's byte-hours and the bytes it holds now, and
 `appUsageProjection` the month so far and a projection.
 
-**Volume bands.** A line on the rate card can be priced in graduated volume
-bands, and egress is: the more an app sends in a UTC calendar month, the lower
-the rate on its next gigabyte. Each byte is charged at the rate of the band it
-falls in, so reaching a higher band does not re-price the bytes below it. The
-bands count each app's own egress from the start of the month, free quota
-included (the 5 GB quota is the bottom of the first band), and the month's
-total is still rounded up to the cent once. An app's rate for the month is set
-at its first charge in that month, so a change to the rate card reaches an app
-from its next month. The schedule is on the rate card in your account and on
-the [pricing page](https://crowdedkingdoms.com/pricing.html). In the API,
-`meteredRateCard` lists a banded line's `priceBands`: each band's `priceCents`
-per the line's `unitQuantity` (a GB, for egress) and its upper edge
-`upToUnits` in raw units (bytes, for egress; `null` on the last, open-ended
-band). The line's own `priceCents` is the first band's rate, and a line priced
-at one rate has no `priceBands`.
+**Rate bands.** Egress is priced in graduated rate bands since 2026-11-17: the
+faster a connection is served, the less each gigabyte costs. Every UTC calendar
+minute, each client connection's egress in that minute is split at the band
+edges, which are rates (bits per second, averaged over the minute). Today there
+are two: the first 22 kbps of each connection-minute (its first 165,000 bytes,
+about 10 MB per connected hour) is charged at the first band's rate, and
+everything above it at the second band's, so serving a connection faster never
+re-prices the bytes below. The first band pays for the connection; above it a
+gigabyte costs the same however the traffic is spread, batched or connected.
+Egress that is not delivered over a client connection, such as API responses,
+is charged at the first band's rate, and the 5 GB free quota comes off the first
+band first. The month's total is still rounded up to the cent
+once. A minute recorded in parts, because the client reconnected or moved to
+another server during it, is banded part by part. An app's bands for the month
+are set at its first charge in that month, so a change to the rate card reaches
+an app from its next month: an app that sent egress in November 2026 before the
+switch keeps the previous volume bands (by the month's total) until December 1.
+The schedule is on the rate card in your account and on the
+[pricing page](https://crowdedkingdoms.com/pricing.html), and the
+[Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html)
+§5.2 sets it out.
+
+In the API, `meteredRateCard` lists a banded line's `priceBands` and says what
+their edges measure in `priceBandBasis`. On `RATE`, each band has its
+`priceCents` per the line's `unitQuantity` (a GB) and its upper edge
+`upToBitsPerSecond`; on `VOLUME`, the edge is `upToUnits`, in raw units on the
+month's running total (bytes, for egress). The last band's edge is `null`. The
+line's own `priceCents` is the first band's rate, and a line priced at one rate
+has no `priceBands`. `appUsageProjection` reports a rate-banded month as the
+ledger last priced it: `dataOutRateBands` (each band's bytes so far and the free
+bytes in it), `dataOutPricedCents`, and `projectedDataOutCents` for the month's
+mix of bands scaled to the projected egress.
 
 An app's [ck-exec](/exec/intro) code is metered minute by minute in compute
 units: the greater of the CPU time and the fuel each minute used, so neither a

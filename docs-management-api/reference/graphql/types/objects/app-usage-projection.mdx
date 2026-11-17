@@ -31,6 +31,9 @@ type AppUsageProjection {
   onTrackToExceed: Boolean
   inputLogByteHours: String!
   projectedInputLogByteHours: String
+  dataOutRateBands: [DataOutRateBand!]
+  dataOutPricedCents: Float
+  projectedDataOutCents: Float
 }
 ```
 
@@ -79,6 +82,18 @@ Stored input logs this calendar month so far, in byte-hours (input&#x005F;log&#x
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedInputLogByteHours</b></code>](#projected-input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #projected-input-log-byte-hours */} 
 Projected end-of-month stored input logs in byte-hours (linear extrapolation), or null when insufficient data.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>dataOutRateBands</b></code>](#data-out-rate-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[DataOutRateBand!]</b></code>](/reference/graphql/types/objects/data-out-rate-band.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> {/* #data-out-rate-bands */} 
+This month's data out split by delivery-rate band, as the ledger last priced it. Null when the app's month is not priced by delivery rate, or has no data out yet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>dataOutPricedCents</b></code>](#data-out-priced-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #data-out-priced-cents */} 
+What this month's data out has cost so far, in cents, at its rate bands and after the free allowance (before any billing exemption). Null with dataOutRateBands.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedDataOutCents</b></code>](#projected-data-out-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #projected-data-out-cents */} 
+Projected end-of-month data-out cost in cents: this month's mix of rate bands scaled to the projected egress and priced the same way. Null when there is insufficient data or no rate bands.
 
 
 
