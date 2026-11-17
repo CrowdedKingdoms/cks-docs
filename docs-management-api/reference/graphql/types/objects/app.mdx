@@ -96,11 +96,11 @@ Lifecycle state (DRAFT/LIVE/ARCHIVED). See AppStatus.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #launch-url */} 
-Browser destination (origin/URL) a player is redirected to when they portal into this app from the Overworld. Used to route the player and to validate portal redirect URIs.
+Browser destination (origin/URL) of this app: where a player is sent to enter it from another page, and the page Crowdy Studio's Live code opens. Also accepted, by origin, as a redirect URI for hosted sign-in.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>isTrusted</b></code>](#is-trusted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #is-trusted */} 
-True for first-party/trusted apps: portal entry skips the consent screen. The Overworld (app 1) is trusted. Studio admins cannot set this; it is platform-controlled.
+True for a trusted app: createPortalAuthorizationCode (Studio's hosted sign-in, or a launcher's PKCE handoff) issues its code without the player's consent grant, so no consent screen is shown. Set by Crowded Kingdoms; studio admins cannot set it. mintAppToken, which a client holding the session calls directly, never asks for consent.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>redirectUris</b></code>](#redirect-uris)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #redirect-uris */} 

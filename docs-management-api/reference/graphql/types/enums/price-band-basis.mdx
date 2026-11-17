@@ -1,0 +1,43 @@
+---
+id: price-band-basis
+title: PriceBandBasis
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What a graduated price's band edges measure. VOLUME: the period's running total, so each unit is priced at the band the total has reached (edges in upToUnits). RATE: the rate one connection was served at in one minute, so each minute's bytes are split at the edges and each part is priced at its band (edges in upToBitsPerSecond). Both are graduated: a unit's price never rises as the total or the rate grows.
+
+
+```graphql
+enum PriceBandBasis {
+  VOLUME
+  RATE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>PriceBandBasis.<b>VOLUME</b></code>](#volume) {/* #volume */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PriceBandBasis.<b>RATE</b></code>](#rate) {/* #rate */} 
+
+
+
+
+
+### Member Of
+
+[`PublicRateCardEntryType`](/reference/graphql/types/objects/public-rate-card-entry-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

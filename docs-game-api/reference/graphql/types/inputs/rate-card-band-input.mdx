@@ -21,6 +21,7 @@ No description
 ```graphql
 input RateCardBandInput {
   upToUnits: BigInt
+  upToBitsPerSecond: BigInt
   priceCents: Float!
 }
 ```
@@ -29,7 +30,11 @@ input RateCardBandInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardBandInput.<b>upToUnits</b></code>](#up-to-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #up-to-units */} 
-Exclusive upper edge of this band on the period's running total, in raw metric units, as a BigInt decimal string. Every band but the last needs one, strictly above the band before; the last band must leave it null.
+VOLUME schedules: exclusive upper edge of this band on the period's running total, in raw metric units, as a BigInt decimal string. Every band but the last needs one edge, strictly above the band before; the last band must leave it null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateCardBandInput.<b>upToBitsPerSecond</b></code>](#up-to-bits-per-second)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #up-to-bits-per-second */} 
+RATE schedules: exclusive upper edge of this band in bits per second, as a BigInt decimal string, under the same rules as upToUnits. A band gives one edge or the other, never both, and one schedule uses one of them throughout.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardBandInput.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #price-cents */} 

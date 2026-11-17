@@ -15,12 +15,13 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-One band of a graduated price. Each unit of the period's running total is priced at the band its position falls in, so the price of the next unit never rises as the total grows. Bands are edges on the whole total and count from zero: the free allowance fills the first band first.
+One band of a graduated price. On a VOLUME schedule each unit of the period's running total is priced at the band its position falls in; on a RATE schedule each minute of one connection's data out is split at the edges, so the part below the first edge is priced at the first band, the part between the first and second edges at the second, and so on. Either way the price of the next unit never rises, and the free allowance fills the first band first.
 
 
 ```graphql
 type RateCardBandType {
   upToUnits: BigInt
+  upToBitsPerSecond: BigInt
   priceCents: Float!
 }
 ```
@@ -29,7 +30,11 @@ type RateCardBandType {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardBandType.<b>upToUnits</b></code>](#up-to-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #up-to-units */} 
-Exclusive upper edge of this band on the period's running total, in raw metric units, as a BigInt decimal string. A band covers units from the previous band's edge up to this one. Null on the last band, which has no upper edge.
+VOLUME schedules: exclusive upper edge of this band on the period's running total, in raw metric units, as a BigInt decimal string. A band covers units from the previous band's edge up to this one. Null on the last band, which has no upper edge, and on every band of a RATE schedule (read upToBitsPerSecond).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateCardBandType.<b>upToBitsPerSecond</b></code>](#up-to-bits-per-second)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #up-to-bits-per-second */} 
+RATE schedules: exclusive upper edge of this band in bits per second, as a BigInt decimal string. A connection's data out in one calendar minute, times 8 and divided by 60 seconds, is its rate; the bytes below this edge's share of the minute (edge x 60 / 8 bytes) are priced at this band or a lower one. Null on the last band and on every band of a VOLUME schedule.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardBandType.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #price-cents */} 
