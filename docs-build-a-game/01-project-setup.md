@@ -21,9 +21,8 @@ OrgId=<your-org-id>
 
 ## One URL
 
-There is a single endpoint. Identity (`register`, `login`) and gameplay (chunks,
-voxels, actors, the UDP proxy) are surfaces of the same GraphQL API, so there is no
-second URL to configure.
+There is a single endpoint. Identity and gameplay (chunks, voxels, actors, the UDP
+proxy) are surfaces of the same GraphQL API, so there is no second URL to configure.
 
 Bootstrap may hand your client a **different** origin than the one it started from:
 apps live in a specific datacenter, and the API answers with that datacenter's
@@ -46,10 +45,10 @@ const client = createCrowdyClient({
 ```
 
 :::note[One endpoint, two tokens]
-One URL does **not** mean one credential. `register` / `login` (next chapter) return
-an **identity session token**, and that token is **rejected for gameplay**. Before any
-world or UDP call you mint a short-lived **app-scoped token** for your `AppId`
-([chapter 2](/build-a-game/02-auto-guest-auth)) and drive gameplay with it. See
+One URL does **not** mean one credential. Signing in creates an **identity session
+token**, which stays on Crowded Kingdoms' own sign-in page and is **rejected for
+gameplay**. Your game gets a short-lived **app-scoped token** for your `AppId` instead
+([chapter 2](/build-a-game/02-sign-in)) and drives gameplay with it. See
 [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
 :::
 
@@ -64,4 +63,4 @@ POST `{ query: "{ __typename }" }` to the GraphQL endpoint. It should return HTT
 
 **In The Construct:** `src/platform/config.ts` resolves the API origin from the installed SDK build and `src/platform/network/NetworkManager.ts` creates the client.
 
-Next: [Auto guest auth](/build-a-game/02-auto-guest-auth)
+Next: [Sign in with Crowded Kingdoms](/build-a-game/02-sign-in)

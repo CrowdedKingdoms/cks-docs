@@ -35,7 +35,8 @@ query { playerLegalDocuments { documentId version title url } }
 Public, so a sign-up form can show them before an account exists. The list is the
 [Player Terms](https://crowdedkingdoms.com/player-terms.html) and the
 [Player Privacy Policy](https://crowdedkingdoms.com/player-privacy.html), at the versions of
-2026-11-04 (`player-terms-2026-11-04`, `player-privacy-2026-11-04`). Until then it was the Game
+2026-11-10 (`player-terms-2026-11-10`, `player-privacy-2026-11-10`); a version moves when its
+document changes, so read the current ones from this query. On 2026-11-04 they replaced the Game
 Terms, the API Terms, the SDK Developer Terms, the Free Tier and Billing Basis and the Overworld
 Privacy Policy, with an age-of-majority attestation. Render whatever the list returns rather than a
 list of your own: a new `version` of any document asks every player again at their next mint.

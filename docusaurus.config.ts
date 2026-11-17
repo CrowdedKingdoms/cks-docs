@@ -45,6 +45,7 @@ const legacyEngineRedirects: {from: string; to: string}[] = JSON.parse(
 const movedPageRedirects: {from: string; to: string}[] = [
   {from: '/management-ui/dev-tier', to: '/management-ui/client-integration'},
   {from: '/unreal-sdk/runtime/host-authority', to: '/unreal-sdk/runtime/leader'},
+  {from: '/build-a-game/02-auto-guest-auth', to: '/build-a-game/02-sign-in'},
 ];
 
 // ---------------------------------------------------------------------------------------

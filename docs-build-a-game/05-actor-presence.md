@@ -24,7 +24,7 @@ await client.udp.sendActorUpdate({
 });
 ```
 
-> `client.udp.*` runs on the **app-scoped token** from chapters [2](/build-a-game/02-auto-guest-auth)–[3](/build-a-game/03-connect-and-bootstrap); the identity session token is rejected for gameplay.
+> `client.udp.*` runs on the **app-scoped token** from chapters [2](/build-a-game/02-sign-in)–[3](/build-a-game/03-connect-and-bootstrap); the identity session token is rejected for gameplay.
 
 ## Receive
 
