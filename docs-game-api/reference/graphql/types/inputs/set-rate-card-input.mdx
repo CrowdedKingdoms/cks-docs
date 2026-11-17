@@ -31,6 +31,7 @@ input SetRateCardInput {
   freePeriod: AllowancePeriod
   freePerMonth: BigInt
   priceBands: [RateCardBandInput!]
+  priceBandBasis: PriceBandBasis
   clearPriceBands: Boolean
   reason: String!
 }
@@ -80,7 +81,11 @@ New monthly free allowance in raw metric units, as a BigInt decimal string. Must
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>priceBands</b></code>](#price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RateCardBandInput!]</b></code>](/reference/graphql/types/inputs/rate-card-band-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> {/* #price-bands */} 
-A whole graduated schedule, replacing the one the dimension holds: 1 to 10 bands, ascending edges, the last band open, no band dearer than the one below. Band 1's price becomes priceCents (supply priceCents only if it is the same). Accepted for SHARED aggregate&#x005F;data&#x005F;volume only. Like every price, it applies from a dimension's next period where a period has already been charged.
+A whole graduated schedule, replacing the one the dimension holds: 1 to 10 bands, ascending edges (upToUnits on a VOLUME schedule, upToBitsPerSecond on a RATE one, per priceBandBasis), the last band open, no band dearer than the one below. Band 1's price becomes priceCents (supply priceCents only if it is the same). Accepted for SHARED aggregate&#x005F;data&#x005F;volume only. Like every price, it applies from a dimension's next period where a period has already been charged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>priceBandBasis</b></code>](#price-band-basis)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PriceBandBasis</b></code>](/reference/graphql/types/enums/price-band-basis.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #price-band-basis */} 
+What priceBands' edges measure: VOLUME (edges in upToUnits on the period's running total) or RATE (edges in upToBitsPerSecond on each connection's per-minute rate; SHARED aggregate&#x005F;data&#x005F;volume only). Only with priceBands, because it changes what every edge means. Omit to keep the dimension's current basis; clearPriceBands returns it to VOLUME. Like every price, it applies from a dimension's next period where a period has already been charged.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>clearPriceBands</b></code>](#clear-price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #clear-price-bands */} 
