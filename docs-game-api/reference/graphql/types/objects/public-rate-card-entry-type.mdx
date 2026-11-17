@@ -31,6 +31,7 @@ type PublicRateCardEntryType {
   freeUnits: BigInt
   freePeriod: AllowancePeriod
   priceBands: [RateCardBandType!]
+  priceBandBasis: PriceBandBasis
 }
 ```
 
@@ -78,7 +79,11 @@ The period freeUnits resets on. Every dimension is billed as its period aggregat
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>priceBands</b></code>](#price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RateCardBandType!]</b></code>](/reference/graphql/types/objects/rate-card-band-type.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> {/* #price-bands */} 
-The graduated price, band by band, or null when the dimension has one flat price. Egress (aggregate&#x005F;data&#x005F;volume) is priced this way per app per calendar month: each GB is charged at the band the app's month-to-date total has reached, and priceCents is the first band's price.
+The graduated price, band by band, or null when the dimension has one flat price. Egress (aggregate&#x005F;data&#x005F;volume) is priced this way. On a RATE schedule each connection's data out is priced minute by minute at the rate it was served at: the part of a minute below the first edge at the first band, the part between the first and second edges at the second, and so on, while data out that belongs to no connection (API responses, module egress) is priced at the first band. On a VOLUME schedule each GB is charged at the band the app's month-to-date total has reached. priceCents is the first band's price, and the free monthly allowance comes out of the first band.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>priceBandBasis</b></code>](#price-band-basis)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PriceBandBasis</b></code>](/reference/graphql/types/enums/price-band-basis.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #price-band-basis */} 
+What priceBands' edges measure: RATE (each connection's rate, minute by minute, in bits per second) or VOLUME (the app's running total for the month). Null on a flat row.
 
 
 
