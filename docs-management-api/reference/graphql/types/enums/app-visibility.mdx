@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Whether an app is listed in the public marketplace. Independent of AppStatus: the marketplace lists only PUBLIC, LIVE apps. Visibility never decides who may play; the app's access tiers do (a free default tier admits every player, and without one a player needs a grant).
+Controls where an app can be discovered. Independent of AppStatus (the marketplace additionally requires status=LIVE).
 
 
 ```graphql
@@ -34,11 +34,11 @@ Listed in the public marketplace (when status=LIVE) and resolvable by slug.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppVisibility.<b>UNLISTED</b></code>](#unlisted) {/* #unlisted */} 
-Not listed in the marketplace; anyone with its org and app slugs can look it up (appBySlug).
+Hidden from marketplace listings but accessible to anyone who knows the direct org/app slug link.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppVisibility.<b>PRIVATE</b></code>](#private) {/* #private */} 
-Not listed in the marketplace. It hides the app from listings only: appBySlug and app(appId) still return it, and it refuses no player (the app's access tiers decide who may play).
+Hidden from the marketplace; visible only to org members and users with an access grant.
 
 
 

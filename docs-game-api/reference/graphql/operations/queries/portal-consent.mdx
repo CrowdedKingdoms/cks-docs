@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Whether portaling the calling user into an app needs a consent prompt. Trusted apps and already-granted apps return consentRequired=false. The identity origin (Studio's hosted sign-in, or a launcher holding the session) calls this before createPortalAuthorizationCode. Requires a SESSION token.
+Whether portaling the calling user into an app needs a consent prompt. Trusted (first-party) apps and already-granted apps return consentRequired=false. The Overworld calls this before createPortalAuthorizationCode. Requires a SESSION token.
 
 
 ```graphql
@@ -36,4 +36,4 @@ Numeric id of the app the caller wants to portal into (BigInt as a decimal strin
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>PortalConsentState</b></code>](/reference/graphql/types/objects/portal-consent-state.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Whether portaling into an app requires a consent prompt from the identity origin (Studio’s hosted sign-in, or a launcher holding the session).
+Whether portaling into an app requires a consent prompt on the Overworld.

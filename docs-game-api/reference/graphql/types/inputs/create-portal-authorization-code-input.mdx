@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Input for createPortalAuthorizationCode: the identity origin holding the session token (Studio's hosted sign-in, or a native launcher) mints a one-time code the destination game exchanges for an app token. Browser handoff path; pair with a PKCE verifier held by the destination game origin.
+Input for createPortalAuthorizationCode: the Overworld (identity origin, holding the session token) mints a one-time code the destination game exchanges for an app token. Browser handoff path; pair with a PKCE verifier held by the destination game origin.
 
 
 ```graphql
@@ -43,7 +43,7 @@ PKCE method: "S256" (default, recommended) or "plain".
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>redirectUri</b></code>](#redirect-uri)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #redirect-uri */} 
-Where to redirect the player after issuing the code. Must match, by origin, one of the target app's registered redirect URIs or its launch URL; an app with neither refuses every code.
+Where to redirect the player after issuing the code. Must match the target app's configured launch&#x005F;url origin when set.
 
 
 
