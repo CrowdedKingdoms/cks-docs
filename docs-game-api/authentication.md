@@ -34,8 +34,8 @@ Grid operations (`createGrid`, `grantGridPermissions`, …) also run on the Game
 
 ## Typical flow
 
-1. **Sign in** on the Management API for the identity **session token** — email + password (`login` / `register`), magic link, or social. See [Sign in](/management-api/authentication).
-2. **Mint an app-scoped token** for the app you are entering — `mintAppToken` (same-origin/native) or the browser portal flow (cross-origin). Untrusted apps require user consent first; the identity hub (app 1) is trusted and skips it. See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) (and [Native & non-browser clients](/management-api/native-clients) for Unreal/Unity/desktop/console/mobile).
+1. **Sign in.** A browser game sends the player to Studio's hosted sign-in (`client.portal.signIn`) and gets an app-scoped token back, so it skips step 2. A native client signs in on the Management API for the identity **session token**: email + password (`login` / `register`), or a magic link. See [Sign in](/management-api/authentication).
+2. **Mint an app-scoped token** for the app you are entering with `mintAppToken` (native or first-party). In hosted sign-in an untrusted app asks for the player's consent once; a trusted app skips it, and `mintAppToken` never asks. See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) (and [Native & non-browser clients](/management-api/native-clients) for Unreal/Unity/desktop/console/mobile).
 3. **Use the app token** as the Bearer for all Game API HTTP requests and in the realtime `connection_init` payload. Rotate it with `refreshAppToken` before `expiresAt`.
 
 ## Security notes

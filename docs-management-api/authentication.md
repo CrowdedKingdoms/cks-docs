@@ -10,7 +10,8 @@ A user authenticates one of three ways, and every path returns an identity
 
 - **Email + password** — `register` to create an account, `login` to return to one.
 - **Magic link** — a one-time link emailed to the address.
-- **Social / OIDC** — a federated provider (e.g. Google).
+- **Social / OIDC** — a federated provider. Crowded Kingdoms offers no social provider yet;
+  `availableLoginProviders` lists any it turns on (see Social / OIDC below).
 
 These are peers on one email-keyed account rather than alternatives: an account
 created by magic link can later add a password, and signing in with Google and
@@ -167,15 +168,10 @@ mutation Done($input: SocialLoginCompleteInput!) {
 # variables: { "input": { "provider": "google", "code": "<from-provider>", "state": "<from-step-1>" } }
 ```
 
-The framework is **provider-agnostic**. Today it ships:
-
-| Provider | Enabled when |
-|---|---|
-| **`google`** | `GOOGLE_CLIENT_ID` **and** `GOOGLE_CLIENT_SECRET` are configured on the server. |
-
-
-`availableLoginProviders` reflects exactly what is configured, so drive your
-sign-in UI from it rather than hard-coding provider buttons.
+The framework is **provider-agnostic**, and the API supports **`google`**. Crowded Kingdoms
+offers no social provider yet, so `availableLoginProviders` answers an empty list today. Drive
+your sign-in UI from it rather than hard-coding provider buttons: a provider appears there, and
+works, once Crowded Kingdoms turns it on.
 
 ## Email + password
 

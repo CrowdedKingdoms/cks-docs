@@ -30,11 +30,12 @@ const identity = createCrowdyClient({
 });
 await identity.auth.login({ email: 'player@example.com', password }); // see /crowdyjs/readme#sign-in-with-clientauth
 
-const appToken = await identity.portal.mintAppToken('1');
+const APP_ID = '<your-app-id>';
+const appToken = await identity.portal.mintAppToken(APP_ID);
 const game = createCrowdyClient({
   httpUrl: appToken.gameApiUrl ?? 'https://ck.prod.crowdedkingdoms.com/graphql',
   wsUrl: appToken.gameApiWsUrl ?? 'wss://ck.prod.crowdedkingdoms.com/graphql',
-  tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:1'),
+  tokenStore: new BrowserLocalStorageTokenStore(`crowdyjs:app:${APP_ID}`),
 });
 game.setToken(appToken.token);
 

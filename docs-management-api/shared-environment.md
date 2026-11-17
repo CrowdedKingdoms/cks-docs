@@ -156,7 +156,7 @@ mutation {
     orgId: "123"
     name: "My Game"
     slug: "my-game"
-    datacenter: "or"
+    datacenter: "va"
   }) {
     appId
     deploymentTarget

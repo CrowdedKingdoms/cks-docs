@@ -192,6 +192,12 @@ viewer function is ever detached.
   `deprecated` and the note "Legacy game-model engine removed; the Unreal SDK
   moves to ck-exec later", which also hides them from the generated reference
   tables. Remove those entries when the SDK drops or ports that API.
+- **No page names a trusted app, and no social provider is offered** (operator, 2026-11-16). Trust is
+  the operator's to revisit, so pages say what `isTrusted` does and that Crowded Kingdoms sets it,
+  never which app has it; "the identity hub (app 1) is trusted" was wrong when it was written.
+  Social sign-in is built (Google) but switched off on every tier, and the pages say so: when a
+  provider is turned on, change them (`grep -rn "offers no social provider" docs*`). An app's
+  status and visibility only decide whether it is listed; its access tiers decide who plays.
 
 ## Customer-facing content (hard rule)
 
