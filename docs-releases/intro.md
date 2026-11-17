@@ -39,6 +39,25 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-17 (data out priced by each connection's rate)
+
+- **Egress is priced in rate bands** (Game API v2.71.0, every environment): seven graduated bands by
+  the rate each client connection is served at, averaged over each UTC minute, from $0.05 a GB up to
+  1.293 Mbps down to $0.0025 a GB above 7.756 Mbps. Each connection's minute is split at the band
+  edges, so a busy connection pays less per GB and serving faster never re-prices the bytes below.
+  Egress with no connection, such as API responses, and the 5 GB free quota are in the first band.
+  Every GB costs less than on the volume bands it replaces ($0.19 down to $0.10 by the month's
+  total); an app that sent egress in November before the switch keeps those until December 1. See
+  [rate bands](/management-api/shared-environment#free-tier) and the
+  [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) §5.2.
+- **In the API:** `PublicRateCardEntryType.priceBandBasis` (`RATE` or `VOLUME`) says what a banded
+  line's edges measure, and `RateCardBandType.upToBitsPerSecond` is a rate band's edge
+  (`upToUnits` stays the edge of a volume band). `appUsageProjection` adds `dataOutRateBands`,
+  `dataOutPricedCents` and `projectedDataOutCents`. Operators set a rate schedule with
+  `setBillingRate`'s `priceBandBasis`.
+- **The estimators** on the pricing page and in Studio price data out the same way, from each
+  hour's rate per connection.
+
 ## 2026-11-15 (an actor's uuid is free once it has left)
 
 - **Actor ownership holds on every server** (replication server v0.47.0). A send under an actor uuid
