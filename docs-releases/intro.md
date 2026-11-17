@@ -41,11 +41,12 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 ## 2026-11-17 (data out priced by each connection's rate)
 
-- **Egress is priced in rate bands** (Game API v2.71.0, every environment): seven graduated bands by
-  the rate each client connection is served at, averaged over each UTC minute, from $0.05 a GB up to
-  1.293 Mbps down to $0.0025 a GB above 7.756 Mbps. Each connection's minute is split at the band
-  edges, so a busy connection pays less per GB and serving faster never re-prices the bytes below.
-  Egress with no connection, such as API responses, and the 5 GB free quota are in the first band.
+- **Egress is priced in rate bands** (Game API v2.71.0, every environment): graduated bands by the
+  rate each client connection is served at, averaged over each UTC minute. There are two: $0.05 a GB
+  for the first 22 kbps of each connection-minute (its first 165,000 bytes, about 10 MB per connected
+  hour) and $0.0025 a GB above it, so a busy connection pays close to $0.0025 for every GB and serving
+  faster never re-prices the bytes below. Egress with no connection, such as API responses, and the
+  5 GB free quota are in the first band.
   Every GB costs less than on the volume bands it replaces ($0.19 down to $0.10 by the month's
   total); an app that sent egress in November before the switch keeps those until December 1. See
   [rate bands](/management-api/shared-environment#free-tier) and the

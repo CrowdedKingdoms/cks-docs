@@ -110,14 +110,15 @@ reports an app's byte-hours and the bytes it holds now, and
 **Rate bands.** Egress is priced in graduated rate bands since 2026-11-17: the
 faster a connection is served, the less each gigabyte costs. Every UTC calendar
 minute, each client connection's egress in that minute is split at the band
-edges, which are rates (bits per second, averaged over the minute): the part a
-connection at the first band's top rate would receive in a minute is charged at
-the first band's rate, the next part at the second band's, and so on, so serving
-a connection faster never re-prices the bytes in the bands below. The first
-band ends at 1.293 Mbps, which is the first 9,697,500 bytes of a connection's
-minute. Egress that is not delivered over a client connection, such as API
-responses, is charged at the first band's rate, and the 5 GB free quota comes
-off the first band first. The month's total is still rounded up to the cent
+edges, which are rates (bits per second, averaged over the minute). Today there
+are two: the first 22 kbps of each connection-minute (its first 165,000 bytes,
+about 10 MB per connected hour) is charged at the first band's rate, and
+everything above it at the second band's, so serving a connection faster never
+re-prices the bytes below. The first band pays for the connection; above it a
+gigabyte costs the same however the traffic is spread, batched or connected.
+Egress that is not delivered over a client connection, such as API responses,
+is charged at the first band's rate, and the 5 GB free quota comes off the first
+band first. The month's total is still rounded up to the cent
 once. A minute recorded in parts, because the client reconnected or moved to
 another server during it, is banded part by part. An app's bands for the month
 are set at its first charge in that month, so a change to the rate card reaches
