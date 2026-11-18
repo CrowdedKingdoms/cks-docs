@@ -238,7 +238,10 @@ Pass `null` for a limit to clear it.
 Instead of (or in addition to) manual top-ups, an org owner can enable
 **auto-billing**: when the wallet can't cover usage, the saved payment method is
 charged automatically to top the wallet back up — up to a limit you set, or with
-**no limit**. With auto-billing off, an app is simply denied when the wallet runs
+**no limit**. A top-up into an organization wallet, by checkout
+(`createCheckout` with `ORG_WALLET_TOPUP`) or as the auto-billing amount
+(`rechargeAmountCents`), is at least $10; a smaller one is refused with
+`TOP_UP_BELOW_MINIMUM` (`walletTopUpMinimums` publishes the figure). With auto-billing off, an app is simply denied when the wallet runs
 dry; with it on, the app keeps running until your auto-billing limit is reached.
 
 ```graphql

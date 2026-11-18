@@ -2774,6 +2774,22 @@ type PaymentEventsConnection {
   totalCount: Int
 }
 
+"""
+The smallest wallet top-ups createCheckout accepts, and the smallest auto-recharge amounts. A smaller amount is refused with TOP_UP_BELOW_MINIMUM.
+"""
+type WalletTopUpMinimums {
+  """
+  An organization wallet (ORG_WALLET_TOPUP, setAutoBilling), in USD cents.
+  """
+  orgWalletCents: BigInt!
+  """
+  A player wallet (PLAYER_WALLET_TOPUP, setPlayerAutoBilling), in USD cents.
+  """
+  playerWalletCents: BigInt!
+  """The currency both are in: usd."""
+  currency: String!
+}
+
 type ServiceQuota {
   """Unique quota rule id (BigInt as a decimal string)."""
   quotaId: BigInt!
@@ -8153,6 +8169,10 @@ type Query {
     """
     after: String
   ): PaymentEventsConnection! @requiresPermission(scope: "super_admin", permission: "is_super_admin")
+  """
+  The smallest wallet top-ups and auto-recharge amounts this tier accepts, for a top-up form in Studio or a game. Public.
+  """
+  walletTopUpMinimums: WalletTopUpMinimums!
   """
   Lists the org-scoped quota rules explicitly configured for an organization (excludes app-, tier-, and free-tier-default quotas). Use `effectiveQuota` to resolve the limit actually applied for a given metric. Requires the 'view_usage' org permission.
   """
