@@ -1629,11 +1629,13 @@ type SetAppReservedThroughputResult {
 }
 
 """
-Result of publishing an app to the shared environment. All paths publish immediately. Usage above the free allowances is wallet-billed: each app has a per-dimension hourly allowance and, for client egress, 5 decimal GB per calendar month.
+Result of publishing an app to the shared environment. All paths publish immediately. Usage above the free allowances is billed from the organization wallet: each app has the rate card's monthly allowances until allowancePool.effectiveFrom, and from then the organization's apps share one allowance.
 """
 type PublishAppResult {
   appId: BigInt!
-  """True when the app uses a free org app-slot (under the quota)."""
+  """
+  True when the app uses a free org app-slot (under the quota). A count only: it does not change what is free or billed (see orgFreeAppQuota).
+  """
   free: Boolean!
   """@deprecated Always null — subscriptions replaced by wallet billing."""
   checkout: Checkout
@@ -2856,8 +2858,14 @@ type AppUsageProjection {
   Projected end-of-month egress bytes (linear extrapolation), or null when insufficient data.
   """
   projectedBytes: String
-  """Per-app free monthly egress allowance in bytes (5 decimal GB)."""
+  """
+  This app's free monthly egress allowance in bytes: 5 decimal GB of its own, or, in a month its organization's allowance is pooled (allowancePooled), what it holds of the pool plus what the pool has left.
+  """
   freeAllowanceBytes: String!
+  """
+  True when this month's free allowance is the organization's pool, shared by all its apps (allowancePool), rather than this app's own.
+  """
+  allowancePooled: Boolean!
   """
   Projected usage as a percentage of the free allowance, or null when insufficient data.
   """
@@ -2907,6 +2915,24 @@ type OrgAppUsageProjectionRow {
 }
 
 """
+One meter of an organization's pooled free allowance this month: how large the pool is and how much of it its apps have used.
+"""
+type OrgAllowancePool {
+  """
+  The priced meter: aggregate_data_volume (bytes out), aggregate_data_ingress (bytes in), compute_cpu_ms (CPU milliseconds), durable_storage_byte_hours (byte-hours stored) or wasm_write_bytes (bytes written by compute modules).
+  """
+  meter: String!
+  """
+  The pool, in the meter's raw units: the rate card's allowance for one app times allowancePool.factor.
+  """
+  poolUnits: String!
+  """
+  How much of the pool its apps hold this month, in the same units; usage beyond the pool is billed.
+  """
+  usedUnits: String!
+}
+
+"""
 Org-level rollup of per-app monthly egress projections for all shared apps.
 """
 type OrgUsageProjection {
@@ -2921,9 +2947,17 @@ type OrgUsageProjection {
   """
   totalProjectedBytes: String
   """
-  Total free monthly egress allowance across all shared apps in the org (apps × 5 GB).
+  Total free monthly egress allowance for the org's shared apps: apps × 5 GB, or the size of its pool in a pooled month (allowancePooled).
   """
   totalFreeAllowanceBytes: String!
+  """
+  True when this month's free allowance is one pool shared by the organization's apps (allowancePool).
+  """
+  allowancePooled: Boolean!
+  """
+  In a pooled month, each pooled meter with its pool and what the apps have used of it; empty otherwise.
+  """
+  allowancePools: [OrgAllowancePool!]!
   """Per-app projection breakdown."""
   apps: [OrgAppUsageProjectionRow!]!
   """True when any shared app is on track to exceed its free allowance."""
@@ -3595,12 +3629,12 @@ type Query {
   """
   sharedEnvPlans: [SharedEnvPlan!]!
   """
-  An org's free shared-app slot quota and how much of it is used. Apps beyond the quota still publish; metered usage is billed from the org wallet. Caller must be a member of the org.
+  An org's free shared-app slot quota and how much of it is used. The slots are a count only: they never change what is free or billed, and apps beyond the quota still publish. Caller must be a member of the org.
   """
   orgFreeAppQuota(
     """Organization id (BigInt) to read the free quota for."""
     orgId: BigInt!
-  ): FreeAppQuota!
+  ): FreeAppQuota! @deprecated(reason: "Free app slots are retired. From allowancePool.effectiveFrom an organization's apps share one free allowance a month; read orgUsageProjection.allowancePools. Before then each app has its own allowance whatever its slot.")
   """
   An app's paid shared-environment subscription, or null when it has none (e.g. unpublished or on the free quota). Caller must be a member of the app's org.
   """

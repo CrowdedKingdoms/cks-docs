@@ -27,6 +27,7 @@ type AppUsageProjection {
   daysElapsed: Float!
   projectedBytes: String
   freeAllowanceBytes: String!
+  allowancePooled: Boolean!
   projectedPctOfFree: Float
   onTrackToExceed: Boolean
   inputLogByteHours: String!
@@ -65,7 +66,11 @@ Projected end-of-month egress bytes (linear extrapolation), or null when insuffi
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>freeAllowanceBytes</b></code>](#free-allowance-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #free-allowance-bytes */} 
-Per-app free monthly egress allowance in bytes (5 decimal GB).
+This app's free monthly egress allowance in bytes: 5 decimal GB of its own, or, in a month its organization's allowance is pooled (allowancePooled), what it holds of the pool plus what the pool has left.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>allowancePooled</b></code>](#allowance-pooled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #allowance-pooled */} 
+True when this month's free allowance is the organization's pool, shared by all its apps (allowancePool), rather than this app's own.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedPctOfFree</b></code>](#projected-pct-of-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #projected-pct-of-free */} 
