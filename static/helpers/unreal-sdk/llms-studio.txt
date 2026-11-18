@@ -184,7 +184,7 @@ The left rail:
 - An **organization** combo box, with **All organizations** at the top. This is a filter for the list; it does not by itself change which organization new resources are created in.
 - A **Search apps** box.
 - A status strip: **All**, **Live**, **Draft**, **Archived**. It opens on All.
-- The app list, each row showing the app's name, its URL identifier, and its status. The count under the list says how many apps match, and how many free app slots the organization has used when one organization is selected.
+- The app list, each row showing the app's name, its URL identifier, and its status. The count under the list says how many apps match, and how many free app slots the organization has used when one organization is selected. The slots are retired and no longer change what is free: since November 2026 an organization's apps share one free allowance.
 
 :::tip[Picking an organization in the filter narrows the list.]
 It does not move where a new app is created until you also pick or create an app there.
@@ -220,7 +220,7 @@ Press **Create app** in the page header. It needs an organization to create in: 
 
 **Step 1, Name your app.** Type a name; the URL identifier (lowercase letters, digits, hyphens) is derived from it, and **Advanced options** lets you override it and add a description. Pick a datacenter card. The first available datacenter is preselected.
 
-**Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots. Press **Create app**. The Game API connection is available immediately; there is no provisioning wait.
+**Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots, which are retired: its apps share one free allowance. Press **Create app**. The Game API connection is available immediately; there is no provisioning wait.
 
 :::note[The datacenter is chosen once, at creation, and cannot be changed later.]
 Everything the app stores lives in that one datacenter. Pick the one closest to your players. Status and visibility are not asked at creation; the server defaults them and the details pane changes them afterwards.
@@ -361,7 +361,6 @@ All of it lands on one settings class, `UCrowdySDKDeveloperSettings`, which you 
 | `GameApiWsUrl` | The same endpoint with a WebSocket scheme. |
 | `UDPProtocol` | The Connection tab. |
 | `UDPTimeoutSeconds` | The Connection tab (6 to 120 seconds). |
-| `HostPollIntervalSeconds` | The Connection tab (1 to 60 seconds). |
 | `ServerObjectCallTimeoutSeconds` | The Connection tab, under Server Objects, as **Call Timeout** (11 to 120 seconds, default 20). |
 | `ServerObjectOpenTimeoutSeconds` | The Connection tab, under Server Objects, as **Open Timeout** (1 to 60 seconds, default 10). |
 
@@ -387,7 +386,7 @@ They are read-only in Project Settings on purpose, so that Crowdy Studio is the 
 
 ### The runtime setters
 
-The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. `ReloadEndpointsFromSettings` is deprecated and does nothing, so remove it from your graphs and code; it is kept only so existing call sites still compile: the API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session.
+The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. The API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session without a reload call.
 
 `RequestVersionInfo` asks the server for its version before or after sign-in and answers on `OnVersionInfo` (`FOnVersionInfo`, two `FGameVersion` parameters: the server's version and, in `ClientVersion`, the minimum client version it still accepts). Both arrive as zeroes when the query fails.
 
@@ -620,11 +619,11 @@ With none running the page reads "No running session".
 
 What it lists:
 
-- **Session**: the app id, your user id, the game token id, your UUID, a **Host ID** line (deprecated; see [Deprecated](#deprecated)), and whether a game token is held (never its value).
+- **Session**: the app id, your user id, the game token id, your UUID, a **Leader ID** line, the id of the client that writes replicated subsystems (it reads empty when nobody leads), and whether a game token is held (never its value).
 - **Teams (N)**: the teams the local player is in, from the runtime cache. Until the game has fetched teams it says so.
 - **Channels (N)**: the channels the client has joined, whether the reliable RPC channels are ready, and the session channel's id.
 - **Avatars (N)**: the local player's avatars, from the cache.
-- **Entities**: the local player id, the same deprecated **Host ID** line, and the entities this client owns, by actor name. There is no every-entity list; the owned slice is the one that confirms spawns and ownership while you debug.
+- **Entities**: the local player id, the same **Leader ID** line, and the entities this client owns, by actor name. There is no every-entity list; the owned slice is the one that confirms spawns and ownership while you debug.
 
 ![The Inspector page with no session running](/img/unreal-sdk/studio-inspector.png)
 
@@ -658,7 +657,7 @@ The cook rebakes on its own, so a packaged build is right even if you forget. Pr
 
 Three summary pills: classes, functions, and replicated properties. A search box filters by class, function, or property name, and a **Cards** / **Table** toggle picks the layout.
 
-In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its **Owned By**, read live from the class defaults rather than baked. The deprecated **Host Override** chip is described under [Deprecated](#deprecated).
+In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its **Owned By**, read live from the class defaults rather than baked.
 
 In Table view the same data is one flat table: type, name, routing or notify, flags, id.
 
@@ -675,24 +674,6 @@ It is rewritten by every Rebuild and every cook. Ignore it in your version contr
 :::
 
 For the full packaging flow, see the [Packaging guide](../guides/packaging.md).
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The Host ID line
-
-The Leader replaces the host; read who leads with **Get Leader User ID**, as [The Leader](../runtime/leader.md#follow-the-leader) shows.
-
-The Inspector's **Session** and **Entities** lists still show a **Host ID** line. It is the id of the client that writes replicated subsystems: the Leader's entity id by default, or the elected host's when **Leader Source** is **Elected Host (Deprecated)**.
-
-### The Host Override chip
-
-`HostOverride` has no replacement; [Entity component](../runtime/entity-component.md#deprecated) describes it.
-
-A class card shows a **Host Override** chip next to **Owned By** for a class Owned By Player. Like **Owned By**, it is a live value read from the class defaults, not part of the bake.
 
 ## Gotchas
 

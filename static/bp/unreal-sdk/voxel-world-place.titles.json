@@ -1,0 +1,44 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "PlaceBlock\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy Voxel World",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Get Actor Location\nTarget is Actor",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "World to Voxel",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_MakeStruct_0",
+		"class": "/Script/BlueprintGraph.K2Node_MakeStruct",
+		"title": "Make Crowdy Voxel",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_MakeStruct_1",
+		"class": "/Script/BlueprintGraph.K2Node_MakeStruct",
+		"title": "Make Crowdy Voxel Write",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_2",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Voxel\nTarget is Crowdy Voxel World",
+		"title_drawn": true
+	}
+]

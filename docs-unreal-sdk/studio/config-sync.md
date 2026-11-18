@@ -124,7 +124,6 @@ All of it lands on one settings class, `UCrowdySDKDeveloperSettings`, which you 
 | `GameApiWsUrl` | The same endpoint with a WebSocket scheme. |
 | `UDPProtocol` | The Connection tab. |
 | `UDPTimeoutSeconds` | The Connection tab (6 to 120 seconds). |
-| `HostPollIntervalSeconds` | The Connection tab (1 to 60 seconds). |
 | `ServerObjectCallTimeoutSeconds` | The Connection tab, under Server Objects, as **Call Timeout** (11 to 120 seconds, default 20). |
 | `ServerObjectOpenTimeoutSeconds` | The Connection tab, under Server Objects, as **Open Timeout** (1 to 60 seconds, default 10). |
 
@@ -150,7 +149,7 @@ They are read-only in Project Settings on purpose, so that Crowdy Studio is the 
 
 ### The runtime setters
 
-The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. `ReloadEndpointsFromSettings` is deprecated and does nothing, so remove it from your graphs and code; it is kept only so existing call sites still compile: the API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session.
+The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. The API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session without a reload call.
 
 `RequestVersionInfo` asks the server for its version before or after sign-in and answers on `OnVersionInfo` (`FOnVersionInfo`, two `FGameVersion` parameters: the server's version and, in `ClientVersion`, the minimum client version it still accepts). Both arrive as zeroes when the query fails.
 

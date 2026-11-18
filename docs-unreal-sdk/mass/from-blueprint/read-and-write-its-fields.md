@@ -84,7 +84,7 @@ The pose of a row has its own node, because it is not a plain field. **Set Crowd
 
 - A **Pose Name** of `None` clears the pose.
 - A name the anim set does not author also clears the pose, and says so in the log.
-- It returns false, and does nothing, if the entity is gone, has no pose fragment, Mass is processing, or you named a pose for an entity whose class this client cannot resolve yet. Add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**; see [Entities and Spawning](../../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all).
+- It returns false, and does nothing, if the entity is gone, has no pose fragment, Mass is processing, or you named a pose for an entity whose class this client cannot resolve yet. Add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**; see [Entities and Spawning](../../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all).
 - The pose is a visual. An arriving pose replaces one you set.
 
 See [Play poses and one-shot actions](../play-poses-and-one-shot-actions.md).

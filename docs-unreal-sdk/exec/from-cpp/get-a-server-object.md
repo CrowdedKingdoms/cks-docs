@@ -60,6 +60,8 @@ Look again when the location moves into another area, and `Release` the old one.
 
 A Server Object is always in one of four statuses, `ECrowdyServerObjectStatus`. Read the current one with `GetStatus()`; `OnStatusChanged`, an `FOnCrowdyServerObjectStatusChanged`, runs on every change after you acquire. `GetDefinition()` and `GetInstanceId()` return what it was acquired with.
 
+`GetSignedInUserId()` is the signed-in player's user id. `GetConnectedUserId()`, on the object and on the subsystem, is the player whose token its calls go out with: 0 while its connection is closed, and just after a sign-in as another player it can still name the previous one.
+
 | Status | Meaning |
 |---|---|
 | Connecting | Joining the Server Object and reading its variables for the first time, or waiting until the server can answer. |

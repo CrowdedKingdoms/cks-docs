@@ -340,7 +340,7 @@ The warband from [Raiders on the north road](../../exec/examples/raiders-on-the-
 
 `BP_Raider` is a Crowdy entity with a **Crowdy Server Object** component whose **Definition** is `CSO_Raider` and whose **Instance Mode** is **This Actor's Area**, as [the actors](../../exec/examples/raiders-on-the-north-road.md#the-actors) section of that page sets up. For a row, `BP_Raider` needs the same treatment as the player in the steps above: a flagged material and a `crowdy.mass.derive` check.
 
-A client that never spawns a `BP_Raider` itself cannot resolve the class from the network. Add `BP_Raider` to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. See [Entities and Spawning](../../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all).
+A client that never spawns a `BP_Raider` itself cannot resolve the class from the network. Add `BP_Raider` to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. See [Entities and Spawning](../../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all).
 
 With **This Actor's Area**, the game follows the areas around the local player's pawn or camera, as many as **Areas Followed Around a Player** says, which is 1 on `CSO_Raider`. A raider outside those areas has no values to read.
 

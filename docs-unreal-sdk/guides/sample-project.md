@@ -58,7 +58,7 @@ Eight switches, each demonstrating one part of the SDK.
 | Ghost | `ASampleGhostSwitch` | Owner tracking: your own state echoed back as a proxy |
 | Voice | `ASampleVoiceSwitch` | Voice chat capture and playback |
 | Channel announce | `ASampleChannelSwitch` | Multicast RPC over a self-provisioned channel |
-| Host spawn | `ASampleHostSwitch` | A spawn gate on a deprecated API, under [Deprecated](#deprecated) |
+| Host spawn | `ASampleHostSwitch` | A spawn gate on a removed API, under [Removed](#removed) |
 | Persistence | `ASamplePersistenceSwitch` | Push and pull saved gameplay state |
 | Teams | `ASampleTeamsSwitch` | Find or create a team, join it, leave it on the next interact |
 
@@ -190,17 +190,17 @@ Read the cache for instant UI and treat the callbacks as eventual truth. See [Te
 
 The sample project is already set up for you. Sign up for a developer account, then log in through Crowdy Studio and again through the game. Sync the app first if it is not already synced. Logging in through the game yields the identity session token; an app-scoped token for the app is minted from it before replication works. See [Authentication](../services/authentication.md).
 
-## Deprecated
+## Removed
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
+:::warning[The API this section shows was deprecated in 2.25 and is removed in 2.26.]
+[Removed after 2.25](./deprecated.md) lists each item and what replaces it.
 :::
 
 <a id="host-spawn"></a>
 
-### Host spawn (deprecated API)
+### Host spawn (removed API)
 
-**Switch Is Crowdy Entity Locally Owned**, asked about the entity or subsystem you are about to write, replaces this gate; [Checking who writes an entity](../runtime/leader.md#checking-who-writes-an-entity) on The Leader teaches it. `ASampleHostSwitch` spawns a world object, but only when `UCrowdyUtilities::GetCrowdyHasAuthority(this)` returns true. `GetCrowdyHasAuthority` is deprecated in the current SDK, where it still works and reports the Leader by default, so this gate runs on the Leader.
+**Is Local Leader**, on the Crowdy Leader Subsystem, replaces this gate, because it is true on one client only; [The Leader](../runtime/leader.md#follow-the-leader) teaches it. **Switch Is Crowdy Entity Locally Owned** is a gate on a write to an entity you own, not a replacement for it. `ASampleHostSwitch` spawns a world object, but only when `UCrowdyUtilities::GetCrowdyHasAuthority(this)` returns true. `GetCrowdyHasAuthority` is removed from the current SDK.
 
 ```cpp
 if (UCrowdyUtilities::GetCrowdyHasAuthority(this))

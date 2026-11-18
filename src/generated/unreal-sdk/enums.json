@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-18T18:14:04Z",
+  "sdk_version": "2.26.0",
   "table": "enums",
   "columns": [
     {
@@ -37,7 +37,8 @@
         "Disconnected",
         "Connecting",
         "Connected",
-        "Failed"
+        "Failed",
+        "Inactive"
       ],
       "module": "CrowdySDK",
       "header": "CrowdyConnectionMonitor.h",
@@ -153,19 +154,6 @@
       "allowlist": ""
     },
     {
-      "id": "ECrowdyEventScope",
-      "name": "ECrowdyEventScope",
-      "values": [
-        "Everyone",
-        "OwnerOnly"
-      ],
-      "module": "CrowdyNet",
-      "header": "ECrowdyTarget.h",
-      "page": "guides/deprecated",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
       "id": "ECrowdyTeamCreationPolicy",
       "name": "ECrowdyTeamCreationPolicy",
       "values": [
@@ -265,37 +253,12 @@
         "Connecting",
         "Connected",
         "Reconnecting",
-        "GateKeep"
+        "GateKeep",
+        "Inactive"
       ],
       "module": "CrowdyNet",
       "header": "CrowdyUDPSubsystem.h",
       "page": "runtime/connection-and-reconnect",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "ECrowdyEntityMode",
-      "name": "ECrowdyEntityMode",
-      "values": [
-        "Dynamic",
-        "Static"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEntityComponent.h",
-      "page": "runtime/entity-component",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "ECrowdyHostOverride",
-      "name": "ECrowdyHostOverride",
-      "values": [
-        "Allow",
-        "OwnerOnly"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEntityComponent.h",
-      "page": "runtime/entity-component",
       "editor": false,
       "allowlist": ""
     },
@@ -347,11 +310,11 @@
         "None",
         "Owner",
         "RemoteProxy",
-        "HostOwned"
+        "WorldOwned"
       ],
       "module": "CrowdyReplication",
       "header": "CrowdyEntityTypes.h",
-      "page": "runtime/entity-component",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": ""
     },
@@ -402,6 +365,39 @@
       "module": "CrowdyServices",
       "header": "CrowdyAccountTypes.h",
       "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyActorOwnerResult",
+      "name": "ECrowdyActorOwnerResult",
+      "values": [
+        "Confirmed",
+        "Unknown",
+        "Failed"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyActorOwners.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyClaimResult",
+      "name": "ECrowdyClaimResult",
+      "values": [
+        "Success",
+        "NotSignedIn",
+        "NotClaimable",
+        "AlreadyClaimed",
+        "Refused",
+        "Failed",
+        "BadReply",
+        "NotBuilt"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
       "editor": false,
       "allowlist": ""
     },
@@ -492,6 +488,135 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyModBuildStatus",
+      "name": "ECrowdyModBuildStatus",
+      "values": [
+        "Queued",
+        "Building",
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyModDiagnosticSeverity",
+      "name": "ECrowdyModDiagnosticSeverity",
+      "values": [
+        "Error",
+        "Warning",
+        "Info",
+        "Hint"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyModDiagnosticSource",
+      "name": "ECrowdyModDiagnosticSource",
+      "values": [
+        "Rustc",
+        "Local",
+        "Runtime"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyModResult",
+      "name": "ECrowdyModResult",
+      "values": [
+        "Success",
+        "NotSignedIn",
+        "Denied",
+        "NotFound",
+        "Refused",
+        "Failed",
+        "BadReply",
+        "Busy",
+        "RevisionChanged",
+        "NotBuilt"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyModRunPhase",
+      "name": "ECrowdyModRunPhase",
+      "values": [
+        "NotStarted",
+        "Building",
+        "BuildFailed",
+        "Deploying",
+        "DeployFailed",
+        "Deployed",
+        "Running"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyModScriptReadResult",
+      "name": "ECrowdyModScriptReadResult",
+      "values": [
+        "Success",
+        "NotInGrid",
+        "Failed",
+        "NotBuilt"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyModScriptShapeKind",
+      "name": "ECrowdyModScriptShapeKind",
+      "values": [
+        "Box",
+        "Sphere",
+        "Cylinder",
+        "Capsule",
+        "Plane"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyModScriptState",
+      "name": "ECrowdyModScriptState",
+      "values": [
+        "Running",
+        "Stopped",
+        "Erred",
+        "CircuitOpen"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyProximityChatResult",
       "name": "ECrowdyProximityChatResult",
       "values": [
@@ -543,6 +668,95 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyStudioPayer",
+      "name": "ECrowdyStudioPayer",
+      "values": [
+        "Unknown",
+        "Player",
+        "App",
+        "Platform"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioAgent.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyStudioProjectKind",
+      "name": "ECrowdyStudioProjectKind",
+      "values": [
+        "Server",
+        "Client",
+        "Paired",
+        "Independent"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioProjects.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyStudioProjectSource",
+      "name": "ECrowdyStudioProjectSource",
+      "values": [
+        "Studio",
+        "GitHub"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioProjects.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyStudioResult",
+      "name": "ECrowdyStudioResult",
+      "values": [
+        "Success",
+        "NotSignedIn",
+        "Denied",
+        "NotFound",
+        "Refused",
+        "Failed",
+        "BadReply",
+        "NotBuilt",
+        "NoModel"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioTypes.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyStudioRunMode",
+      "name": "ECrowdyStudioRunMode",
+      "values": [
+        "DraftTest",
+        "Live"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioTypes.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyStudioTarget",
+      "name": "ECrowdyStudioTarget",
+      "values": [
+        "Server",
+        "Client"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioTypes.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyUILayer",
       "name": "ECrowdyUILayer",
       "values": [
@@ -554,6 +768,41 @@
       "module": "CrowdyServices",
       "header": "ECrowdyUILayer.h",
       "page": "services/ui-interfaces",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyVideoSendResult",
+      "name": "ECrowdyVideoSendResult",
+      "values": [
+        "Sent",
+        "NotConnected",
+        "NoLocalPlayer",
+        "Empty",
+        "TooLarge",
+        "QueueFull",
+        "CodecNotSent"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyVideoSender.h",
+      "page": "runtime/video-frames",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyVoxelResult",
+      "name": "ECrowdyVoxelResult",
+      "values": [
+        "Ok",
+        "NotSignedIn",
+        "Refused",
+        "Failed",
+        "BadReply",
+        "NoAnswer"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyVoxels.h",
+      "page": "runtime/voxel-chunks",
       "editor": false,
       "allowlist": ""
     },

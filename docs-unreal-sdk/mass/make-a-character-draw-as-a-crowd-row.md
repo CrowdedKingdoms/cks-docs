@@ -23,7 +23,7 @@ Add a **Crowdy Entity Component** to `ALanternPlayer`, or to `BP_LanternPlayer` 
 | Setting | Value | Why |
 |---|---|---|
 | **Replicate Movement** | **Auto** | Streams the executor's snapshot every replication interval. **Auto** is on for a Character, so leave it. **Off** is event-only and moves nothing. |
-| **Identity Policy** | **Player Derived** | For a player pawn: the id comes from the signed-in account, so only one actor per client can use it, the locally controlled primary pawn. |
+| **Identity Policy** | **Player Derived** | For a player pawn: the id is random and the game session keeps it for one sign-in, so only one actor per client can use it, the locally controlled primary pawn. |
 | **Owned By** | **Player** | This client owns the entity. The options are **Auto**, **Player** and **World**, and **Auto** is the default: World when placed in the level, Player when spawned. |
 | **State Executor** | An executor whose state struct has the fields below | Builds the snapshot sent every interval. Unset means the SDK's transform-only default. |
 | **Auto Register** | on | Joins the continuous channel at `BeginPlay`. |
@@ -181,7 +181,7 @@ With it on, every class is built from itself. It pushes aside per-class bindings
 ## Gotchas
 
 - The Mass backend skips your own locally owned entity. Use **Render Local Owner** or an area spawner to see a row on one client; see [Check it with one client](./turn-mass-on-for-a-map.md#check-it-with-one-client).
-- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A moving entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
+- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A moving entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
 - `crowdy.mass.derive` and `crowdy.mass.derive.force` are compiled out of Shipping builds; see [Fix a crowd that does not look right](./troubleshooting.md).
 
 ## Related

@@ -3,7 +3,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/subsystems
 
 # Classes and Subsystems
 
-The consumer-facing classes you fetch most, with the module they live in and where to read more. The manifest carries 32 classes tagged as subsystems; 8 are excluded here because they are internal plumbing or deprecated, listed at the bottom of this page for completeness.
+The consumer-facing classes you fetch most, with the module they live in and where to read more. A few of the manifest's subsystem classes are left out because they are internal plumbing or superseded; they are listed at the bottom of this page.
 
 ## When you come here
 
@@ -31,9 +31,17 @@ You know the shape of what you need (send an event, read a team, find the Leader
   UCrowdyAvatars: "Player profiles and per-app avatar state; only GetMyAvatars writes the local cache.",
   UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
   UCrowdyProximityChat: "Nearby text chat: send a line to the players within a distance of your pawn's chunk, and hear theirs.",
-  UCrowdyHostSubsystem: "Deprecated: use `UCrowdyLeaderSubsystem`. See [Deprecated](#deprecated).",
+  UCrowdyVideoSender: "Sends encoded JPEG video frames to the players near your pawn. You capture and encode; the SDK fragments and sends. See [Video Frames](/unreal-sdk/runtime/video-frames).",
+  UCrowdyActorOwners: "Resolves a remote actor id to the user the platform registers it to, for Block Player and File Report. Confirmed does not prove who sent a realtime message. See [Player Safety](/unreal-sdk/services/player-safety).",
   UCrowdyLeaderSubsystem: "The Leader: the one client per app that writes replicated subsystems. GetLeaderUserID, IsLocalLeader and OnLeaderChanged. Needs your app's server code deployed once; see [The Leader](/unreal-sdk/runtime/leader).",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
+  UCrowdyVoxels: "Fetches the platform's voxel chunks. See [Voxel Chunks](/unreal-sdk/runtime/voxel-chunks).",
+  UCrowdyVoxelWorld: "A live voxel world: keeps chunks around followed actors loaded, merges other players' edits and sends your own. A world subsystem; see [Voxel Chunks](/unreal-sdk/runtime/voxel-chunks).",
+  UCrowdyClaims: "Claims chunks, finds claims, and answers whether the player may build in a chunk. See [Chunk Claims](/unreal-sdk/runtime/chunk-claims).",
+  UCrowdyMods: "Builds, deploys, switches, calls and reads a player's own server code on their grids, and runs a Studio project. See [Mods](/unreal-sdk/runtime/mods).",
+  UCrowdyModScripts: "Runs the Mod Scripts a grid serves to the players standing in it, on Win64. A world subsystem; see [Mod Scripts](/unreal-sdk/runtime/mod-scripts).",
+  UCrowdyStudioAgent: "The Studio agent's boot material, token hand-off, consent, model use and Allow Live Modding check. See [Studio Dock](/unreal-sdk/runtime/studio-dock).",
+  UCrowdyStudioProjects: "Lists, reads and creates the player's Studio projects. See [Studio Dock](/unreal-sdk/runtime/studio-dock).",
   UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",
   UCrowdyMassEntitySubsystem: "The crowd rows of a map that draws with Mass: targets, traces, events and fields. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
   UCrowdyMassServerRecordsSubsystem: "The Server Object records of crowd rows, and a callback when one changes. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
@@ -60,27 +68,16 @@ Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`
 
 ## Excluded from this table
 
-Eight of the manifest's 32 subsystem classes do not appear in the table above:
+These subsystem classes do not appear in the table above:
 
 - `UCrowdyCppClientSubsystem`, `UCrowdyCppReplicationSubsystem`, `UCrowdySDKBridgeSubsystem`, `UCrowdyWorkerThreadsSubsystem`: the vendored CrowdyCPP bridge and its worker threads. The game-facing surface is `UCrowdySDKSubsystem`; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
 - `UCrowdyConnectionMonitor`: the SDK reconnects on its own after a timeout, so starting the monitor adds a second retry loop. What it reports is covered on [Connection and reconnect](../runtime/connection-and-reconnect.md).
-- Two test harnesses in the Mass module that the SDK uses to verify itself. They are not part of the surface a game uses.
+- Two test harnesses in the Mass module that the SDK uses to verify itself, and `UCrowdyMassVisualReleaseQueue`, bookkeeping the Mass backend runs. None of them is part of the surface a game uses.
 - `UCrowdyPersistenceSubsystem`: superseded by server code on ck-exec; still present and working, and the plugin does not mark it deprecated. It reads the `CrowdyPersistent` and `CrowdySingleton` struct tags. See [What's Changed](../guides/whats-changed.md#persistence) for what still works and what does not get further development.
 
-## Deprecated
+## The Leader on the game session
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The host subsystem and the host on the game session
-
-`UCrowdyLeaderSubsystem`, explained on [The Leader](../runtime/leader.md), replaces both. The generated table above still lists `UCrowdyHostSubsystem`, because the class is still there.
-
-| Class | What it was for |
-|---|---|
-| `UCrowdyHostSubsystem` | Host election and the server-validated host query. The elected host exists only when Leader Source is Elected Host (Deprecated); otherwise its host functions report the Leader. Every page on it is [Host Election](../services/host-election.md). |
-| `UCrowdyGameSession` | Only its host members are deprecated: `GetHostID` and `OnHostIDUpdated`. Under Elected Host they carry the elected host; use `Get Leader User ID` and `On Leader Changed` instead. |
+`UCrowdyGameSession::GetAppWriterID()` returns the Leader's id in C++, and `OnHostIDUpdated` (`FOnHostIDUpdated`) is a native delegate that fires when the Leader changes. `GetHostID` is gone, and `OnHostIDUpdated` is no longer assignable in Blueprint: use **Get Leader User ID** and **On Leader Changed** on `UCrowdyLeaderSubsystem`, explained on [The Leader](../runtime/leader.md).
 
 ## Gotchas
 
@@ -147,6 +144,7 @@ Every delegate below fires on the game thread. This is a constant fact about eve
 ## Gotchas
 
 - A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in a C++ Game Instance's `Init` after `Super::Init()`, and in Blueprint from the Game Mode's Event BeginPlay (the Game Instance's Event Init runs before the subsystems exist); a world subsystem's needs a valid world first.
+- A custom event bound to a delegate must match its signature, so when a delegate gains a parameter the Blueprint fails to compile until you refresh the event (right-click it, Refresh Nodes). `OnOwnershipRequested` on the entity subsystem gained `RequesterUserID` last: wire it to **Grant Ownership Transfer To Player**'s `New Owner User ID` ([Ownership transfer](../runtime/ownership-transfer.md#the-two-events)).
 - Binding twice fires your handler twice. Unbind (`Remove Dynamic` or `RemoveDynamic`) before a re-bind on a path that can run more than once, such as a widget that reconstructs.
 - The voice delegates live on `UCrowdySDKSubsystem`, which stays alive across maps, so you bind them once and they keep firing after a map change. The earlier voice delegates (`OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived`, `OnStreamTimeout`) and the audio device monitor's two are gone. See [Voice chat](../services/voice-chat.md).
 
@@ -243,7 +241,7 @@ reference in a received RPC is delivered as null instead.
 
 `crowdy.rpc.loopback` and `crowdy.state.loopback` are not the same switch wearing two names.
 `crowdy.rpc.loopback` delivers a sent event back to your own receive path. `crowdy.state.loopback` cannot
-replay onto the same actor that sent the delta: an owner's own entity drops a non-host-sourced delta, and
+replay onto the same actor that sent the delta: an owner's own entity drops a delta from any other client, and
 changed-detection on decode sees no change against identical values. Instead it spawns a distinct,
 lazily-created mirror entity and replays deltas onto that, so `CrowdyOnRep` still fires with one PIE
 client. Expect two entities, not one, when you turn it on.
@@ -372,8 +370,8 @@ default no longer applies.
 Two runtime setters on `UCrowdySDKSubsystem` look like a way to configure these values in code, but they
 are session-only overrides, not writes to the settings class: `SetDiscoveryUrl` stores a shared origin for
 the current session and is only read when `Environment` is Custom, and `SetGameApiUrl` stores one Game API
-HTTP endpoint for the session. `ReloadEndpointsFromSettings` is deprecated: it is kept so old call sites still compile and does nothing, so remove it from your graphs and code;
-the API client already re-reads both endpoints from the settings on every call.
+HTTP endpoint for the session. The API client re-reads both endpoints from the settings on every call, so a
+change to the settings needs no reload call.
 
 ### Server Object gateway domains
 
@@ -392,21 +390,7 @@ Both apply from the next Play, and to the editor's developer connections. A drop
 
 ### Leader Source
 
-`LeaderSource` (**Leader Source**, an `ECrowdyLeaderSource`) is under **Crowdy SDK, Replication** and is yours to set. It decides who writes shared state. Under **Server Object**, the default, no client writes an entity Owned By World and the Leader writes replicated subsystems. See [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host). The **Elected Host (Deprecated)** value and `HostPollIntervalSeconds` are under [Deprecated](#deprecated).
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Leader Source: Elected Host
-
-**Server Object**, the default value of [Leader Source](#leader-source), replaces it, and [The Leader](../runtime/leader.md) teaches what it does. **Elected Host (Deprecated)** (`ECrowdyLeaderSource::ElectedHost`, `LeaderSource=ElectedHost` in the ini) keeps the old elected host: it writes World entities and replicated subsystems. The whole elected host goes in a later release.
-
-### HostPollIntervalSeconds
-
-Nothing replaces it, because under **Server Object** the SDK does not poll for a host. `HostPollIntervalSeconds` (Network category, written by Config Sync) sets how often the SDK polls for the elected host and only matters when Leader Source is **Elected Host (Deprecated)**. The generated table above still lists it, because the property is still there.
+There is no Leader Source setting. The Leader is always chosen by a Server Object, and no client writes an entity Owned By World; see [The Leader](../runtime/leader.md). A project ini that still sets `LeaderSource=ElectedHost` is ignored, so you can delete the line.
 
 ## Gotchas
 
@@ -467,8 +451,8 @@ tell the router this custom event is RPC-style rather than a struct handler.
 
 `CrowdyRecipient` takes an `ECrowdyEventRecipient` name and defaults to `SpatialMulticast`. The enumerators,
 in declared order, are `SpatialMulticast`, `Multicast`, and `OwningClient`. See
-[enums](/unreal-sdk/reference/enums) for the full type. The deprecated `Host` value is under
-[Deprecated](#deprecated).
+[enums](/unreal-sdk/reference/enums) for the full type. There is no `Host` value: a saved
+`CrowdyRecipient = "Host"` reads as `OwningClient` and logs a warning that names the function.
 
 `CrowdyDecay` takes an `ECrowdyDecayRate` name and defaults to `No_Decay`. The enumerators are `No_Decay`,
 `Exponential_Decay`, `Linear_50`, `Linear_25`, `Linear_10`, and `Linear_5`. It applies only to
@@ -499,26 +483,6 @@ state property never carries it. See [state metadata keys](./state-meta-keys.md)
 :::caution[The receiver must be a real `UFUNCTION`. The `CROWDY_EVENT(Name)` macro only generates the call
 site. It cannot emit the `UFUNCTION`, because UnrealHeaderTool does not expand macros when it scans for
 reflected functions.]
-:::
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### CrowdyRecipient = "Host"
-
-`OwningClient` replaces the `Host` value of `CrowdyRecipient`; see
-[Recipients and routing](../runtime/recipients-and-routing.md#targeted-owningclient).
-
-:::warning[`CrowdyRecipient = "Host"` is deprecated and warns: use `OwningClient`. On a replicated subsystem it runs on the Leader; on an
-actor it is dropped with a warning that names Leader Source, unless Leader Source is Elected Host, where it
-addresses the elected host. Neither is an enforcement boundary, so do not treat Host-only delivery as a
-security control.]
-Anyone can hold the Leader or host role at some point in a session. If a call must only take effect for a
-server-validated reason, check that reason on the receiving end; do not rely on the recipient filter alone
-to keep an untrusted client from reaching the logic.
 :::
 
 ## Gotchas
@@ -626,7 +590,7 @@ The Blueprint "Crowdy Replication" dropdown offers **None**, **Replicated** and 
 
 ## Related
 
-- [Crowdy State](/unreal-sdk/runtime/crowdy-state): owner diffing, host precedence under Elected Host, world entities, and the
+- [Crowdy State](/unreal-sdk/runtime/crowdy-state): owner diffing, world entities, and the
   keyframe baseline.
 - [RPC metadata keys](./rpc-meta-keys.md)
 
@@ -635,8 +599,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/enums
 
 # Enums
 
-The enums you reach for most often when working with entities, RPC events, and Crowdy State properties, described in full below. Every other BlueprintType enum the SDK exposes is in the generated table at the end of this page, so a name you cannot find in the ten sections here is still worth a search there before you open a header. Deprecated enums and values are together under [Deprecated](#deprecated).
-
+The enums you reach for most often when working with entities, RPC events, and Crowdy State properties, described in full below. Every other BlueprintType enum the SDK exposes is in the generated table at the end of this page, so a name you cannot find in the nine sections here is still worth a search there before you open a header.
 ## ECrowdyEventRecipient
 
 Who runs a CrowdyEvent, and over which transport.
@@ -649,7 +612,7 @@ Header: `Core/UDP/Enums/ECrowdyMessageType.h`.
 | `Multicast` | Every member of the session channel runs it, over the channel transport, at any distance with no decay. |
 | `OwningClient` | Only the client that owns the target entity runs it. |
 
-The deprecated `Host` value is under [Deprecated](#deprecated).
+There is no Host value: a saved one reads as `OwningClient`, as [Recipients and Routing](../runtime/recipients-and-routing.md) says.
 
 :::note[`SpatialMulticast` is the default recipient. For a full walkthrough of how each value selects its transport, see [Recipients and Routing](/unreal-sdk/runtime/recipients-and-routing).]
 :::
@@ -698,7 +661,7 @@ How an entity gets its `NetID`.
 
 | Value | Meaning |
 | --- | --- |
-| `PlayerDerived` | From the signed in user id. Only valid on the locally controlled player pawn. |
+| `PlayerDerived` | A random id the game session keeps for one sign-in (a new one at each sign-in), reused by a respawn. Only valid on the locally controlled player pawn. |
 | `Stable` | Hashed from the actor's level path. Every client computes the same id for a level placed actor. |
 | `Random` | A fresh id each session. Use for runtime spawns. |
 
@@ -713,7 +676,7 @@ Header: `Data/CrowdyEntityTypes.h`.
 | `None` | Not registered. |
 | `Owner` | This client simulates the entity and sends its state and events. |
 | `RemoteProxy` | This client receives state and events from the network. |
-| `HostOwned` | A World entity. No client writes it. |
+| `WorldOwned` | A World entity, which no client writes, or a replicated subsystem, which the Leader writes. Named `HostOwned` before 2.26; saved Blueprints load through a redirect, C++ renames it. |
 
 ## ECrowdyOwnedBy
 
@@ -725,20 +688,8 @@ Header: `Replication/Components/CrowdyEntityComponent.h`.
 | --- | --- |
 | `Auto` | World for an actor placed in the level, Player for one spawned during play. The default. |
 | `Player` | The client that placed or spawned it owns and simulates it (`Role=Owner`). |
-| `World` | No client writes it (`Role=HostOwned`, no per-client owner), and every client ignores Crowdy State sent for it; keep what changes about it in a Server Object. It applies to placed actors; one spawned during play belongs to its spawner. |
+| `World` | No client writes it (`Role=WorldOwned`, no per-client owner), and every client ignores Crowdy State sent for it; keep what changes about it in a Server Object. It applies to placed actors; one spawned during play belongs to its spawner. |
 | `Leader` | Whichever client [leads](../runtime/leader.md#an-npc-the-leader-simulates) writes it, placed or spawned, and the next Leader takes it over. For players who share a map; only the Leader spawns or destroys one. |
-
-## ECrowdyLeaderSource
-
-Where the client that writes shared entities comes from. Set it as **Leader Source** under **Project Settings, Plugins, Crowdy SDK, Replication** (`LeaderSource` on `UCrowdySDKDeveloperSettings`).
-
-Header: `Utils/CrowdySDKDeveloperSettings.h`.
-
-| Value | Meaning |
-| --- | --- |
-| `ServerObject` | The Leader, chosen by a Server Object the SDK deploys, writes replicated subsystems, and no client writes an entity Owned By World. Your app's server code must be deployed. The default. |
-
-The deprecated `ElectedHost` value is under [Deprecated](#deprecated). See [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host).
 
 ## ECrowdyStateHeartbeat
 
@@ -767,74 +718,15 @@ Header: `Customizations/CrowdyReplicationMode.h`.
 
 ## Every BlueprintType enum
 
-The ten above, and the deprecated ones below, are the ones this page explains in prose. The table below is generated from the same manifest that backs the rest of this reference section, grouped by module, and it lists every BlueprintType enum the manifest reports, including ones no page describes in words. Two wire-level enums no Blueprint-callable takes, `ECrowdyMessageType` and `ECrowdyErrorCode`, are BlueprintType in the header but missing from the manifest's enum group in this export, so they are absent below. The manifest carries each enum's name, its enumerator list, and where it lives, but not a meaning for each value, so for the "why" behind a value you still want the sections above or the concept page a row links to.
+The nine above, and `ECrowdyOwnership` below, are the ones this page explains in prose. The table below is generated from the same manifest that backs the rest of this reference section, grouped by module, and it lists every BlueprintType enum the manifest reports, including ones no page describes in words. Two wire-level enums no Blueprint-callable takes, `ECrowdyMessageType` and `ECrowdyErrorCode`, are BlueprintType in the header but missing from the manifest's enum group in this export, so they are absent below. The manifest carries each enum's name, its enumerator list, and where it lives, but not a meaning for each value, so for the "why" behind a value you still want the sections above or the concept page a row links to.
 
 <SurfaceTable table="enums" group="module" />
 
-Thirteen enums the manifest reports are excluded from the table above: two are deprecated (the persistence pull result and the connection monitor's reconnect state), one is a transport protocol enumeration nothing game-facing selects, and ten belong to another first-party module that rides in the same plugin build and are outside this SDK's own contract. None of them is part of the surface a game calls.
+Some enums the manifest reports are excluded from the table above: two belong to superseded features (the persistence pull result and the connection monitor's reconnect state), one is a transport protocol enumeration nothing game-facing selects, and the rest belong to another first-party module that rides in the same plugin build and are outside this SDK's own contract. None of them is part of the surface a game calls.
 
-## Deprecated
+## ECrowdyOwnership
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-<a id="ecrowdyeventscope"></a>
-
-### ECrowdyEventScope (deprecated)
-
-[`ECrowdyEventRecipient`](#ecrowdyeventrecipient), taken by **Send Crowdy Event**, replaces it. It went with `SendEvent` on the entity component. `Everyone` is `SpatialMulticast` and `OwnerOnly` is `OwningClient`.
-
-<a id="ecrowdyentitymode"></a>
-
-### ECrowdyEntityMode (deprecated)
-
-[`ECrowdyReplicateMovement`](#ecrowdyreplicatemovement) replaces it. `Mode` and `GetMode()` on `UCrowdyEntityComponent` are kept so old code compiles; `GetMode()` reads the setting, and true gives `Dynamic`. A C++ class that set `Mode = Dynamic` sets `ReplicateMovement = ECrowdyReplicateMovement::On` instead.
-
-| Value | Meaning |
-| --- | --- |
-| `Dynamic` | Movement is sent. |
-| `Static` | Event only. |
-
-<a id="ecrowdyownership"></a>
-
-### ECrowdyOwnership (deprecated)
-
-[`ECrowdyOwnedBy`](#ecrowdyownedby) replaces it. `LocalClient` is `Player`, `Host` is `Auto`. The component still reads it while Owned By is Auto, so a C++ constructor that sets it keeps its meaning.
-
-<a id="ecrowdyhostoverride"></a>
-
-### ECrowdyHostOverride (deprecated)
-
-Nothing replaces it: host corrections end with the elected host, and state that must be protected belongs in a [Server Object](../concepts/two-planes.md). It decides whether the elected host may super-user-write a client owned entity's Crowdy State. Read it from `UCrowdyEntityComponent`. Only meaningful when Owned By is `Player` and Leader Source is Elected Host; under Server Object an owner drops every host-sourced update, so it has nothing to refuse.
-
-Header: `Replication/Components/CrowdyEntityComponent.h`.
-
-| Value | Meaning |
-| --- | --- |
-| `Allow` | The host may override this entity's Crowdy State as a super-user, and the owner adopts the correction. The default. |
-| `OwnerOnly` | Only the owning client may change this entity. Even a host-sourced correction is dropped. |
-
-:::note[Host precedence on the Crowdy State plane is a convention, not a server-enforced boundary. Keep authoritative or cheat-sensitive state off this plane. See [the Leader](/unreal-sdk/runtime/leader).]
-:::
-
-### ECrowdyEventRecipient::Host
-
-`OwningClient`, under [ECrowdyEventRecipient](#ecrowdyeventrecipient), replaces it.
-
-| Value | Meaning |
-| --- | --- |
-| `Host` | Hidden from the dropdowns. On a replicated subsystem it runs on the [Leader](../runtime/leader.md). On an actor it is dropped with a warning naming Leader Source, unless Leader Source is Elected Host, where only the elected host runs it and may act on any entity it has locally. |
-
-### ECrowdyLeaderSource::ElectedHost
-
-`ServerObject`, under [ECrowdyLeaderSource](#ecrowdyleadersource), replaces it; the whole elected host goes in a later release.
-
-| Value | Meaning |
-| --- | --- |
-| `ElectedHost` | Shown as Elected Host (Deprecated). The elected host writes World entities and replicated subsystems, as before. |
-
-Under it, an entity whose `ECrowdyRole` is `HostOwned` is written by whoever is host and reassigned on host migration, so an entity Owned By `World` is the elected host's to write.
+The entity component no longer has an `Ownership` setting: [`ECrowdyOwnedBy`](#ecrowdyownedby) is how an entity says who writes it, and `ECrowdyEntityMode` is gone, replaced by `ECrowdyReplicateMovement` (`Dynamic` is `On`; `Static` is `Off`, except on a pawn with a movement component, which already sent movement in 2.25.x: there it is `On` or Auto). `ECrowdyOwnership` (`LocalClient`, `Host`) stays only as the argument of `UCrowdyEntitySubsystem::RegisterParticipant`.
 
 ## Gotchas
 
