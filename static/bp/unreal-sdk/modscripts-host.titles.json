@@ -1,0 +1,38 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy Mod Scripts",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_Self_0",
+		"class": "/Script/BlueprintGraph.K2Node_Self",
+		"title": "Self-Reference",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Host\nTarget is Crowdy Mod Scripts",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AddDelegate_0",
+		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
+		"title": "Bind Event to On Mod Script Prompt",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnModScriptPrompt\nCustom Event",
+		"title_drawn": true
+	}
+]

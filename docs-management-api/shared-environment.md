@@ -24,22 +24,35 @@ So in practice there is one model, and this page describes it.
 
 ## Free tier
 
-- An organization can create any number of apps on the shared environment.
-  `platformConfig.freeAppsPerOrg` (default **3**) is how many free app slots
-  `orgFreeAppQuota` counts; the slots are a count only and never change what is
-  free or billed.
-- Each app includes a **monthly development quota**, per UTC calendar month:
-  **5 GB of client egress**, **5 GB of client ingress** (decimal GB: 1 GB =
-  1,000,000,000 bytes), **20 CPU-hours of compute** pooled across GraphQL
-  resolvers and your app's [ck-exec](/exec/intro) code,
-  **1 GB-month of stored data**, and **1 GB of compute-module writes** (what your
-  hubs write when they save their state). Egress is the headline number and the
-  one most games reach first. Unused quota does not roll over.
+- An organization can create any number of apps on the shared environment, and
+  its apps share **one monthly development quota**, per UTC calendar month, worth
+  three apps' quotas however many apps it has: **15 GB of client egress**,
+  **15 GB of client ingress** (decimal GB: 1 GB = 1,000,000,000 bytes),
+  **60 CPU-hours of compute** pooled across GraphQL resolvers and your apps'
+  [ck-exec](/exec/intro) code, **3 GB-months of stored data**, and **3 GB of
+  compute-module writes** (what your hubs write when they save their state). Any
+  app may use all of it, and making more apps does not add to it. Usage is set
+  against what is left as it arrives, and what an app has used free stays free;
+  once the quota is used up, every app's usage is billed from the organization
+  wallet. Egress is the headline number and the one most games reach first.
+  Unused quota does not roll over.
+- **The quota has been the organization's since November 2026.** Before then each
+  app had its own, a third of the organization's (5 GB, 5 GB, 20 CPU-hours,
+  1 GB-month, 1 GB). An app that used a meter in November 2026 before the 19th
+  keeps its own quota for that meter until November 30; from December 1 every app
+  shares. `allowancePool` returns when sharing started (`effectiveFrom`), how
+  many apps' quotas the organization's is worth (`factor`) and whether the
+  current month shares (`pooledNow`); `orgUsageProjection` reports
+  `allowancePooled` and, for each shared meter, the quota (`poolUnits`) and how
+  much of it is used (`usedUnits`) in `allowancePools`.
+- `platformConfig.freeAppsPerOrg` (default **3**) is how many free app slots the
+  deprecated `orgFreeAppQuota` counts; the slots were a count only and never
+  changed what is free or billed.
 - **The quota runs a small game's hubs unfunded.** A hub saves its state on every
   persist interval, so its writes are roughly its state size times the persist
   rate times the hours it runs: a four-player game with about six hubs holding
   100 KB between them, saving every 30 seconds, writes about 12 MB per hour of
-  play, so the 1 GB covers roughly 80 hours a month. Writes are charged by the
+  play, so the 3 GB covers roughly 250 hours a month. Writes are charged by the
   byte only; how many rows a save touches does not matter.
 - **ck-exec instance limits follow funding.** An app whose organization cannot be
   charged (no spendable wallet balance, no auto-billing) may run **16 hub
@@ -62,7 +75,7 @@ So in practice there is one model, and this page describes it.
   per-operation, per-notification or per-row rate on the card (the message and
   operation counts were retired on 2026-09-06, rows written by compute modules
   on 2026-10-12).
-- Within the quota the app runs at no cost. Above it, usage is billed from your
+- Within the quota your apps run at no cost. Above it, usage is billed from your
   organization wallet at the published rate card **as it arrives**: each
   dimension's month-to-date total is rounded up to the next whole cent once, and
   the wallet is debited as the total crosses each cent, within about a minute of
@@ -119,8 +132,8 @@ everything above it at the second band's, so serving a connection faster never
 re-prices the bytes below. The first band pays for the connection; above it a
 gigabyte costs the same however the traffic is spread, batched or connected.
 Egress that is not delivered over a client connection, such as API responses,
-is charged at the first band's rate, and the 5 GB free quota comes off the first
-band first. The month's total is still rounded up to the cent
+is charged at the first band's rate, and what an app uses of the free quota comes
+off its first band first. The month's total is still rounded up to the cent
 once. A minute recorded in parts, because the client reconnected or moved to
 another server during it, is banded part by part. An app's bands for the month
 are set at its first charge in that month, so a change to the rate card reaches
@@ -152,8 +165,8 @@ code sends count as replication egress, billed through the same monthly egress
 aggregate as every other byte your app sends. See
 [usage and budgets](/exec/operations#usage-and-budgets).
 
-`orgFreeAppQuota` counts the free app slots (it is deprecated, and the slots do not
-change what is free or billed):
+`orgFreeAppQuota` counts the free app slots (it is deprecated, and the slots never
+changed what is free or billed):
 
 ```graphql
 query {

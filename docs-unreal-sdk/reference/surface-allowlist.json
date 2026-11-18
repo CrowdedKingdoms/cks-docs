@@ -2,6 +2,59 @@
   {
     "_comment": "Symbols from static/helpers/unreal-sdk/sdk-surface.json that check-unreal-surface.mjs must not report as undocumented. Each real entry is {\"id\": \"<surface id, e.g. UCrowdyTeams::GetMyTeamById or UCrowdySDKDeveloperSettings::AppId>\", \"reason\": \"internal|deprecated|mass|editor\", \"note\": \"<why a reader does not need it>\"}. A settings class id covers every property of that class. Entries without an id, like this one, are ignored."
   },
+  { "id": "ECrowdyModScriptExport", "reason": "internal", "note": "The Mod Script runtime's own export names; a game hosts scripts through UCrowdyModScripts." },
+  { "id": "ECrowdyModScriptOutcome", "reason": "internal", "note": "How one run of a Mod Script ended, inside the runtime; a game sees On Mod Script Stopped." },
+  { "id": "ECrowdyModScriptRunEnd", "reason": "internal", "note": "Why the runtime ended a Mod Script's run; a game sees the stop reason on On Mod Script Stopped." },
+  { "id": "FCrowdyModScriptAnswer", "reason": "internal", "note": "The runtime's handle for a host call answered later; UCrowdyModScripts uses it for the calls that wait on the platform." },
+  { "id": "FCrowdyModScriptAnswer::IsWaiting", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptAnswer::Send", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptHost", "reason": "internal", "note": "The runtime's callbacks for one module instance; a game implements ICrowdyModScriptHost instead." },
+  { "id": "FCrowdyModScriptInstance", "reason": "internal", "note": "One instantiated Mod Script module inside the runtime." },
+  { "id": "FCrowdyModScriptInstance::Create", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptInstance::GetMemoryBytes", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptInstance::GetSkippedDispatches", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptInstance::HasOnEvent", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptInstance::RequestStop", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptModule", "reason": "internal", "note": "A compiled Mod Script module inside the runtime." },
+  { "id": "FCrowdyModScriptModule::Compile", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptModuleCache", "reason": "internal", "note": "The runtime's cache of compiled modules by digest." },
+  { "id": "FCrowdyModScriptModuleCache::Get", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptModuleCache::GetAsync", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptModuleCache::Sha256Hex", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptResult", "reason": "internal", "note": "The result of one dispatch inside the runtime." },
+  { "id": "FCrowdyModScriptRun", "reason": "internal", "note": "One running Mod Script inside the runtime; UCrowdyModScripts owns every run." },
+  { "id": "FCrowdyModScriptRun::DeferHostCall", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::DrainHostCalls", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::GetEventDepth", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::GetGeneration", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::GetSkippedTicks", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::IsDispatching", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::IsRunning", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::QueueEvent", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::Start", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::Stop", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::Tick", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRun::UE_NONCOPYABLE", "reason": "internal", "note": "A macro the surface reader takes for a function." },
+  { "id": "FQueuedEvent", "reason": "internal", "note": "An event waiting on a Mod Script's run, inside the runtime." },
+  { "id": "FCrowdyModScriptRunHost", "reason": "internal", "note": "The callbacks UCrowdyModScripts gives each run." },
+  { "id": "FCrowdyModScriptRuntime", "reason": "internal", "note": "The Wasmtime engine behind Mod Scripts; a game checks Is Available on UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRuntime::Get", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRuntime::GetUnavailableReason", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptRuntime::IsAvailable", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts::IsAvailable." },
+  { "id": "FCrowdyModScriptRuntime::UnixNowMs", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptWorkerPool", "reason": "internal", "note": "The threads Mod Scripts run on." },
+  { "id": "FCrowdyModScriptWorkerPool::GetShared", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptWorkerPool::GetSkippedCount", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptWorkerPool::TryQueue", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "FCrowdyModScriptWorkerPool::UE_NONCOPYABLE", "reason": "internal", "note": "A macro the surface reader takes for a function." },
+  { "id": "FCrowdyModScriptWorkerPool::WaitOffSlot", "reason": "internal", "note": "Runtime internals behind UCrowdyModScripts." },
+  { "id": "CrowdyModScriptTrace::Enabled", "reason": "internal", "note": "The runtime's check of crowdy.modscripts.trace." },
+  { "id": "CrowdyModScriptTrace::Printable", "reason": "internal", "note": "The runtime's log-safe form of a script's text." },
+  { "id": "FCrowdyCppModClientArtifact", "reason": "internal", "note": "A fetched Mod Script module as the bridge hands it to UCrowdyModScripts." },
+  { "id": "FCrowdyCppClient::FetchModClientArtifact", "reason": "internal", "note": "The bridge's fetch of a Mod Script module; UCrowdyModScripts calls it." },
+  { "id": "FGameEventNotification::HasLengthedState", "reason": "internal", "note": "The client event decoder's check of which layout a frame uses." },
+  { "id": "FGameEventNotification::sizeof", "reason": "internal", "note": "A constant the surface reader takes for a function." },
+  { "id": "UCrowdyVoxelWorld::GetUnsentEditCount", "reason": "internal", "note": "How many voxel edits wait to be sent; Mod Scripts' voxel_set reads it to answer busy." },
   { "id": "UCrowdyPersistenceSubsystem::DeriveInstanceKey", "reason": "internal", "note": "The persistence subsystem's per-instance key for a pushed struct, public so headless tests can check it without a world." },
   { "id": "IsRecognisedCrowdyRecipient", "reason": "editor", "note": "The Blueprint compiler's check that a replicated event's Recipient is a known name; it warns on the node when not." },
   { "id": "IsRecognisedCrowdyRoutingValue", "reason": "editor", "note": "The Blueprint compiler's check that a replicated event's Decay Rate or Replication Distance is a known name." },
@@ -27,6 +80,11 @@
   { "id": "UCrowdyProximityChat::CheckText", "reason": "internal", "note": "Send Proximity Text's verdict before a send, public so headless tests can check every refusal; the page lists the results." },
   { "id": "UCrowdyProximityChat::ReadReceivedText", "reason": "internal", "note": "Turns a received text message into the line On Proximity Text Received carries, dropping the player's own; public so headless tests can feed it." },
   { "id": "UCrowdyProximityChat::IsTextRefusal", "reason": "internal", "note": "Whether a refused send is proximity text, so On Proximity Text Refused fires; public so headless tests can check it." },
+  { "id": "UCrowdyActorOwners::HandleSignedOut", "reason": "internal", "note": "Forgets the signed-out account's answers; the SDK's sign-out calls it." },
+  { "id": "UCrowdyVideoSender::SendFrame", "reason": "internal", "note": "Send Video Frame with its context already resolved, public so headless tests can check every refusal." },
+  { "id": "UCrowdyVideoSender::IsVideoRefusal", "reason": "internal", "note": "Whether a refused send is a video frame, so On Video Send Refused fires; public so headless tests can check it." },
+  { "id": "UCrowdyVideoSender::HandleSendRefused", "reason": "internal", "note": "The sender's binding to the realtime registry's refusals." },
+  { "id": "UCrowdyVideoSender::FrameIdSeedAt", "reason": "internal", "note": "The first frame id a sender uses, public so headless tests can check the wrap." },
   { "id": "UCrowdyProximityChat::EnsureSubscription", "reason": "internal", "note": "Subscribes the subsystem to received lines; UCrowdySDKSubsystem calls it when it creates the realtime registry." },
   { "id": "FCrowdyVoiceSpeakerStream", "reason": "internal", "note": "One remote speaker's playback (a procedural wave and a 2D audio component) that UVoiceChatSubsystem keeps for itself." },
   { "id": "CrowdyVoiceTrace::Voice", "reason": "internal", "note": "Whether crowdy.voice.trace is on, so the voice code logs its info lines; the page documents the CVar." },
@@ -1121,11 +1179,6 @@
     "note": "Frame parsing and value serialization used by the transport."
   },
   {
-    "id": "FCrowdyMessageParser::SetExpectedActorStateSize",
-    "reason": "internal",
-    "note": "Frame parsing and value serialization used by the transport."
-  },
-  {
     "id": "FCrowdyNetModule",
     "reason": "internal",
     "note": "Module boilerplate."
@@ -1184,11 +1237,6 @@
     "id": "FCrowdyPayloadRoutes::FindOrAdd",
     "reason": "internal",
     "note": "The network router's routing table and service registry; crowdy.net.routes prints it, nothing in a game calls it."
-  },
-  {
-    "id": "FCrowdyPendingHostPush",
-    "reason": "internal",
-    "note": "Replicator internals; IsStateReplicated and GetLastSentStateBytes are the game-facing diagnostics and are on crowdy-state."
   },
   {
     "id": "FCrowdyPendingLocalNotify",
@@ -1412,11 +1460,6 @@
   },
   {
     "id": "FCrowdyRpcTarget::HasLocation",
-    "reason": "internal",
-    "note": "Helpers on the targeted-send address; the struct and its fields are on recipients-and-routing."
-  },
-  {
-    "id": "FCrowdyRpcTarget::IsOwnedBy",
     "reason": "internal",
     "note": "Helpers on the targeted-send address; the struct and its fields are on recipients-and-routing."
   },
@@ -2596,16 +2639,6 @@
     "note": "Interfaces between the SDK's own subsystems (or the UInterface shell of one a game implements); ICrowdyEventSource and ICrowdyEntityComponentProvider are described where a game would implement them."
   },
   {
-    "id": "UCrowdyHostSubsystem::IsReady",
-    "reason": "internal",
-    "note": "Election plumbing the SDK calls when a host response arrives."
-  },
-  {
-    "id": "UCrowdyHostSubsystem::SetHostUserID",
-    "reason": "internal",
-    "note": "Election plumbing the SDK calls when a host response arrives."
-  },
-  {
     "id": "ACrowdyLeaderOwnedTestActor",
     "reason": "internal",
     "note": "Headless test fixture for Owned By Leader; not shipped as API."
@@ -2734,11 +2767,6 @@
     "id": "UCrowdyStatePartialNetTarget",
     "reason": "internal",
     "note": "Headless test fixture for the CrowdyState codec and replicator; not shipped as API."
-  },
-  {
-    "id": "UCrowdyStateReplicator::AdoptHostValues",
-    "reason": "internal",
-    "note": "Replicator internals; IsStateReplicated and GetLastSentStateBytes are the game-facing diagnostics and are on crowdy-state."
   },
   {
     "id": "UCrowdyStateReplicator::IsLoopbackEnabled",
@@ -3341,11 +3369,6 @@
     "note": "Installs the signed-in session's ids and tokens; UCrowdyAuthentication calls it after sign-in. A game never hand-feeds tokens here."
   },
   {
-    "id": "UCrowdySDKSubsystem::SetExpectedActorUpdateStateSize",
-    "reason": "internal",
-    "note": "Pre-size hint for the actor update parser; the SDK sets it from the registry, nothing a game measures."
-  },
-  {
     "id": "UCrowdySDKSubsystem::DispatchActorHeartbeat",
     "reason": "internal",
     "note": "Wire-level send below the entity component, which keeps its own actors present; recipients-and-routing documents the supported paths."
@@ -3927,6 +3950,11 @@
   },
   {
     "id": "FCrowdyCppClient::RunOp",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::RunOpMsgpack",
     "reason": "internal",
     "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
   },
@@ -7451,11 +7479,6 @@
     "note": "Spawn data the Mass backend keeps for an entity whose row does not exist yet; private bookkeeping."
   },
   {
-    "id": "UCrowdyEntityComponent::MapLegacySettings",
-    "reason": "internal",
-    "note": "The load mapping from Ownership and Mode for assets saved before Owned By; public so headless tests can check it."
-  },
-  {
     "id": "UCrowdyEntityComponent::ResolveReplicatesMovement",
     "reason": "internal",
     "note": "The rule for a saved setting nothing reads yet; public so headless tests can check it."
@@ -7506,15 +7529,11 @@
     "note": "The window in which a late update cannot redraw a destroyed entity; read by the SDK and its tests."
   },
   {
-    "id": "UCrowdyHostSubsystem::HostIDForUser",
-    "reason": "internal",
-    "note": "The host id for a signed-in user id, shared by the host subsystem's paths and its tests."
-  },
-  {
     "id": "UCrowdyUtilities::IsRecordLocallyOwned",
     "reason": "internal",
     "note": "The registry half of Is Crowdy Entity Locally Owned, public so headless tests can check it."
   },
+  { "id": "CrowdyIsRetiredHostRecipient", "reason": "internal", "note": "Reads a saved Host recipient string as Owning Client; the SDK's own metadata reader calls it." },
   { "id": "SCrowdyAgePrompt", "reason": "internal", "note": "The built-in age screen; the SDK and Studio open it." },
   { "id": "FCrowdyCppClient::HasDeveloperAcceptance", "reason": "internal", "note": "Studio checks the developer documents with it; the Studio sign-in page describes the effect." },
   { "id": "FCrowdyCppClient::ListDeveloperDocuments", "reason": "internal", "note": "Studio lists the developer documents with it." },
@@ -7571,5 +7590,70 @@
   { "id": "UCrowdyAutoReplicator::SetExtras", "reason": "internal", "note": "Hands the replicator the CrowdyContinuous bytes for its next update." },
   { "id": "UCrowdyEntityComponent::NoteContinuousCarrier", "reason": "internal", "note": "Tells the Crowdy State replicator that this entity's movement updates carry its CrowdyContinuous values." },
   { "id": "UCrowdyEventRouter::DispatchContinuousExtras", "reason": "internal", "note": "The receive side of CrowdyContinuous; a game reaches it only through its properties and OnRep functions." },
-  { "id": "UCrowdyStateReplicator::SetContinuousOnMovement", "reason": "internal", "note": "Moves CrowdyContinuous properties onto an entity's movement updates when it replicates movement." }
+  { "id": "UCrowdyStateReplicator::SetContinuousOnMovement", "reason": "internal", "note": "Moves CrowdyContinuous properties onto an entity's movement updates when it replicates movement." },
+  { "id":"CrowdyNativeExec::JsonToMsgpack","reason":"internal","note":"Converts JSON to MessagePack for the SDK bridge to its native client; the SDK calls it for the Game API and Server Object paths." },
+  { "id":"CrowdyNativeExec::MsgpackToJson","reason":"internal","note":"Converts a MessagePack reply back to JSON for the SDK bridge to its native client; the SDK calls it on each answer." },
+  { "id":"CrowdyNativeExec::StatusName","reason":"internal","note":"Names a native call status for the SDK bridge's log lines." },
+  { "id":"UCrowdyCppReplicationSubsystem::NewSendTicket","reason":"internal","note":"Hands out the next send ticket the SDK uses to match a send with its receipt." },
+  { "id":"FCrowdyTrackedSend","reason":"internal","note":"The sent, acknowledged or refused report for one send ticket; the SDK's own subsystems consume it, such as the voxel world matching an edit." },
+  { "id":"ECrowdyTrackedSendEvent","reason":"internal","note":"What happened to one tracked send; the SDK's own subsystems read it." },
+  { "id":"FOnCrowdyTrackedSend","reason":"internal","note":"The delegate that carries a tracked send report to the SDK's own subsystems." },
+  { "id":"FCrowdyCppSendReceipt","reason":"internal","note":"The native client's receipt for one send ticket; the SDK turns it into the tracked send report." },
+  { "id":"ECrowdyCppSendReceiptKind","reason":"internal","note":"The kind of receipt the native client gave for one send ticket; the SDK reads it." },
+  { "id":"FChunkChangedNotification","reason":"internal","note":"The wire message that tells clients a hub or mod replaced a whole chunk; the voxel world reacts to it, and games see On Chunk Changed." },
+  { "id":"EFetchAgain","reason":"internal","note":"The voxel world's record of whether a fetched chunk must be fetched again." },
+  { "id":"FChunkState","reason":"internal","note":"The voxel world's per-chunk bookkeeping." },
+  { "id":"FFollower","reason":"internal","note":"One actor the voxel world is following and the range it keeps loaded." },
+  { "id":"FLiveEdit","reason":"internal","note":"A live edit as the realtime notification carries it, held by the voxel world." },
+  { "id":"FPendingEdit","reason":"internal","note":"One of the player's own edits waiting for its answer, held by the voxel world." },
+  { "id":"FReload","reason":"internal","note":"One Reload Chunk request the voxel world is waiting to finish." },
+  { "id":"UCrowdyVoxelWorld::HandleChunkChanged","reason":"internal","note":"The voxel world's handler for the whole-chunk change notification." },
+  { "id":"UCrowdyVoxelWorld::HandleLiveEdit","reason":"internal","note":"The voxel world's handler for another player's live edit." },
+  { "id":"UCrowdyVoxelWorld::HandleTrackedSend","reason":"internal","note":"The voxel world's handler for the answer to one of its edit sends." },
+  { "id":"UCrowdyStateReplicator::SetLocalPlayerIdle","reason":"internal","note":"Stops the keyframe heartbeat while the local player is idle; the SDK calls it from its idle tracking." },
+  { "id":"UCrowdyCompilerTestDeprecatedAsyncAction","reason":"internal","note":"A hidden test fixture for the SDK's own compiler tests; it never appears in the palette." },
+  { "id":"UCrowdyCompilerTestDeprecatedAsyncAction::DeprecatedTestNode","reason":"internal","note":"The test fixture's factory; hidden and deprecated by design." },
+  { "id":"UCrowdyCompilerTestDeprecatedAsyncAction::OnDone","reason":"internal","note":"The test fixture's output pin." },
+  { "id":"UCrowdyCompilerTestDeprecatedDelegateOwner::OnDeprecatedTest","reason":"internal","note":"A hidden test fixture's deprecated delegate for the SDK's own compiler tests." },
+  { "id": "CrowdyCppStudio::ParseRustcDiagnostics", "reason": "internal", "note": "The bridge's parser for compiler output; a game reads the parsed diagnostics on Run Project's answer." },
+  { "id": "ECrowdyCppStudioDiagnosticSeverity", "reason": "internal", "note": "The bridge's own severity; a game reads ECrowdyModDiagnosticSeverity." },
+  { "id": "ECrowdyCppStudioDiagnosticSource", "reason": "internal", "note": "The bridge's own source; a game reads ECrowdyModDiagnosticSource." },
+  { "id": "ECrowdyCppStudioTarget", "reason": "internal", "note": "The bridge's own target; a game reads ECrowdyStudioTarget." },
+  { "id": "FCrowdyCppStudioDiagnostic", "reason": "internal", "note": "The bridge's diagnostic; a game reads FCrowdyModDiagnostic." },
+  { "id": "FCrowdyCppStudioModel", "reason": "internal", "note": "The bridge's model row; a game reads FCrowdyStudioModel." },
+  { "id": "FCrowdyCppStudioModelsResult", "reason": "internal", "note": "The bridge's model list; a game reads the models on Get Agent Boot." },
+  { "id": "FCrowdyCppClient::FetchStudioModels", "reason": "internal", "note": "The bridge call behind Get Agent Boot's model list." },
+  { "id": "FCrowdyModScriptLogEntry", "reason": "internal", "note": "One kept line inside the runtime; a game reads FCrowdyModScriptLogLine from Get Script Log." },
+  { "id": "FCrowdyModScriptLogRing", "reason": "internal", "note": "The runtime's in-memory log buffer behind Get Script Log." },
+  { "id": "FCrowdyModScriptLogRing::Add", "reason": "internal", "note": "Runtime internals behind Get Script Log." },
+  { "id": "FCrowdyModScriptLogRing::CountRateDropped", "reason": "internal", "note": "Runtime internals behind Get Script Log." },
+  { "id": "FCrowdyModScriptLogRing::Read", "reason": "internal", "note": "Runtime internals behind Get Script Log." },
+  { "id": "UCrowdyStudioAgent::HandleSignedOut", "reason": "internal", "note": "Hands the agent an empty token; the SDK's sign-out calls it." },
+  { "id": "FCrowdyLeaderEnterInputs", "reason": "internal", "note": "What a client sends to the SDK's Leader type to enter or exit it; the Leader subsystem sends it." },
+  { "id": "FRekeyedEntity", "reason": "internal", "note": "The entity subsystem's bookkeeping for an entity re-keyed while the connection was down." },
+  { "id": "FLateCreate", "reason": "internal", "note": "The actor owners subsystem's record of a create a sign-out left in flight." },
+  { "id": "FHeldSignIn", "reason": "internal", "note": "The authentication subsystem's bookkeeping for a sign-in held while the previous one ends." },
+  { "id": "CrowdyCppStudio::ClientStarterFiles", "reason": "internal", "note": "The bridge's offline copy of the client starter; Create Studio Project uses it when the platform serves none." },
+  { "id": "CrowdyCppStudio::OfflineStudioOrigin", "reason": "internal", "note": "The bridge's Studio address for an API address; Get Agent Boot answers it as Studio Origin." },
+  { "id": "CrowdyCppStudio::StudioWalletUrl", "reason": "internal", "note": "The bridge's wallet page for a Studio address; Get Agent Boot answers it as Wallet Url." },
+  { "id": "FCrowdyCppClient::RunOpWithBearer", "reason": "internal", "note": "The bridge call the SDK uses to finish a signed-out account's requests under its own token." },
+  { "id": "UCrowdyCppClientSubsystem::IsLive", "reason": "internal", "note": "Whether the bridge client is torn down; the SDK checks it before sending." },
+  { "id": "UCrowdyGameSession::BeginSignIn", "reason": "internal", "note": "The SDK's sign-in calls it to give the session this sign-in's actor id." },
+  { "id": "UCrowdyGameSession::EndSignIn", "reason": "internal", "note": "The SDK's sign-out calls it so the next sign-in mints a fresh actor id." },
+  { "id": "UCrowdyGameSession::ReplaceActorID", "reason": "internal", "note": "The SDK calls it when another player's record holds the id; a game never re-keys the player itself." },
+  { "id": "CrowdyGrantMayRepoint", "reason": "internal", "note": "The rule every client applies to an ownership grant; Ownership Transfer states its effect." },
+  { "id": "UCrowdyActorTracker::RepointWireId", "reason": "internal", "note": "Re-key plumbing: moves a kept wire id to the player's new id." },
+  { "id": "UCrowdyAutoReplicator::GetExtras", "reason": "internal", "note": "Reads the CrowdyContinuous bytes back so a re-key keeps them." },
+  { "id": "UCrowdyAutoReplicator::HoldsComponent", "reason": "internal", "note": "Re-key plumbing: whether the replicator registered a component." },
+  { "id": "UCrowdyEntitySubsystem::IsHeardUnderOwnerTag", "reason": "internal", "note": "How a client tells a spawned entity from a player's avatar; the identity page states the rule." },
+  { "id": "UCrowdyEventRouter::ForgetSender", "reason": "internal", "note": "Re-key plumbing: drops waiting events sent under an id that is no longer this client's." },
+  { "id": "UCrowdyOwnershipTransfer::ResolveGrantedWriterID", "reason": "internal", "note": "Which session a grant names; Grant Ownership Transfer states it." },
+  { "id": "UCrowdyStateReplicator::ForceFullState", "reason": "internal", "note": "Re-key plumbing: the next send of a re-keyed entity carries its full state." },
+  { "id": "UCrowdyStateReplicator::SeedFromLive", "reason": "internal", "note": "Re-key plumbing: a re-keyed entity's held values fire no RepNotify again." },
+  { "id": "UCrowdyConnectionMonitor::StopReconnecting", "reason": "internal", "note": "The SDK's sign-in and sign-out stop a running reconnect with it." },
+  { "id": "UCrowdyActorOwners::FinishSignOut", "reason": "internal", "note": "Ends a sign-out's wait for its record deletes; the SDK's sign-out calls it." },
+  { "id": "UCrowdyActorOwners::HandleSignedIn", "reason": "internal", "note": "Creates the player's actor record at sign-in; the SDK's sign-in calls it." },
+  { "id": "UCrowdyActorOwners::HasSettledSignIn", "reason": "internal", "note": "The gate the realtime connection waits on at sign-in." },
+  { "id": "UCrowdyActorOwners::IsSettlingSignIn", "reason": "internal", "note": "The gate the realtime connection waits on at sign-in." },
+  { "id": "UCrowdyAuthentication::EndPreviousSignIn", "reason": "internal", "note": "Ends a live sign-in before another replaces it; the SDK's sign-in calls it." }
 ]

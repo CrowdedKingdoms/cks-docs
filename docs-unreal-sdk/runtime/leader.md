@@ -1,8 +1,8 @@
 ---
 slug: leader
-sidebar_position: 11
+sidebar_position: 9
 title: The Leader
-description: Who writes shared view state, the Leader that writes replicated subsystems and NPCs, the deploy it needs, how to check and follow who leads, what happens when the Leader leaves, and the Leader Source setting.
+description: Who writes shared view state, the Leader that writes replicated subsystems and NPCs, the deploy it needs, how to check and follow who leads, and what happens when the Leader leaves.
 ---
 
 import Tabs from '@theme/Tabs';
@@ -28,12 +28,13 @@ Choosing the Leader on the server keeps the choice in one place. It does not mak
 The Leader lives in a Server Object type the SDK adds to every deploy (`crowdy_leader`, shown in [Server Compute](../exec/deploy-with-server-compute.md) as the SDK's own). There is nothing to create. Deploy your app's server code once, then restart what still runs older code, from Server Compute or with:
 
 ```
+UnrealEditor-Cmd.exe MyGame.uproject -run=CrowdyServerCompute -op=deploy -yes
 UnrealEditor-Cmd.exe MyGame.uproject -run=CrowdyServerCompute -op=restart -yes
 ```
 
 A running root type keeps the code it started with, and the Leader asks the root whether a player is still in the world, so the restart is not optional.
 
-Until the code is deployed there is no Leader. Each signed-in client tries again every 10 seconds and logs one warning.
+Until the code is deployed there is no Leader. Each signed-in client tries again every 10 seconds and logs one warning. Server code deployed with an SDK older than this one has no **Enter** on the Leader type. Then each client logs one warning per sign-in that the server code must be deployed again and its running instances restarted, and tries again quietly every 60 seconds. Nothing writes Leader-owned entities or replicated subsystems until you deploy.
 
 **Success signal.** With two clients signed in and each with a Player Derived pawn, `Get Leader User ID` returns the same id on both, and `Is Local Leader` is true on exactly one.
 
@@ -41,15 +42,17 @@ Until the code is deployed there is no Leader. Each signed-in client tries again
 
 `UCrowdyUtilities::IsCrowdyEntityLocallyOwned(Entity)` returns true when this client writes `Entity`: it owns the entity, or `Entity` is a replicated subsystem and this client is the Leader. It is a pure node, **Is Crowdy Entity Locally Owned**, in Blueprint; **Switch Is Crowdy Entity Locally Owned** (`SwitchIsCrowdyEntityLocallyOwned`) is the same answer as two exec pins. `Entity` is an entity actor or a replicated subsystem, and defaults to Self. Ask this before you write something, and pass the thing you are about to write.
 
-For a World entity the answer is false on every client, because no client writes it.
+For a World entity the answer is false on every client, because no client writes it. When something needs a writer and has none, such as marking a World entity's state dirty, the SDK logs a warning.
 
-Two more helpers on `UCrowdyUtilities` answer ownership questions without a round trip. `DoesCrowdyEntityOwn(OwnerActor, TargetActor)` is true when the first actor's player owns the second. `CrowdyIsConnectedToServer` says whether there is a connection at all.
+In C++, `UCrowdyEntitySubsystem::GetAppWriterID()` returns the actor id the Leader type publishes for the Leader (empty while there is none, see [When the Leader leaves](#when-the-leader-leaves)), and `GetWriterID(Record)` returns the client that writes a record with no owner: the Leader for a replicated subsystem, nobody for a World entity. Every ownership check follows one rule, `FCrowdyEntityRecord::IsWrittenBy`, which `UCrowdyEntitySubsystem::IsRecordLocallyOwned(Record)` applies with this client's ids.
 
-The deprecated **Crowdy Has Authority** nodes are described under [Deprecated](#deprecated).
+Two more helpers on `UCrowdyUtilities` answer ownership questions without a round trip. `DoesCrowdyEntityOwn(OwnerActor, TargetActor)` is true when the first actor's session writes the second. It asks about sessions, so a second session of the same account does not own what the first writes; for the account, compare **Get Crowdy Entity Owner User ID** or use **Is Crowdy Entity Owned By Local User**. A World entity owns nothing and is owned by no one, the Leader included. `CrowdyIsConnectedToServer` says whether there is a connection at all.
+
+**Switch Crowdy Has Authority** and **Crowdy Has Authority** are gone. They asked whether this client is the host, with no entity to ask about: use **Is Local Leader** for the same question, true on one client only. Use **Switch Is Crowdy Entity Locally Owned** only to gate a write to an entity or subsystem you own, and put logic that must be enforced in a Server Object.
 
 ## Follow the Leader
 
-`UCrowdyLeaderSubsystem` is a game-instance subsystem. `GetLeaderUserID()` is the Leader's user id, 0 while there is none or it is not known yet. `IsLocalLeader()` says whether this client leads. `OnLeaderChanged` (`FOnCrowdyLeaderChanged`, `NewLeaderUserID`, `PreviousLeaderUserID`, on the game thread) fires when the lead moves, and a user id of 0 means there is no Leader.
+`UCrowdyLeaderSubsystem` is a game-instance subsystem in the `CrowdyExec` module, so a C++ caller adds `CrowdyExec` to its `Build.cs` and includes `CrowdyLeaderSubsystem.h`. `GetLeaderUserID()` is the Leader's user id, 0 while there is none or it is not known yet. `IsLocalLeader()` says whether this client leads. `OnLeaderChanged` (`FOnCrowdyLeaderChanged`, `NewLeaderUserID`, `PreviousLeaderUserID`, on the game thread) fires when the lead moves, and a user id of 0 means there is no Leader.
 
 Bind the event rather than reading the answer once at `BeginPlay`: the Leader is not known that early on a fresh sign-in, and it changes when the Leader leaves. A map loaded after the Leader is known hears no change, so also read the answer once.
 
@@ -87,7 +90,9 @@ The longest-standing member takes over, and `OnLeaderChanged` fires on every cli
 | Loses only its realtime connection | About 10 seconds later, when the server hears it left the realtime world. A client that sees its own connection fail leaves by itself, which is sooner. |
 | Freezes with its connection open | About 10 seconds later, for the same reason. |
 
-Only a player in the realtime world with an avatar can lead: a client joins once its realtime connection is up and a Player Derived pawn has given it a player id for this sign-in, and leaves when the SDK reports that the connection failed. A client that has not spawned one yet stays out, so it cannot lead while writing nothing. A project with no Player Derived pawn has no Leader. The new Leader starts writing from the values it last received, so a subsystem carries on where the old Leader stopped, minus anything that had not reached it yet.
+Only a player in the realtime world with an actor id can lead. A client joins once its realtime connection is up and it holds an actor id (a Player Derived pawn, a Crowdy Spectator component or a chat message mints it), and leaves when the SDK reports that the connection failed. A client with no actor id stays out, so it cannot lead while writing nothing. A project where nothing mints an actor id has no Leader, and the SDK warns once per sign-in if a client still has none a second after it could have joined. The new Leader starts writing from the values it last received, so a subsystem carries on where the old Leader stopped, minus anything that had not reached it yet.
+
+A player's actor id is random, so no client can work out the Leader's from its user id. Each client joins the Leader type with its own actor id (its **Enter** function). The type publishes the Leader's id in the same change that moves the lead, so every client goes straight from the old Leader's id to the new one's. Each client takes Leader-owned writes only under the id of the player who leads now. A client enters again when a sign-in gives it a new id. Of two sessions of one user, only the last to enter leads. A client that becomes the Leader before its id is published hears **On Leader Changed** once it can write.
 
 ## An NPC the Leader simulates
 
@@ -121,45 +126,6 @@ There is one Leader per app, and it writes only what it has a body for: the enti
 For NPCs across maps or a large open world, use [hub NPCs](../exec/use-game-kit-starters.md), which run on the server and need no Leader. Leader entities need an actor pool map: on a [crowd-row map](./rendering-backends.md) the SDK warns once per class, because a row has no actor for a new Leader to take over.
 :::
 
-<a id="leader-source-with-or-without-a-host"></a>
-
-## Leader Source
-
-**Project Settings, Plugins, Crowdy SDK, Replication, Leader Source** (`LeaderSource` on `UCrowdySDKDeveloperSettings`, an `ECrowdyLeaderSource`) decides who writes shared state. Its default, **Server Object**, is everything on this page: a World entity has no writer on any client, and every client ignores Crowdy State sent for a World entity. The other value, **Elected Host (Deprecated)**, is described under [Deprecated](#deprecated).
-
-When something needs a writer and has none, the SDK says so in a warning that names this setting: marking a World entity's state dirty, or registering a replicated subsystem.
-
-In C++, `UCrowdyEntitySubsystem::GetWriterID(Record)` returns the client that writes a record with no owner: the Leader for a replicated subsystem, and for a World entity what `GetWorldOwnerID()` returns, which is nobody. Every ownership check follows one rule, `FCrowdyEntityRecord::IsWrittenBy`, which `UCrowdyEntitySubsystem::IsRecordLocallyOwned(Record)` applies with this client's ids.
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Crowdy Has Authority
-
-**Switch Is Crowdy Entity Locally Owned** on the entity or subsystem you write replaces both nodes; see [Checking who writes an entity](#checking-who-writes-an-entity).
-
-`GetCrowdyHasAuthority` (**Crowdy Has Authority**) and `CrowdyHasAuthority` (**Switch Crowdy Has Authority**) answer whether this client is the host at all, with no entity to ask about; ask about the entity or subsystem you are about to write instead, and put logic with nothing to write in a Server Object.
-
-### Elected Host
-
-The default Leader Source, **Server Object**, and the Leader this page teaches replace the elected host; [Host Election (Deprecated)](../services/host-election.md) has the rest.
-
-With **Leader Source** set to **Elected Host (Deprecated)**, one client is elected host, writes World entities and replicated subsystems, and runs Host events. There is no Leader: `GetLeaderUserID()` stays 0. Under Server Object the SDK does not poll for a host, a Host event on an actor is dropped, and a Host event on a replicated subsystem runs on the Leader; sending a Host event with no writer logs the same warning that names this setting.
-
-To keep the host for now, for example because a World entity in your game is simulated on one client, set Elected Host (Deprecated). An entity Owned By Leader then follows the host. The setting is written to `Config/DefaultGame.ini`:
-
-```ini
-[/Script/CrowdyReplication.CrowdySDKDeveloperSettings]
-LeaderSource=ElectedHost
-```
-
-Under Server Object the deprecated host functions report the Leader: **Get Host User ID**, **Is Host**, **On Host Elected**, **Is Crowdy Entity Host**, and **Is Crowdy Entity Host (Server)** for your own avatar.
-
-In C++, `UCrowdySDKDeveloperSettings::UsesElectedHost()` reads the setting. Under Elected Host, `GetWorldOwnerID()`, and so `GetWriterID` for a World entity, returns the host.
-
 ## Gotchas
 
 - `Get Leader User ID` is 0 until the client has joined. `Is Local Leader` is false until then, which does not mean someone else leads.
@@ -168,7 +134,7 @@ In C++, `UCrowdySDKDeveloperSettings::UsesElectedHost()` reads the setting. Unde
 - A World entity's plain property does nothing when you assign it, and marking it dirty logs a warning: no client writes it.
 - **Is Crowdy Entity Player Controlled** is false for an entity Owned By Leader, on every client.
 - A client that walks out of a Leader entity's range holds its spawned body for 20 seconds too, so count that when you size **Max Pool Size Per Class**.
-- The Leader's user id is a raw user id, not the id entities are owned under. Compare it with your own user id, or use `IsLocalLeader()`.
+- The Leader's user id is a user id, not the actor id entities are written under. Compare it with your own user id, or use `IsLocalLeader()`. To ask whether an actor is the Leader's, run **Resolve Actor Owner** on its id and compare the user with **Get Leader User ID**, after checking that is not 0.
 
 ## Related
 

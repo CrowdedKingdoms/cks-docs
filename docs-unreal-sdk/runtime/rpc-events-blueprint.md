@@ -1,6 +1,6 @@
 ---
 slug: rpc-events-blueprint
-sidebar_position: 5
+sidebar_position: 4
 title: RPC Events in Blueprint
 description: Tick Crowdy Replicates on a Custom Event, pick a recipient, and call it like any other event; the body runs on every recipient with no second node.
 ---
@@ -43,7 +43,7 @@ Once Crowdy Replicates is ticked, three more rows appear. **Recipient** is the `
 - **Multicast**: every member of the app's session channel, whatever the distance, over the channel transport.
 - **Owning Client**: only the target entity's owner; another client's call becomes a request to that owner. Every client near the target receives the parameters. An event with a text parameter stays a direct message.
 
-An event saved with the deprecated **Host** recipient is described under [Deprecated](#deprecated).
+There is no Host recipient. An event saved with one reads as **Owning Client** and logs a warning that names it.
 
 **Decay Rate** and **Replication Distance** sit below the recipient and are greyed out unless the recipient is Spatial Multicast, because only the spatial path reads them. **Channel** appears only for Multicast: type a channel name, or press **Pick** to choose from the app's channels, which the picker fetches live from Crowdy Studio when you are signed in there; free text always works. **Is A One-Shot Action** appears only once a map profile assigned in **Project Settings, Plugins, Crowdy SDK** (a **Map Profiles** entry or the **Default Profile**) selects a backend that draws crowd rows. A project that uses only the actor pool never sees it. See [Play poses and one-shot actions](../mass/play-poses-and-one-shot-actions.md).
 
@@ -64,22 +64,6 @@ There is no second node and no second graph. The same `Sparkle` body shown above
 What the checkbox generates is a call to `UCrowdyReplicatedEventLibrary::CrowdyDispatchReplicatedEvent` at the top of the event. It is marked internal-use and never placed by hand; if a marked event ever loses its gate (a manual edit, a bad merge), calling it runs the body locally and announces nothing, which looks exactly like a transport drop. Recompile.
 
 **Success signal.** With one client, `crowdy.rpc.loopback 1` and `crowdy.rpc.trace 1` show the send and the looped-back receive; the sparkle then comes from the receive rather than the local run.
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The Host recipient
-
-**Owning Client** replaces **Host**, as listed under [Pick the recipient](#pick-the-recipient); [Recipients and routing](./recipients-and-routing.md#deprecated) has the delivery detail.
-
-**Host** is no longer in the dropdown; a saved value still works and warns when compiled. On a replicated subsystem it runs on the [Leader](./leader.md). On an actor it is dropped with a warning that names Leader Source, unless Leader Source is **Elected Host (Deprecated)**, where only the elected host runs it and another client's call becomes a request to the host. Like Owning Client, the body runs only where the recipient says, so do not add a second local call.
-
-:::caution[Under Elected Host, Host runs the call on whatever instance it holds, regardless of who owns that entity, and tells nobody else.]
-There is no ownership gate on the host. If the rest of the session must see the outcome of a Host event, the host sends a second, Multicast or Spatial Multicast event with the result.
-:::
 
 ## Gotchas
 

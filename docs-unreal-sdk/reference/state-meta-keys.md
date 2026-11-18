@@ -92,6 +92,6 @@ The Blueprint "Crowdy Replication" dropdown offers **None**, **Replicated** and 
 
 ## Related
 
-- [Crowdy State](/unreal-sdk/runtime/crowdy-state): owner diffing, host precedence under Elected Host, world entities, and the
+- [Crowdy State](/unreal-sdk/runtime/crowdy-state): owner diffing, world entities, and the
   keyframe baseline.
 - [RPC metadata keys](./rpc-meta-keys.md)

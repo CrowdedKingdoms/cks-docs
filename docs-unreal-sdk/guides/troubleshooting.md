@@ -144,7 +144,7 @@ Check the `CrowdyRecipient` on the receiver function. The recipient decides who 
   lost with no message while the entity crosses a chunk border, and is refused without `use_direct_messages`. See
   [Recipients and routing](../runtime/recipients-and-routing.md#targeted-owningclient).
 
-The deprecated `Host` recipient is described under [Deprecated](#deprecated).
+There is no `Host` recipient; see [An event that used to run on the host does not run](#an-event-that-used-to-run-on-the-host-does-not-run).
 
 If you used the default `SpatialMulticast` and the other client is out of range, the event is thinned away
 on purpose. Raise `CrowdyDistance` (values run `None` to `Eight_Chunks`, default `Eight_Chunks`) or relax
@@ -256,6 +256,7 @@ The SDK is split across modules. Reference the right one for the API you call:
 - `CrowdyReplication`: the entity subsystem (`UCrowdyEntitySubsystem`), the entity component, RPC events.
 - `CrowdyServices`: high-level subsystems and statics: `UCrowdyUtilities`, `UCrowdyTeams`,
   `UCrowdyAvatars`, `UCrowdyChannels`.
+- `CrowdyExec`: `UCrowdyLeaderSubsystem` (`Is Local Leader`, `Get Leader User ID`, `On Leader Changed`), in `CrowdyLeaderSubsystem.h`.
 - `CrowdySDK`: `UCrowdySDKSubsystem` (including voice).
 
 Fix:
@@ -290,25 +291,15 @@ symptom with one client, and [Log categories](../reference/log-categories.md) fo
 A `LogHttp` `ConnectionError` burst against a backend host, with otherwise clean local connectivity, points
 at your own network path, not the SDK. Check your route to the backend before filing a bug.
 
-## Deprecated
+## Removed
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
-:::
+### An event that used to run on the host does not run
 
-### An event with the Host recipient is not received
+There is no Host recipient and nothing elects a host. A receiver that still carries `CrowdyRecipient = "Host"` reads as `OwningClient` and logs a warning that names the function. On an actor only its owner runs it now, and on a replicated subsystem only the Leader does. Pick the recipient you mean; see [The recipient does not include this client](#the-recipient-does-not-include-this-client) and [Recipients and routing](../runtime/recipients-and-routing.md).
 
-`OwningClient` replaces `Host`; see [The recipient does not include this client](#the-recipient-does-not-include-this-client).
+### Where the host subsystem went
 
-A receiver with `CrowdyRecipient = "Host"` runs on the Leader on a replicated subsystem. On an actor it is
-dropped with a warning that names Leader Source, unless Leader Source is **Elected Host (Deprecated)**, where
-only the elected host runs it. See [Recipients and routing](../runtime/recipients-and-routing.md#deprecated).
-
-### Where the host subsystem lives
-
-`UCrowdyLeaderSubsystem` replaces `UCrowdyHostSubsystem`; see [The Leader](../runtime/leader.md).
-`UCrowdyHostSubsystem` lives in `CrowdyServices`, so a call into it needs that module in your `Build.cs`, as
-[Module dependency or include errors](#module-dependency-or-include-errors) shows.
+`UCrowdyHostSubsystem` is removed. `UCrowdyLeaderSubsystem` replaces it; see [The Leader](../runtime/leader.md). It lives in `CrowdyExec`, not `CrowdyServices`, so a C++ call into it needs `CrowdyExec` in your `Build.cs` and `#include "CrowdyLeaderSubsystem.h"`, as [Module dependency or include errors](#module-dependency-or-include-errors) shows.
 
 ## Gotchas
 
