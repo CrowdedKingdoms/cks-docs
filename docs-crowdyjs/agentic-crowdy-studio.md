@@ -128,6 +128,9 @@ file as JavaScript and do not cache it for long; see
 ```ts
 import { createCrowdyStudioEmbed } from '@crowdedkingdoms/crowdyjs/crowdy-studio';
 
+// This tier's Studio, where the dock opens popups and sends a player for funds (CrowdyJS 18.33.0).
+const { origin: studioOrigin } = await game.crowdyStudio.links();
+
 const studio = createCrowdyStudioEmbed({
   client: game,                               // CrowdyClient (crowdyStudio, crowdyStudioGitHub, playerWallet)
   appId,
@@ -138,7 +141,7 @@ const studio = createCrowdyStudioEmbed({
     apiOrigin: new URL(game.graphqlEndpoint).origin,
     getToken: () => game.getToken(),
     persistScope: `${appId}/${playerId}`,     // per player: OPFS session restore key
-    studioOrigin: 'https://studio.crowdedkingdoms.com',
+    studioOrigin,
   },
 });
 

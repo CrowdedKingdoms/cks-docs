@@ -126,6 +126,10 @@ The kit, `ckx-sdk` and `crowdy-client-sdk` are released with the platform's comp
 toolchain release it was copied from. Use the latest release: versions ending in `-dev.N` or
 `-test.N` are for our internal environments.
 
+Kit 0.8.0 (compute toolchain v1.18.0) carries the same SDKs as 0.7.1, and its `client` template is
+now the platform's own CLIENT half starter, the crate `execModClientStarter` serves, so `ckx-kit new
+client` and a new Studio project start from one crate.
+
 Kit 0.7.1 carries `ckx-sdk` 0.14.1 (compute toolchain v1.17.1, ck-exec 0.20.0): `World::set_chunk`,
 `set_voxels` batches of up to 4,096 voxels at one write unit per started 64, the node API budgets in
 `limits::node`, and request bodies small enough in fuel that a mod's 4,096-voxel batch fits its 20
@@ -138,5 +142,5 @@ the erasure and the export.
 ## Contributing
 
 Issues and pull requests are welcome in the kit's repository. The SDKs, the checks, the meter
-and the starters are copies of the platform's own (`kit.pin` lists them): a change to one of
+the starters and the `client` template are copies of the platform's own (`kit.pin` lists them): a change to one of
 them is made upstream, and reaches the kit with the next toolchain release.

@@ -39,6 +39,33 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-18 (a Studio dock in a native game)
+
+- **A mod knows the Studio revision it runs** (Game API v2.73.0): `execModBuild` and
+  `execModClientBuild` take an optional `studio: { projectId, revision }`, a Crowdy Studio project
+  of yours at a revision it has reached, and the build, the mod version and the CLIENT half deployed
+  from it report `studioProjectId` and `studioRevision`. Crowdy Studio sends them from CrowdyJS
+  18.33.0 and CrowdyCPP 0.87.0. See [which Studio revision a mod
+  runs](/exec/mods#which-studio-revision-a-mod-runs).
+- **The CLIENT half starter comes from the platform:** `execModClientStarter` serves the
+  `crowdy-client-sdk` crate a new CLIENT target starts from (`client.exec.modClientStarter`); the
+  dev kit's `client` template is the same crate from kit 0.8.0.
+- **`crowdyStudioLinks`** (public) answers this environment's Studio origin and wallet page, so a
+  Studio dock follows Studio without a release (`client.crowdyStudio.links()` in CrowdyJS,
+  `crowdyStudio().links()` in CrowdyCPP).
+- **CrowdyCPP 0.86.0 carries what a game's Agentic Crowdy Studio dock calls**, so a native game can
+  dock Studio beside its world: the live-modding check (`crowdyStudioAgent().liveModding`), the
+  model list (`models()`, `GET /v1/model/models`), CrowdyJS's starter projects, and
+  `CrowdyStudioModRunner`, a draft test or live deploy of one saved revision that never blocks the
+  game thread and reports each target's build log, diagnostics and version. `studioOrigin()` gives
+  the Studio origin and wallet page beside the game's API. See
+  [Crowdy Studio in a native game](/crowdycpp/crowdy-studio). It needs no newer Game API.
+- **CrowdyCPP's build-log parser no longer uses `std::regex`**, which could overflow a small stack
+  on a long log line.
+- **The model endpoint's errors, corrected:** an app that switched the agent off answers
+  `AGENT_DISABLED`, and the model list refuses only with the policy's codes. See
+  [errors](/game-api/agentic-crowdy-studio#errors).
+
 ## 2026-11-17 (data out priced by each connection's rate)
 
 - **Egress is priced in rate bands** (Game API v2.71.0, every environment): graduated bands by the

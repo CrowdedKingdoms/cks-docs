@@ -29,6 +29,8 @@ type ExecBuild {
   startedAt: DateTime
   finishedAt: DateTime
   artifacts: [ExecBuildArtifact!]!
+  studioProjectId: String
+  studioRevision: BigInt
 }
 ```
 
@@ -69,6 +71,14 @@ When it finished.
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>artifacts</b></code>](#artifacts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecBuildArtifact!]!</b></code>](/reference/graphql/types/objects/exec-build-artifact.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #artifacts */} 
 The modules built so far, one per crate.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>studioProjectId</b></code>](#studio-project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #studio-project-id */} 
+The Crowdy Studio project the build was made from (`execModBuild` / `execModClientBuild` `studio`); null when it named none.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>studioRevision</b></code>](#studio-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #studio-revision */} 
+That project’s revision the build was made from; null when it named none.
 
 
 
