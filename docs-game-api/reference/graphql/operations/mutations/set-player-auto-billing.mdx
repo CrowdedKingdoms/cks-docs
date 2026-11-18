@@ -39,7 +39,7 @@ Per-period auto-recharge ceiling; null = no limit.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #recharge-amount-cents */} 
-Amount per recharge (default 1000).
+Amount per recharge, in cents (default 1000): at least 500 ($5), the smallest player top-up (walletTopUpMinimums); less is refused with TOP&#x005F;UP&#x005F;BELOW&#x005F;MINIMUM.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #low-water-threshold-cents */} 

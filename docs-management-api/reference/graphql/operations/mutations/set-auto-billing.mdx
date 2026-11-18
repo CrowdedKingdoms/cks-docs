@@ -45,7 +45,7 @@ Max auto-billed per period, in cents. Null = no limit.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #recharge-amount-cents */} 
-Amount to top up the wallet by on each auto-recharge, in cents.
+Amount to top up the wallet by on each auto-recharge, in cents: at least 1000 ($10), the smallest organization top-up (walletTopUpMinimums); less is refused with TOP&#x005F;UP&#x005F;BELOW&#x005F;MINIMUM.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #low-water-threshold-cents */} 

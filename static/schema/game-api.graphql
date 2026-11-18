@@ -2774,6 +2774,22 @@ type PaymentEventsConnection {
   totalCount: Int
 }
 
+"""
+The smallest wallet top-ups createCheckout accepts, and the smallest auto-recharge amounts. A smaller amount is refused with TOP_UP_BELOW_MINIMUM.
+"""
+type WalletTopUpMinimums {
+  """
+  An organization wallet (ORG_WALLET_TOPUP, setAutoBilling), in USD cents.
+  """
+  orgWalletCents: BigInt!
+  """
+  A player wallet (PLAYER_WALLET_TOPUP, setPlayerAutoBilling), in USD cents.
+  """
+  playerWalletCents: BigInt!
+  """The currency both are in: usd."""
+  currency: String!
+}
+
 type ServiceQuota {
   """Unique quota rule id (BigInt as a decimal string)."""
   quotaId: BigInt!
@@ -8154,6 +8170,10 @@ type Query {
     after: String
   ): PaymentEventsConnection! @requiresPermission(scope: "super_admin", permission: "is_super_admin")
   """
+  The smallest wallet top-ups and auto-recharge amounts this tier accepts, for a top-up form in Studio or a game. Public.
+  """
+  walletTopUpMinimums: WalletTopUpMinimums!
+  """
   Lists the org-scoped quota rules explicitly configured for an organization (excludes app-, tier-, and free-tier-default quotas). Use `effectiveQuota` to resolve the limit actually applied for a given metric. Requires the 'view_usage' org permission.
   """
   quotasForOrg(
@@ -10404,7 +10424,9 @@ type Mutation {
     enabled: Boolean!
     """Max auto-billed per period, in cents. Null = no limit."""
     limitCents: BigInt
-    """Amount to top up the wallet by on each auto-recharge, in cents."""
+    """
+    Amount to top up the wallet by on each auto-recharge, in cents: at least 1000 ($10), the smallest organization top-up (walletTopUpMinimums); less is refused with TOP_UP_BELOW_MINIMUM.
+    """
     rechargeAmountCents: BigInt
     """Wallet balance at or below which an auto-recharge triggers, in cents."""
     lowWaterThresholdCents: BigInt
@@ -10440,7 +10462,7 @@ type Mutation {
     idempotencyKey: String
   ): Boolean!
   """
-  Creates a Checkout row, opens a hosted payment session with the selected provider, and returns the row with `externalUrl` set — redirect the user there to pay. Status starts PENDING and is reconciled to COMPLETED/FAILED later via provider webhooks (this call does not itself capture funds). The side effect applied on completion depends on `purpose` (e.g. ORG_WALLET_TOPUP credits the org wallet, APP_ACCESS_PURCHASE grants app access). Requires an authenticated user; ORG_WALLET_TOPUP additionally requires the 'manage_billing' org permission. Purposes DONATION and PROPERTY_TOKENS are rejected. Pass `input.idempotencyKey` to make retries safe (a replay returns the first checkout instead of opening a second provider session).
+  Creates a Checkout row, opens a hosted payment session with the selected provider, and returns the row with `externalUrl` set — redirect the user there to pay. Status starts PENDING and is reconciled to COMPLETED/FAILED later via provider webhooks (this call does not itself capture funds). The side effect applied on completion depends on `purpose` (e.g. ORG_WALLET_TOPUP credits the org wallet, APP_ACCESS_PURCHASE grants app access). Requires an authenticated user; ORG_WALLET_TOPUP additionally requires the 'manage_billing' org permission. A wallet top-up below the wallet's smallest top-up ($10 for ORG_WALLET_TOPUP, $5 for PLAYER_WALLET_TOPUP; walletTopUpMinimums) is refused with TOP_UP_BELOW_MINIMUM. Purposes DONATION and PROPERTY_TOKENS are rejected. Pass `input.idempotencyKey` to make retries safe (a replay returns the first checkout instead of opening a second provider session).
   """
   createCheckout(
     """
@@ -10506,7 +10528,9 @@ type Mutation {
     enabled: Boolean!
     """Per-period auto-recharge ceiling; null = no limit."""
     limitCents: BigInt
-    """Amount per recharge (default 1000)."""
+    """
+    Amount per recharge, in cents (default 1000): at least 500 ($5), the smallest player top-up (walletTopUpMinimums); less is refused with TOP_UP_BELOW_MINIMUM.
+    """
     rechargeAmountCents: BigInt
     """Balance threshold that triggers a recharge."""
     lowWaterThresholdCents: BigInt
@@ -12630,7 +12654,7 @@ input CreateCheckoutInput {
   """
   planId: BigInt
   """
-  Charge amount in minor currency units (cents) of `currency`, as a BigInt decimal string. Required for ORG_WALLET_TOPUP.
+  Charge amount in minor currency units (cents) of `currency`, as a BigInt decimal string. Required for ORG_WALLET_TOPUP and PLAYER_WALLET_TOPUP, and at least the wallet’s smallest top-up: 1000 ($10) for ORG_WALLET_TOPUP and 500 ($5) for PLAYER_WALLET_TOPUP (walletTopUpMinimums); less is refused with TOP_UP_BELOW_MINIMUM.
   """
   amountCents: BigInt
   """ISO-4217 currency code, lowercase (e.g. "usd"). Defaults to "usd"."""
