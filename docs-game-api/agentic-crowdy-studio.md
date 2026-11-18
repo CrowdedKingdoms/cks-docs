@@ -203,10 +203,13 @@ observation-only `PlayerHostAdapterV1` for `game_observe`; see
 harness artifact is the published `@crowdedkingdoms/crowdy-dsh` npm package,
 copied under `/dsh/` of the game origin at build time.
 
-A native game that docks Studio makes the same calls from CrowdyCPP: the
-live-modding check, the model list, starter projects, and draft tests and live
-deploys that never block the game thread; see
-[Crowdy Studio in a native game](/crowdycpp/crowdy-studio).
+A dock reads this environment's Studio from the public
+[`crowdyStudioLinks`](reference/graphql/operations/queries/crowdy-studio-links.mdx)
+(`origin`, `walletUrl`): the only origin it opens a popup to, and the wallet page
+it sends a player to on `AGENT_FUNDS_NEEDED`. A native game that docks Studio
+makes the same calls from CrowdyCPP: the live-modding check, the model list,
+starter projects, and draft tests and live deploys that never block the game
+thread; see [Crowdy Studio in a native game](/crowdycpp/crowdy-studio).
 
 ## Data retention
 

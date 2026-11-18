@@ -1,0 +1,43 @@
+---
+id: exec-studio-source-input
+title: ExecStudioSourceInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The Crowdy Studio project and saved revision a player’s build is made from. The build, and the mod version or CLIENT half deployed from it, report them back, so any client can read which revision a grid runs.
+
+
+```graphql
+input ExecStudioSourceInput {
+  projectId: String!
+  revision: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStudioSourceInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #project-id */} 
+A Studio project of yours in this app (`crowdyStudioProject`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStudioSourceInput.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #revision */} 
+The project revision the crate is, at most the project’s current `revision`.
+
+
+
+
+### Member Of
+
+[`execModBuild`](/reference/graphql/operations/mutations/exec-mod-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execModClientBuild`](/reference/graphql/operations/mutations/exec-mod-client-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

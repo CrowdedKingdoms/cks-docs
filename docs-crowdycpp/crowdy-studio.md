@@ -7,8 +7,9 @@ title: Crowdy Studio in a native game
 
 A native game can dock [Agentic Crowdy Studio](/game-api/agentic-crowdy-studio) beside its
 world: the agent edits the player's Studio project, runs draft tests and deploys mods while the
-player plays. CrowdyCPP (0.86.0 and later) carries the platform calls such a dock makes, on the
-game's app-token client. Every asynchronous call delivers its callback from `game.poll()`, so
+player plays. CrowdyCPP carries the platform calls such a dock makes, on the game's app-token
+client: 0.86.0 the calls below, and 0.87.0 the project's revision on every build, the platform's
+CLIENT half starter and Studio's address from the platform. Every asynchronous call delivers its callback from `game.poll()`, so
 nothing here blocks the game thread.
 
 ```cpp
@@ -82,7 +83,10 @@ stack, `crowdyStudioModelListFrom(outcome)` reads the answer.
   the project's name (`weather-hud-server`, `weather-hud-client`), its SERVER half from the mod
   starter (`game.exec().modStarter(appId)`), its CLIENT half from the starter above.
 - `createCrowdyStudioStarterProjectAsync(game.exec(), game.crowdyStudio(), options, done)` fetches
-  the mod starter when the project has a SERVER half, and creates the project.
+  the mod starter when the project has a SERVER half and, from 0.87.0, the platform's CLIENT half
+  starter (`game.exec().modClientStarter(appId)`) when it has a CLIENT half, then creates the
+  project. Where the platform cannot serve the CLIENT half starter yet, the SDK's copy, the same
+  crate, is used.
 
 ```cpp
 crowdy::studio::createCrowdyStudioStarterProjectAsync(
@@ -120,6 +124,11 @@ A run:
    a mod named after its CLIENT module, deployed from the mod starter);
 5. attaches the CLIENT half, and consents to it as its author.
 
+From 0.87.0 every build names the project and the revision it read, so the mod and its CLIENT
+half report which saved revision the grid runs (`studioProjectId`, `studioRevision` in
+`game.exec().mods(appId, gridId)`; see [which Studio revision a mod
+runs](/exec/mods#which-studio-revision-a-mod-runs)).
+
 It ends with one outcome:
 
 | Outcome | What happened |
@@ -139,8 +148,14 @@ runs without calling back. The build log is kept to its last 64 KiB.
 ## Studio's address
 
 A dock opens popups only to Studio's own origin, and sends a player to Studio's wallet when the
-model needs funds (`AGENT_FUNDS_NEEDED`). `game.studioOrigin()` derives it
-from the game's API origin, and `crowdy::studioWalletUrl` adds the wallet page:
+model needs funds (`AGENT_FUNDS_NEEDED`). From 0.87.0 the platform answers both:
+
+```cpp
+const crowdy::CrowdyStudioLinks links = game.crowdyStudio().links();  // origin, walletUrl
+```
+
+`game.studioOrigin()` derives the same from the game's API origin without asking, and
+`crowdy::studioWalletUrl` adds the wallet page:
 
 ```cpp
 const std::string studio = game.studioOrigin();          // https://studio.prod.crowdedkingdoms.com

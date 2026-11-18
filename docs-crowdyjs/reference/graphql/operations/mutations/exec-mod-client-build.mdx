@@ -15,13 +15,14 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Build the CLIENT half of a mod from one crowdy-client-sdk crate: compiled for wasm32-unknown-unknown in the build sandbox, fuel-metered and optimized there, checked against the client ABI and at most 512 KiB, with its capability summary derived from the module. Returns at once with the build queued (`kind` `client`); poll `execModBuildStatus`, then attach it with `execModClientDeploy`. One build, server or CLIENT, at a time per player. Requires the 'write&#x005F;client&#x005F;code' permission in the app.
+Build the CLIENT half of a mod from one crowdy-client-sdk crate: compiled for wasm32-unknown-unknown in the build sandbox, fuel-metered and optimized there, checked against the client ABI and at most 512 KiB, with its capability summary derived from the module. Returns at once with the build queued (`kind` `client`); poll `execModBuildStatus`, then attach it with `execModClientDeploy`. One build, server or CLIENT, at a time per player. `studio` names the Crowdy Studio project and revision the crate is (yours, at a revision it has reached); the CLIENT half attached from the build reports them. Requires the 'write&#x005F;client&#x005F;code' permission in the app.
 
 
 ```graphql
 execModClientBuild(
   appId: BigInt!
   crate: ExecBuildCrateInput!
+  studio: ExecStudioSourceInput
 ): ExecBuild!
 ```
 
@@ -34,6 +35,10 @@ The app the grid is in.
 
 #### [<code style={{ fontWeight: 'normal' }}>execModClientBuild.<b>crate</b></code>](#crate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecBuildCrateInput!</b></code>](/reference/graphql/types/inputs/exec-build-crate-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #crate */} 
 The CLIENT half’s one crate. Its `Cargo.toml` may have only [package], [lib] as a cdylib, [dependencies] on `crowdy-client-sdk`, `serde` and `serde_json`, and [package.metadata.crowdy] with `tick_interval_ms`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModClientBuild.<b>studio</b></code>](#studio)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecStudioSourceInput</b></code>](/reference/graphql/types/inputs/exec-studio-source-input.mdx) <Badge class="badge badge--secondary " text="input"/> {/* #studio */} 
+The Crowdy Studio project of yours and its saved revision the crate is, which the build, and what is deployed from it, report back.
 
 
 

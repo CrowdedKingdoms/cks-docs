@@ -15,13 +15,14 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Build a mod from one ckx-sdk crate, as `execBuild` builds a developer's crates. Returns at once with the build queued; poll `execModBuildStatus`, then pass its id to `execModDeploy`. One build at a time per player. Requires the 'write&#x005F;server&#x005F;code' permission in the app.
+Build a mod from one ckx-sdk crate, as `execBuild` builds a developer's crates. Returns at once with the build queued; poll `execModBuildStatus`, then pass its id to `execModDeploy`. One build at a time per player. `studio` names the Crowdy Studio project and revision the crate is (yours, at a revision it has reached); the mod version deployed from the build reports them. Requires the 'write&#x005F;server&#x005F;code' permission in the app.
 
 
 ```graphql
 execModBuild(
   appId: BigInt!
   crate: ExecBuildCrateInput!
+  studio: ExecStudioSourceInput
 ): ExecBuild!
 ```
 
@@ -34,6 +35,10 @@ The app the grid is in.
 
 #### [<code style={{ fontWeight: 'normal' }}>execModBuild.<b>crate</b></code>](#crate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecBuildCrateInput!</b></code>](/reference/graphql/types/inputs/exec-build-crate-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #crate */} 
 The mod’s one ckx-sdk crate, e.g. `execModStarter`’s files.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModBuild.<b>studio</b></code>](#studio)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecStudioSourceInput</b></code>](/reference/graphql/types/inputs/exec-studio-source-input.mdx) <Badge class="badge badge--secondary " text="input"/> {/* #studio */} 
+The Crowdy Studio project of yours and its saved revision the crate is, which the build, and what is deployed from it, report back.
 
 
 
