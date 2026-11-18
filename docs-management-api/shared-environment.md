@@ -24,8 +24,10 @@ So in practice there is one model, and this page describes it.
 
 ## Free tier
 
-- Every organization can create up to **`platformConfig.freeAppsPerOrg`** apps on the shared
-  environment (default **3**).
+- An organization can create any number of apps on the shared environment.
+  `platformConfig.freeAppsPerOrg` (default **3**) is how many free app slots
+  `orgFreeAppQuota` counts; the slots are a count only and never change what is
+  free or billed.
 - Each app includes a **monthly development quota**, per UTC calendar month:
   **5 GB of client egress**, **5 GB of client ingress** (decimal GB: 1 GB =
   1,000,000,000 bytes), **20 CPU-hours of compute** pooled across GraphQL
@@ -150,7 +152,8 @@ code sends count as replication egress, billed through the same monthly egress
 aggregate as every other byte your app sends. See
 [usage and budgets](/exec/operations#usage-and-budgets).
 
-Check your remaining free slots:
+`orgFreeAppQuota` counts the free app slots (it is deprecated, and the slots do not
+change what is free or billed):
 
 ```graphql
 query {

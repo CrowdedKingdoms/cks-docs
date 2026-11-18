@@ -1,0 +1,39 @@
+---
+id: set-allowance-pool
+title: setAllowancePool
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. Moves the start of the organization allowance pool or its size on this tier, and records each change in billing&#x005F;rate&#x005F;changes (scope SHARED, metric allowance&#x005F;pool). A month already settled keeps the allowance it was settled with.
+
+
+```graphql
+setAllowancePool(
+  input: SetAllowancePoolInput!
+): AllowancePoolSettings!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setAllowancePool.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetAllowancePoolInput!</b></code>](/reference/graphql/types/inputs/set-allowance-pool-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AllowancePoolSettings</b></code>](/reference/graphql/types/objects/allowance-pool-settings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The organization allowance pool: from the first calendar month starting on or after effectiveFrom, an organization's apps share one free allowance per meter, factor times one app's allowance on the rate card, instead of each app having its own. One app may use the whole pool.

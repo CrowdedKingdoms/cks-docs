@@ -61,4 +61,4 @@ Optional idempotency key. Recommended for retries: replaying with the same key a
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>PublishAppResult</b></code>](/reference/graphql/types/objects/publish-app-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Result of publishing an app to the shared environment. All paths publish immediately. Usage above the free allowances is wallet-billed: each app has a per-dimension hourly allowance and, for client egress, 5 decimal GB per calendar month.
+Result of publishing an app to the shared environment. All paths publish immediately. Usage above the free allowances is billed from the organization wallet: each app has the rate card's monthly allowances until allowancePool.effectiveFrom, and from then the organization's apps share one allowance.
