@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-11-12T15:56:51Z",
+  "generated_from": "2026-11-18T17:16:41Z",
   "sdk_version": "2.25.0",
   "table": "settings",
   "columns": [
@@ -538,18 +538,6 @@
       "property": "ClassIDOverrides",
       "type": "TArray<FCrowdyClassIDOverride>",
       "category": "Crowdy SDK|Type ID Overrides",
-      "config": true,
-      "written_by": "you",
-      "module": "CrowdyReplication",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "UCrowdySDKDeveloperSettings::LeaderSource",
-      "class": "UCrowdySDKDeveloperSettings",
-      "property": "LeaderSource",
-      "type": "ECrowdyLeaderSource",
-      "category": "Crowdy SDK|Replication",
       "config": true,
       "written_by": "you",
       "module": "CrowdyReplication",

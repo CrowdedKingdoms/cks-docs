@@ -18,7 +18,7 @@ A player takes over a lantern post another player built, a vehicle changes drive
 
 A level-placed entity Owned By World has no writer, so nobody answers a request for it.
 
-An entity [Owned By Leader](./leader.md#an-npc-the-leader-simulates) follows the Leader instead, so requests and grants for it are refused with a warning. A player's avatar is not meant to change hands: the player's own client ignores every grant for their avatar, whatever it says, and every client ignores a grant sent through these nodes. Other clients cannot tell a grant from a modified client apart, as the warning below says.
+An entity [Owned By Leader](./leader.md#an-npc-the-leader-simulates) follows the Leader instead, so requests and grants for it are refused with a warning. A player's avatar is not meant to change hands: every client, the player's own included, refuses a grant for a player's avatar, whatever the grant says. Other clients cannot tell a grant from a modified client apart, as the warning below says.
 
 :::warning[Ownership is a coordination convention on the view plane, not enforcement, and a transfer is transient.]
 No server checks who may request or grant. And a client that first observes the entity after a grant sees the spawn-time owner, or re-baselines from proxy defaults, not necessarily the transferred one. Cheat-sensitive ownership belongs on the [truth plane](../concepts/two-planes.md), in your server code.
@@ -38,13 +38,13 @@ No server checks who may request or grant. And a client that first observes the 
 | Node | C++ | Who calls it |
 |---|---|---|
 | **Request Ownership Transfer** | `RequestOwnershipTransfer(WorldContextObject, TargetEntity)` | Any client that does not own the entity. A no-op when the target is not a registered entity or this client already writes it. |
-| **Grant Ownership Transfer** | `GrantOwnershipTransfer(WorldContextObject, TargetEntity, NewOwner)` | The current owner. `NewOwner` is any entity the new owner's player owns, typically their avatar. |
-| **Grant Ownership Transfer To Player** | `GrantOwnershipTransferToPlayer(WorldContextObject, TargetEntity, NewOwnerPlayerID)` | The current owner, with the requester's id straight from `OnOwnershipRequested`; no local actor of theirs is needed. |
+| **Grant Ownership Transfer** | `GrantOwnershipTransfer(WorldContextObject, TargetEntity, NewOwner)` | The current owner. `NewOwner` is any entity the new owner's player owns, typically their avatar. The grant names the session that writes `NewOwner` (for another player's avatar, that player's session; for a record with a writer, that writer) and the user this client knows for it, 0 for another player's avatar. A `NewOwner` that is neither names nobody, and the grant is refused. |
+| **Grant Ownership Transfer To Player** | `GrantOwnershipTransferToPlayer(WorldContextObject, TargetEntity, NewOwnerPlayerID, NewOwnerUserID = 0)` | The current owner, with the requester's id and user straight from `OnOwnershipRequested`; no local actor of theirs is needed. `New Owner User ID` left at 0 makes the new owner's user unknown to other clients; it never changes who writes the entity. |
 
-Every node resolves the target's entity component and subsystem and is a safe no-op, never a crash, on a null or unregistered target. Both grants funnel through the component's C++ `GrantOwnershipTo(NewOwnerID)`, which is also a no-op with a warning unless this client is the current owner. The deprecated **Grant Ownership To Host** is under [Deprecated](#deprecated).
+Every node resolves the target's entity component and subsystem and is a safe no-op, never a crash, on a null or unregistered target. Both grants funnel through the component's C++ `GrantOwnershipTo(NewWriterID, NewOwnerUserID)`, which is also a no-op with a warning unless this client is the current owner.
 
 :::caution[Grant Ownership Transfer refuses a NewOwner that is not client-owned.]
-Passing an actor no client owns (a World entity, `HostOwned`) or an unregistered actor logs a warning and does nothing.
+Passing an actor no client owns (a World entity, `WorldOwned`) or an unregistered actor logs a warning and does nothing.
 :::
 
 The lantern world's transfer is a player claiming a lantern post another player spawned. A post spawned during play belongs to its spawner; the second player asks for it, and the owner approves.
@@ -67,7 +67,7 @@ From **Event ActorBeginOverlap**, **Request Ownership Transfer** with `Target En
 
 <Blueprint src="own-request" title="Event ActorBeginOverlap, Request Ownership Transfer" />
 
-The grant: at **Event BeginPlay**, a **Crowdy Entity Subsystem** getter feeds **Bind Event to On Ownership Requested**, whose custom event `OnClaimRequested` compares its `Target Entity` with a Self reference (**==** into a **Branch**, because the event fires for every entity this client owns) and, when they match, passes its `Requester ID` to **Grant Ownership Transfer To Player** with `Target Entity` wired to self. Eight nodes; the compare is the guard the C++ has:
+The grant: at **Event BeginPlay**, a **Crowdy Entity Subsystem** getter feeds **Bind Event to On Ownership Requested**, whose custom event `OnClaimRequested` compares its `Target Entity` with a Self reference (**==** into a **Branch**, because the event fires for every entity this client owns) and, when they match, passes its `Requester ID` and `Requester User ID` to **Grant Ownership Transfer To Player** with `Target Entity` wired to self. Eight nodes; the compare is the guard the C++ has:
 
 <Blueprint src="own-grant" title="Event BeginPlay, Crowdy Entity Subsystem, Bind Event to On Ownership Requested, OnClaimRequested, ==, Branch, Grant Ownership Transfer To Player" />
 
@@ -82,8 +82,8 @@ On `UCrowdyEntitySubsystem`, both Blueprint-assignable, both on the game thread:
 
 | Event | Parameters | Fires |
 |---|---|---|
-| `OnOwnershipRequested` (`FOnCrowdyOwnershipRequested`) | `TargetEntity`, `RequesterActor`, `RequesterID` | On the entity's owner only, when another client requests it. `RequesterActor` is the requester's avatar when this client holds it, else null; `RequesterID` is always valid. |
-| `OnEntityOwnershipChanged` (`FOnCrowdyEntityOwnershipChanged`) | `TargetEntity`, `NetID`, `NewOwnerID`, `PreviousOwnerID` | On every client once ownership has actually changed. `NewOwnerID` is invalid when the entity went back to the world. |
+| `OnOwnershipRequested` (`FOnCrowdyOwnershipRequested`) | `TargetEntity`, `RequesterActor`, `RequesterID`, `RequesterUserID` | On the entity's owner only, when another client requests it. `RequesterActor` is the requester's avatar when this client holds it, else null; `RequesterID` is always valid; `RequesterUserID` is the user the requesting session claims, 0 when it was signed out, so pass it on to the grant. |
+| `OnEntityOwnershipChanged` (`FOnCrowdyEntityOwnershipChanged`) | `TargetEntity`, `NetID`, `NewOwnerID`, `PreviousOwnerID` | On every client once the writer has actually changed. Both ids are writer ids; `NewOwnerID` is invalid when the entity went back to the world. |
 
 `bAutoApproveOwnershipRequests` is authored config on the component, read on the owner when a request arrives. Changing it at runtime on one client affects only the requests that client receives while it owns the entity.
 
@@ -97,27 +97,7 @@ On the wire, each owner of an entity that replicates movement sends under an act
 Between the old owner relinquishing and the reliable grant landing on the new owner, nobody diffs the entity. There is never a double writer, but for that short window there is no writer at all, by design. The continuous channel of an entity that replicates movement moves with the owner the same way: the new owner joins it and the old one leaves.
 :::
 
-A grant carries the previous owner's id, and `ReassignOwnership` compares and swaps on it, so a stale or duplicate grant is dropped rather than applied twice. A client that joined after the entity spawned may not know its owner, and takes the grant anyway.
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Grant Ownership To Host
-
-Nothing replaces handing an entity back at runtime: keep state that must change hands in a [Server Object](../concepts/two-planes.md), or set Owned By to [Leader](./leader.md#an-npc-the-leader-simulates) on the class for an entity one client should simulate. The current grants are under [The three nodes](#the-three-nodes).
-
-| Node | C++ | Who calls it |
-|---|---|---|
-| **Grant Ownership To Host** | `GrantOwnershipToHost(WorldContextObject, TargetEntity)` | The current owner, to give the entity back to the world. Under Server Object that leaves it with no writer until a client owns it again. It funnels through `GrantOwnershipTo(NewOwnerID)` like the other grants. |
-
-**Grant Ownership Transfer** never falls back to the host; giving an entity to the host is this node's job alone.
-
-### Under Elected Host
-
-The [Leader](./leader.md) replaces the elected host. The SDK no longer polls for a host, so on a project whose **Leader Source** is still **Elected Host (Deprecated)** no host writes an entity Owned By World or answers requests for it. Decide such a grant in a Server Object.
+A grant carries the previous writer's id, and `ReassignOwnership` compares and swaps on it, so a stale or duplicate grant is dropped rather than applied twice. A client that joined after the entity spawned may not know its owner, and takes the grant anyway. The user a grant names is stored with the new writer, or left unknown for 0; it never takes part in the swap. A grant that keeps the writer only fills in a user the client did not know, and fires no ownership event. The grant and the request have new function ids, so rebuild and repackage a packaged game.
 
 ## Gotchas
 

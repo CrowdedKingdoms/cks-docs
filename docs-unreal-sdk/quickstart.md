@@ -76,11 +76,11 @@ Sign in from the Game Mode, not from a Game Instance Blueprint's **Event Init**:
 
 ## 1. Make your player a Crowdy entity
 
-Your player pawn is the first entity, before any lantern, because it is what makes you exist to the server. A pawn with a `UCrowdyEntityComponent` on a Character sends an actor update every replication interval (ten a second on the shipped profile), and a heartbeat at least once a second while it stands still; the server registers your position from those updates, and from then on you are a recipient of everything sent near you. A character sends its movement by default, because **Replicate Movement** is **Auto**, which is on for a pawn with a movement component and off for anything else. The component needs two settings changed from their defaults: **Identity Policy** Player Derived (the identity is derived from the signed-in account, so it is the same on every client and on every launch; only valid on the locally controlled pawn), and **Owned By** Player (this client simulates the pawn; a pawn the Game Mode spawns is the spawner's under the default, Auto, as well, so Player only says it plainly; Auto makes an actor placed in the level the world's, which no client writes by default). Leave **State Executor** empty: the SDK's default executor snapshots the pawn's location and rotation, which is all this page needs.
+Your player pawn is the first entity, before any lantern, because it is what makes you exist to the server. A pawn with a `UCrowdyEntityComponent` on a Character sends an actor update every replication interval (ten a second on the shipped profile), and a heartbeat at least once a second while it stands still; the server registers your position from those updates, and from then on you are a recipient of everything sent near you. A character sends its movement by default, because **Replicate Movement** is **Auto**, which is on for a pawn with a movement component and off for anything else. The component needs two settings changed from their defaults: **Identity Policy** Player Derived (the id is random and the game session keeps it for one sign-in; only valid on the locally controlled pawn), and **Owned By** Player (this client simulates the pawn; a pawn the Game Mode spawns is the spawner's under the default, Auto, as well, so Player only says it plainly; Auto makes an actor placed in the level the world's, which no client writes by default). Leave **State Executor** empty: the SDK's default executor snapshots the pawn's location and rotation, which is all this page needs.
 
-The identity is derived once and nothing re-derives it later: at `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, which for a pawn the Game Mode spawns during play is the `RestartPlayer` call that spawned it. A pawn spawned by the Game Mode on the first frame begins play before the sign-in has answered, and its first updates leave before the server is ready for them, so the Game Mode starts players as spectators and the connected handler spawns the pawn instead. **On UDP Connection Success** fires once the server has assigned you and its readiness wait has elapsed (the SDK times that, you never do), and every update the pawn sends after it counts.
+The identity is resolved once and nothing re-resolves it later: at `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, which for a pawn the Game Mode spawns during play is the `RestartPlayer` call that spawned it. A pawn spawned by the Game Mode on the first frame begins play before the sign-in has answered, and its first updates leave before the server is ready for them, so the Game Mode starts players as spectators and the connected handler spawns the pawn instead. **On UDP Connection Success** fires once the server has assigned you and its readiness wait has elapsed (the SDK times that, you never do), and every update the pawn sends after it counts.
 
-Where the account id becomes readable. The engine possesses a pawn spawned during play only after its `BeginPlay`, so the component waits and registers inside that first possession, after the pawn's own **Possessed** and **Controller Changed** events; the first controller of any kind completes it, and an AI-possessed pawn takes the random-id fallback with its warning. A respawn that leaves the old pawn standing hands the account id to the new one, and the old pawn's component stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** (`OnCrowdyOwnershipAssigned`) or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn reads false until that registration, so a pawn graph that gates on it at `BeginPlay` runs nothing.
+Where the actor id becomes readable. The engine possesses a pawn spawned during play only after its `BeginPlay`, so the component waits and registers inside that first possession, after the pawn's own **Possessed** and **Controller Changed** events; the first controller of any kind completes it, and an AI-possessed pawn takes the random-id fallback with its warning. A respawn that leaves the old pawn standing hands the actor id to the new one, and the old pawn's component stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** (`OnCrowdyOwnershipAssigned`) or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn reads false until that registration, so a pawn graph that gates on it at `BeginPlay` runs nothing.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -98,7 +98,7 @@ Where the account id becomes readable. The engine possesses a pawn spawned durin
 
 One more Blueprint, the Character, and the Game Mode from step 0.
 
-1. **The Character.** Open the template's `BP_ThirdPersonCharacter`, or your own Character that already moves; a new Blueprint with **Character** as its parent has no body and no input, so do not start from one. In the Components panel click **Add** and choose **Crowdy Entity Component**. In its Details panel, under **Crowdy SDK, Entity Component**, set **Identity Policy** to **Player Derived** and **Owned By** to **Player**; **Replicate Movement** stays at **Auto**, which sends a Character's movement. Two rows appear while movement is replicated, **State Executor** and **Auto Register**: leave the executor at None and Auto Register ticked; a third, **Host Override**, appears once Owned By is Player: it is deprecated, see [Deprecated](#deprecated). Add a **Point Light** named `Torch` while you are there; a later page drives it.
+1. **The Character.** Open the template's `BP_ThirdPersonCharacter`, or your own Character that already moves; a new Blueprint with **Character** as its parent has no body and no input, so do not start from one. In the Components panel click **Add** and choose **Crowdy Entity Component**. In its Details panel, under **Crowdy SDK, Entity Component**, set **Identity Policy** to **Player Derived** and **Owned By** to **Player**; **Replicate Movement** stays at **Auto**, which sends a Character's movement. Two rows appear while movement is replicated, **State Executor** and **Auto Register**: leave the executor at None and Auto Register ticked. Add a **Point Light** named `Torch` while you are there; a later page drives it.
 2. **The Game Mode.** Open the Game Mode Blueprint from step 0. Set **Default Pawn Class** to your Character and tick **Start Players as Spectators** under **Game Mode**.
 3. **The spawn.** In the same Game Mode's event graph, from **Event BeginPlay**, get the **Crowdy SDK Subsystem** and **Bind Event to On UDP Connection Success** to a custom event `OnConnected` (the same **Bind Event** shape the [Authentication](./services/authentication.md#after-sign-in) page uses for On Login). A graph has one **Event BeginPlay** and step 0 already uses it, so run the event into a **Sequence** node: the bind on its first pin, the sign-in from step 0 on its second. `OnConnected` calls **Restart Player** with **Get Player Controller** (index 0) on its New Player pin. In a map the player travels to later, the connection is already up and On UDP Connection Success does not fire again, so on a third Sequence pin check **Get UDP Connection State** and, when it is **Connected**, call **Restart Player** the same way.
 
@@ -111,8 +111,8 @@ One more Blueprint, the Character, and the Game Mode from step 0.
 
 **Success signal.** Press Play. The map sits still under a fixed camera until `Connected to the app`, then your character spawns at a Player Start and you can move it. With `crowdy.entity.trace 1` on, the log shows the pawn's entity registering on the wire right after the connection comes up.
 
-:::caution[A pawn that begins play before the sign-in has answered derives its identity from user id 0.]
-Nothing warns. Two such clients conflate into one player. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs.
+:::caution[A pawn that begins play before the sign-in has answered sends nothing yet.]
+The realtime connection opens only for a signed-in player whose actor record has answered, and the id the pawn mints before then is kept by the sign-in. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under the actor id of this sign-in inside the possession that `RestartPlayer` performs.
 :::
 
 ## 2. See yourself
@@ -203,7 +203,7 @@ There is no node for this; it is a setting on the variable.
 3. Set it to **Replicated**. A **RepNotify** field appears; the editor creates an `OnRep_Lit` function for you. In it, call **Set Visibility** on `Light` with `Lit`.
 4. Compile. The variable's Get and Set nodes now show the replication badge in their corner.
 
-From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. That is the client-owned pattern, the lantern's. On an actor placed in the level, **Owned By** is Auto, which resolves to World, and no client writes a World actor by default: a Set on it ships nothing, and **Mark Crowdy State Dirty** on it only logs a warning that names Leader Source. Set **Owned By** to Player, as step 3 did, or keep that value in a Server Object; see [The Leader](./runtime/leader.md#who-writes-what). See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
+From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. That is the client-owned pattern, the lantern's. On an actor placed in the level, **Owned By** is Auto, which resolves to World, and no client writes a World actor by default: a Set on it ships nothing, and **Mark Crowdy State Dirty** on it only logs a warning that no client writes it. Set **Owned By** to Player, as step 3 did, or keep that value in a Server Object; see [The Leader](./runtime/leader.md#who-writes-what). See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
 
 </TabItem>
 </Tabs>
@@ -227,23 +227,11 @@ The two lantern files after steps 3 to 5, for comparison with your own:
 
 <CppSnippet id="qs-lantern-complete" />
 
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Host Override
-
-Nothing replaces **Host Override**, because host corrections end with the elected host: leave it at its default, **Allow**, on the Character from [step 1](#1-make-your-player-a-crowdy-entity).
-
-The row appears on the Crowdy Entity Component once **Owned By** is **Player**. It has nothing to refuse now: the SDK no longer polls for an elected host, so no host corrects that entity's Crowdy State.
-
 ## Gotchas
 
 - No login, no connection. Until `Get UDP Connection State` reads connected, every step looks dead.
 - No pawn, no presence. The server knows you by your pawn's updates; a client whose pawn is not sending is at no position and receives no spatial event, and its own spatial sends reach nobody. A `Multicast` event is the exception: it goes by session channel membership, which connecting joins.
-- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. A pawn spawned after it registers inside its first possession, so read its id from **On Crowdy Ownership Assigned**, not at `BeginPlay`.
+- Spawn the pawn after **On UDP Connection Success**. Before it, the connection is not open for the player yet, so nothing the pawn sends is queued or replayed; the next interval's update is the recovery. A pawn spawned after it registers inside its first possession, so read its id from **On Crowdy Ownership Assigned**, not at `BeginPlay`.
 - The Game Mode binds the event in its own `BeginPlay`. A map opened after the connection is already up never sees it; check **Get UDP Connection State** at `BeginPlay` first and restart the player at once when it reads connected, or bind in the Game Instance and spawn from there.
 - A map whose `MapProfiles` row or `DefaultProfile` names an asset that did not load is inactive; the warning names the asset. Check that before any code. A map with no row at all runs on the shipped default.
 - The loopback variables are test aids. Leave them off in a normal session; they change what a single client sees.

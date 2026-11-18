@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-11-12T15:56:51Z",
+  "generated_from": "2026-11-18T17:16:41Z",
   "sdk_version": "2.25.0",
   "table": "delegates",
   "columns": [
@@ -205,17 +205,6 @@
       "owner": "UCrowdyGameSession",
       "name": "OnAppPausedChanged",
       "type": "FOnCrowdyAppPausedChanged",
-      "category": "Crowdy SDK|Game Session",
-      "module": "CrowdyNet",
-      "page": "services/authentication",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "UCrowdyGameSession::OnHostIDUpdated",
-      "owner": "UCrowdyGameSession",
-      "name": "OnHostIDUpdated",
-      "type": "FOnHostIDUpdated",
       "category": "Crowdy SDK|Game Session",
       "module": "CrowdyNet",
       "page": "services/authentication",
@@ -461,6 +450,39 @@
       "category": "",
       "module": "CrowdyServices",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyActorOwners_ResolveActorOwner::OnConfirmed",
+      "owner": "UCrowdyActorOwners_ResolveActorOwner",
+      "name": "OnConfirmed",
+      "type": "FActorOwnerAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyActorOwners_ResolveActorOwner::OnFailed",
+      "owner": "UCrowdyActorOwners_ResolveActorOwner",
+      "name": "OnFailed",
+      "type": "FActorOwnerAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyActorOwners_ResolveActorOwner::OnUnknown",
+      "owner": "UCrowdyActorOwners_ResolveActorOwner",
+      "name": "OnUnknown",
+      "type": "FActorOwnerAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
       "editor": false,
       "allowlist": ""
     },
@@ -751,6 +773,28 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyAuthorizeLiveModding::OnDone",
+      "owner": "UCrowdyAuthorizeLiveModding",
+      "name": "OnDone",
+      "type": "FCrowdyStudioLiveModdingAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuthorizeLiveModding::OnFailed",
+      "owner": "UCrowdyAuthorizeLiveModding",
+      "name": "OnFailed",
+      "type": "FCrowdyStudioLiveModdingAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyAvatars::OnMyAvatarsCacheChanged",
       "owner": "UCrowdyAvatars",
       "name": "OnMyAvatarsCacheChanged",
@@ -1022,6 +1066,39 @@
       "category": "Crowdy SDK|Reception Layer|Game Events",
       "module": "CrowdyServices",
       "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyBuildClientMod::OnDone",
+      "owner": "UCrowdyBuildClientMod",
+      "name": "OnDone",
+      "type": "FCrowdyModBuildAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyBuildClientMod::OnFailed",
+      "owner": "UCrowdyBuildClientMod",
+      "name": "OnFailed",
+      "type": "FCrowdyModBuildAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyBuildClientMod::OnProgress",
+      "owner": "UCrowdyBuildClientMod",
+      "name": "OnProgress",
+      "type": "FCrowdyModBuildAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/mods",
       "editor": false,
       "allowlist": ""
     },
@@ -1631,6 +1708,28 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyCreateStudioProject::OnDone",
+      "owner": "UCrowdyCreateStudioProject",
+      "name": "OnDone",
+      "type": "FCrowdyStudioProjectAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCreateStudioProject::OnFailed",
+      "owner": "UCrowdyCreateStudioProject",
+      "name": "OnFailed",
+      "type": "FCrowdyStudioProjectAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyDeleteMod::OnDone",
       "owner": "UCrowdyDeleteMod",
       "name": "OnDone",
@@ -1646,6 +1745,28 @@
       "owner": "UCrowdyDeleteMod",
       "name": "OnFailed",
       "type": "FCrowdyModDeleteAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyDeployClientMod::OnDone",
+      "owner": "UCrowdyDeployClientMod",
+      "name": "OnDone",
+      "type": "FCrowdyModClientInfoAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyDeployClientMod::OnFailed",
+      "owner": "UCrowdyDeployClientMod",
+      "name": "OnFailed",
+      "type": "FCrowdyModClientInfoAsyncResult",
       "category": "",
       "module": "CrowdyServices",
       "page": "",
@@ -1741,6 +1862,28 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyGetAgentBoot::OnDone",
+      "owner": "UCrowdyGetAgentBoot",
+      "name": "OnDone",
+      "type": "FCrowdyStudioBootAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetAgentBoot::OnFailed",
+      "owner": "UCrowdyGetAgentBoot",
+      "name": "OnFailed",
+      "type": "FCrowdyStudioBootAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyGetGridPermissions::OnDone",
       "owner": "UCrowdyGetGridPermissions",
       "name": "OnDone",
@@ -1756,6 +1899,28 @@
       "owner": "UCrowdyGetGridPermissions",
       "name": "OnFailed",
       "type": "FCrowdyGridPermissionsAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetModelUsage::OnDone",
+      "owner": "UCrowdyGetModelUsage",
+      "name": "OnDone",
+      "type": "FCrowdyStudioUsageAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetModelUsage::OnFailed",
+      "owner": "UCrowdyGetModelUsage",
+      "name": "OnFailed",
+      "type": "FCrowdyStudioUsageAsyncResult",
       "category": "",
       "module": "CrowdyServices",
       "page": "",
@@ -1800,6 +1965,116 @@
       "owner": "UCrowdyGetModStarter",
       "name": "OnFailed",
       "type": "FCrowdyModStarterAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetProjectStatus::OnDone",
+      "owner": "UCrowdyGetProjectStatus",
+      "name": "OnDone",
+      "type": "FCrowdyModProjectStatusAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetProjectStatus::OnFailed",
+      "owner": "UCrowdyGetProjectStatus",
+      "name": "OnFailed",
+      "type": "FCrowdyModProjectStatusAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetProviderConsent::OnDone",
+      "owner": "UCrowdyGetProviderConsent",
+      "name": "OnDone",
+      "type": "FCrowdyStudioConsentAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetProviderConsent::OnFailed",
+      "owner": "UCrowdyGetProviderConsent",
+      "name": "OnFailed",
+      "type": "FCrowdyStudioConsentAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetScriptLog::OnDone",
+      "owner": "UCrowdyGetScriptLog",
+      "name": "OnDone",
+      "type": "FCrowdyModScriptLogAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetScriptLog::OnFailed",
+      "owner": "UCrowdyGetScriptLog",
+      "name": "OnFailed",
+      "type": "FCrowdyModScriptLogAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetScriptStatus::OnDone",
+      "owner": "UCrowdyGetScriptStatus",
+      "name": "OnDone",
+      "type": "FCrowdyModScriptStatusAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetScriptStatus::OnFailed",
+      "owner": "UCrowdyGetScriptStatus",
+      "name": "OnFailed",
+      "type": "FCrowdyModScriptStatusAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetStudioProject::OnDone",
+      "owner": "UCrowdyGetStudioProject",
+      "name": "OnDone",
+      "type": "FCrowdyStudioProjectAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetStudioProject::OnFailed",
+      "owner": "UCrowdyGetStudioProject",
+      "name": "OnFailed",
+      "type": "FCrowdyStudioProjectAsyncResult",
       "category": "",
       "module": "CrowdyServices",
       "page": "",
@@ -1862,6 +2137,28 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyListGridChannels::OnDone",
+      "owner": "UCrowdyListGridChannels",
+      "name": "OnDone",
+      "type": "FCrowdyGridChannelsAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListGridChannels::OnFailed",
+      "owner": "UCrowdyListGridChannels",
+      "name": "OnFailed",
+      "type": "FCrowdyGridChannelsAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyListMods::OnDone",
       "owner": "UCrowdyListMods",
       "name": "OnDone",
@@ -1900,6 +2197,83 @@
       "name": "OnFailed",
       "type": "FCrowdyModListAsyncResult",
       "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListStudioProjects::OnDone",
+      "owner": "UCrowdyListStudioProjects",
+      "name": "OnDone",
+      "type": "FCrowdyStudioProjectListAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListStudioProjects::OnFailed",
+      "owner": "UCrowdyListStudioProjects",
+      "name": "OnFailed",
+      "type": "FCrowdyStudioProjectListAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyModScripts::OnModScriptError",
+      "owner": "UCrowdyModScripts",
+      "name": "OnModScriptError",
+      "type": "FOnCrowdyModScriptError",
+      "category": "Crowdy SDK|Mod Scripts",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyModScripts::OnModScriptPrompt",
+      "owner": "UCrowdyModScripts",
+      "name": "OnModScriptPrompt",
+      "type": "FOnCrowdyModScriptPrompt",
+      "category": "Crowdy SDK|Mod Scripts",
+      "module": "CrowdyServices",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyModScripts::OnModScriptPromptWithdrawn",
+      "owner": "UCrowdyModScripts",
+      "name": "OnModScriptPromptWithdrawn",
+      "type": "FOnCrowdyModScriptPromptWithdrawn",
+      "category": "Crowdy SDK|Mod Scripts",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyModScripts::OnModScriptStarted",
+      "owner": "UCrowdyModScripts",
+      "name": "OnModScriptStarted",
+      "type": "FOnCrowdyModScriptStarted",
+      "category": "Crowdy SDK|Mod Scripts",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyModScripts::OnModScriptStopped",
+      "owner": "UCrowdyModScripts",
+      "name": "OnModScriptStopped",
+      "type": "FOnCrowdyModScriptStopped",
+      "category": "Crowdy SDK|Mod Scripts",
       "module": "CrowdyServices",
       "page": "",
       "editor": false,
@@ -1994,6 +2368,28 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyRecordProviderConsent::OnDone",
+      "owner": "UCrowdyRecordProviderConsent",
+      "name": "OnDone",
+      "type": "FCrowdyStudioConsentAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyRecordProviderConsent::OnFailed",
+      "owner": "UCrowdyRecordProviderConsent",
+      "name": "OnFailed",
+      "type": "FCrowdyStudioConsentAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyReleaseClaim::OnDone",
       "owner": "UCrowdyReleaseClaim",
       "name": "OnDone",
@@ -2031,6 +2427,28 @@
       "owner": "UCrowdyReloadChunk",
       "name": "OnFailed",
       "type": "FCrowdyVoxelReloadAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyRunProject::OnDone",
+      "owner": "UCrowdyRunProject",
+      "name": "OnDone",
+      "type": "FCrowdyModRunAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyRunProject::OnFailed",
+      "owner": "UCrowdyRunProject",
+      "name": "OnFailed",
+      "type": "FCrowdyModRunAsyncResult",
       "category": "",
       "module": "CrowdyServices",
       "page": "",
@@ -2221,6 +2639,17 @@
       "category": "",
       "module": "CrowdyServices",
       "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyStudioAgent::OnAgentBootChanged",
+      "owner": "UCrowdyStudioAgent",
+      "name": "OnAgentBootChanged",
+      "type": "FOnCrowdyAgentBootChanged",
+      "category": "Crowdy SDK|Studio",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
       "editor": false,
       "allowlist": ""
     },
@@ -2716,6 +3145,17 @@
       "category": "",
       "module": "CrowdyServices",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVideoSender::OnVideoSendRefused",
+      "owner": "UCrowdyVideoSender",
+      "name": "OnVideoSendRefused",
+      "type": "FOnCrowdyVideoSendRefused",
+      "category": "Crowdy SDK|Video|Events",
+      "module": "CrowdyServices",
+      "page": "runtime/video-frames",
       "editor": false,
       "allowlist": ""
     },

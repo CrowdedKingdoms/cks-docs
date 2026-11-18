@@ -46,7 +46,7 @@ Two of the three are `meta=(...)` keys; the entity is a component. One canonical
 | Marker | Goes on | Canonical example | Owning page |
 |---|---|---|---|
 | `CrowdyEntity` | A `UCrowdyEntityComponent` on an `AActor` (the component is the marker; set `OwnedBy`) | `qs-entity` | [Entities, identity, ownership](./concepts/entities-identity-ownership.md) |
-| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`OwnedBy` = Player, the lantern) the owner assigns and calls the notify itself; on a world entity (`OwnedBy` = World, or Auto, the default, on a placed actor) no client writes it by default and `MarkStateDirty` on it only logs a warning naming Leader Source, so keep what changes in a Server Object | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [The Leader](./runtime/leader.md#who-writes-what) |
+| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`OwnedBy` = Player, the lantern) the owner assigns and calls the notify itself; on a world entity (`OwnedBy` = World, or Auto, the default, on a placed actor) no client writes it and `MarkStateDirty` on it only logs a warning, so keep what changes in a Server Object | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [The Leader](./runtime/leader.md#who-writes-what) |
 | `CrowdyEvent` + `CrowdyRecipient` | A `UFUNCTION` named `X_Implementation`, plus `CROWDY_EVENT(X)`; recipient is one of `SpatialMulticast`, `Multicast`, `OwningClient` | `qs-event` | [RPC events](./runtime/rpc-events-cpp.md#routing-keys) |
 
 Four rules the examples assume: the first thing a client needs is its own pawn as a movement-replicating (`ReplicateMovement` Auto sends for a Character), `PlayerDerived`, `Player`-owned entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([Crowdy State](./runtime/crowdy-state.md)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `OwnedBy` to Player: a world entity (`OwnedBy` = World, or Auto, the default, on a placed actor: sending no movement, Stable, level-placed) has no writer by default, so keep what changes about it in a Server Object ([The Leader](./runtime/leader.md#who-writes-what)).
@@ -152,21 +152,13 @@ The full table, including behavior switches and diagnostic commands, is on [Cons
 | An array parameter on a delegate handler is `const TArray<T>&`; a by-value parameter does not match and `AddDynamic` will not compile | [Teams](./services/teams.md) |
 | A `Multicast` call has a 1024-byte payload budget and is dropped loudly, never truncated; large payloads go on `SpatialMulticast` | [RPC events](./runtime/rpc-events-cpp.md#containers-and-their-bounds) |
 
-## Deprecated
+## Removed
 
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
-:::
+Never write new code against these; when you meet them in an existing project, move it to the replacement. [Removed after 2.25](./guides/deprecated.md) lists each item and its replacement.
 
-Never write new code against these; when you meet them in an existing project, move it to the replacement.
+### The Host recipient and the elected host
 
-### The Host recipient
-
-`OwningClient` replaces `CrowdyRecipient = "Host"`; see [Recipients and routing](./runtime/recipients-and-routing.md#deprecated). A saved `Host` still routes: it runs on the Leader on a replicated subsystem, and on an actor it is dropped with a warning under Server Object, and goes nowhere under Leader Source **Elected Host (Deprecated)**, where no host is elected.
-
-### The elected host
-
-The [Leader](./runtime/leader.md) and Server Objects replace it, under the default Leader Source, **Server Object**. The SDK no longer polls for a host, so under **Elected Host (Deprecated)** nobody is elected and no client writes a World entity; see [Crowdy State](./runtime/crowdy-state.md#deprecated). The host subsystem, `IsHost`, `CheckEntityIsHost` and `HostPollIntervalSeconds` are removed: use **Is Local Leader**, or put the logic in a Server Object.
+Nothing elects a host. `OwningClient` replaces `CrowdyRecipient = "Host"`, and a saved `Host` reads as `OwningClient` and warns; see [Recipients and routing](./runtime/recipients-and-routing.md). The [Leader](./runtime/leader.md) and Server Objects replace the host, and no client writes an entity Owned By World. The host subsystem, `IsHost`, `CheckEntityIsHost`, `GetHostID`, `HostOverride` and the Leader Source setting are removed: use **Is Local Leader** or `GetAppWriterID()`, or put the logic in a Server Object.
 
 ## Related
 

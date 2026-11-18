@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-11-12T15:56:51Z",
+  "generated_from": "2026-11-18T17:16:41Z",
   "sdk_version": "2.25.0",
   "table": "log-categories",
   "columns": [
@@ -124,6 +124,16 @@
       ],
       "editor": true,
       "allowlist": "editor"
+    },
+    {
+      "id": "LogCrowdyModScripts",
+      "category": "LogCrowdyModScripts",
+      "module": "CrowdyModScriptRuntime",
+      "trace_cvars": [
+        "crowdy.modscripts.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
     },
     {
       "id": "LogCrowdyNodes",

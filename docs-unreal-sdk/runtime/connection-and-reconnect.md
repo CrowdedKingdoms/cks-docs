@@ -80,9 +80,9 @@ In the Game Mode Blueprint, from **Event BeginPlay**, a **Crowdy SDK Subsystem**
 
 A player who sends no gameplay input (movement, voxel edits, messages, voice, video) for the app's idle timeout has their session released by the server. The timeout is 15 minutes unless the app sets its own in Crowdy Studio (Idle timeout, 60 seconds to 24 hours, or off). This is not a drop: the SDK sets the state to `Inactive`, broadcasts **On UDP Session Inactive**, leaves the Leader type, and does not reconnect. While inactive the player sends and receives nothing.
 
-So that an idle player can be released at all, the client goes quiet after 30 seconds without keyboard, mouse, touch or gamepad input, counted from the connection coming up at the earliest: it stops the CrowdyState keyframe heartbeat and its 5-second ping, both of which the server counts as input. Values that change still replicate at once, movement still shows, a host's World entities keep their keyframe, and the heartbeat resumes on its next interval after the first input. A player who joins near an idle one sees that player's CrowdyState values once they change or the idle player acts again. `crowdy.net.idlequietseconds` sets the 30 seconds, and 0 keeps the heartbeat and the ping going, which means an idle player is never released.
+So that an idle player can be released at all, the client goes quiet after 30 seconds without keyboard, mouse, touch or gamepad input, counted from the connection coming up at the earliest: it stops the CrowdyState keyframe heartbeat and its 5-second ping, both of which the server counts as input. Values that change still replicate at once, movement still shows, and the heartbeat resumes on its next interval after the first input. A player who joins near an idle one sees that player's CrowdyState values once they change or the idle player acts again, and while the Leader is idle the same holds for replicated subsystems. `crowdy.net.idlequietseconds` sets the 30 seconds, and 0 keeps the heartbeat and the ping going, which means an idle player is never released.
 
-When to bring the player back is your game's decision. Call **Request UDP Access** (`UCrowdySDKSubsystem::RequestUDPAccess()`) when it decides the player is back, for example on their next key press or mouse move, or from a "You were away" screen. The connection comes back on the same app token, and **On UDP Connection Success** fires as after any reconnect.
+When to bring the player back is your game's decision. Call **Request UDP Access** (`UCrowdySDKSubsystem::RequestUDPAccess()`) when it decides the player is back, for example on their next key press or mouse move, or from a "You were away" screen. Call it only while the player is signed in: signed out it opens nothing and logs a warning. The connection comes back on the same app token, and **On UDP Connection Success** fires as after any reconnect.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -146,10 +146,6 @@ If drains keep ending on the time budget instead, delivery is costing more per m
 :::
 
 `crowdy.net.receive.poolactorupdates` (default 1) reuses actor update message objects instead of allocating one per message; `crowdy.net.routes` prints the network router's subscription table; `crowdy.net.trace 1` logs socket, send, and receive activity, and `crowdy.serialize.trace 1` the encode and decode of each payload. `crowdy.serialize.scopes` adds CPU trace scopes inside decode for profiling.
-
-## Deprecated calls
-
-Five functions on `UCrowdySDKSubsystem` are deprecated (the compiler warns on each call) and do nothing useful: `StartUDPTimeoutMonitoring`, `StopUDPTimeoutMonitoring`, `TriggerUdpHeartbeat`, `DeregisterAllReceptionLayers`, and `SetQueryEndpoint`. The connection tracks its own liveness now; remove the calls.
 
 ## Gotchas
 

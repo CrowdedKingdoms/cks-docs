@@ -78,8 +78,8 @@ default no longer applies.
 Two runtime setters on `UCrowdySDKSubsystem` look like a way to configure these values in code, but they
 are session-only overrides, not writes to the settings class: `SetDiscoveryUrl` stores a shared origin for
 the current session and is only read when `Environment` is Custom, and `SetGameApiUrl` stores one Game API
-HTTP endpoint for the session. `ReloadEndpointsFromSettings` is deprecated: it is kept so old call sites still compile and does nothing, so remove it from your graphs and code;
-the API client already re-reads both endpoints from the settings on every call.
+HTTP endpoint for the session. The API client re-reads both endpoints from the settings on every call, so a
+change to the settings needs no reload call.
 
 ### Server Object gateway domains
 
@@ -98,17 +98,7 @@ Both apply from the next Play, and to the editor's developer connections. A drop
 
 ### Leader Source
 
-`LeaderSource` (**Leader Source**, an `ECrowdyLeaderSource`) is under **Crowdy SDK, Replication** and is yours to set. It decides who writes shared state. Under **Server Object**, the default, no client writes an entity Owned By World and the Leader writes replicated subsystems. See [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host). The **Elected Host (Deprecated)** value is under [Deprecated](#deprecated).
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Leader Source: Elected Host
-
-**Server Object**, the default value of [Leader Source](#leader-source), replaces it, and [The Leader](../runtime/leader.md) teaches what it does. **Elected Host (Deprecated)** (`ECrowdyLeaderSource::ElectedHost`, `LeaderSource=ElectedHost` in the ini) has no host to elect, because the SDK no longer polls for one, so nothing writes a World entity or a replicated subsystem. The setting goes in a later release.
+There is no Leader Source setting. The Leader is always chosen by a Server Object, and no client writes an entity Owned By World; see [The Leader](../runtime/leader.md). A project ini that still sets `LeaderSource=ElectedHost` is ignored, so you can delete the line.
 
 ## Gotchas
 

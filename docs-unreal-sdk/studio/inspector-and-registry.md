@@ -24,11 +24,11 @@ With none running the page reads "No running session".
 
 What it lists:
 
-- **Session**: the app id, your user id, the game token id, your UUID, a **Host ID** line (deprecated; see [Deprecated](#deprecated)), and whether a game token is held (never its value).
+- **Session**: the app id, your user id, the game token id, your UUID, a **Leader ID** line, the id of the client that writes replicated subsystems (it reads empty when nobody leads), and whether a game token is held (never its value).
 - **Teams (N)**: the teams the local player is in, from the runtime cache. Until the game has fetched teams it says so.
 - **Channels (N)**: the channels the client has joined, whether the reliable RPC channels are ready, and the session channel's id.
 - **Avatars (N)**: the local player's avatars, from the cache.
-- **Entities**: the local player id, the same deprecated **Host ID** line, and the entities this client owns, by actor name. There is no every-entity list; the owned slice is the one that confirms spawns and ownership while you debug.
+- **Entities**: the local player id, the same **Leader ID** line, and the entities this client owns, by actor name. There is no every-entity list; the owned slice is the one that confirms spawns and ownership while you debug.
 
 ![The Inspector page with no session running](/img/unreal-sdk/studio-inspector.png)
 
@@ -62,7 +62,7 @@ The cook rebakes on its own, so a packaged build is right even if you forget. Pr
 
 Three summary pills: classes, functions, and replicated properties. A search box filters by class, function, or property name, and a **Cards** / **Table** toggle picks the layout.
 
-In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its **Owned By**, read live from the class defaults rather than baked. It does not show the deprecated `HostOverride`, which has no replacement; [Entity component](../runtime/entity-component.md#deprecated) describes it.
+In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its **Owned By**, read live from the class defaults rather than baked.
 
 In Table view the same data is one flat table: type, name, routing or notify, flags, id.
 
@@ -80,17 +80,6 @@ It is rewritten by every Rebuild and every cook. Ignore it in your version contr
 
 For the full packaging flow, see the [Packaging guide](../guides/packaging.md).
 
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The Host ID line
-
-The Leader replaces the host; read who leads with **Get Leader User ID**, as [The Leader](../runtime/leader.md#follow-the-leader) shows.
-
-The Inspector's **Session** and **Entities** lists still show a **Host ID** line. It is the id of the client that writes replicated subsystems: the Leader's entity id, which reads empty when **Leader Source** is **Elected Host (Deprecated)**, because nobody is elected.
 ## Gotchas
 
 - The Inspector's team, channel, and avatar lists come from the runtime caches. An empty list with a "not populated yet" note means the game has not fetched, not that there is nothing.

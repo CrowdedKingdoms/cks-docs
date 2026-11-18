@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-11-12T15:56:51Z",
+  "generated_from": "2026-11-18T17:16:41Z",
   "sdk_version": "2.25.0",
   "table": "async-actions",
   "columns": [
@@ -176,6 +176,25 @@
       "allowlist": "internal"
     },
     {
+      "id": "UCrowdyActorOwners_ResolveActorOwner",
+      "node": [
+        "Resolve Actor Owner"
+      ],
+      "factories": [
+        "ResolveActorOwner"
+      ],
+      "class": "UCrowdyActorOwners_ResolveActorOwner",
+      "pins": [
+        "OnConfirmed",
+        "OnUnknown",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyAuth_BeginMagicLinkSignIn",
       "node": [
         "Magic Link Sign In"
@@ -298,6 +317,24 @@
       ],
       "module": "CrowdyServices",
       "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuthorizeLiveModding",
+      "node": [
+        "Authorize Live Modding"
+      ],
+      "factories": [
+        "AuthorizeLiveModding"
+      ],
+      "class": "UCrowdyAuthorizeLiveModding",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
       "editor": false,
       "allowlist": ""
     },
@@ -496,6 +533,25 @@
       ],
       "module": "CrowdyServices",
       "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyBuildClientMod",
+      "node": [
+        "Build Client Mod"
+      ],
+      "factories": [
+        "BuildClientMod"
+      ],
+      "class": "UCrowdyBuildClientMod",
+      "pins": [
+        "OnProgress",
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
       "editor": false,
       "allowlist": ""
     },
@@ -969,6 +1025,24 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyCreateStudioProject",
+      "node": [
+        "Create Studio Project"
+      ],
+      "factories": [
+        "CreateProject"
+      ],
+      "class": "UCrowdyCreateStudioProject",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyDeleteMod",
       "node": [
         "Delete Mod"
@@ -983,6 +1057,24 @@
       ],
       "module": "CrowdyServices",
       "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyDeployClientMod",
+      "node": [
+        "Deploy Client Mod"
+      ],
+      "factories": [
+        "DeployClientMod"
+      ],
+      "class": "UCrowdyDeployClientMod",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
       "editor": false,
       "allowlist": ""
     },
@@ -1059,6 +1151,24 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyGetAgentBoot",
+      "node": [
+        "Get Agent Boot"
+      ],
+      "factories": [
+        "GetAgentBoot"
+      ],
+      "class": "UCrowdyGetAgentBoot",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyGetGridPermissions",
       "node": [
         "Get Grid Permissions"
@@ -1073,6 +1183,24 @@
       ],
       "module": "CrowdyServices",
       "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetModelUsage",
+      "node": [
+        "Get Model Usage"
+      ],
+      "factories": [
+        "GetModelUsage"
+      ],
+      "class": "UCrowdyGetModelUsage",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
       "editor": false,
       "allowlist": ""
     },
@@ -1109,6 +1237,96 @@
       ],
       "module": "CrowdyServices",
       "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetProjectStatus",
+      "node": [
+        "Get Project Status"
+      ],
+      "factories": [
+        "GetProjectStatus"
+      ],
+      "class": "UCrowdyGetProjectStatus",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetProviderConsent",
+      "node": [
+        "Get Provider Consent"
+      ],
+      "factories": [
+        "GetProviderConsent"
+      ],
+      "class": "UCrowdyGetProviderConsent",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetScriptLog",
+      "node": [
+        "Get Script Log"
+      ],
+      "factories": [
+        "GetScriptLog"
+      ],
+      "class": "UCrowdyGetScriptLog",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetScriptStatus",
+      "node": [
+        "Get Script Status"
+      ],
+      "factories": [
+        "GetScriptStatus"
+      ],
+      "class": "UCrowdyGetScriptStatus",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetStudioProject",
+      "node": [
+        "Get Studio Project"
+      ],
+      "factories": [
+        "GetProject"
+      ],
+      "class": "UCrowdyGetStudioProject",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
       "editor": false,
       "allowlist": ""
     },
@@ -1351,6 +1569,24 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyListGridChannels",
+      "node": [
+        "List Grid Channels"
+      ],
+      "factories": [
+        "ListGridChannels"
+      ],
+      "class": "UCrowdyListGridChannels",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyListMods",
       "node": [
         "List Mods"
@@ -1383,6 +1619,24 @@
       ],
       "module": "CrowdyServices",
       "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListStudioProjects",
+      "node": [
+        "List Studio Projects"
+      ],
+      "factories": [
+        "ListProjects"
+      ],
+      "class": "UCrowdyListStudioProjects",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
       "editor": false,
       "allowlist": ""
     },
@@ -1441,6 +1695,24 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyRecordProviderConsent",
+      "node": [
+        "Record Provider Consent"
+      ],
+      "factories": [
+        "RecordProviderConsent"
+      ],
+      "class": "UCrowdyRecordProviderConsent",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyReleaseClaim",
       "node": [
         "Release Claim"
@@ -1473,6 +1745,24 @@
       ],
       "module": "CrowdyServices",
       "page": "runtime/voxel-chunks",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyRunProject",
+      "node": [
+        "Run Project"
+      ],
+      "factories": [
+        "RunProject"
+      ],
+      "class": "UCrowdyRunProject",
+      "pins": [
+        "OnDone",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
       "editor": false,
       "allowlist": ""
     },

@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-11-12T15:56:51Z",
+  "generated_from": "2026-11-18T17:16:41Z",
   "sdk_version": "2.25.0",
   "table": "subsystems",
   "columns": [
@@ -241,6 +241,16 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyActorOwners",
+      "class": "UCrowdyActorOwners",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyAuthentication",
       "class": "UCrowdyAuthentication",
       "base": "UGameInstanceSubsystem",
@@ -301,6 +311,16 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyModScripts",
+      "class": "UCrowdyModScripts",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyServices",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyPersistenceSubsystem",
       "class": "UCrowdyPersistenceSubsystem",
       "base": "UGameInstanceSubsystem",
@@ -341,12 +361,42 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyStudioAgent",
+      "class": "UCrowdyStudioAgent",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyStudioProjects",
+      "class": "UCrowdyStudioProjects",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyTeams",
       "class": "UCrowdyTeams",
       "base": "UGameInstanceSubsystem",
       "outer": "GameInstance",
       "module": "CrowdyServices",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVideoSender",
+      "class": "UCrowdyVideoSender",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "runtime/video-frames",
       "editor": false,
       "allowlist": ""
     },

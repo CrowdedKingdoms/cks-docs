@@ -39,6 +39,62 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-18 (Unreal SDK v2.26.0: a player's actor id is random; entities name their owner's user)
+
+A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's server code again. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-18-sdk-v2260).
+
+- **The role Host Owned is World Owned, and the deprecated surface is deleted.** `ECrowdyRole::HostOwned` is
+  `ECrowdyRole::WorldOwned`, the same value: C++ renames it, and a saved Blueprint pin or value is redirected.
+  Deleted: the entity component's `Ownership`, `Mode`, **Get Ownership**, **Get Mode** and `ECrowdyEntityMode`;
+  the Crowdy Actor Management Config asset; seven Crowdy SDK subsystem calls (**Reload Endpoints From
+  Settings**, **Set Query Endpoint**, the two UDP timeout monitoring calls, **Trigger UDP Heartbeat**,
+  **Deregister All Reception Layers**, **Set Expected Actor Update State Size**); **Get Chunk Coordinates At
+  World Location**; and the actor tracker's **Configure** node. **Owned By** and **Replicate Movement** at Auto
+  now resolve by class and placement only, and a value saved under `Ownership` or `Mode` is no longer mapped on
+  load. What you do: re-save old assets in 2.25.x first, or set **Owned By** and **Replicate Movement**
+  explicitly, delete any Actor Management Config asset, and replace or remove the deleted calls. See
+  [Removed after 2.25](/unreal-sdk/guides/deprecated).
+- **A Player Derived pawn's actor id is random.** It was computed from the user id, so anyone
+  could work it out. It is new at each sign-in, the same user's included: the game session keeps it
+  through a respawn, sign-out drops it, and the live pawn and the entities the player owns re-key to a new
+  one, so other players see the pawn leave and arrive again. **Resolve Actor Owner**
+  answers which user is behind an actor id. The C++ `CrowdySpectator::ViewerUuid` and
+  `UCrowdyKitSocial::SenderUuidFor` take the game session. Anything a game stored keyed on a player's
+  actor id across sign-ins, devices or users must key on the user id. The realtime connection now opens
+  only for a signed-in player whose actor record has answered, so call **Request UDP Access** only after
+  signing in, and drop any **Set UUID** that restores a saved id. See
+  [Identity policies](/unreal-sdk/concepts/entities-identity-ownership#identity-policies).
+- **An entity names its writer and its owner's user.** The owner id is renamed the writer id (**Get
+  Writer ID**, **Get Crowdy Entity Writer ID**; saved Blueprints are redirected), and **Get Owner User
+  ID** and **Is Owned By Local User** name the account that owns an entity, a label that decides no
+  write. A second session of the same account is a viewer. **On Ownership Requested** gains
+  **Requester User ID**, and a grant to another player's avatar now reaches them. Another client
+  takes an entity for a player's avatar only when no spawn event announced it, its class uses
+  Player Derived identity and it has not been heard under a tagged id; entities a game spawns send
+  under a tagged id from the start. A remote avatar's owner user reads 0 (**Resolve Actor Owner**
+  answers it). The spawn event, the grant and the request changed on the wire, so every client
+  upgrades together and a packaged game is rebuilt and repackaged. See
+  [Owner and proxy](/unreal-sdk/concepts/entities-identity-ownership#owner-and-proxy).
+- **The Leader publishes its actor id.** No client can compute it from the user id any more, so the
+  SDK's Leader type takes each client's id when it enters and publishes the Leader's in the same
+  change that moves the lead, and clients take Leader-owned writes only under it. Deploy the app's
+  server code once and restart what still runs older code,
+  or nothing writes as the Leader. See [The Leader](/unreal-sdk/runtime/leader#when-the-leader-leaves).
+- **The platform calls behind an in-game Studio dock.** A game can boot the Studio agent (told apart
+  when no model is available to the app), record the
+  player's consent, read model use, list, read and create the player's Studio projects, and run one
+  pinned revision of a project on their grid with **Run Project**, then read where each half is. One
+  run per app runs at a time. Only **Authorize Live Modding** checks the app's Allow Live Modding
+  switch, so call it before every run: a draft test is a real deploy. It also adds **List Grid
+  Channels** and the last 200 log lines of a Mod Script. The Studio links come from the platform,
+  and a new project's client half from the platform's client starter. See
+  [Studio Dock](/unreal-sdk/runtime/studio-dock).
+- **CrowdyCPP 0.87.0, and mod calls need Game API v2.73.0.** Every mod build, deploy and read, and
+  Server Compute's builds, need Game API v2.73.0, which every tier runs; each build names the Studio
+  project and revision it came from. **Fetch Chunk** needs v2.70.0. See
+  [Mods](/unreal-sdk/runtime/mods).
+
 ## 2026-11-18 (storage, input-log and reservation rates; the smallest top-up)
 
 - **Three rates rise** (on the rate card, no API change): stored data $0.40 a GB-month (was $0.20), a
@@ -251,7 +307,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-11-07-sdk-v2250); steps to upgrade: the
 plugin's `MIGRATION.md`. One behaviour change: there is no elected host by default. Ownership, Mode, the host check
 nodes and the ownership-taking subsystem registration are deprecated; they warn and still run. Every deprecated item
-and its replacement: [Deprecated in 2.25](/unreal-sdk/guides/deprecated).
+and its replacement, now that each is removed: [Removed after 2.25](/unreal-sdk/guides/deprecated).
 
 - **No elected host by default.** A Leader chosen by a Server Object type the SDK deploys writes replicated
   subsystems, and World entities have no client writer. Deploy your server code once and restart its root, or set
@@ -269,7 +325,7 @@ and its replacement: [Deprecated in 2.25](/unreal-sdk/guides/deprecated).
   direct message. An entity that sends no movement, or that just changed hands, is reached over the session channel.
   A string literal passed to a C++ event's `const FString&` parameter now arrives intact in a packaged build.
   **Host** is deprecated and leaves the dropdowns, and **Send Event** gives way to **Send Crowdy Event**. See
-  [Recipients and Routing](/unreal-sdk/runtime/recipients-and-routing#targeted-owningclient-and-host).
+  [Recipients and Routing](/unreal-sdk/runtime/recipients-and-routing#targeted-owningclient).
 - **Movement replicates by default.** **Replicate Movement** (Auto, On, Off) replaces Mode: a pawn with a movement
   component sends its movement with no setup, and a remote character on the actor pool animates and aims from it.
   See [Continuous state](/unreal-sdk/runtime/continuous-state).
@@ -286,7 +342,7 @@ and its replacement: [Deprecated in 2.25](/unreal-sdk/guides/deprecated).
 - **Register Crowdy Replicated Subsystem** replaces the node with an ownership pin. See
   [Replicated subsystems](/unreal-sdk/runtime/replicated-subsystems).
 - **Every ownership check gives one answer** under Elected Host. See
-  [Leader Source](/unreal-sdk/runtime/leader#leader-source-with-or-without-a-host).
+  [The Leader](/unreal-sdk/runtime/leader).
 - **On a Mass map a spawned moving entity is drawn by Mass alone**, with no frozen actor beside its row, and
   its spawn data lands in the row's registered Crowdy State fields. A destroyed row goes at once. See
   [Add your own crowd data](/unreal-sdk/mass/add-your-own-crowd-data#land-spawn-data-on-the-row).

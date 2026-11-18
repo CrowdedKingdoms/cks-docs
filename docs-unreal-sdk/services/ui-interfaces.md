@@ -105,7 +105,8 @@ UI-specific, but it lives in the same module.
 | `SpawnCrowdyEntity`, `DestroyCrowdyEntity` | Spawns or destroys an entity actor |
 | `GetCrowdyEntityID`, `GetCrowdyEntity` | Converts between an entity actor and its id |
 | `GetLocalPlayerEntityID` | The local player's entity id |
-| `GetCrowdyEntityOwnerID`, `GetAllCrowdyEntitiesByOwner` | An entity's owner, or every entity a given owner has |
+| `GetCrowdyEntityWriterID`, `GetAllCrowdyEntitiesByOwner` | The session that writes an entity, or every entity a given session writes |
+| `GetCrowdyEntityOwnerUserID`, `IsCrowdyEntityOwnedByLocalUser` | The user who owns an entity (0 when unknown), and whether it is the signed-in user |
 | `CrowdyIsEntityRegistered` | Whether an id is a known entity |
 | `GetCrowdyEntityRole` | An entity's `ECrowdyRole` |
 | `DoesCrowdyEntityOwn` | Whether one actor owns another, by Crowdy identity |

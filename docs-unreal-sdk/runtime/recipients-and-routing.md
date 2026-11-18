@@ -22,8 +22,7 @@ Every CrowdyEvent names a recipient, and the recipient decides two things: who r
 |---|---|---|---|
 | `SpatialMulticast` (default) | The spatial path, addressed by the sender's chunk | Yes: `CrowdyDistance` and `CrowdyDecay` | Every client in range, the caller included |
 | `Multicast` | A channel: the session channel, or the one `CrowdyChannel` names | No: every member, any distance, never thinned | Every channel member, the caller included |
-| `OwningClient` | A spatial event named for one client; a direct message if a parameter can hold text; the session channel where neither reaches | No | Only the client that writes the target entity: its owner, or the [Leader](./leader.md) for an entity Owned By Leader. A non-owner's call becomes a request to that client; its own call runs locally and sends nothing. |
-| `Host` (deprecated) | A targeted delivery to one client | No | Deprecated: use `OwningClient`, or move the logic to a Server Object. See [Deprecated](#deprecated). |
+| `OwningClient` | A spatial event named for one client; a direct message if a parameter can hold text; the session channel where neither reaches | No | Only the session that writes the target entity (its writer id): its owner, or the [Leader](./leader.md) for an entity Owned By Leader, and never another session of the same user. A non-owner's call becomes a request to that client; its own call runs locally and sends nothing. |
 
 The decision is a pure function of the recipient, the participant kind, and what this client knows about the entity, so it is the same on every client and in every build.
 
@@ -37,7 +36,7 @@ A subsystem has no world position, so a `SpatialMulticast` event declared on one
 
 The world is divided into chunks of `ChunkSize` units on a side; a spatial event is sent from the sender's chunk and reaches every client whose actor stands within `CrowdyDistance` chunks of it. `ChunkSize` lives on the game session (`UCrowdyGameSession::GetChunkSize`, `SetChunkSize`) and defaults to 1600 units, so `ECrowdyReplicationDistance::Four_Chunks` is 6400 units at the default. A distance is a chunk count, not a world distance: changing the chunk size changes what every distance value means.
 
-To see which chunk a point falls in, `UHelperFunctions::GetChunkCoordinateAtLocation(WorldContextObject, WorldLocation, ChunkX, ChunkY, ChunkZ)` (Blueprint: **Get Chunk Coordinate At Location**) reads the session's chunk size and returns the three `int64` coordinates; the older `GetChunkCoordinatesAtWorldLocation` without a world context is deprecated.
+To see which chunk a point falls in, `UHelperFunctions::GetChunkCoordinateAtLocation(WorldContextObject, WorldLocation, ChunkX, ChunkY, ChunkZ)` (Blueprint: **Get Chunk Coordinate At Location**) reads the session's chunk size and returns the three `int64` coordinates.
 
 `ECrowdyReplicationDistance` runs from `None` through `One_Chunk` to `Eight_Chunks` (the default). `ECrowdyDecayRate` thins delivery with distance:
 
@@ -70,6 +69,8 @@ An event with a parameter that can hold typed text, meaning an `FString` or `FTe
 Whichever way it arrived, an `OwningClient` call runs only on the client that writes the entity. On a subsystem there is no single-actor transport, so it arrives over the channel and is gated by identity on receipt.
 
 On a replicated subsystem, `OwningClient` runs on the [Leader](./leader.md), so it is how any client asks the Leader to do something.
+
+There is no Host recipient: nothing elects a host. A function that still carries the saved value `Host` reads as `OwningClient` and logs a warning that names the function. On an actor that now means only the actor's owner runs it, not whichever client used to be host. Pick the recipient you mean, or move logic that must be enforced to a [Server Object](../concepts/two-planes.md).
 
 :::warning[`OwningClient` limits who runs an event, not who can see or send it.]
 The parameters reach every client within a chunk of the target, or on the session channel every client of the app, and any client can name any entity. Treat them as untrusted input, keep private data in a Server Object, and call a Server Function for anything that must be refused.
@@ -122,31 +123,13 @@ Every routing and dispatch entry point in `FCrowdyRPC` and `UCrowdyEventRouter` 
 
 Two lower-level entry points exist for callers the ordinary path cannot serve.
 
-**A CrowdyEvent for an entity you hold only by identity.** `FCrowdyRPC::SendToTarget(World, Target, Fn, Frame)` sends a receiver function to an entity described by an `FCrowdyRpcTarget`: its `NetID`, an optional `Location`, its `OwnerID`, and this client's `Role` toward it. It routes by the function's own recipient, whichever it is, and where this client already holds a registration for the entity the record's owner, role, and position win over the target's fields. It returns false only when there was no transport at all; every drop returns true, so a caller must not run a local body as a fallback for a refused send. Read the location from the entity's own live state, never from a caller's argument, because the location decides which region the message is addressed to. A plain `UObject` that stands for an entity with no actor can also implement `ICrowdyEventSource` and use the ordinary `CROWDY_EVENT` call; the send path asks the interface for the identity and the position it would otherwise read from an actor. The five overrides are `GetEventEntityID` (the entity's NetID), `GetEventLocation` (where it stands right now, or false when unknown), `GetEventOwnerID` (the owning player, invalid for a world entity), `GetEventRole`, and `IsEventLocallyOwned` (only the client that writes the entity may originate). Answer for the entity you stand for, read live; never hand back a location a caller passed in, because the location decides which region the event is addressed to.
+**A CrowdyEvent for an entity you hold only by identity.** `FCrowdyRPC::SendToTarget(World, Target, Fn, Frame)` sends a receiver function to an entity described by an `FCrowdyRpcTarget`: its `NetID`, an optional `Location`, its `WriterID`, and this client's `Role` toward it. It routes by the function's own recipient, whichever it is, and where this client already holds a registration for the entity the record's owner, role, and position win over the target's fields. It returns false only when there was no transport at all; every drop returns true, so a caller must not run a local body as a fallback for a refused send. Read the location from the entity's own live state, never from a caller's argument, because the location decides which region the message is addressed to. A plain `UObject` that stands for an entity with no actor can also implement `ICrowdyEventSource` and use the ordinary `CROWDY_EVENT` call; the send path asks the interface for the identity and the position it would otherwise read from an actor. The five overrides are `GetEventEntityID` (the entity's NetID), `GetEventLocation` (where it stands right now, or false when unknown), `GetEventWriterID` (the writing session's actor id, invalid for a world entity), `GetEventRole`, and `IsEventLocallyOwned` (only the client that writes the entity may originate). Answer for the entity you stand for, read live; never hand back a location a caller passed in, because the location decides which region the event is addressed to.
 
-**A struct payload with no declared receiver.** `UCrowdyUtilities::SendCrowdyEvent(WorldContextObject, TargetEntity, Payload, Recipient, DecayRate, ReplicationDistance)` in C++, **Send Crowdy Event** (`K2_SendCrowdyEvent`, a wildcard struct pin) in Blueprint, broadcasts any `USTRUCT` at a target actor with an explicit recipient. It goes through `UCrowdyEntitySubsystem::DispatchGameEvent`, whose `ECrowdyTarget` (`Everyone`, `Entity`, `Owner`, `Host`, `AllExceptSender`) is the wire-level addressing the recipient enum maps onto; `DispatchGameEventAt` is the same send from an explicit location, `DispatchGameEventView` and `DispatchGameEventViewAt` borrow the payload instead of copying it, and `DispatchSingleActorMessage` and `DispatchSingleActorMessageTo` are the targeted delivery behind OwningClient. A handler receives the struct, and may declare an `FCrowdyEventContext` as an optional second parameter to read the `SenderID`, the `TargetID`, the `Target`, and `bSentByLocalPlayer`. `UCrowdyEntityComponent::SendEvent(Payload, Scope)` is deprecated: use this send. An `OwningClient` struct send names the entity's owner, so it reaches nobody on a World entity, and it has none of the session fallback a `CrowdyEvent` gets.
+**A struct payload with no declared receiver.** `UCrowdyUtilities::SendCrowdyEvent(WorldContextObject, TargetEntity, Payload, Recipient, DecayRate, ReplicationDistance)` in C++, **Send Crowdy Event** (`K2_SendCrowdyEvent`, a wildcard struct pin) in Blueprint, broadcasts any `USTRUCT` at a target actor with an explicit recipient. It goes through `UCrowdyEntitySubsystem::DispatchGameEvent`, whose `ECrowdyTarget` (`Everyone`, `Entity`, `Owner`, `AllExceptSender`, and a `Host` value kept for compatibility that the SDK never sends) is the wire-level addressing the recipient enum maps onto; `DispatchGameEventAt` is the same send from an explicit location, `DispatchGameEventView` and `DispatchGameEventViewAt` borrow the payload instead of copying it, and `DispatchSingleActorMessage` and `DispatchSingleActorMessageTo` are the targeted delivery behind OwningClient. A handler receives the struct, and may declare an `FCrowdyEventContext` as an optional second parameter to read the `SenderID`, the `TargetID`, the `Target`, and `bSentByLocalPlayer`. An `OwningClient` struct send names the entity's owner, so it reaches nobody on a World entity, and it has none of the session fallback a `CrowdyEvent` gets.
 
 :::caution[The struct send has none of the compile-time checking a CrowdyEvent receiver gets.]
 Any struct is accepted, there is no `_Implementation` naming convention to tie a sender to a receiver, and a mismatch is found at runtime or not at all. Prefer a `CrowdyEvent` unless you are building a system on top of the SDK.
 :::
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The Host recipient
-
-`OwningClient` replaces `Host`, as taught under [Targeted: OwningClient](#targeted-owningclient); logic that must be enforced moves to a Server Object.
-
-`Host` (`ECrowdyEventRecipient::Host`, `CrowdyRecipient = "Host"`) is hidden from the dropdowns; a saved value still routes and warns when compiled. On a replicated subsystem it runs on the [Leader](./leader.md). On an actor nothing runs it: no host is elected any more, under either [Leader Source](./leader.md#leader-source-with-or-without-a-host), and under the default, Server Object, the call is dropped with a warning. Move host-only logic to a Server Object.
-
-A `Host` event on a replicated subsystem arrives over the channel and is gated by identity on receipt, and it has no ownership gate: the Leader runs it whoever sent it.
-
-### OwningClient on a World entity
-
-An `OwningClient` event aimed at a World entity drops with a warning, as [Targeted: OwningClient](#targeted-owningclient) says. Under **Elected Host (Deprecated)** no host is elected to write World entities, so nobody receives it.
 
 ## Gotchas
 

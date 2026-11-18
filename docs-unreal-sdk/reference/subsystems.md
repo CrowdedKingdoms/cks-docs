@@ -9,7 +9,7 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Classes and Subsystems
 
-The consumer-facing classes you fetch most, with the module they live in and where to read more. The manifest carries 32 classes tagged as subsystems; 8 are excluded here because they are internal plumbing or deprecated, listed at the bottom of this page for completeness.
+The consumer-facing classes you fetch most, with the module they live in and where to read more. A few of the manifest's subsystem classes are left out because they are internal plumbing or superseded; they are listed at the bottom of this page.
 
 ## When you come here
 
@@ -37,8 +37,17 @@ You know the shape of what you need (send an event, read a team, find the Leader
   UCrowdyAvatars: "Player profiles and per-app avatar state; only GetMyAvatars writes the local cache.",
   UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
   UCrowdyProximityChat: "Nearby text chat: send a line to the players within a distance of your pawn's chunk, and hear theirs.",
+  UCrowdyVideoSender: "Sends encoded JPEG video frames to the players near your pawn. You capture and encode; the SDK fragments and sends. See [Video Frames](/unreal-sdk/runtime/video-frames).",
+  UCrowdyActorOwners: "Resolves a remote actor id to the user the platform registers it to, for Block Player and File Report. Confirmed does not prove who sent a realtime message. See [Player Safety](/unreal-sdk/services/player-safety).",
   UCrowdyLeaderSubsystem: "The Leader: the one client per app that writes replicated subsystems. GetLeaderUserID, IsLocalLeader and OnLeaderChanged. Needs your app's server code deployed once; see [The Leader](/unreal-sdk/runtime/leader).",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
+  UCrowdyVoxels: "Fetches the platform's voxel chunks. See [Voxel Chunks](/unreal-sdk/runtime/voxel-chunks).",
+  UCrowdyVoxelWorld: "A live voxel world: keeps chunks around followed actors loaded, merges other players' edits and sends your own. A world subsystem; see [Voxel Chunks](/unreal-sdk/runtime/voxel-chunks).",
+  UCrowdyClaims: "Claims chunks, finds claims, and answers whether the player may build in a chunk. See [Chunk Claims](/unreal-sdk/runtime/chunk-claims).",
+  UCrowdyMods: "Builds, deploys, switches, calls and reads a player's own server code on their grids, and runs a Studio project. See [Mods](/unreal-sdk/runtime/mods).",
+  UCrowdyModScripts: "Runs the Mod Scripts a grid serves to the players standing in it, on Win64. A world subsystem; see [Mod Scripts](/unreal-sdk/runtime/mod-scripts).",
+  UCrowdyStudioAgent: "The Studio agent's boot material, token hand-off, consent, model use and Allow Live Modding check. See [Studio Dock](/unreal-sdk/runtime/studio-dock).",
+  UCrowdyStudioProjects: "Lists, reads and creates the player's Studio projects. See [Studio Dock](/unreal-sdk/runtime/studio-dock).",
   UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",
   UCrowdyMassEntitySubsystem: "The crowd rows of a map that draws with Mass: targets, traces, events and fields. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
   UCrowdyMassServerRecordsSubsystem: "The Server Object records of crowd rows, and a callback when one changes. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
@@ -65,26 +74,16 @@ Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`
 
 ## Excluded from this table
 
-Eight of the manifest's 31 subsystem classes do not appear in the table above:
+These subsystem classes do not appear in the table above:
 
 - `UCrowdyCppClientSubsystem`, `UCrowdyCppReplicationSubsystem`, `UCrowdySDKBridgeSubsystem`, `UCrowdyWorkerThreadsSubsystem`: the vendored CrowdyCPP bridge and its worker threads. The game-facing surface is `UCrowdySDKSubsystem`; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
 - `UCrowdyConnectionMonitor`: the SDK reconnects on its own after a timeout, so starting the monitor adds a second retry loop. What it reports is covered on [Connection and reconnect](../runtime/connection-and-reconnect.md).
-- Two test harnesses in the Mass module that the SDK uses to verify itself. They are not part of the surface a game uses.
+- Two test harnesses in the Mass module that the SDK uses to verify itself, and `UCrowdyMassVisualReleaseQueue`, bookkeeping the Mass backend runs. None of them is part of the surface a game uses.
 - `UCrowdyPersistenceSubsystem`: superseded by server code on ck-exec; still present and working, and the plugin does not mark it deprecated. It reads the `CrowdyPersistent` and `CrowdySingleton` struct tags. See [What's Changed](../guides/whats-changed.md#persistence) for what still works and what does not get further development.
 
-## Deprecated
+## The Leader on the game session
 
-:::warning[Deprecated in 2.25. The host subsystem is removed; what remains here still works until a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The host on the game session
-
-`UCrowdyHostSubsystem` is removed. `UCrowdyLeaderSubsystem`, explained on [The Leader](../runtime/leader.md), replaces it and the host members of the game session.
-
-| Class | What it was for |
-|---|---|
-| `UCrowdyGameSession` | Only its host members are deprecated: `GetHostID` and `OnHostIDUpdated`. They report the Leader; use `Get Leader User ID` and `On Leader Changed` instead. |
+`UCrowdyGameSession::GetAppWriterID()` returns the Leader's id in C++, and `OnHostIDUpdated` (`FOnHostIDUpdated`) is a native delegate that fires when the Leader changes. `GetHostID` is gone, and `OnHostIDUpdated` is no longer assignable in Blueprint: use **Get Leader User ID** and **On Leader Changed** on `UCrowdyLeaderSubsystem`, explained on [The Leader](../runtime/leader.md).
 
 ## Gotchas
 

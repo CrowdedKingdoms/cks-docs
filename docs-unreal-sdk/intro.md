@@ -9,19 +9,19 @@ description: What the Crowdy Unreal SDK is, the two planes of state it is built 
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.25**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.26**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
-## What 2.25 changes
+## What 2.26 changes
 
-2.25 removes the elected host from the default setup. A project upgraded from 2.24 keeps working, and the host surface still compiles with deprecation warnings.
+2.26 breaks: a project on 2.25 needs changes before it compiles. Follow the plugin's `MIGRATION.md` step by step.
 
-- **No elected host by default.** Shared state is written by the [Leader](./runtime/leader.md), one client chosen by a Server Object, and an entity says who writes it with **Owned By**: Player, World or Leader.
-- **Movement replicates by default.** A pawn with a movement component sends its movement with no setup, and a remote character animates and aims from it. See [Continuous State](./runtime/continuous-state.md).
-- **Your own values beside the movement.** Mark a property `CrowdyContinuous` and it travels with each movement update.
-- **Owning Client reaches the entity's writer.** The Host recipient is deprecated. See [Recipients and Routing](./runtime/recipients-and-routing.md).
-- **Player safety.** Contacts, blocks, reports, the age screen and the recording state, on [Player Safety](./services/player-safety.md).
+- **The host and the deprecated surface are gone.** Everything 2.25 deprecated is deleted, and the role Host Owned is World Owned. [Removed after 2.25](./guides/deprecated.md) lists each item and what replaces it.
+- **A player's actor id is random and new at each sign-in.** The live pawn re-keys to it, and [Resolve Actor Owner](./services/player-safety.md#find-out-who-a-player-is) finds the user behind an actor id. See [Identity policies](./concepts/entities-identity-ownership.md#identity-policies).
+- **The writer and the owner user.** An entity's owner id is now its writer id, and every entity names its owner's user id. A client on 2.26 cannot play with an older one.
+- **Deploy your server code again.** The [Leader](./runtime/leader.md) publishes the actor id it writes under, through the SDK's changed Leader type.
+- **Voxels, claims and mods.** [Voxel Chunks](./runtime/voxel-chunks.md) with a live voxel world, [Chunk Claims](./runtime/chunk-claims.md), [Mods](./runtime/mods.md) and [Mod Scripts](./runtime/mod-scripts.md), [Video Frames](./runtime/video-frames.md) and the [Studio Dock](./runtime/studio-dock.md).
 
-[Deprecated in 2.25](./guides/deprecated.md) lists everything 2.25 deprecates and what replaces it, [What's Changed](./guides/whats-changed.md) has the full list, and the plugin's `MIGRATION.md` has the steps to upgrade a project.
+[What's Changed](./guides/whats-changed.md) has the full list.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).

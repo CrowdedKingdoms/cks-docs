@@ -144,7 +144,7 @@ Check the `CrowdyRecipient` on the receiver function. The recipient decides who 
   lost with no message while the entity crosses a chunk border, and is refused without `use_direct_messages`. See
   [Recipients and routing](../runtime/recipients-and-routing.md#targeted-owningclient).
 
-The deprecated `Host` recipient is described under [Deprecated](#deprecated).
+There is no `Host` recipient; see [An event that used to run on the host does not run](#an-event-that-used-to-run-on-the-host-does-not-run).
 
 If you used the default `SpatialMulticast` and the other client is out of range, the event is thinned away
 on purpose. Raise `CrowdyDistance` (values run `None` to `Eight_Chunks`, default `Eight_Chunks`) or relax
@@ -291,19 +291,11 @@ symptom with one client, and [Log categories](../reference/log-categories.md) fo
 A `LogHttp` `ConnectionError` burst against a backend host, with otherwise clean local connectivity, points
 at your own network path, not the SDK. Check your route to the backend before filing a bug.
 
-## Deprecated
+## Removed
 
-:::warning[Deprecated in 2.25. The Host recipient still exists, the host subsystem is removed, and Elected Host elects nobody.]
-[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
-:::
+### An event that used to run on the host does not run
 
-### An event with the Host recipient is not received
-
-`OwningClient` replaces `Host`; see [The recipient does not include this client](#the-recipient-does-not-include-this-client).
-
-A receiver with `CrowdyRecipient = "Host"` runs on the Leader on a replicated subsystem. On an actor it is
-dropped with a warning that names Leader Source under Server Object, and under **Elected Host (Deprecated)**
-it goes nowhere, because no host is elected. See [Recipients and routing](../runtime/recipients-and-routing.md#deprecated).
+There is no Host recipient and nothing elects a host. A receiver that still carries `CrowdyRecipient = "Host"` reads as `OwningClient` and logs a warning that names the function. On an actor only its owner runs it now, and on a replicated subsystem only the Leader does. Pick the recipient you mean; see [The recipient does not include this client](#the-recipient-does-not-include-this-client) and [Recipients and routing](../runtime/recipients-and-routing.md).
 
 ### Where the host subsystem went
 

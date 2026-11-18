@@ -48,8 +48,10 @@ They live on the **Crowdy Mods** subsystem (`UCrowdyMods`, a Game Instance subsy
 | **Call Mod** | `UCrowdyMods::CallMod(int64 GridId, const FString& Name, const FString& Method, const FString& ParamsJson, OnDone)` | Calls one method of a mod with JSON parameters and answers its reply as JSON. |
 | **Get Mod Logs** | `UCrowdyMods::GetModLogs(int64 GridId, const FString& Name, int32 Limit, OnDone)` | A mod's latest log lines, oldest first, from the last 24 hours. **Limit** is 1 to 500, or 0 for 100. |
 | **Delete Mod** | `UCrowdyMods::DeleteMod(int64 GridId, const FString& Name, OnDone)` | Stops a mod and removes it, with its state and its versions. |
+| **Build Client Mod**, **Deploy Client Mod** | `UCrowdyMods::BuildClientMod(...)`, `UCrowdyMods::DeployClientMod(...)` | The same two steps for a mod's CLIENT half. No run lock, no pinned revision and no Allow Live Modding check. |
+| **Run Project**, **Get Project Status** | `UCrowdyMods::RunProject(...)`, `UCrowdyMods::GetProjectStatus(...)` | Build and deploy one revision of a Studio project, and read where each half is. See [Studio Dock](./studio-dock.md#run-a-project). |
 
-The player must be signed in to the app. Grid ids are 64-bit: keep them as Integer64 in Blueprint and `int64` in C++.
+The player must be signed in to the app. Grid ids are 64-bit: keep them as Integer64 in Blueprint and `int64` in C++. Every build, deploy and read (**Build Mod**, **Deploy Mod**, **Set Mod Enabled**, **List Mods**, **List My Mods** and the Studio calls) needs Game API v2.73.0; an older one refuses it with `GRAPHQL_VALIDATION_FAILED`.
 
 ## Example: a guestbook on a plot
 
@@ -162,6 +164,7 @@ In Blueprint, it is one **Set Mod Enabled** node with **PlotGridId**, the mod's 
 | **Running** | An instance of it runs now. A switched-on mod that is not running starts on a player's arrival in its grid or on a call. |
 | **Blocked**, **Blocked Reason** | A switch such as billing's has stopped it, whatever **Enabled** says. The reason says which. |
 | **Updated At Ms** | Unix time in milliseconds. |
+| **Studio Project Id**, **Studio Revision** | The [Studio project](./studio-dock.md#studio-projects) and revision this version was built from. Empty when its build named none, as an install's does. |
 
 **Get Mod Logs** answers **Lines**: each has **At Ms**, a **Level** (0 error, 1 warning, 2 info, 3 debug) and the **Text**. When a call fails or a mod does not do what you expect, read its logs first.
 
@@ -171,11 +174,14 @@ In Blueprint, it is one **Set Mod Enabled** node with **PlotGridId**, the mod's 
 |---|---|
 | **Success** | Done. For **Build Mod** it means the build ran to an end; read **Status**. |
 | **Not Signed In** | The player has no app token yet. Nothing was sent. |
-| **Denied** | A missing permission, a grid that is not the player's, or a billing switch. **Message** names which. A switched-off mod answers **Denied** to a call. |
+| **Denied** | A missing permission, a grid that is not the player's, or a billing switch such as an empty wallet or a spend cap. **Message** names which. A switched-off mod answers **Denied** to a call. |
 | **Not Found** | No such mod, build or grid. A deleted mod answers this to a call. |
 | **Refused** | Any other refusal: a name that is not allowed, a limit reached, or a crate this SDK rejects before sending. |
 | **Failed** | The request did not complete, or a build did not finish in 11 minutes. |
 | **Bad Reply** | The answer was malformed, so nothing from it is returned. |
+| **Busy** | Another run for this app is still going, or the platform is already building one for this player: a build the platform refuses for that reason answers **Busy**. Try again once it ends. |
+| **Revision Changed** | A Studio project's saved revision or module names are not the ones **Run Project** was asked for, so nothing was built. |
+| **Not Built** | This SDK version does not carry the call yet, so nothing was sent. |
 
 In Blueprint the nodes report a result other than **Success** on **On Failed**, with **Result** and **Message**.
 
@@ -191,12 +197,12 @@ Every callback runs once on the game thread, unless the game instance ends first
 
 | Type | Is |
 |---|---|
-| `ECrowdyModResult` | `Success`, `NotSignedIn`, `Denied`, `NotFound`, `Refused`, `Failed`, `BadReply`. Values are only added at the end. |
+| `ECrowdyModResult` | `Success`, `NotSignedIn`, `Denied`, `NotFound`, `Refused`, `Failed`, `BadReply`, `Busy`, `RevisionChanged`, `NotBuilt`. Values are only added at the end. |
 | `ECrowdyModBuildStatus` | `Queued`, `Building`, `Succeeded`, `Failed`. |
 | `FCrowdyModFile` | `Path` and `Content` of one source file. |
-| `FCrowdyModStarter` | `Result`, `Name`, `Files` and `Message`. |
+| `FCrowdyModStarter` | `Result`, `Name`, `Files` and `Message`, and `bNotServed` (C++ only) when the platform serves no such starter. `GetClientStarter(OnDone)`, C++ only, answers the platform's client half starter the same way. |
 | `FCrowdyModBuild` | `Result`, `BuildId`, `Status`, `Log`, `SdkVersion` (the version it compiled against, once it started) and `Message`. |
-| `FCrowdyMod` | One mod: `ModId`, `GridId`, `OwnerUserId`, `Name`, `Version`, `Digest`, `bEnabled`, `bRunning`, `bBlocked`, `BlockedReason` and `UpdatedAtMs`. |
+| `FCrowdyMod` | One mod: `ModId`, `GridId`, `OwnerUserId`, `Name`, `Version`, `Digest`, `bEnabled`, `bRunning`, `bBlocked`, `BlockedReason`, `UpdatedAtMs`, `StudioProjectId` and `StudioRevision`. |
 | `FCrowdyModInfo` | `Result`, `Mod` and `Message`: the answer to deploying and switching. |
 | `FCrowdyModList` | `Result`, `Mods` and `Message`. |
 | `FCrowdyModLogs`, `FCrowdyModLogLine` | `Result`, `Lines` and `Message`; a line is `AtMs`, `Level` and `Text`. |

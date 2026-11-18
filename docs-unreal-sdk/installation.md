@@ -22,12 +22,12 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 Download the plugin from its public repository on GitHub, [CrowdedKingdoms/CrowdySDK-Unreal](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal):
 
-- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.25.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.25.0`; rename that folder to `CrowdySDK`.
-- **Or with git:** `git clone --branch v2.25.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
+- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.26.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.26.0`; rename that folder to `CrowdySDK`.
+- **Or with git:** `git clone --branch v2.26.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
 
 The repository's root is the plugin root: the folder you download is the one that goes at `Plugins/CrowdySDK` in Step 2.
 
-:::note[The release you install must match the version this guide describes (2.25).]
+:::note[The release you install must match the version this guide describes (2.26).]
 :::
 
 From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
@@ -133,16 +133,6 @@ Until you run Config Sync for the first time, the project has no Backend of its 
 :::warning[Do not type your app id and API URLs into Project Settings by hand.]
 The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
 :::
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. What this section lists is removed in a later release, and Elected Host elects nobody.]
-[Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Host election
-
-[The Leader](./runtime/leader.md) replaces host election. The host subsystem that `CrowdyServices` held is removed.
 
 ## Related
 

@@ -50,7 +50,7 @@ The events are grouped by class, and the grouping shows whenever more than one g
 The event goes out as if it had been called on that player's actor, so its recipient setting decides who runs it. A `SpatialMulticast` event reaches everyone near the entity. See [Recipients and Routing](../../runtime/recipients-and-routing.md). On a machine that draws the player as a crowd row or as a near tier actor, the event's body runs on the per-class stand-in, and a near tier actor only draws the entity and plays its actions; see [Run your code on a crowd row](../run-your-code-on-a-crowd-row.md).
 
 :::caution[Nothing tells the graph whether the event arrived.]
-The node has no output for the result. A target that cannot be resolved, a class mismatch and a refused call all fail quietly, with a line in the log. A client that cannot resolve the entity's class yet also fails this way: add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**, as [Entities and Spawning](../../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) describes. Check **Is Crowdy Mass Target Live** first.
+The node has no output for the result. A target that cannot be resolved, a class mismatch and a refused call all fail quietly, with a line in the log. A client that cannot resolve the entity's class yet also fails this way: add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**, as [Entities and Spawning](../../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all) describes. Check **Is Crowdy Mass Target Live** first.
 :::
 
 ### When the node will not compile

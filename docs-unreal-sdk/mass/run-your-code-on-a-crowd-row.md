@@ -25,7 +25,7 @@ Only the two multicast recipients ever reach a crowd row. An entity drawn as a p
 | `Multicast` | Yes. |
 | `OwningClient` | No. It is delivered to the entity's owner, who holds the entity as a real actor. |
 
-The deprecated `Host` recipient is described under [Deprecated](#deprecated).
+There is no `Host` recipient.
 
 A targeted `OwningClient` event that arrives for an entity a client holds as a row is dropped, and the log says so at most once a second. One named for another client, on the spatial path or the session channel, is ignored. The routing rules for every recipient are on [Recipients and Routing](../runtime/recipients-and-routing.md#the-recipients).
 
@@ -120,18 +120,6 @@ Two checks happen before the cap and cost no allowance: whether the event is mea
 `crowdy.mass.event.proxy 0` turns the stand-in dispatch off. With it off, an event nothing registered a handler for lands nothing on a row, beyond the action write a marked action gets. Use it to measure what the stand-in costs, or to find a body that misbehaves on observers only. The default is 1. It exists in Editor and Development builds.
 
 `crowdy.rpc.trace 1` prints one line per event delivered to the stand-in, naming the entity, the stand-in, where it was moved to and whether the world will run a body. If the body never seems to run, read that line first. [Fix a crowd that does not look right](./troubleshooting.md) lists the diagnostic commands.
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The Host recipient
-
-`OwningClient` replaces `Host`; see [Which events reach a row](#which-events-reach-a-row).
-
-A `Host` event never reaches a row either. On an actor it is dropped with a warning under Server Object, and goes nowhere under Leader Source **Elected Host (Deprecated)**, where no host is elected. A `Host` event that arrives for an entity a client holds as a row is dropped and logged, at most once a second, the same as a targeted `OwningClient` one.
 
 ## Gotchas
 

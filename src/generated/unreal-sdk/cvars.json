@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-11-12T15:56:51Z",
+  "generated_from": "2026-11-18T17:16:41Z",
   "sdk_version": "2.25.0",
   "table": "cvars",
   "columns": [
@@ -99,6 +99,17 @@
       "help": "Log where the Call Crowdy Event on Entity dropdown's entries came from (0 = off, 1 = on).",
       "module": "CrowdyMassNodes",
       "editor": true,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.modscripts.trace",
+      "name": "crowdy.modscripts.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs Mod Script activity: engine startup, compiles, instances, dispatch outcomes and guest log lines. Off by default.",
+      "module": "CrowdyModScriptRuntime",
+      "editor": false,
       "allowlist": ""
     },
     {
@@ -547,7 +558,7 @@
       "kind": "variable",
       "role": "behaviour",
       "trace": false,
-      "help": "When non-zero, a sent CrowdyState delta for an owned entity is also decoded onto a local 'mirror' entity (a lazily-spawned second instance of the same class, RemoteProxy role, a distinct NetID) so decode/OnRep/host-authority checks can be exercised from one PIE client. Unlike crowdy.rpc.loopback this cannot replay onto the same actor (an owner's own entity silently drops a non-host-sourced delta, and decode's changed-detection would report no change against identical values); the mirror is a genuinely distinct receive target instead.",
+      "help": "When non-zero, a sent CrowdyState delta for an owned entity is also decoded onto a local 'mirror' entity (a lazily-spawned second instance of the same class, RemoteProxy role, a distinct NetID) so decode/OnRep/ownership checks can be exercised from one PIE client. Unlike crowdy.rpc.loopback this cannot replay onto the same actor (an owner's own entity drops every foreign delta, and decode's changed-detection would report no change against identical values); the mirror is a genuinely distinct receive target instead.",
       "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""

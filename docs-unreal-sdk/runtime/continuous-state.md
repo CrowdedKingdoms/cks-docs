@@ -57,7 +57,7 @@ Start the pawn only once the SDK reports the connection up (`OnUDPConnectionSucc
 **Success signal.** On a second client the player's torch moves with the owner. `crowdy.entity.trace 1` logs the registration; if nothing moves, check [the backend config](./map-profile.md) before the executor.
 
 :::caution[A World-owned entity that replicates movement leaves BeginPlay sending nothing.]
-`bAutoRegister` starts the channel only for an entity this client owns outright. A level-placed entity that replicates movement, Owned By World (or Auto) has no owner at `BeginPlay`, so nothing is sent; the component logs this once. By default no client writes a World entity, so it stays still for everyone. The rest of this caution applies under Elected Host, see [Leader Source](./leader.md#leader-source-with-or-without-a-host): nothing is sent until the host is known, and the host drives a moving world entity through `StartReplication` once it knows it is the host. Otherwise an owner drives it after an [ownership transfer](./ownership-transfer.md).
+`bAutoRegister` starts the channel only for an entity this client owns outright. A level-placed entity that replicates movement, Owned By World (or Auto) has no owner at `BeginPlay`, so nothing is sent; the component logs this once. No client writes a World entity, so it stays still for everyone. An owner drives it after an [ownership transfer](./ownership-transfer.md).
 :::
 
 ## Send your own values with the movement

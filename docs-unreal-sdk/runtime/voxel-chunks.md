@@ -23,7 +23,7 @@ The fetches live on the **Crowdy Voxels** subsystem (`UCrowdyVoxels`, a Game Ins
 | Blueprint | C++ | Does |
 |---|---|---|
 | **Fetch Chunks Around** | `UCrowdyVoxels::FetchChunksAround(int64 ChunkX, int64 ChunkY, int64 ChunkZ, int32 Range, TFunction<void(const FCrowdyChunkFetch&)> OnDone)` | Every chunk the platform stores within Range of a chunk. Latent: **On Fetched** or **On Failed** fires once. |
-| **Fetch Chunk** | `UCrowdyVoxels::FetchChunk(int64 ChunkX, int64 ChunkY, int64 ChunkZ, TFunction<void(const FCrowdyChunkFetch&)> OnDone)` | One chunk, whether or not the platform stores it. Latent, like the one above. |
+| **Fetch Chunk** | `UCrowdyVoxels::FetchChunk(int64 ChunkX, int64 ChunkY, int64 ChunkZ, TFunction<void(const FCrowdyChunkFetch&)> OnDone)` | One chunk, whether or not the platform stores it. Latent, like the one above. Needs Game API v2.70.0; an older one refuses it with `GRAPHQL_VALIDATION_FAILED`. |
 | **Get Voxel** | `UCrowdyVoxelLibrary::GetVoxel(const FCrowdyVoxelChunk& Chunk, FIntVector Position)` | The voxel at one position, with its type and state. |
 | **Get Filled Voxels** | `UCrowdyVoxelLibrary::GetFilledVoxels(const FCrowdyVoxelChunk& Chunk)` | Every voxel of a chunk whose type is not 0, with its position, type and state. |
 | **Get Chunk Origin** | `UCrowdyVoxelLibrary::GetChunkOrigin(WorldContextObject, ChunkX, ChunkY, ChunkZ)` | The chunk's minimum corner in your level. |

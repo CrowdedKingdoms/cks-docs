@@ -32,6 +32,8 @@ The Blueprint nodes are the async actions `UCrowdyClaimChunk`, `UCrowdyReleaseCl
 
 Two structs carry the lists. `FCrowdyChunkClaimInfo` is one claim in a **Find Claims** answer: `GridId`, `ChunkX`, `ChunkY`, `ChunkZ`, `OwnerUserId` (all `int64`) and `bOwnedByMe`. `FCrowdyGridPermissionRow` is one grid in a **Get Grid Permissions** answer: `GridId`, its chunk box as `LowChunkX`, `LowChunkY`, `LowChunkZ`, `HighChunkX`, `HighChunkY`, `HighChunkZ` (all `int64`), `PermissionKeys` (the player's own) and `bDecidesEdits`.
 
+**List Grid Channels** (`UCrowdyClaims::ListGridChannels(int64 GridId, TFunction<void(const FCrowdyGridChannels&)> OnDone)`) answers the channels a grid owns, oldest first, in **Channels**; the list is empty when the grid has none. A **Grid Id** of 0 or less is **Refused** without sending, and a row that is not one of the grid's own fails the whole list as **Bad Reply**. Its node is `UCrowdyListGridChannels` with `FCrowdyGridChannelsAsyncResult` (`Channels`, `Result`, `Message`). It takes a grid id you already hold, such as a claim's.
+
 Chunk coordinates are the ones the SDK places actors in; **World To Voxel** on the [Voxel Chunks](./voxel-chunks.md#the-nodes) page turns a location into its chunk. The player must be signed in to the app.
 
 ## What a claim is
