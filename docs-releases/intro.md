@@ -39,10 +39,10 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
-## 2026-11-18 (Unreal SDK v2.26.0: a player's actor id is random; entities name their owner's user)
+## 2026-11-19 (Unreal SDK v2.26.0: a player's actor id is random; entities name their owner's user)
 
 A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's server code again. Per-item detail:
-[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-18-sdk-v2260).
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-19-sdk-v2260).
 
 - **The role Host Owned is World Owned, and the deprecated surface is deleted.** `ECrowdyRole::HostOwned` is
   `ECrowdyRole::WorldOwned`, the same value: C++ renames it, and a saved Blueprint pin or value is redirected.
