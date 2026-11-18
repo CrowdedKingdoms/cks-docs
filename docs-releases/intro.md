@@ -39,6 +39,21 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-18 (a Studio dock in a native game)
+
+- **CrowdyCPP 0.86.0 carries what a game's Agentic Crowdy Studio dock calls**, so a native game can
+  dock Studio beside its world: the live-modding check (`crowdyStudioAgent().liveModding`), the
+  model list (`models()`, `GET /v1/model/models`), CrowdyJS's starter projects, and
+  `CrowdyStudioModRunner`, a draft test or live deploy of one saved revision that never blocks the
+  game thread and reports each target's build log, diagnostics and version. `studioOrigin()` gives
+  the Studio origin and wallet page beside the game's API. See
+  [Crowdy Studio in a native game](/crowdycpp/crowdy-studio). It needs no newer Game API.
+- **CrowdyCPP's build-log parser no longer uses `std::regex`**, which could overflow a small stack
+  on a long log line.
+- **The model endpoint's errors, corrected:** an app that switched the agent off answers
+  `AGENT_DISABLED`, and the model list refuses only with the policy's codes. See
+  [errors](/game-api/agentic-crowdy-studio#errors).
+
 ## 2026-11-17 (data out priced by each connection's rate)
 
 - **Egress is priced in rate bands** (Game API v2.71.0, every environment): graduated bands by the
