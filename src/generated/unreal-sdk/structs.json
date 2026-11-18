@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-18T18:14:04Z",
+  "sdk_version": "2.26.0",
   "table": "structs",
   "columns": [
     {
@@ -411,6 +411,16 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyActorOwner",
+      "name": "FCrowdyActorOwner",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyActorOwners.h",
+      "page": "services/player-safety",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyAppAccess",
       "name": "FCrowdyAppAccess",
       "display_name": "",
@@ -491,6 +501,66 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyChunkClaim",
+      "name": "FCrowdyChunkClaim",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChunkClaimInfo",
+      "name": "FCrowdyChunkClaimInfo",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChunkEditCheck",
+      "name": "FCrowdyChunkEditCheck",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChunkFetch",
+      "name": "FCrowdyChunkFetch",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyVoxels.h",
+      "page": "runtime/voxel-chunks",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyClaimRelease",
+      "name": "FCrowdyClaimRelease",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyClaimSearch",
+      "name": "FCrowdyClaimSearch",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyCommunicationChoices",
       "name": "FCrowdyCommunicationChoices",
       "display_name": "",
@@ -521,6 +591,36 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyGridChannels",
+      "name": "FCrowdyGridChannels",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyGridPermissionRow",
+      "name": "FCrowdyGridPermissionRow",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyGridPermissions",
+      "name": "FCrowdyGridPermissions",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyClaims.h",
+      "page": "runtime/chunk-claims",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyKitGroup",
       "name": "FCrowdyKitGroup",
       "display_name": "",
@@ -537,6 +637,306 @@
       "module": "CrowdyServices",
       "header": "CrowdyAuthentication.h",
       "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyMod",
+      "name": "FCrowdyMod",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModBuild",
+      "name": "FCrowdyModBuild",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModCall",
+      "name": "FCrowdyModCall",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModClient",
+      "name": "FCrowdyModClient",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModClientInfo",
+      "name": "FCrowdyModClientInfo",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModDelete",
+      "name": "FCrowdyModDelete",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModDiagnostic",
+      "name": "FCrowdyModDiagnostic",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModFile",
+      "name": "FCrowdyModFile",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModInfo",
+      "name": "FCrowdyModInfo",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModList",
+      "name": "FCrowdyModList",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModLogLine",
+      "name": "FCrowdyModLogLine",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModLogs",
+      "name": "FCrowdyModLogs",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModProjectStatus",
+      "name": "FCrowdyModProjectStatus",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModRun",
+      "name": "FCrowdyModRun",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModRunTarget",
+      "name": "FCrowdyModRunTarget",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScript",
+      "name": "FCrowdyModScript",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptCellState",
+      "name": "FCrowdyModScriptCellState",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptChunk",
+      "name": "FCrowdyModScriptChunk",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptClick",
+      "name": "FCrowdyModScriptClick",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptClicks",
+      "name": "FCrowdyModScriptClicks",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptError",
+      "name": "FCrowdyModScriptError",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptGrid",
+      "name": "FCrowdyModScriptGrid",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptLog",
+      "name": "FCrowdyModScriptLog",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptLogLine",
+      "name": "FCrowdyModScriptLogLine",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptPlayer",
+      "name": "FCrowdyModScriptPlayer",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptPrompt",
+      "name": "FCrowdyModScriptPrompt",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptShape",
+      "name": "FCrowdyModScriptShape",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptStatus",
+      "name": "FCrowdyModScriptStatus",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModScriptStatusList",
+      "name": "FCrowdyModScriptStatusList",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyModScriptTypes.h",
+      "page": "runtime/mod-scripts",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModStarter",
+      "name": "FCrowdyModStarter",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyMods.h",
+      "page": "runtime/mods",
       "editor": false,
       "allowlist": ""
     },
@@ -611,6 +1011,96 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyStudioAgentBoot",
+      "name": "FCrowdyStudioAgentBoot",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioAgent.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyStudioConsent",
+      "name": "FCrowdyStudioConsent",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioAgent.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyStudioLiveModding",
+      "name": "FCrowdyStudioLiveModding",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioAgent.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyStudioModel",
+      "name": "FCrowdyStudioModel",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioAgent.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyStudioModelUsage",
+      "name": "FCrowdyStudioModelUsage",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioAgent.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyStudioProject",
+      "name": "FCrowdyStudioProject",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioProjects.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyStudioProjectFile",
+      "name": "FCrowdyStudioProjectFile",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioProjects.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyStudioProjectInfo",
+      "name": "FCrowdyStudioProjectInfo",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioProjects.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyStudioProjectList",
+      "name": "FCrowdyStudioProjectList",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyStudioProjects.h",
+      "page": "runtime/studio-dock",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyTeamMembersResult",
       "name": "FCrowdyTeamMembersResult",
       "display_name": "",
@@ -637,6 +1127,46 @@
       "module": "CrowdyServices",
       "header": "CrowdyTeamsQueryActions.h",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyVideoFrameSend",
+      "name": "FCrowdyVideoFrameSend",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyVideoSender.h",
+      "page": "runtime/video-frames",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyVoxel",
+      "name": "FCrowdyVoxel",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyVoxels.h",
+      "page": "runtime/voxel-chunks",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyVoxelChunk",
+      "name": "FCrowdyVoxelChunk",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyVoxels.h",
+      "page": "runtime/voxel-chunks",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyVoxelWrite",
+      "name": "FCrowdyVoxelWrite",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyVoxelWorld.h",
+      "page": "runtime/voxel-chunks",
       "editor": false,
       "allowlist": ""
     },
