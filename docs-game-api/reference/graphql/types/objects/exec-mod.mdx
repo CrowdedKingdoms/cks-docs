@@ -31,6 +31,8 @@ type ExecMod {
   blocked: String
   running: Boolean!
   updatedAt: DateTime!
+  studioProjectId: String
+  studioRevision: BigInt
 }
 ```
 
@@ -79,6 +81,14 @@ Whether an instance of it runs now.
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>studioProjectId</b></code>](#studio-project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #studio-project-id */} 
+The Crowdy Studio project its version was deployed from, when that build named one (`execModBuild` `studio`); null otherwise, an install or a version from when the grid changed hands included.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>studioRevision</b></code>](#studio-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #studio-revision */} 
+That project’s revision its version was deployed from; null when `studioProjectId` is.
 
 
 

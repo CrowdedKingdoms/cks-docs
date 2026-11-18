@@ -1,0 +1,29 @@
+---
+id: crowdy-studio-links
+title: crowdyStudioLinks
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+This tier’s Crowdy Studio origin and wallet page, so a Studio dock in a game needs no release when Studio moves. Public.
+
+
+```graphql
+crowdyStudioLinks: CrowdyStudioLinks!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioLinks</b></code>](/reference/graphql/types/objects/crowdy-studio-links.mdx) <Badge class="badge badge--secondary " text="object"/> 
+This tier’s Crowdy Studio, for a Studio dock in a game: where it opens its popups and where it sends a player for funds.
