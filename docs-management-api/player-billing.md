@@ -31,12 +31,15 @@ wallet, with no org permission involved:
   the public API.
 - `createCheckout` with purpose `PLAYER_WALLET_TOPUP` — fund the wallet
   through the ordinary hosted checkout (Stripe/PayPal). Only `amountCents`
-  is required. The wallet pays for **usage**, not store listings.
+  is required, and it must be at least $5 (500): a smaller amount is refused
+  with `TOP_UP_BELOW_MINIMUM`, and `walletTopUpMinimums` publishes the figure.
+  The wallet pays for **usage**, not store listings.
 - `beginPlayerCardSetup` — vault a card on the wallet (a Stripe SetupIntent
   the browser confirms), enabling auto-recharge.
 - `playerAutoBilling` / `setPlayerAutoBilling` — off-session auto-recharge
-  from a vaulted card, with a per-period ceiling. The player gate tries an
-  auto-recharge before ever denying for funds.
+  from a vaulted card, with a per-period ceiling. The recharge amount is held
+  to the same $5 minimum. The player gate tries an auto-recharge before ever
+  denying for funds.
 
 ## Hourly usage billing
 
