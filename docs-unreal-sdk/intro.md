@@ -13,7 +13,7 @@ This guide describes **SDK 2.26**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` an
 
 ## What 2.26 changes
 
-2.26 breaks: a project on 2.25 needs changes before it compiles. Follow the plugin's `MIGRATION.md` step by step.
+2.26 breaks: a project on 2.25 needs changes before it compiles. Follow the plugin's `MIGRATION.md` step by step, including the steps to take on 2.25.x before you upgrade.
 
 - **The host and the deprecated surface are gone.** Everything 2.25 deprecated is deleted, and the role Host Owned is World Owned. [Removed after 2.25](./guides/deprecated.md) lists each item and what replaces it.
 - **A player's actor id is random and new at each sign-in.** The live pawn re-keys to it, and [Resolve Actor Owner](./services/player-safety.md#find-out-who-a-player-is) finds the user behind an actor id. See [Identity policies](./concepts/entities-identity-ownership.md#identity-policies).
