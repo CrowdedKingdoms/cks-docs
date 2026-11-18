@@ -62,7 +62,7 @@ Shared-environment plan id (a shared&#x005F;env&#x005F;plans.plan&#x005F;id, Big
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #amount-cents */} 
-Charge amount in minor currency units (cents) of `currency`, as a BigInt decimal string. Required for ORG&#x005F;WALLET&#x005F;TOPUP.
+Charge amount in minor currency units (cents) of `currency`, as a BigInt decimal string. Required for ORG&#x005F;WALLET&#x005F;TOPUP and PLAYER&#x005F;WALLET&#x005F;TOPUP, and at least the wallet’s smallest top-up: 1000 ($10) for ORG&#x005F;WALLET&#x005F;TOPUP and 500 ($5) for PLAYER&#x005F;WALLET&#x005F;TOPUP (walletTopUpMinimums); less is refused with TOP&#x005F;UP&#x005F;BELOW&#x005F;MINIMUM.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #currency */} 

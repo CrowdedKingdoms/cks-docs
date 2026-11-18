@@ -24,8 +24,10 @@ So in practice there is one model, and this page describes it.
 
 ## Free tier
 
-- Every organization can create up to **`platformConfig.freeAppsPerOrg`** apps on the shared
-  environment (default **3**).
+- An organization can create any number of apps on the shared environment.
+  `platformConfig.freeAppsPerOrg` (default **3**) is how many free app slots
+  `orgFreeAppQuota` counts; the slots are a count only and never change what is
+  free or billed.
 - Each app includes a **monthly development quota**, per UTC calendar month:
   **5 GB of client egress**, **5 GB of client ingress** (decimal GB: 1 GB =
   1,000,000,000 bytes), **20 CPU-hours of compute** pooled across GraphQL
@@ -150,7 +152,8 @@ code sends count as replication egress, billed through the same monthly egress
 aggregate as every other byte your app sends. See
 [usage and budgets](/exec/operations#usage-and-budgets).
 
-Check your remaining free slots:
+`orgFreeAppQuota` counts the free app slots (it is deprecated, and the slots do not
+change what is free or billed):
 
 ```graphql
 query {
@@ -238,7 +241,10 @@ Pass `null` for a limit to clear it.
 Instead of (or in addition to) manual top-ups, an org owner can enable
 **auto-billing**: when the wallet can't cover usage, the saved payment method is
 charged automatically to top the wallet back up — up to a limit you set, or with
-**no limit**. With auto-billing off, an app is simply denied when the wallet runs
+**no limit**. A top-up into an organization wallet, by checkout
+(`createCheckout` with `ORG_WALLET_TOPUP`) or as the auto-billing amount
+(`rechargeAmountCents`), is at least $10; a smaller one is refused with
+`TOP_UP_BELOW_MINIMUM` (`walletTopUpMinimums` publishes the figure). With auto-billing off, an app is simply denied when the wallet runs
 dry; with it on, the app keeps running until your auto-billing limit is reached.
 
 ```graphql
