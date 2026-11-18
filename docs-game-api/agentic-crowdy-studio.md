@@ -154,17 +154,26 @@ Errors are OpenAI-style bodies carrying the platform code:
 { "error": { "message": "...", "type": "crowded_kingdoms_error", "code": "AGENT_FUNDS_NEEDED", "retryable": false } }
 ```
 
+Both routes refuse with the policy's codes:
+
 | Code | HTTP | Meaning |
 |---|---|---|
-| `AGENT_DISABLED`, `AGENT_APP_KILLED`, `AGENT_OPERATOR_KILLED` | 403 | Policy off or killed |
+| `AGENT_DISABLED` | 403 | The agent is off for the platform or the app, or the app switched it off |
+| `AGENT_OPERATOR_KILLED` | 403 | Crowded Kingdoms switched it off |
 | `AGENT_PERMISSION_DENIED` | 403 | No `use_studio_agent`, or app runtime inactive |
+| `AGENT_SCOPE_DENIED` | 403 | A token for another app than the one named, or no app named |
+| `AGENT_PROVIDER_POLICY_UNSATISFIED` | 503 | The policy could not be confirmed; or, on chat completions, the provider rejected the request |
+
+`GET /v1/model/models` refuses with nothing else. Chat completions also refuse with:
+
+| Code | HTTP | Meaning |
+|---|---|---|
 | `AGENT_SCOPE_DENIED` | 403 | Provider-data consent not recorded |
 | `AGENT_MODEL_NOT_ALLOWED` | 400 | Model outside the allowlist or without a rate card |
 | `AGENT_TOOL_INPUT_INVALID` | 400 | Unsupported field or malformed request |
 | `AGENT_BUDGET_EXHAUSTED` | 429 | Per-request ceiling or player-day budget |
 | `AGENT_FUNDS_NEEDED` | 402 | Wallet cannot cover the reservation |
 | `AGENT_PROVIDER_UNAVAILABLE` | 503 | Provider unreachable, stalled or 5xx (retryable) |
-| `AGENT_PROVIDER_POLICY_UNSATISFIED` | 503 | Provider rejected the request or the policy replica is stale |
 | `AGENT_PROVIDER_OUTPUT_INVALID` | 502 | Malformed provider body |
 
 ## GraphQL companions
@@ -193,6 +202,14 @@ observation-only `PlayerHostAdapterV1` for `game_observe`; see
 [Crowdy Studio agent in CrowdyJS](/crowdyjs/agentic-crowdy-studio). The
 harness artifact is the published `@crowdedkingdoms/crowdy-dsh` npm package,
 copied under `/dsh/` of the game origin at build time.
+
+A dock reads this environment's Studio from the public
+[`crowdyStudioLinks`](reference/graphql/operations/queries/crowdy-studio-links.mdx)
+(`origin`, `walletUrl`): the only origin it opens a popup to, and the wallet page
+it sends a player to on `AGENT_FUNDS_NEEDED`. A native game that docks Studio
+makes the same calls from CrowdyCPP: the live-modding check, the model list,
+starter projects, and draft tests and live deploys that never block the game
+thread; see [Crowdy Studio in a native game](/crowdycpp/crowdy-studio).
 
 ## Data retention
 

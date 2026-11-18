@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
+A short-lived, app-scoped gameplay token (portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
 
 
 ```graphql
@@ -49,7 +49,7 @@ The app this token is confined to, as a String.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #expires-at */} 
-ISO-8601 UTC expiry. Call `refreshAppToken` (same app) before this, or re-portal through the Overworld for a different app.
+ISO-8601 UTC expiry. Call `refreshAppToken` (same app) before this. A different app needs its own token: a hosted sign-in for that app, or mintAppToken with the session.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-url */} 

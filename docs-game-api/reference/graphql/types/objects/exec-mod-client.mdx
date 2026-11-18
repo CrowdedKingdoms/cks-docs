@@ -31,6 +31,8 @@ type ExecModClient {
   capabilityHash: String!
   tickIntervalMs: Int!
   updatedAt: DateTime!
+  studioProjectId: String
+  studioRevision: BigInt
 }
 ```
 
@@ -79,6 +81,14 @@ How often, in milliseconds, browsers tick it (16-1000, from its Cargo.toml).
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecModClient.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
 When it was last attached.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClient.<b>studioProjectId</b></code>](#studio-project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #studio-project-id */} 
+The Crowdy Studio project its build was made from (`execModClientBuild` `studio`); null when it named none, or for an install.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClient.<b>studioRevision</b></code>](#studio-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #studio-revision */} 
+That project’s revision its build was made from; null when `studioProjectId` is.
 
 
 

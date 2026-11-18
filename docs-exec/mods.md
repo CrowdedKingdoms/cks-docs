@@ -60,7 +60,29 @@ running mod restarts it on that version. A mod's name is 1 to 48 lowercase lette
 `execMyMods(appId)` lists yours on every grid. `execModDelete(appId, gridId, name)` stops a mod
 and removes it, with its state and its versions.
 
-From CrowdyJS, `client.exec` has the same calls (`modStarter`, `modBuild`, `waitForModBuild`,
+### Which Studio revision a mod runs
+
+A build can name the [Crowdy Studio](/crowdyjs/player-client-mods) project and saved revision its
+crate is, so anyone who reads the grid's mods can tell which revision runs there:
+
+```graphql
+mutation {
+  execModBuild(appId: "…", crate: { … }, studio: { projectId: "…", revision: "4" }) {
+    buildId studioProjectId studioRevision
+  }
+}
+```
+
+The project must be yours and in the app, at a revision it has reached: another player's project
+is `NOT_FOUND`, a revision past the project's `BAD_REQUEST`. The mod version you deploy from the
+build reports the same two fields in `execModDeploy`, `execMods` and `execMyMods`; a version
+installed from a listing, built without a project, or deployed before the field existed reports
+null. The project id identifies the project only: what is in it stays private to its owner. From
+CrowdyJS 18.33.0 and CrowdyCPP 0.87.0, Crowdy Studio sends both on every draft test and live
+deploy.
+
+From CrowdyJS, `client.exec` has the same calls (`modStarter`, `modBuild` with an optional
+`{ projectId, revision }`, `waitForModBuild`,
 `modDeploy`, `modSetEnabled`, `mods`, `myMods`, `modDelete`, and the rest below). In [Crowdy
 Studio](/crowdyjs/player-client-mods), a project's SERVER target runs as a mod on the grid, and
 from CrowdyJS 17.14.0 its CLIENT target as that mod's [CLIENT

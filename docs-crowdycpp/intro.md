@@ -67,9 +67,12 @@ Work through it in order the first time:
    app's server code on ck-exec through `client.exec()`, and the
    [Game Kit](/game-kit/clients#crowdycpp) (`makeKit`) for ck-exec's starter
    hubs.
-6. [Engine integration](/crowdycpp/engine-integration) — wrapping CrowdyCPP
+6. [Crowdy Studio in a native game](/crowdycpp/crowdy-studio) — what a
+   game's Agentic Crowdy Studio dock calls: the live-modding check, the model
+   list, starter projects, draft tests and live deploys.
+7. [Engine integration](/crowdycpp/engine-integration) — wrapping CrowdyCPP
    in Unreal and other engines.
-7. [Compatibility and parity](/crowdycpp/compatibility) — server
+8. [Compatibility and parity](/crowdycpp/compatibility) — server
    compatibility notes, CrowdyJS parity, and versioning.
 
 **[Best practices](/crowdycpp/best-practices)** covers tokens, UDP, and
