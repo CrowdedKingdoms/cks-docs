@@ -1,0 +1,48 @@
+---
+id: org-allowance-pool
+title: OrgAllowancePool
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One meter of an organization's pooled free allowance this month: how large the pool is and how much of it its apps have used.
+
+
+```graphql
+type OrgAllowancePool {
+  meter: String!
+  poolUnits: String!
+  usedUnits: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAllowancePool.<b>meter</b></code>](#meter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #meter */} 
+The priced meter: aggregate&#x005F;data&#x005F;volume (bytes out), aggregate&#x005F;data&#x005F;ingress (bytes in), compute&#x005F;cpu&#x005F;ms (CPU milliseconds), durable&#x005F;storage&#x005F;byte&#x005F;hours (byte-hours stored) or wasm&#x005F;write&#x005F;bytes (bytes written by compute modules).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAllowancePool.<b>poolUnits</b></code>](#pool-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #pool-units */} 
+The pool, in the meter's raw units: the rate card's allowance for one app times allowancePool.factor.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAllowancePool.<b>usedUnits</b></code>](#used-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #used-units */} 
+How much of the pool its apps hold this month, in the same units; usage beyond the pool is billed.
+
+
+
+
+### Member Of
+
+[`OrgUsageProjection`](/reference/graphql/types/objects/org-usage-projection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
