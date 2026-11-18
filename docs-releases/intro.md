@@ -39,6 +39,22 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-19 (an organization's apps share one free allowance)
+
+- **One free allowance per organization** (Game API v2.75.0): an organization's apps share one
+  monthly allowance worth three apps' quotas (15 GB of egress, 15 GB of ingress, 60 CPU-hours,
+  3 GB-months of stored data and 3 GB of compute-module writes), however many apps it has, and any
+  app may use all of it. It applies from November 2026: an app that used a meter this month before
+  November 19 keeps its own quota for that meter until November 30, and from December 1 every app
+  shares. See [Free tier](/management-api/shared-environment#free-tier).
+- **New fields:** the public query `allowancePool` (`factor`, `effectiveFrom`, `pooledNow`), and on
+  `orgUsageProjection` `allowancePooled` and `allowancePools` (each shared meter's `poolUnits` and
+  `usedUnits`); `appUsageProjection.allowancePooled`. In a pooled month an app's
+  `freeAllowanceBytes` is what it may still use free, its own use so far plus what the
+  organization has left.
+- **Free app slots are retired:** `orgFreeAppQuota` is deprecated. The slots never changed what is
+  free or billed, and Studio no longer shows them.
+
 ## 2026-11-19 (Unreal SDK v2.26.0: a player's actor id is random; entities name their owner's user)
 
 A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's server code again. Per-item detail:

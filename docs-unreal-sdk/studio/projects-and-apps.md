@@ -24,7 +24,7 @@ The left rail:
 - An **organization** combo box, with **All organizations** at the top. This is a filter for the list; it does not by itself change which organization new resources are created in.
 - A **Search apps** box.
 - A status strip: **All**, **Live**, **Draft**, **Archived**. It opens on All.
-- The app list, each row showing the app's name, its URL identifier, and its status. The count under the list says how many apps match, and how many free app slots the organization has used when one organization is selected.
+- The app list, each row showing the app's name, its URL identifier, and its status. The count under the list says how many apps match, and how many free app slots the organization has used when one organization is selected. The slots are retired and no longer change what is free: since November 2026 an organization's apps share one free allowance.
 
 :::tip[Picking an organization in the filter narrows the list.]
 It does not move where a new app is created until you also pick or create an app there.
@@ -60,7 +60,7 @@ Press **Create app** in the page header. It needs an organization to create in: 
 
 **Step 1, Name your app.** Type a name; the URL identifier (lowercase letters, digits, hyphens) is derived from it, and **Advanced options** lets you override it and add a description. Pick a datacenter card. The first available datacenter is preselected.
 
-**Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots. Press **Create app**. The Game API connection is available immediately; there is no provisioning wait.
+**Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots, which are retired: its apps share one free allowance. Press **Create app**. The Game API connection is available immediately; there is no provisioning wait.
 
 :::note[The datacenter is chosen once, at creation, and cannot be changed later.]
 Everything the app stores lives in that one datacenter. Pick the one closest to your players. Status and visibility are not asked at creation; the server defaults them and the details pane changes them afterwards.
