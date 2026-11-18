@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Result of publishing an app to the shared environment. All paths publish immediately. Usage above the free allowances is wallet-billed: each app has a per-dimension hourly allowance and, for client egress, 5 decimal GB per calendar month.
+Result of publishing an app to the shared environment. All paths publish immediately. Usage above the free allowances is billed from the organization wallet: each app has the rate card's monthly allowances until allowancePool.effectiveFrom, and from then the organization's apps share one allowance.
 
 
 ```graphql
@@ -34,7 +34,7 @@ type PublishAppResult {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PublishAppResult.<b>free</b></code>](#free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #free */} 
-True when the app uses a free org app-slot (under the quota).
+True when the app uses a free org app-slot (under the quota). A count only: it does not change what is free or billed (see orgFreeAppQuota).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PublishAppResult.<b>checkout</b></code>](#checkout)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Checkout</b></code>](/reference/graphql/types/objects/checkout.mdx) <Badge class="badge badge--secondary " text="object"/> {/* #checkout */} 

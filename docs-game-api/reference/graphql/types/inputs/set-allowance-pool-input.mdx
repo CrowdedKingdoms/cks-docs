@@ -1,0 +1,48 @@
+---
+id: set-allowance-pool-input
+title: SetAllowancePoolInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A change to the organization allowance pool.
+
+
+```graphql
+input SetAllowancePoolInput {
+  effectiveFrom: DateTime
+  factor: Int
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAllowancePoolInput.<b>effectiveFrom</b></code>](#effective-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-from */} 
+The first instant whose calendar months are pooled. Applies to months that have not been settled yet: a unit already settled this month keeps the allowance it was settled with. Omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAllowancePoolInput.<b>factor</b></code>](#factor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #factor */} 
+How many apps' allowances each pool is worth, at least 1. Applies to pools first claimed from after the change. Omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAllowancePoolInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why, for the audit (billing&#x005F;rate&#x005F;changes).
+
+
+
+
+### Member Of
+
+[`setAllowancePool`](/reference/graphql/operations/mutations/set-allowance-pool.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

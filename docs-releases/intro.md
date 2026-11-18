@@ -39,6 +39,20 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-18 (storage, input-log and reservation rates; the smallest top-up)
+
+- **Three rates rise** (on the rate card, no API change): stored data $0.40 a GB-month (was $0.20), a
+  player's stored data with it; stored input logs $0.40 a GB-month (was $0.10); reserved throughput $4
+  per MB/s a month (was $3). An app that already used one of these meters in its current month keeps that
+  month's rate until the month ends. See the [Pricing page](https://crowdedkingdoms.com/pricing).
+- **The smallest top-up** (Game API v2.74.0): $10 for an organization wallet and $5 for a player wallet,
+  for `createCheckout` (`ORG_WALLET_TOPUP`, `PLAYER_WALLET_TOPUP`) and for an auto-recharge amount
+  (`setAutoBilling`, `setPlayerAutoBilling`). A smaller amount is refused with
+  [`TOP_UP_BELOW_MINIMUM`](/overview/error-codes) (`extensions.minimumCents`, `extensions.wallet`).
+  It was any amount above $0. The new public query `walletTopUpMinimums` publishes both figures, and an
+  app token may read it, for a game's own top-up form. The SDKs pass the code through as they do any
+  other; no SDK release is needed.
+
 ## 2026-11-18 (a Studio dock in a native game)
 
 - **A mod knows the Studio revision it runs** (Game API v2.73.0): `execModBuild` and

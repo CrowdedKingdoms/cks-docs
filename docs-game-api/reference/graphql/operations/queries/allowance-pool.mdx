@@ -1,0 +1,29 @@
+---
+id: allowance-pool
+title: allowancePool
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+PUBLIC: no authentication required. When this tier pools an organization's free allowance across its apps, and how large each pool is. Read-only.
+
+
+```graphql
+allowancePool: AllowancePoolSettings!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AllowancePoolSettings</b></code>](/reference/graphql/types/objects/allowance-pool-settings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The organization allowance pool: from the first calendar month starting on or after effectiveFrom, an organization's apps share one free allowance per meter, factor times one app's allowance on the rate card, instead of each app having its own. One app may use the whole pool.
