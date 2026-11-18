@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-18T18:14:04Z",
+  "sdk_version": "2.26.0",
   "table": "cvars",
   "columns": [
     {
@@ -102,6 +102,17 @@
       "allowlist": ""
     },
     {
+      "id": "crowdy.modscripts.trace",
+      "name": "crowdy.modscripts.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs Mod Script activity: engine startup, compiles, instances, dispatch outcomes and guest log lines. Off by default.",
+      "module": "CrowdyModScriptRuntime",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "crowdy.net.trace",
       "name": "crowdy.net.trace",
       "kind": "variable",
@@ -195,7 +206,7 @@
       "kind": "variable",
       "role": "trace",
       "trace": true,
-      "help": "When non-zero, logs CrowdyServices activity: authentication, teams, avatars, persistence, host subsystem, utilities, and Blueprint reception. Off by default.",
+      "help": "When non-zero, logs CrowdyServices activity: authentication, teams, avatars, persistence, utilities, and Blueprint reception. Off by default.",
       "module": "CrowdyServices",
       "editor": false,
       "allowlist": ""
@@ -410,6 +421,17 @@
       "allowlist": ""
     },
     {
+      "id": "crowdy.net.idlequietseconds",
+      "name": "crowdy.net.idlequietseconds",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Seconds without keyboard, mouse, touch or gamepad input before the client stops its ping and keyframe heartbeat, so the server can release an idle session; 0 keeps them going.",
+      "module": "CrowdySDK",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "crowdy.net.receive.maxdrainms",
       "name": "crowdy.net.receive.maxdrainms",
       "kind": "variable",
@@ -536,7 +558,7 @@
       "kind": "variable",
       "role": "behaviour",
       "trace": false,
-      "help": "When non-zero, a sent CrowdyState delta for an owned entity is also decoded onto a local 'mirror' entity (a lazily-spawned second instance of the same class, RemoteProxy role, a distinct NetID) so decode/OnRep/host-authority checks can be exercised from one PIE client. Unlike crowdy.rpc.loopback this cannot replay onto the same actor (an owner's own entity silently drops a non-host-sourced delta, and decode's changed-detection would report no change against identical values); the mirror is a genuinely distinct receive target instead.",
+      "help": "When non-zero, a sent CrowdyState delta for an owned entity is also decoded onto a local 'mirror' entity (a lazily-spawned second instance of the same class, RemoteProxy role, a distinct NetID) so decode/OnRep/ownership checks can be exercised from one PIE client. Unlike crowdy.rpc.loopback this cannot replay onto the same actor (an owner's own entity drops every foreign delta, and decode's changed-detection would report no change against identical values); the mirror is a genuinely distinct receive target instead.",
       "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""

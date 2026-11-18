@@ -142,7 +142,7 @@ On an observer drawing the player as a row, the byte arrives, is matched against
 | **Target** | The row, from a Crowdy Mass trace or an event. See [Target an entity, from Blueprint](./from-blueprint/target-an-entity.md). |
 | **Pose Name** | An authored pose name. `None` clears the pose. |
 
-The name is resolved against the anim set of the class the target stands for, never the caller's class. The node returns false when it refused: off the game thread (an error in the log), while Mass is processing, or when the target's class is not yet known and you named a pose. Add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**; see [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all). `UCrowdyMassEntitySubsystem::SetEntityPose` does the same thing addressed by entity UUID.
+The name is resolved against the anim set of the class the target stands for, never the caller's class. The node returns false when it refused: off the game thread (an error in the log), while Mass is processing, or when the target's class is not yet known and you named a pose. Add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**; see [Entities and Spawning](../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all). `UCrowdyMassEntitySubsystem::SetEntityPose` does the same thing addressed by entity UUID.
 
 :::caution[A pose name the class's set does not author clears the pose.]
 It resolves to id 0, and 0 is the value that clears. The node still returns true. An entity with no recorded class is refused instead, so a misspelled name on a known class is the case to watch.
@@ -198,7 +198,7 @@ A player's own machine holds a real `ALanternPlayer`, not a row, so the cheered 
 
 The node returns false and logs when it did not send. It logs each of these reasons once per class and name:
 
-- The class is not yet known on this client. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, as [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) describes.
+- The class is not yet known on this client. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, as [Entities and Spawning](../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all) describes.
 - The class names no anim set.
 - The set authors no action with that name.
 

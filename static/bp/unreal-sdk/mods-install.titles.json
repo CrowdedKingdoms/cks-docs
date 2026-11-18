@@ -1,0 +1,44 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "InstallGuestbook\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AsyncAction_0",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Get Starter",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AsyncAction_1",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Build Mod",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_SwitchEnum_0",
+		"class": "/Script/BlueprintGraph.K2Node_SwitchEnum",
+		"title": "Switch on ECrowdyModBuildStatus",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get PlotGridId",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_AsyncAction_2",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Deploy Mod",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AsyncAction_3",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Set Mod Enabled",
+		"title_drawn": true
+	}
+]

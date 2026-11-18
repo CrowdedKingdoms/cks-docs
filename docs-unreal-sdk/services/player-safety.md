@@ -105,11 +105,59 @@ A block stops voice, video, text, direct messages, channel messages and a player
 
 Filing a report keeps both players' recordings from 15 minutes before **Occurred At**, so pass when it happened, in UTC. A report filed from a menu some time later would otherwise miss the incident: left at its default, or in the future, **Occurred At** is now. Pass the reported player's actor id as **Reported Actor Uuid** when you have it. What moderators see is on [Safety reports and moderation](/game-api/safety-reports).
 
+## Find out who a player is
+
+A remote player's actor id is not a user id, and **Block Player** and **File Report** both need a user id. **Resolve Actor Owner** asks the platform which user it has registered an actor id to. Use it beside anything a remote player shows you, such as a nearby chat line, a video frame or a spawned pawn, to get the user id for a block or report button.
+
+Only a player's own entity id resolves; ids your game gives other actors answer **Unknown**. From a video frame, pass its `SenderUUID`.
+
+At each sign-in, before its realtime connection opens, the SDK creates the player's own actor record for the session's actor id at chunk (0,0,0), so other clients can resolve it. The connection opens once that create has answered: made, already the player's, or given up. Until then, and while signed out, **Request UDP Access** and the SDK's reconnects open nothing. A failure is retried up to three times, 10 seconds apart, then logged as a warning, so a create that keeps failing delays the connection by about 20 seconds plus the time its attempts take. When another player's record already holds the id, the SDK takes a fresh id and re-keys, up to three times, then warns.
+
+The SDK deletes only records this client made:
+
+- the previous id's record, once the new one exists;
+- the current record at sign-out (the server session ends once that delete answers or 2 seconds have passed);
+- at a sign-in as another user over a live one, the previous user's record, first.
+
+A record the server reports as existing without saying it is the player's is used but never deleted. The SDK never lists or deletes any other record, so another device's live record, your game's own records and a record left by a crash all stay. Any actor record that names a user answers with that user, whoever made it. A call to `createActor` with the player's entity id answers `ACTOR_EXISTS`, since the SDK has made the record.
+
+`UCrowdyActorOwners` is a game instance subsystem; `ResolveActorOwner(ActorId, OnResolved)` answers once (an `FOnActorOwnerResolved`) with an `FCrowdyActorOwner` holding `Result` (an `ECrowdyActorOwnerResult`: `Confirmed`, `Unknown` or `Failed`), `UserId` and `Message`, and C++ also has a lambda overload. The Blueprint node (`UCrowdyActorOwners_ResolveActorOwner`) has the pins **On Confirmed**, **On Unknown** and **On Failed**, each an `FActorOwnerAsyncResult` carrying the same struct. The Blueprint node always answers on a later tick, so asking again from a pin does not recurse. The C++ call answers inside the call for an unset id or an answer it already holds, and on a later tick otherwise.
+
+| Result | Means |
+|---|---|
+| **Confirmed** | The platform's record registers this id to `UserId`. |
+| **Unknown** | No record ties this id to a user, or the id is not set. Name no one for it. |
+| **Failed** | The platform could not be asked. Ask again later. |
+
+:::warning[Confirmed says whose record holds the id, not who sent a message under it.]
+**Confirmed** says whose record holds the id; it does not prove that player sent a given message. Use it to offer **Block** and **Report** to the player; do not use it to decide who may do something. Anything that must be trusted belongs in a Server Object. See [Actor state](/game-api/actor-state).
+:::
+
+An **Unknown** answer is remembered for 10 seconds, at most 1,024 of them. A **Confirmed** answer is kept until the player signs out. A **Failed** answer is not kept. Asks made in one tick are batched, 50 ids per request, and an id already being asked is not asked twice.
+
+The lantern village's `NameRemoteKeeper(RemoteActorId)` resolves a remote keeper's actor id and, on **Confirmed**, stores the user id in `RemoteKeeperUserId`, ready for a block or report button.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+<CppSnippet id="actor-owner" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+
+A custom event `NameRemoteKeeper` with an `Actor Id` calls **Resolve Actor Owner**; **On Confirmed** breaks the **Crowdy Actor Owner** pin and sets `RemoteKeeperUserId` from `User Id`.
+
+<Blueprint src="actor-owner" title="NameRemoteKeeper, Resolve Actor Owner, Break Crowdy Actor Owner, Set RemoteKeeperUserId" />
+
+</TabItem>
+</Tabs>
+
 ## What your game shows
 
 - Do not offer a microphone or camera while **Voice Send** or **Video Send** is **Off**: those sends are refused.
 - When a medium is off for a player with **Is Minor** set, say that a parent's consent turns it on, without naming an age, and offer **Request Parental Consent**. With consent, the most it can be is **Contacts**.
-- Put **Block** and **Report** beside each other wherever players meet, and list blocked players with an unblock.
+- Put **Block** and **Report** beside each other wherever players meet, and list blocked players with an unblock. For a player you only know by actor id, ask **Resolve Actor Owner** first.
 - **Show the recording notice and indicator** while the app records voice or video. This one is required: see the next section.
 
 ## Telling players when the app records

@@ -63,27 +63,7 @@ It is not a security boundary. The server picks the Leader and nothing on the se
 Do not put HP, currency, inventory, captures, or team assignment behind a Leader check. Such a check decides who runs a piece of view-plane work; your server code decides whether a change is allowed. [A Coordinator Is a Convention](../concepts/host-is-a-convention.md) explains why.
 :::
 
-To ask "do I lead", use `UCrowdyLeaderSubsystem::IsLocalLeader()`; to ask "do I write this entity", use `IsCrowdyEntityLocallyOwned`. [The Leader](../runtime/leader.md) has the calls. The deprecated elected host and its checks are described under [Deprecated](#deprecated).
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
-:::
-
-### The elected host and its checks
-
-The Leader and `IsLocalLeader()` replace the elected host and its checks, and the gate itself belongs in your server code; [Host Election (Deprecated)](../services/host-election.md) has the server-validated check in full.
-
-On a project that sets Leader Source to **Elected Host (Deprecated)**, the elected host takes the Leader's job and also drives world entities. The deprecated host functions report the Leader by default. Two checks answer "am I the host" under Elected Host, at two trust levels. `UCrowdyHostSubsystem::IsHost()`, `GetHostID()`, and `GetHostUserID()` are the local view, free and immediate, and right for choosing which client runs setup. `UCrowdyHostSubsystem::CheckEntityIsHost` is the server-validated sibling of the client-derived `UCrowdyUtilities::IsCrowdyEntityHost` compare: for the local player it asks the server directly, and for another actor it resolves that actor's owner on the server and compares it to the elected host. Use it when the caller cannot afford a spoofed or stale answer, and remember that even its answer only tells you who is host. A host check is no more an anti-cheat boundary than a Leader check.
-
-Under Elected Host, `IsLocallyOwned()` fails closed for a World entity while no host is elected yet.
-
-### Host Override
-
-`HostOverride` has no replacement: state that must be protected belongs in your server code.
-
-The `HostOverride` policy, read through `GetHostOverridePolicy()`, is precedence by convention: it decides whose write wins on a well-behaved client, not whether a write is true. An honest client sends a host correction only under Elected Host. It is authored configuration, identical on every client. It is not sent on the wire and it is not checked by the server.
+To ask "do I lead", use `UCrowdyLeaderSubsystem::IsLocalLeader()`; to ask "do I write this entity", use `IsCrowdyEntityLocallyOwned`. [The Leader](../runtime/leader.md) has the calls.
 
 ## Gotchas
 
@@ -95,5 +75,5 @@ The `HostOverride` policy, read through `GetHostOverridePolicy()`, is precedence
 
 - [The Two Planes](../concepts/two-planes.md): the split, field by field.
 - [ck-exec overview](/exec/intro): where the truth plane's code runs.
-- [The Leader](../runtime/leader.md): who writes what, and Leader Source.
+- [The Leader](../runtime/leader.md): who writes what.
 - [Testing Locally](./testing-locally.md): loopback and trace switches for a single client.

@@ -1,6 +1,6 @@
 ---
 slug: map-profile
-sidebar_position: 1
+sidebar_position: 13
 title: Map Profiles
 description: The data asset that switches the SDK on for a map, how the SDK finds it, what each field controls, and the one field the shipped default leaves empty.
 ---
@@ -94,20 +94,6 @@ There is no Blueprint node for profile resolution: assigning a profile is Projec
 ## The shipped default, in one paragraph
 
 The plugin registers a shipped profile under the provider name `CrowdySDK`, and only one registration is in effect at a time: a second plugin offering a different profile is refused and logged, so which one a map runs on never depends on module load order. `UnregisterShippedDefaultProfile` withdraws an offer at module shutdown; `GetShippedDefaultProfilePath` and `GetShippedDefaultProfileProvider` report what is currently offered; `ResolveShippedDefaultProfile` returns the asset, or null with a reason when an offer exists but its asset failed to load. None of these is something a game calls; they exist so a plugin can carry a profile.
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Crowdy Actor Management Config
-
-The map profile's **Remote Entities** group, under [Create the asset](#create-the-asset), replaces it. The older **Crowdy Actor Management Config** data asset (`UCrowdyActorManagementConfig`) holds the same Remote Entities settings, but nothing reads it at runtime. It is no longer offered when you create a data asset; set the values on the map profile instead.
-
-### Under Elected Host
-
-The [Leader](./leader.md) replaces the elected host. On a project whose **Leader Source** is still **Elected Host (Deprecated)**, **Handle Events and Spawns** also switches host election on or off for the map; [Host Election](../services/host-election.md) has the rest.
 
 ## Gotchas
 

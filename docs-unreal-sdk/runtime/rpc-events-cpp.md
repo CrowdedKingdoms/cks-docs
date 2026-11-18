@@ -1,6 +1,6 @@
 ---
 slug: rpc-events-cpp
-sidebar_position: 4
+sidebar_position: 5
 title: RPC Events in C++
 description: Declare a CrowdyEvent receiver, generate its call site with CROWDY_EVENT, and know which parameter types, sizes, and references make it across the wire.
 ---
@@ -45,7 +45,7 @@ The meta keys are read from the receiver at scan time and baked into a registry,
 | `CrowdyDistance` | An `ECrowdyReplicationDistance` name | `Eight_Chunks`. Spatial only. |
 | `CrowdyChannel` | A channel name | Empty, the app's session channel. Multicast only. |
 
-Who each recipient reaches, and over which transport, is on [Recipients and routing](./recipients-and-routing.md). The deprecated `Host` recipient is described under [Deprecated](#deprecated). One more key, `CrowdyAction`, declares that the parameters describe a one-shot action; it changes nothing for an actor that runs the body itself and matters only to a backend that holds the entity as data.
+Who each recipient reaches, and over which transport, is on [Recipients and routing](./recipients-and-routing.md). There is no `Host` recipient: a saved one reads as `OwningClient` and warns. One more key, `CrowdyAction`, declares that the parameters describe a one-shot action; it changes nothing for an actor that runs the body itself and matters only to a backend that holds the entity as data.
 
 ## Parameters
 
@@ -97,18 +97,6 @@ crowdy.rpc.reliable.trace 1  the channel transport only
 crowdy.rpc.loopback 1        deliver your own sends to your own receiver, for a single-client test
 crowdy.rpc.dumpfn BP_Hero_C MyEvent   print one function's routing info
 ```
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The Host recipient
-
-`CrowdyRecipient = "Host"` is replaced by `OwningClient`, from the [Routing keys](#routing-keys) table, or by a Server Object for logic that must be enforced.
-
-A receiver declared with `Host` (`ECrowdyEventRecipient::Host`) still routes and warns when its metadata is read. On a replicated subsystem it runs on the [Leader](./leader.md); on an actor it runs only under Leader Source **Elected Host (Deprecated)**. [Recipients and routing](./recipients-and-routing.md#deprecated) has the delivery detail.
 
 ## Gotchas
 

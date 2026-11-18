@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-07T12:24:10Z",
-  "sdk_version": "2.24.0",
+  "generated_from": "2026-11-18T18:14:04Z",
+  "sdk_version": "2.26.0",
   "table": "settings",
   "columns": [
     {
@@ -401,18 +401,6 @@
       "allowlist": ""
     },
     {
-      "id": "UCrowdySDKDeveloperSettings::HostPollIntervalSeconds",
-      "class": "UCrowdySDKDeveloperSettings",
-      "property": "HostPollIntervalSeconds",
-      "type": "float",
-      "category": "Crowdy SDK|Developer|Network",
-      "config": true,
-      "written_by": "Config Sync",
-      "module": "CrowdyReplication",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
       "id": "UCrowdySDKDeveloperSettings::bAutoClearPersistentStateOnShutdown",
       "class": "UCrowdySDKDeveloperSettings",
       "property": "bAutoClearPersistentStateOnShutdown",
@@ -550,18 +538,6 @@
       "property": "ClassIDOverrides",
       "type": "TArray<FCrowdyClassIDOverride>",
       "category": "Crowdy SDK|Type ID Overrides",
-      "config": true,
-      "written_by": "you",
-      "module": "CrowdyReplication",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "UCrowdySDKDeveloperSettings::LeaderSource",
-      "class": "UCrowdySDKDeveloperSettings",
-      "property": "LeaderSource",
-      "type": "ECrowdyLeaderSource",
-      "category": "Crowdy SDK|Replication",
       "config": true,
       "written_by": "you",
       "module": "CrowdyReplication",

@@ -344,7 +344,7 @@ Add a **Crowdy Entity Component** to `ALanternPlayer`, or to `BP_LanternPlayer` 
 | Setting | Value | Why |
 |---|---|---|
 | **Replicate Movement** | **Auto** | Streams the executor's snapshot every replication interval. **Auto** is on for a Character, so leave it. **Off** is event-only and moves nothing. |
-| **Identity Policy** | **Player Derived** | For a player pawn: the id comes from the signed-in account, so only one actor per client can use it, the locally controlled primary pawn. |
+| **Identity Policy** | **Player Derived** | For a player pawn: the id is random and the game session keeps it for one sign-in, so only one actor per client can use it, the locally controlled primary pawn. |
 | **Owned By** | **Player** | This client owns the entity. The options are **Auto**, **Player** and **World**, and **Auto** is the default: World when placed in the level, Player when spawned. |
 | **State Executor** | An executor whose state struct has the fields below | Builds the snapshot sent every interval. Unset means the SDK's transform-only default. |
 | **Auto Register** | on | Joins the continuous channel at `BeginPlay`. |
@@ -545,7 +545,7 @@ With it on, every class is built from itself. It pushes aside per-class bindings
 ## Gotchas
 
 - The Mass backend skips your own locally owned entity. Use **Render Local Owner** or an area spawner to see a row on one client; see [Check it with one client](./turn-mass-on-for-a-map.md#check-it-with-one-client).
-- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A moving entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
+- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A moving entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
 - `crowdy.mass.derive` and `crowdy.mass.derive.force` are compiled out of Shipping builds; see [Fix a crowd that does not look right](./troubleshooting.md).
 
 ## Related
@@ -964,7 +964,7 @@ On an observer drawing the player as a row, the byte arrives, is matched against
 | **Target** | The row, from a Crowdy Mass trace or an event. See [Target an entity, from Blueprint](./from-blueprint/target-an-entity.md). |
 | **Pose Name** | An authored pose name. `None` clears the pose. |
 
-The name is resolved against the anim set of the class the target stands for, never the caller's class. The node returns false when it refused: off the game thread (an error in the log), while Mass is processing, or when the target's class is not yet known and you named a pose. Add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**; see [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all). `UCrowdyMassEntitySubsystem::SetEntityPose` does the same thing addressed by entity UUID.
+The name is resolved against the anim set of the class the target stands for, never the caller's class. The node returns false when it refused: off the game thread (an error in the log), while Mass is processing, or when the target's class is not yet known and you named a pose. Add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**; see [Entities and Spawning](../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all). `UCrowdyMassEntitySubsystem::SetEntityPose` does the same thing addressed by entity UUID.
 
 :::caution[A pose name the class's set does not author clears the pose.]
 It resolves to id 0, and 0 is the value that clears. The node still returns true. An entity with no recorded class is refused instead, so a misspelled name on a known class is the case to watch.
@@ -1033,7 +1033,7 @@ A player's own machine holds a real `ALanternPlayer`, not a row, so the cheered 
 
 The node returns false and logs when it did not send. It logs each of these reasons once per class and name:
 
-- The class is not yet known on this client. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, as [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) describes.
+- The class is not yet known on this client. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, as [Entities and Spawning](../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all) describes.
 - The class names no anim set.
 - The set authors no action with that name.
 
@@ -1432,7 +1432,7 @@ Only the two multicast recipients ever reach a crowd row. An entity drawn as a p
 | `Multicast` | Yes. |
 | `OwningClient` | No. It is delivered to the entity's owner, who holds the entity as a real actor. |
 
-The deprecated `Host` recipient is described under [Deprecated](#deprecated).
+There is no `Host` recipient.
 
 A targeted `OwningClient` event that arrives for an entity a client holds as a row is dropped, and the log says so at most once a second. One named for another client, on the spatial path or the session channel, is ignored. The routing rules for every recipient are on [Recipients and Routing](../runtime/recipients-and-routing.md#the-recipients).
 
@@ -1527,18 +1527,6 @@ Two checks happen before the cap and cost no allowance: whether the event is mea
 `crowdy.mass.event.proxy 0` turns the stand-in dispatch off. With it off, an event nothing registered a handler for lands nothing on a row, beyond the action write a marked action gets. Use it to measure what the stand-in costs, or to find a body that misbehaves on observers only. The default is 1. It exists in Editor and Development builds.
 
 `crowdy.rpc.trace 1` prints one line per event delivered to the stand-in, naming the entity, the stand-in, where it was moved to and whether the world will run a body. If the body never seems to run, read that line first. [Fix a crowd that does not look right](./troubleshooting.md) lists the diagnostic commands.
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### The Host recipient
-
-`OwningClient` replaces `Host`; see [Which events reach a row](#which-events-reach-a-row).
-
-A `Host` event never reaches a row either. Under Leader Source **Elected Host (Deprecated)** it is delivered to the elected host as a request addressed to an actor; on an actor, by default, it is dropped with a warning. A `Host` event that arrives for an entity a client holds as a row is dropped and logged, at most once a second, the same as a targeted `OwningClient` one.
 
 ## Gotchas
 
@@ -1971,7 +1959,7 @@ See [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-ro
 3. Run `crowdy.mass.derive` on the class and check that a mesh resolves.
 4. Check whether you are the only client. The backend does not draw your own entity as a row, so on one client you see nothing. Tick **Render Local Owner**, which lives under **Mass Backend, Debug** on the **Crowdy Mass Backend Config**, or place a **Crowdy Mass Area Spawner** in the level. See [Turn Mass on for a map](./turn-mass-on-for-a-map.md).
 5. Search the log for `nothing configures a Mass entity config`. That line says no config could be worked out from the class, and it names what is missing.
-6. Search the log for a warning that an entity named a class id this client cannot resolve to a loaded class. If it appears, add the class to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. See [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all).
+6. Search the log for a warning that an entity named a class id this client cannot resolve to a loaded class. If it appears, add the class to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. See [Entities and Spawning](../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all).
 7. If the rows stand at the world origin instead, name the transform fields of the state struct your executor sends `Transform`, or `Location` (or `Position`) plus `Rotation`. `LogCrowdyMass` names the struct once and lists the accepted spellings. See [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md).
 
 ## Crowd nodes do nothing on this map
@@ -2023,7 +2011,7 @@ See [The engine's animation pass](./turn-mass-on-for-a-map.md#the-engines-animat
 5. Drop `CrowdyOwnerOnly` from the property. A crowd observer is never the owner, so it never receives the value.
 6. Add the property to the heartbeat. An enum is held state, sent when it changes. Without `CrowdyHeartbeat`, one dropped change leaves the pose wrong until something else changes. The heartbeat also needs a non-zero **Keyframe Interval** under the map profile's **Crowdy State** and a **State Heartbeat** that is not **Off** on the entity component.
 7. Run `crowdy.mass.state.verdict` in a play session. Check whether the property is in the dropped list, and whether the pose writes from CrowdyState move at all.
-8. Check that the observer resolves the class. An update names its class by id, and a client resolves only the ids of classes that were loaded when the SDK started. Add the class to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. Until then the log warns that the entity named a class id this client cannot resolve, and the client falls back to guessing from the state struct. The guess works only once a component of that class has begun play on that machine, and it fails for two classes that share one struct. See [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all). Do this before you suspect the pose path.
+8. Check that the observer resolves the class. An update names its class by id, and a client resolves only the ids of classes that were loaded when the SDK started. Add the class to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. Until then the log warns that the entity named a class id this client cannot resolve, and the client falls back to guessing from the state struct. The guess works only once a component of that class has begun play on that machine, and it fails for two classes that share one struct. See [Entities and Spawning](../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all). Do this before you suspect the pose path.
 
 See [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) and [Set up the animation set](./set-up-the-animation-set.md).
 

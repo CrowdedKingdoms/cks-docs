@@ -91,7 +91,7 @@ reference in a received RPC is delivered as null instead.
 
 `crowdy.rpc.loopback` and `crowdy.state.loopback` are not the same switch wearing two names.
 `crowdy.rpc.loopback` delivers a sent event back to your own receive path. `crowdy.state.loopback` cannot
-replay onto the same actor that sent the delta: an owner's own entity drops a non-host-sourced delta, and
+replay onto the same actor that sent the delta: an owner's own entity drops a delta from any other client, and
 changed-detection on decode sees no change against identical values. Instead it spawns a distinct,
 lazily-created mirror entity and replays deltas onto that, so `CrowdyOnRep` still fires with one PIE
 client. Expect two entities, not one, when you turn it on.
