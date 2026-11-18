@@ -219,7 +219,8 @@ const half = await client.exec.modClientDeploy(appId, gridId, 'greeter', built.b
 
 | GraphQL | CrowdyJS `client.exec` |
 |---|---|
-| `execModClientBuild` | `modClientBuild(appId, crate)`, each crate's `files` a path map or a `{ path, content }` list |
+| `execModClientStarter` | `modClientStarter(appId)` (CrowdyJS 18.33.0) |
+| `execModClientBuild` | `modClientBuild(appId, crate, studio?)`, each crate's `files` a path map or a `{ path, content }` list; `studio` is `{ projectId, revision }` |
 | `execModBuildStatus` | `modBuildStatus(appId, buildId)`, `waitForModBuild(appId, buildId)` |
 | `execModClientDeploy`, `execModClientDelete` | `modClientDeploy(appId, gridId, name, buildId)`, `modClientDelete(appId, gridId, name)` |
 | `execGridClientMods` | `gridClientMods(appId, gridId)`, with `capabilitySummary` and `authorCapabilitySummary` parsed |
@@ -424,9 +425,15 @@ the `dev` branch.
 Crowdy Studio's CLIENT target is the project's mod's CLIENT half (since CrowdyJS 17.14.0; in
 CrowdyJS 18 Studio runs on ck-exec only and has no `serverEngine` option):
 
-- A new CLIENT target starts from a `crowdy-client-sdk` crate
-  (`createCrowdyStudioStarterProject({ kind: 'CLIENT', ... })`); the [entry points](#entry-points)
-  above are that starter, without its comments.
+- A new CLIENT target starts from the platform's CLIENT half starter, `execModClientStarter(appId)`
+  (CrowdyJS `client.exec.modClientStarter`, from 18.33.0): the `crowdy-client-sdk` crate
+  `client-half`, its package renamed to the CLIENT module. `npx @crowdedkingdoms/ckx-kit new client`
+  starts from the same crate, and the [entry points](#entry-points) above are that starter,
+  without its comments. Where the platform cannot serve it yet, Studio uses the copy its SDK
+  carries (`createCrowdyStudioStarterProject({ kind: 'CLIENT', ... })`), the same crate.
+- Each build names the project and the saved revision it is (`studio: { projectId, revision }`),
+  so the attached CLIENT half reports them (`studioProjectId`, `studioRevision` in
+  `execModClientDeploy`), as its [mod does](mods#which-studio-revision-a-mod-runs).
 - **Test draft** and **Deploy live** both build it with `modClientBuild`, attach it to the
   project's mod with `modClientDeploy`, consent to it as its author and preview the served module
   in the HUD layer. A full-stack project builds its CLIENT target first, then builds, deploys and
