@@ -120,6 +120,10 @@ A custom event `OnCreateAccountPressed` runs **Register** with `Email` and `Pass
 </TabItem>
 </Tabs>
 
+#### When the email is not confirmed yet
+
+A password account made since 2026-11-11 gets no gameplay token until the player opens the confirmation link the platform emails them. Until then the sign-in fails with "Confirm your email address to play: open the link we sent you, then sign in again.", **On Email Confirmation Required** (`OnEmailConfirmationRequired`, an `FOnEmailConfirmationRequired` with no parameters) fires on the Crowdy Authentication subsystem, and the token refresh stops instead of retrying. Bind the event beside your sign-in handlers, tell the player to check their inbox, and offer **Resend Confirmation Email** with the address they typed, or ask for it again when you do not have it, as after a restored session ([Account settings](#account-settings)). Once they have confirmed, the next sign-in plays. The event can also fire during play, when a token refresh is refused: no sign-in fails then, the player keeps playing on the current token until it expires, and nothing re-mints it, so send them back to your sign-in screen. Older accounts, and players an organization manages, are not asked.
+
 ### Magic link
 
 One call, `RequestMagicLink`. The SDK opens the loopback listener, sends the email, and completes the sign-in when the player follows the link. There is no second step for you to call, and `OnError` fires if the player never returns.
@@ -265,7 +269,7 @@ Crowdy Studio shows the same prompt in a window of its own when the account you 
 
 ## After sign-in
 
-The SDK requests the realtime connection itself, on every path: password, link, social, and restore all end in the same success handler inside the SDK, which calls `RequestUDPAccess()`, and a token refresh reinstalls the new token on the live connection. Do not call `RequestUDPAccess()` from your own success handler; by the time it runs, the SDK already did. Wait for **On UDP Connection Success** on the Crowdy SDK Subsystem for the moment the connection is up; [Connection and reconnect](../runtime/connection-and-reconnect.md) covers what follows, including `TOKEN_EXPIRED` and the automatic re-mint. `RequestUDPAccess()` remains callable for a manual recovery and nothing else.
+The SDK requests the realtime connection itself, on every path. Password, link, social and restore all end in the same success handler inside the SDK, which calls `RequestUDPAccess()`. The connection opens once the SDK has created the player's actor record (see [Find out who a player is](./player-safety.md#find-out-who-a-player-is)), and a token refresh reinstalls the new token on the live connection. Do not call `RequestUDPAccess()` from your own success handler; by the time it runs, the SDK already did. Wait for **On UDP Connection Success** on the Crowdy SDK Subsystem for the moment the connection is up; [Connection and reconnect](../runtime/connection-and-reconnect.md) covers what follows, including `TOKEN_EXPIRED` and the automatic re-mint. `RequestUDPAccess()` remains callable for a manual recovery and nothing else.
 
 The events are also where a game enables play. `WatchAuthEvents` binds `OnLogin` and `OnSessionRestored` to the same `HandleSignedIn`, which lights every lantern in the world, and the `Result` it receives is read for nothing: the token in it belongs to the SDK.
 
@@ -294,7 +298,7 @@ The Game Mode Blueprint needs a Boolean variable `bCanPlay`. **Event BeginPlay**
 | `GetUserID()` | The signed-in user's id, `int64`. |
 | `GetUUID()`, `GetID()` | This client's actor identity as a string and as an `FGuid`. |
 
-Its event `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) announces a new client identity. Two more, for a paused app and for ended access, are the next two sections. The deprecated `OnHostIDUpdated` is under [Deprecated](#deprecated). Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
+Its event `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) announces a new client identity. Two more, for a paused app and for ended access, are the next two sections. `OnHostIDUpdated` (`FOnHostIDUpdated`) is a native C++ delegate that fires when the Leader changes; in Blueprint use **On Leader Changed**, on [The Leader](../runtime/leader.md#follow-the-leader), which carries user ids. Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
 
 ### When the app is paused
 
@@ -537,21 +541,12 @@ A signed-in player can attach more ways to sign in. `GetMyIdentities` lists them
 Expect the refusal in a UI that lists identities with a remove button; do not treat it as an error to retry.
 :::
 
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### OnHostIDUpdated
-
-**On Leader Changed**, on [The Leader](../runtime/leader.md#follow-the-leader), replaces it, and carries user ids, not entity ids. `OnHostIDUpdated` (`FOnHostIDUpdated`) on `UCrowdyGameSession` announces a change of the host: the Leader by default, the elected view-plane host under Elected Host. [Host election](./host-election.md) has the rest.
-
 ## Gotchas
 
 - Nothing connects until someone signs in. Every entity and event depends on it.
 - A sign-in can wait for the player. While `IsLegalAcceptancePending()` is true none of that sign-in's handlers has fired yet, so do not retry it or time it out; [Let the player agree to the terms](#let-the-player-agree-to-the-terms).
 - `Register` on an existing address is a refusal, `EMAIL_ALREADY_REGISTERED`; offer Login instead.
+- A new password account must confirm its email before it plays: bind **On Email Confirmation Required** and offer **Resend Confirmation Email**; [When the email is not confirmed yet](#when-the-email-is-not-confirmed-yet).
 - The link and social flows need the player to reach a browser or inbox while the game runs; on a machine that cannot, use a password.
 - `OnAppTokenRefreshed` fires on every rotation. You rarely need it; the connection is re-armed for you.
 - **Delete Account** and **Sign Out Everywhere** end this session too: the SDK signs out, and the player signs in again to play.

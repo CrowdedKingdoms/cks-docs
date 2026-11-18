@@ -53,7 +53,7 @@ The macro and `SendEventToMassTarget` log a refusal and return true when:
 
 - the function is null or is not a Crowdy event;
 - the target does not resolve to a live entity with an identity;
-- this client cannot resolve the entity's class yet: add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**, as [Entities and Spawning](../../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) describes;
+- this client cannot resolve the entity's class yet: add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**, as [Entities and Spawning](../../runtime/entities-and-spawning.md#a-moving-entity-can-appear-with-no-spawn-event-at-all) describes;
 - the declaring class of the function is not the entity's class or one of its bases.
 
 ## Gotchas

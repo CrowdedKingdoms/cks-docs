@@ -1,0 +1,32 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnModScriptPrompt\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy Mod Scripts",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_BreakStruct_0",
+		"class": "/Script/BlueprintGraph.K2Node_BreakStruct",
+		"title": "Break Crowdy Mod Script Prompt",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get bRunPlotScripts",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Answer Prompt\nTarget is Crowdy Mod Scripts",
+		"title_drawn": true
+	}
+]

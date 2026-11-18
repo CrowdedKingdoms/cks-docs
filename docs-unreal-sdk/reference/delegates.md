@@ -26,6 +26,7 @@ Every delegate below fires on the game thread. This is a constant fact about eve
 ## Gotchas
 
 - A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in a C++ Game Instance's `Init` after `Super::Init()`, and in Blueprint from the Game Mode's Event BeginPlay (the Game Instance's Event Init runs before the subsystems exist); a world subsystem's needs a valid world first.
+- A custom event bound to a delegate must match its signature, so when a delegate gains a parameter the Blueprint fails to compile until you refresh the event (right-click it, Refresh Nodes). `OnOwnershipRequested` on the entity subsystem gained `RequesterUserID` last: wire it to **Grant Ownership Transfer To Player**'s `New Owner User ID` ([Ownership transfer](../runtime/ownership-transfer.md#the-two-events)).
 - Binding twice fires your handler twice. Unbind (`Remove Dynamic` or `RemoveDynamic`) before a re-bind on a path that can run more than once, such as a widget that reconstructs.
 - The voice delegates live on `UCrowdySDKSubsystem`, which stays alive across maps, so you bind them once and they keep firing after a map change. The earlier voice delegates (`OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived`, `OnStreamTimeout`) and the audio device monitor's two are gone. See [Voice chat](../services/voice-chat.md).
 

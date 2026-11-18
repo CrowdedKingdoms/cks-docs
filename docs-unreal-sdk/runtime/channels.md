@@ -1,6 +1,6 @@
 ---
 slug: channels
-sidebar_position: 15
+sidebar_position: 12
 title: Channels
 description: "Named, non-spatial message groups: create and join one, ban a member, publish raw bytes to every member, receive them, and understand the session channel every client joins and the three kinds of traffic that ride it."
 ---

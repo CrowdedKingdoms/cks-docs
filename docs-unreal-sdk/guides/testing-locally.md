@@ -43,9 +43,8 @@ crowdy.rpc.loopback 0
 ## Single-client Crowdy State loopback
 
 Crowdy State loopback cannot replay a delta onto the same actor the way RPC loopback replays a call, because
-the ownership gate drops a non-host-sourced delta for an entity the client already owns outright, and even
-if it did not, decoding onto the same live actor would report zero changed properties and never fire
-`OnRep`. So instead of replaying onto the sender, it mirrors.
+an entity the client owns drops every update that does not come from itself. Even if it did not, decoding
+onto the same live actor would report zero changed properties and never fire `OnRep`. So instead of replaying onto the sender, it mirrors.
 
 ```text
 crowdy.state.loopback 1
@@ -62,7 +61,7 @@ This is a cosmetic label in the trace log only: `DispatchStateDelta` never gates
 Do not read the trace log's delivery-kind label as fact while state loopback is on.
 :::
 
-The mirror requires the entity's `OwnerID` to stay invalid and its role to stay `RemoteProxy`; that is how
+The mirror requires the entity's `WriterID` to stay invalid and its role to stay `RemoteProxy`; that is how
 the SDK tells the mirror apart from the real owned entity so the two do not collide. You do not configure
 this yourself, it explains why a mirror exists at all rather than a same-actor replay.
 
@@ -73,9 +72,9 @@ the Leader, an ownership transfer, a targeted or spatial send that must reach on
 other.
 
 :::caution[Two PIE clients need two distinct real accounts.]
-Identity is deterministic from the signed-in account. One account signed in twice, in two PIE windows,
-conflates into a single player and a single NetID, so the two windows do not reproduce two-client behavior
-at all. This is a silent wrong result, not a crash: sign each window in with a different account.
+Each client has its own actor id, but the platform, the Leader and your Server Objects know a player by
+user id. One account signed in twice, in two PIE windows, is one user twice, so the two windows do not
+reproduce two-client behavior at all. This is a silent wrong result, not a crash: sign each window in with a different account.
 :::
 
 Each PIE window inside the editor process keeps its own saved session, so one window does not overwrite another

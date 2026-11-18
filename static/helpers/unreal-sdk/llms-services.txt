@@ -131,6 +131,10 @@ A custom event `OnCreateAccountPressed` runs **Register** with `Email` and `Pass
 </TabItem>
 </Tabs>
 
+#### When the email is not confirmed yet
+
+A password account made since 2026-11-11 gets no gameplay token until the player opens the confirmation link the platform emails them. Until then the sign-in fails with "Confirm your email address to play: open the link we sent you, then sign in again.", **On Email Confirmation Required** (`OnEmailConfirmationRequired`, an `FOnEmailConfirmationRequired` with no parameters) fires on the Crowdy Authentication subsystem, and the token refresh stops instead of retrying. Bind the event beside your sign-in handlers, tell the player to check their inbox, and offer **Resend Confirmation Email** with the address they typed, or ask for it again when you do not have it, as after a restored session ([Account settings](#account-settings)). Once they have confirmed, the next sign-in plays. The event can also fire during play, when a token refresh is refused: no sign-in fails then, the player keeps playing on the current token until it expires, and nothing re-mints it, so send them back to your sign-in screen. Older accounts, and players an organization manages, are not asked.
+
 ### Magic link
 
 One call, `RequestMagicLink`. The SDK opens the loopback listener, sends the email, and completes the sign-in when the player follows the link. There is no second step for you to call, and `OnError` fires if the player never returns.
@@ -312,7 +316,7 @@ Crowdy Studio shows the same prompt in a window of its own when the account you 
 
 ## After sign-in
 
-The SDK requests the realtime connection itself, on every path: password, link, social, and restore all end in the same success handler inside the SDK, which calls `RequestUDPAccess()`, and a token refresh reinstalls the new token on the live connection. Do not call `RequestUDPAccess()` from your own success handler; by the time it runs, the SDK already did. Wait for **On UDP Connection Success** on the Crowdy SDK Subsystem for the moment the connection is up; [Connection and reconnect](../runtime/connection-and-reconnect.md) covers what follows, including `TOKEN_EXPIRED` and the automatic re-mint. `RequestUDPAccess()` remains callable for a manual recovery and nothing else.
+The SDK requests the realtime connection itself, on every path. Password, link, social and restore all end in the same success handler inside the SDK, which calls `RequestUDPAccess()`. The connection opens once the SDK has created the player's actor record (see [Find out who a player is](./player-safety.md#find-out-who-a-player-is)), and a token refresh reinstalls the new token on the live connection. Do not call `RequestUDPAccess()` from your own success handler; by the time it runs, the SDK already did. Wait for **On UDP Connection Success** on the Crowdy SDK Subsystem for the moment the connection is up; [Connection and reconnect](../runtime/connection-and-reconnect.md) covers what follows, including `TOKEN_EXPIRED` and the automatic re-mint. `RequestUDPAccess()` remains callable for a manual recovery and nothing else.
 
 The events are also where a game enables play. `WatchAuthEvents` binds `OnLogin` and `OnSessionRestored` to the same `HandleSignedIn`, which lights every lantern in the world, and the `Result` it receives is read for nothing: the token in it belongs to the SDK.
 
@@ -377,7 +381,7 @@ The Game Mode Blueprint needs a Boolean variable `bCanPlay`. **Event BeginPlay**
 | `GetUserID()` | The signed-in user's id, `int64`. |
 | `GetUUID()`, `GetID()` | This client's actor identity as a string and as an `FGuid`. |
 
-Its event `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) announces a new client identity. Two more, for a paused app and for ended access, are the next two sections. The deprecated `OnHostIDUpdated` is under [Deprecated](#deprecated). Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
+Its event `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) announces a new client identity. Two more, for a paused app and for ended access, are the next two sections. `OnHostIDUpdated` (`FOnHostIDUpdated`) is a native C++ delegate that fires when the Leader changes; in Blueprint use **On Leader Changed**, on [The Leader](../runtime/leader.md#follow-the-leader), which carries user ids. Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
 
 ### When the app is paused
 
@@ -803,21 +807,12 @@ A signed-in player can attach more ways to sign in. `GetMyIdentities` lists them
 Expect the refusal in a UI that lists identities with a remove button; do not treat it as an error to retry.
 :::
 
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### OnHostIDUpdated
-
-**On Leader Changed**, on [The Leader](../runtime/leader.md#follow-the-leader), replaces it, and carries user ids, not entity ids. `OnHostIDUpdated` (`FOnHostIDUpdated`) on `UCrowdyGameSession` announces a change of the host: the Leader by default, the elected view-plane host under Elected Host. [Host election](./host-election.md) has the rest.
-
 ## Gotchas
 
 - Nothing connects until someone signs in. Every entity and event depends on it.
 - A sign-in can wait for the player. While `IsLegalAcceptancePending()` is true none of that sign-in's handlers has fired yet, so do not retry it or time it out; [Let the player agree to the terms](#let-the-player-agree-to-the-terms).
 - `Register` on an existing address is a refusal, `EMAIL_ALREADY_REGISTERED`; offer Login instead.
+- A new password account must confirm its email before it plays: bind **On Email Confirmation Required** and offer **Resend Confirmation Email**; [When the email is not confirmed yet](#when-the-email-is-not-confirmed-yet).
 - The link and social flows need the player to reach a browser or inbox while the game runs; on a machine that cannot, use a password.
 - `OnAppTokenRefreshed` fires on every rotation. You rarely need it; the connection is re-armed for you.
 - **Delete Account** and **Sign Out Everywhere** end this session too: the SDK signs out, and the player signs in again to play.
@@ -2478,11 +2473,82 @@ A block stops voice, video, text, direct messages, channel messages and a player
 
 Filing a report keeps both players' recordings from 15 minutes before **Occurred At**, so pass when it happened, in UTC. A report filed from a menu some time later would otherwise miss the incident: left at its default, or in the future, **Occurred At** is now. Pass the reported player's actor id as **Reported Actor Uuid** when you have it. What moderators see is on [Safety reports and moderation](/game-api/safety-reports).
 
+## Find out who a player is
+
+A remote player's actor id is not a user id, and **Block Player** and **File Report** both need a user id. **Resolve Actor Owner** asks the platform which user it has registered an actor id to. Use it beside anything a remote player shows you, such as a nearby chat line, a video frame or a spawned pawn, to get the user id for a block or report button.
+
+Only a player's own entity id resolves; ids your game gives other actors answer **Unknown**. From a video frame, pass its `SenderUUID`.
+
+At each sign-in, before its realtime connection opens, the SDK creates the player's own actor record for the session's actor id at chunk (0,0,0), so other clients can resolve it. The connection opens once that create has answered: made, already the player's, or given up. Until then, and while signed out, **Request UDP Access** and the SDK's reconnects open nothing. A failure is retried up to three times, 10 seconds apart, then logged as a warning, so a create that keeps failing delays the connection by about 20 seconds plus the time its attempts take. When another player's record already holds the id, the SDK takes a fresh id and re-keys, up to three times, then warns.
+
+The SDK deletes only records this client made:
+
+- the previous id's record, once the new one exists;
+- the current record at sign-out (the server session ends once that delete answers or 2 seconds have passed);
+- at a sign-in as another user over a live one, the previous user's record, first.
+
+A record the server reports as existing without saying it is the player's is used but never deleted. The SDK never lists or deletes any other record, so another device's live record, your game's own records and a record left by a crash all stay. Any actor record that names a user answers with that user, whoever made it. A call to `createActor` with the player's entity id answers `ACTOR_EXISTS`, since the SDK has made the record.
+
+`UCrowdyActorOwners` is a game instance subsystem; `ResolveActorOwner(ActorId, OnResolved)` answers once (an `FOnActorOwnerResolved`) with an `FCrowdyActorOwner` holding `Result` (an `ECrowdyActorOwnerResult`: `Confirmed`, `Unknown` or `Failed`), `UserId` and `Message`, and C++ also has a lambda overload. The Blueprint node (`UCrowdyActorOwners_ResolveActorOwner`) has the pins **On Confirmed**, **On Unknown** and **On Failed**, each an `FActorOwnerAsyncResult` carrying the same struct. The Blueprint node always answers on a later tick, so asking again from a pin does not recurse. The C++ call answers inside the call for an unset id or an answer it already holds, and on a later tick otherwise.
+
+| Result | Means |
+|---|---|
+| **Confirmed** | The platform's record registers this id to `UserId`. |
+| **Unknown** | No record ties this id to a user, or the id is not set. Name no one for it. |
+| **Failed** | The platform could not be asked. Ask again later. |
+
+:::warning[Confirmed says whose record holds the id, not who sent a message under it.]
+**Confirmed** says whose record holds the id; it does not prove that player sent a given message. Use it to offer **Block** and **Report** to the player; do not use it to decide who may do something. Anything that must be trusted belongs in a Server Object. See [Actor state](/game-api/actor-state).
+:::
+
+An **Unknown** answer is remembered for 10 seconds, at most 1,024 of them. A **Confirmed** answer is kept until the player signs out. A **Failed** answer is not kept. Asks made in one tick are batched, 50 ids per request, and an id already being asked is not asked twice.
+
+The lantern village's `NameRemoteKeeper(RemoteActorId)` resolves a remote keeper's actor id and, on **Confirmed**, stores the user id in `RemoteKeeperUserId`, ready for a block or report button.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// LanternPlayer.h
+#include "Subsystem/CrowdyActorOwners.h"
+
+// The platform user a remote keeper's actor id is registered to; 0 until it is Confirmed.
+int64 RemoteKeeperUserId = 0;
+
+void NameRemoteKeeper(const FGuid& RemoteActorId);
+
+// LanternPlayer.cpp
+void ALanternPlayer::NameRemoteKeeper(const FGuid& RemoteActorId)
+{
+	// Confirmed says whose actor id this is; it does not prove that player sent anything under it.
+	UCrowdyActorOwners* Owners = GetGameInstance()->GetSubsystem<UCrowdyActorOwners>();
+	TWeakObjectPtr<ALanternPlayer> WeakThis(this);
+	Owners->ResolveActorOwner(RemoteActorId, [WeakThis](const FCrowdyActorOwner& Answer)
+	{
+		if (!WeakThis.IsValid() || Answer.Result != ECrowdyActorOwnerResult::Confirmed)
+		{
+			return;
+		}
+		WeakThis->RemoteKeeperUserId = Answer.UserId;
+	});
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+A custom event `NameRemoteKeeper` with an `Actor Id` calls **Resolve Actor Owner**; **On Confirmed** breaks the **Crowdy Actor Owner** pin and sets `RemoteKeeperUserId` from `User Id`.
+
+[Blueprint snippet: actor-owner, see /bp/unreal-sdk/actor-owner.txt]
+
+</TabItem>
+</Tabs>
+
 ## What your game shows
 
 - Do not offer a microphone or camera while **Voice Send** or **Video Send** is **Off**: those sends are refused.
 - When a medium is off for a player with **Is Minor** set, say that a parent's consent turns it on, without naming an age, and offer **Request Parental Consent**. With consent, the most it can be is **Contacts**.
-- Put **Block** and **Report** beside each other wherever players meet, and list blocked players with an unblock.
+- Put **Block** and **Report** beside each other wherever players meet, and list blocked players with an unblock. For a player you only know by actor id, ask **Resolve Actor Owner** first.
 - **Show the recording notice and indicator** while the app records voice or video. This one is required: see the next section.
 
 ## Telling players when the app records
@@ -2614,7 +2680,8 @@ UI-specific, but it lives in the same module.
 | `SpawnCrowdyEntity`, `DestroyCrowdyEntity` | Spawns or destroys an entity actor |
 | `GetCrowdyEntityID`, `GetCrowdyEntity` | Converts between an entity actor and its id |
 | `GetLocalPlayerEntityID` | The local player's entity id |
-| `GetCrowdyEntityOwnerID`, `GetAllCrowdyEntitiesByOwner` | An entity's owner, or every entity a given owner has |
+| `GetCrowdyEntityWriterID`, `GetAllCrowdyEntitiesByOwner` | The session that writes an entity, or every entity a given session writes |
+| `GetCrowdyEntityOwnerUserID`, `IsCrowdyEntityOwnedByLocalUser` | The user who owns an entity (0 when unknown), and whether it is the signed-in user |
 | `CrowdyIsEntityRegistered` | Whether an id is a known entity |
 | `GetCrowdyEntityRole` | An entity's `ECrowdyRole` |
 | `DoesCrowdyEntityOwn` | Whether one actor owns another, by Crowdy identity |
@@ -2625,32 +2692,12 @@ UI-specific, but it lives in the same module.
 | `K2_SendCrowdyEvent` (display name **Send Crowdy Event**; C++-only template `SendCrowdyEvent<T>` for the same call without the Blueprint thunk) | Sends a game event struct with `Recipient`, `DecayRate`, and `ReplicationDistance` |
 | `CrowdyIsConnectedToServer` | Whether the realtime connection is up |
 
-The deprecated host and authority functions are listed under [Deprecated](#deprecated).
+`IsCrowdyEntityLocallyControlled`, `CrowdyHasAuthority`, `GetCrowdyHasAuthority`, `CrowdyGetHostID` and `IsCrowdyEntityHost` are removed; [The Leader](../runtime/leader.md) teaches what replaces each.
 
 :::warning[DoesCrowdyEntityOwn compares Crowdy ownership, not AActor::GetOwner.]
 The name invites Unreal's actor-owner meaning, but this checks Crowdy entity ownership instead; it will
 not agree with `AActor::GetOwner()` for an entity whose Unreal owner was never set to match.
 :::
-
-## Deprecated
-
-:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-### Utilities library functions
-
-[The Leader](../runtime/leader.md) teaches what replaces each of these, and `IsCrowdyEntityLocallyOwned` above is the question to ask before a write.
-
-| Function | Does |
-|---|---|
-| `IsCrowdyEntityLocallyControlled` | Deprecated: forwards to `IsCrowdyEntityLocallyOwned` |
-| `CrowdyHasAuthority` (exec-flow, **Switch Crowdy Has Authority**) / `GetCrowdyHasAuthority` (pure, **Crowdy Has Authority**) | Deprecated: true when this client is the host (the Leader, by default). Ask `IsCrowdyEntityLocallyOwned` about the entity you write instead |
-| `CrowdyGetHostID` | Deprecated: the current host's id (the Leader's, by default). Use `GetLeaderUserID` on the Crowdy Leader Subsystem. |
-| `IsCrowdyEntityHost` | Deprecated: whether this actor is the host player's own entity (its id equals the host id). Use `IsLocalLeader` for a one-machine gate. `IsCrowdyEntityLocallyOwned` is a different question: it is true on every client for its own avatar. |
-
-Under Elected Host, `IsCrowdyEntityHost` and `IsCrowdyEntityLocallyOwned` both fold in host election
-state. See [Host Election (Deprecated)](./host-election.md) for what "host" means before relying on either.
 
 ## Gotchas
 
@@ -2670,136 +2717,3 @@ state. See [Host Election (Deprecated)](./host-election.md) for what "host" mean
 - [The Leader](../runtime/leader.md): who `IsCrowdyEntityLocallyOwned` reports as the writer of a
   replicated subsystem.
 - [Channels](../runtime/channels.md): the message plane the reception layer's subscriptions ride.
-
-# Host Election (Deprecated)
-Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/host-election
-
-# Host Election (Deprecated)
-
-:::warning[Deprecated in 2.25. Everything on this page still works and is removed in a later release.]
-[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
-:::
-
-:::note[There is no elected host by default.]
-This page applies when [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host) is **Elected Host (Deprecated)**, which goes in a later release. Under the default, Server Object, nobody is elected: replicated subsystems are written by [the Leader](../runtime/leader.md), `IsHost`, `GetHostUserID`, `OnHostElected` and `IsCrowdyEntityHost` report the Leader, and `CheckEntityIsHost` does too for your own avatar. Under the default, the check on your own avatar reads the local Leader and sends no request. Every host function on this page warns when compiled. When you leave Elected Host, use **Get Leader User ID**, **Is Local Leader** and **On Leader Changed** on the Crowdy Leader Subsystem; under Elected Host they report no Leader. Keep anything that must be enforced in a Server Object. **Is Crowdy Entity Locally Owned** is a different question: it is true on every client for its own avatar.
-:::
-
-`UCrowdyHostSubsystem` tracks who the SDK elected host and can also ask the server directly, for the one caller who cannot afford to be wrong. Why election is a convention and not enforcement is on [A Coordinator Is a Convention](../concepts/host-is-a-convention.md); this page is the subsystem, what the host writes, and the server-validated check.
-
-## When you touch this
-
-When a project keeps the elected host: reading `IsHost` or the elected id for ordinary view-plane logic is the common case. Reach for the check on this page only when a wrong answer costs something: granting an ownership transfer, starting a host-only sequence you cannot cheaply undo, anything where a stale or spoofed local read is a real risk.
-
-## The host subsystem
-
-`UCrowdyHostSubsystem` is a world subsystem, re-created per world, that re-reads the elected host from the login session each time.
-
-| Member | One line |
-|---|---|
-| `GetHostID()` | The host's entity id as an `FGuid`. No display name override, so Blueprint lists the node as **Get Host ID**: an upper-case run stays together. |
-| `IsHostSet()` | Whether an election result has arrived yet. |
-| `GetHostUserID()` (**Get Host User ID**) | The host's raw user id, 0 until known. Backed by a `std::atomic<int64>` read with relaxed ordering, so it is safe to call from any thread as well as from Blueprint. |
-| `IsHost()` (**Is Host**) | Compares this client's own user id to the tracked host id. A local, unenforced answer; to gate writing an entity or a replicated subsystem, ask [**Is Crowdy Entity Locally Owned**](../runtime/leader.md#checking-who-writes-an-entity) instead. Safe from any thread. |
-| `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`) | Fires on the game thread when the elected host changes, the first result included (0 to the first host); a poll that repeats the same host does not fire it. |
-| `CheckEntityIsHost(Entity, Callback)` | The server-validated check, C++ entry point; see below. |
-
-`IsHostSet()` matters because an early `IsHost()` false does not mean someone else is host. `GetHostID()` is the id the host's own entities are owned under; `GetHostUserID()` is a different number. Bind `OnHostElected` rather than caching the answer at `BeginPlay`: the host changes when the current one leaves, and a host-owned entity's writer moves with it.
-
-`CrowdyGetHostID` on `UCrowdyUtilities` returns the host's id and whether one is set. `IsCrowdyEntityHost(Entity)` is true when the entity is the host player's own entity (its NetID equals the host id), and `DoesCrowdyEntityOwn(OwnerActor, TargetActor)` resolves a host-owned side to the concrete host id on both ends.
-
-### After sign-out
-
-When the player signs out, the host is cleared before `OnLogout` fires, on whichever map the player is: `IsHostSet()` is false, `GetHostID()` is an invalid `FGuid`, and `IsHost()` is false. When a host had been elected on the current map, `OnHostElected` also fires once, on the next frame, with an invalid `HostID` and the previous host as `PreviousHostID`. The host subsystem belongs to the world, so it starts again after every level travel: the first election on each map fires `OnHostElected` with an invalid `PreviousHostID`, which does not mean a new session started. While nobody is signed in, a host poll answer is ignored, so a poll still in flight at sign-out cannot elect a host afterwards. If you bind `OnHostElected`, treat an invalid `HostID` or `PreviousHostID` as "no host". This is the behaviour from SDK 2.24; on the tagged v2.23.0 plugin, sign-out left `IsHostSet()` true and `GetHostID()` returned an id that belongs to no player (or the previous host, after a level travel), and the first election's `PreviousHostID` was that made-up id (see [What's Changed](../guides/whats-changed.md#2026-11-02-sdk-v2240)).
-
-:::note[Under normal operation the server agrees with the local view.]
-`IsHost()` and the server-validated `CheckEntityIsHost` answer the same question at different trust levels, and day to day they say the same thing. The server check exists for the moment you cannot assume the caller is running an unmodified client, not because the local view is usually wrong.
-:::
-
-## What the host writes
-
-Under Elected Host, a level-placed entity Owned By World (or Auto, the default for a placed actor) is `HostOwned`: whichever client is host at the moment writes it, and its `IsLocallyOwned()` is true there alone. Its Crowdy State is written by the host through explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`, or the [static nodes](../runtime/crowdy-state.md#the-two-nodes)) and the keyframe, never by a background diff, so an implicit and an explicit write cannot race. Assigning a property on it and waiting does nothing. On a host change the entity is re-tracked by the new host without any code of yours. Replicated subsystems are written by the host too, and they are auto-diffed.
-
-An entity Owned By Player has a `HostOverride` (`ECrowdyHostOverride`): `Allow`, the default, lets the host correct its Crowdy State as a super-user and the owner adopts the value; `OwnerOnly` refuses even a host correction. This is precedence by convention. It orders who wins on the view plane; it does not make either value trustworthy.
-
-## The server-validated check
-
-`CheckEntityIsHost` is server-validated in a specific sense: for the local player's own entity it asks the server's `amIGameHost` query directly; for any other actor it resolves that actor's server-side owner user id and compares it to the elected host user id. [Host discovery](/game-api/host-discovery#amigamehost) on the Game API covers the query itself; this page states only what the SDK does with the answer.
-
-That answer is still not enforcement by itself. `CheckEntityIsHost` tells the caller the current truth about who is host so the caller can gate something; the check is not the gate. A change worth cheating for is decided by your server code, on the [truth plane](../concepts/two-planes.md).
-
-The lantern world uses it there: under Elected Host, the host grants a claim on a level-placed lantern post only after a definite server yes.
-
-<Tabs groupId="lang">
-<TabItem value="cpp" label="C++">
-
-`GetSubsystem<UCrowdyHostSubsystem>()` gets the world subsystem; its callback runs on the game thread with `bSuccess` and `bIsHost`. Capturing `this` as a `TWeakObjectPtr` matters because the callback runs after a round trip to the server.
-
-```cpp
-// LanternPost.h
-void VerifyThenGrant(const FGuid& RequesterID);
-
-// LanternPost.cpp
-#include "Replication/Ownership/CrowdyOwnershipTransfer.h"
-#include "Subsystem/CrowdyHostSubsystem.h"
-
-void ALanternPost::VerifyThenGrant(const FGuid& RequesterID)
-{
-	UCrowdyHostSubsystem* Host = GetWorld()->GetSubsystem<UCrowdyHostSubsystem>();
-	if (!Host)
-	{
-		return;
-	}
-	// Failed is not the same as "not host"; grant only on a definite yes from the server, and only if the post still exists.
-	TWeakObjectPtr<ALanternPost> WeakThis(this);
-	Host->CheckEntityIsHost(this, [WeakThis, RequesterID](bool bSuccess, bool bIsHost)
-	{
-		ALanternPost* Post = WeakThis.Get();
-		if (!Post || !bSuccess || !bIsHost)
-		{
-			return;
-		}
-		UCrowdyOwnershipTransfer::GrantOwnershipTransferToPlayer(Post, Post, RequesterID);
-	});
-}
-```
-
-</TabItem>
-<TabItem value="bp" label="Blueprint">
-
-This graph needs no extra variables; everything comes from the event's own parameters and Self. From the `OnClaimRequested` custom event (params `TargetEntity` Actor, `RequesterActor` Actor, `RequesterID` Guid), the latent **Is Crowdy Entity Host (Server)** node (`Entity` defaults to Self) runs the check; its **Is Host** pin continues to **Grant Ownership Transfer To Player**, with `Target Entity` fed by Self and `New Owner Player ID` fed by the event's `Requester ID`.
-
-[Blueprint snippet: host-check-server, see /bp/unreal-sdk/host-check-server.txt]
-
-The **Is Not Host** and **Failed** pins are left unwired in this graph; both are explained below.
-
-</TabItem>
-</Tabs>
-
-`UCrowdyIsEntityHostServer::IsCrowdyEntityHostServer` (display **Is Crowdy Entity Host (Server)**, category **Crowdy SDK > Session**) is the Blueprint front end for `CheckEntityIsHost`; from C++, call `CheckEntityIsHost` directly rather than this node. It exposes three pins of type `FCrowdyHostCheckPin`: **Is Host** (`OnIsHost`), **Is Not Host** (`OnIsNotHost`), and **Failed** (`OnFailed`). Exactly one of `OnIsHost` or `OnIsNotHost` fires on a definite answer; `OnFailed` fires when the answer could not be determined at all.
-
-:::warning[Failed and Is Not Host are different answers. Treat Failed as unknown, never as a confirmed no.]
-`bSuccess == false`, or the **Failed** pin, means the check could not be resolved: no host elected yet, a network or GraphQL error, or an actor the server has no row for because it never sent an update. `bIsHost` carries no meaning in that case. Retry or wait; do not take the branch you would take for "not the host".
-:::
-
-:::caution[Every completion still runs, even after the awaiting Blueprint node is gone.]
-The subsystem is world-scoped, but a Blueprint graph waiting on `CheckEntityIsHost` is not tied to that lifetime the same way. Each call owns its own completion, so concurrent checks never answer each other, and a completion still fires after the world that started it has torn down; a dropped node's pins simply never receive it, rather than the callback hanging or crashing. Do not rely on a check outliving a level travel to reach your handler.
-:::
-
-`UCrowdyHostSubsystem::Initialize` null-checks `GetGameInstance()`, and any world subsystem you write alongside it must too; [Replicated subsystems](../runtime/replicated-subsystems.md#inherit-a-base) has the reason.
-
-## Gotchas
-
-- `IsHostSet()` before `IsHost()`. Until an election result arrives, every client reads false.
-- `GetHostID()` and `GetHostUserID()` are different ids. Compare `GetOwnerID()` with the first only for an entity a player spawned; a host-owned entity carries no owner id at all, so ask `GetRole() == ECrowdyRole::HostOwned`, `IsLocallyOwned()`, or `DoesCrowdyEntityOwn` instead.
-- `IsHost()` and `GetHostUserID()` are the local, unenforced view. Reach for `CheckEntityIsHost` only when the caller cannot afford a spoofed or stale answer.
-- `GetHostID()` has no display name override; find it in Blueprint as **Get Host ID**.
-- `CheckEntityIsHost` needs the target actor to have sent at least one update. A freshly spawned, never-updated actor answers Failed, the same as an unresolved entity.
-- `IsHost` is documented safe from any thread; `GetHostUserID` is a single atomic read, so it is too. Nothing else on this subsystem carries that guarantee.
-- The check itself gates nothing. What you do with `bIsHost` still needs your server code to decide it if the outcome is worth cheating for.
-
-## Related
-
-- [The Leader](../runtime/leader.md): who writes shared state by default, and the Leader Source setting.
-- [Ownership transfer](../runtime/ownership-transfer.md): the grant flow the server check feeds.
-- [The Two Planes](../concepts/two-planes.md): where a rule is actually enforced.
-- [Host discovery](/game-api/host-discovery#amigamehost) on the Game API: the `amIGameHost` and actor-owner queries underneath this subsystem.
