@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Operator only. Sets when the free-tier card requirement applies on this tier, or switches it off, and records the change in billing&#x005F;rate&#x005F;changes (scope SHARED, metric free&#x005F;tier&#x005F;card). The usage gate applies it within about a minute.
+Operator only. Sets when the free-tier card requirement applies on this tier (or switches it off) and the grace for organizations created before then, and records each change in billing&#x005F;rate&#x005F;changes (scope SHARED, metric free&#x005F;tier&#x005F;card). The usage gate applies it within about a minute.
 
 
 ```graphql
@@ -36,4 +36,4 @@ setFreeTierCardRequirement(
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>FreeTierCardRequirement</b></code>](/reference/graphql/types/objects/free-tier-card-requirement.mdx) <Badge class="badge badge--secondary " text="object"/> 
-The free-tier card requirement on this tier: from requiredFrom, an organization's apps use the free allowance only while the organization has a saved card (saving one charges nothing), a spendable wallet balance or an exemption; otherwise they are paused with runtimeDenialReason payment&#x005F;method&#x005F;required. Organizations only; player wallets are not asked.
+The free-tier card requirement on this tier: from requiredFrom, an organization's apps run only while the organization has a saved card (saving one charges nothing) or an exemption, whatever its wallet holds; otherwise they are paused with runtimeDenialReason payment&#x005F;method&#x005F;required. An organization created before requiredFrom is asked existingOrganizationGraceDays later. Organizations only; player wallets are not asked.

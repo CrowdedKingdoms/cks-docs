@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Where an organization stands against the free-tier card requirement: whether it applies, and whether the organization has a saved card, a spendable wallet balance or an exemption. Studio reads it to ask for a card. Requires the 'view&#x005F;billing' org permission.
+Where an organization stands against the free-tier card requirement: from when it applies to this organization, and whether the organization has a saved card or an exemption. Studio reads it to ask for a card. Requires the 'view&#x005F;billing' org permission.
 
 
 ```graphql
@@ -36,4 +36,4 @@ Organization id (BigInt).
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>OrgCardRequirement</b></code>](/reference/graphql/types/objects/org-card-requirement.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Where one organization stands against the free-tier card requirement. met is what the usage gate asks: a saved card, a spendable wallet balance, or an exemption (CK's own organizations, and billing-exempt ones).
+Where one organization stands against the free-tier card requirement. met is what the usage gate asks: a saved card or an exemption (CK's own organizations, and billing-exempt ones). Wallet funds do not count.

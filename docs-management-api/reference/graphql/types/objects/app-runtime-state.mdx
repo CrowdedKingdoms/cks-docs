@@ -48,7 +48,7 @@ Current runtime gate decision (active / grace / denied / suspended).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #runtime-denial-reason */} 
-insufficient&#x005F;funds | spend&#x005F;cap | subscription&#x005F;lapsed | payment&#x005F;method&#x005F;required when not active. payment&#x005F;method&#x005F;required: the free-tier card requirement (freeTierCardRequirement) applies, and the organization has no saved card, no spendable wallet balance and no exemption. Historical rows may carry free&#x005F;allowance, which the gate no longer produces.
+insufficient&#x005F;funds | spend&#x005F;cap | subscription&#x005F;lapsed | payment&#x005F;method&#x005F;required when not active. payment&#x005F;method&#x005F;required: the free-tier card requirement (freeTierCardRequirement) applies to the organization, and it has no saved card and no exemption. Historical rows may carry free&#x005F;allowance, which the gate no longer produces.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>walletBalanceCents</b></code>](#wallet-balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #wallet-balance-cents */} 

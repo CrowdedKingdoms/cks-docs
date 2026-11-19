@@ -15,13 +15,14 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A change to the free-tier card requirement: a start instant, or off.
+A change to the free-tier card requirement: its start, off, or the grace for organizations created before the start.
 
 
 ```graphql
 input SetFreeTierCardRequirementInput {
   requiredFrom: DateTime
   off: Boolean
+  existingOrganizationGraceDays: Int
   reason: String!
 }
 ```
@@ -30,11 +31,15 @@ input SetFreeTierCardRequirementInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>SetFreeTierCardRequirementInput.<b>requiredFrom</b></code>](#required-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #required-from */} 
-The instant the requirement applies from. Omit with off: true to switch it off.
+The instant the requirement applies from. Not with off: true.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetFreeTierCardRequirementInput.<b>off</b></code>](#off)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #off */} 
 True switches the requirement off. Not with requiredFrom.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetFreeTierCardRequirementInput.<b>existingOrganizationGraceDays</b></code>](#existing-organization-grace-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #existing-organization-grace-days */} 
+Days after requiredFrom that the requirement applies to an organization created before it, 0 to 365. Omit to leave unchanged (30 by default).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetFreeTierCardRequirementInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 

@@ -15,13 +15,14 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-The free-tier card requirement on this tier: from requiredFrom, an organization's apps use the free allowance only while the organization has a saved card (saving one charges nothing), a spendable wallet balance or an exemption; otherwise they are paused with runtimeDenialReason payment&#x005F;method&#x005F;required. Organizations only; player wallets are not asked.
+The free-tier card requirement on this tier: from requiredFrom, an organization's apps run only while the organization has a saved card (saving one charges nothing) or an exemption, whatever its wallet holds; otherwise they are paused with runtimeDenialReason payment&#x005F;method&#x005F;required. An organization created before requiredFrom is asked existingOrganizationGraceDays later. Organizations only; player wallets are not asked.
 
 
 ```graphql
 type FreeTierCardRequirement {
   requiredFrom: DateTime
   requiredNow: Boolean!
+  existingOrganizationGraceDays: Int!
 }
 ```
 
@@ -29,11 +30,15 @@ type FreeTierCardRequirement {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>FreeTierCardRequirement.<b>requiredFrom</b></code>](#required-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #required-from */} 
-The instant the requirement applies from. Null while it is off on this tier.
+The instant the requirement applies from, for an organization created from then on. Null while it is off on this tier.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>FreeTierCardRequirement.<b>requiredNow</b></code>](#required-now)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #required-now */} 
-Whether the requirement applies now.
+Whether the requirement applies now to an organization created from requiredFrom on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierCardRequirement.<b>existingOrganizationGraceDays</b></code>](#existing-organization-grace-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #existing-organization-grace-days */} 
+How many days after requiredFrom the requirement applies to an organization created before it.
 
 
 
