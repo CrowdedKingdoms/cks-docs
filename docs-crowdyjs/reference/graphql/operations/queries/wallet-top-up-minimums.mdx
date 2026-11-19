@@ -1,0 +1,29 @@
+---
+id: wallet-top-up-minimums
+title: walletTopUpMinimums
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The smallest wallet top-ups and auto-recharge amounts this tier accepts, for a top-up form in Studio or a game. Public.
+
+
+```graphql
+walletTopUpMinimums: WalletTopUpMinimums!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WalletTopUpMinimums</b></code>](/reference/graphql/types/objects/wallet-top-up-minimums.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The smallest wallet top-ups createCheckout accepts, and the smallest auto-recharge amounts. A smaller amount is refused with TOP&#x005F;UP&#x005F;BELOW&#x005F;MINIMUM.

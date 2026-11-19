@@ -39,8 +39,11 @@ mutation {
 }
 ```
 
-`maxMembers` and `maxGroupsPerUser` are optional limits — omit them (or pass
-`null`) for no cap. Read the current policy with `teamPolicy(appId)`.
+`maxMembers` and `maxGroupsPerUser` are optional limits; omit them (or pass
+`null`) for no cap. Read the current policy with `teamPolicy(appId)`. From Game API v2.77.0 they are enforced: a join, an add (including approving a
+request) or a creation past either fails with
+[`GROUP_LIMIT_REACHED`](/overview/error-codes), and `extensions.limit` says which. Only
+active members count, so a waiting request counts once a manager approves it.
 
 ## Creating a team
 
