@@ -45,6 +45,18 @@ So in practice there is one model, and this page describes it.
   current month shares (`pooledNow`); `orgUsageProjection` reports
   `allowancePooled` and, for each shared meter, the quota (`poolUnits`) and how
   much of it is used (`usedUnits`) in `allowancePools`.
+- **Coming: a card on file.** Crowded Kingdoms is adding a requirement that an
+  organization save a card before its apps run. Saving one charges nothing and
+  does not turn on auto-billing, and players are not asked. It does not apply yet
+  on any environment: `freeTierCardRequirement` returns when it starts
+  (`requiredFrom`, null until then), whether it applies now (`requiredNow`), and
+  how many days later it applies to an organization created before the start
+  (`existingOrganizationGraceDays`). `orgCardRequirement(orgId)` (`view_billing`)
+  gives your organization's own date (`requiredFrom`) and whether it meets the
+  requirement (`met`): a saved card (`cardOnFile`) or an exemption (`exempt`).
+  Wallet funds do not count. Once it applies, the apps of an organization with
+  neither are denied with `payment_method_required` (see
+  [What "access denied" means](#what-access-denied-means)).
 - `platformConfig.freeAppsPerOrg` (default **3**) is how many free app slots the
   deprecated `orgFreeAppQuota` counts; the slots were a count only and never
   changed what is free or billed.
@@ -315,6 +327,13 @@ other than `active` and a `runtimeDenialReason`:
   example). (An app still inside its allowances is not denied at all, so this
   reason covers both "out of allowance" and "out of money" — they are the same
   situation.)
+- `payment_method_required` — the card requirement applies to the organization
+  (it does not apply yet; see [Free tier](#free-tier)) and it has no saved card
+  and no exemption, so its apps do not run, whatever its wallet holds. Add a card
+  on the organization's **Plan and Usage** tab in Studio (or with
+  `setupSharedPaymentMethod`); saving one charges nothing, and the apps resume
+  within about a minute. With a card, an app past a free allowance with an empty
+  wallet is `insufficient_funds`.
 - `spend_cap` — an hourly/daily spend cap was reached. Raise the cap or wait for
   the window to reset.
 - `subscription_lapsed` — retired with the paid app slot; no current app can carry
@@ -350,7 +369,7 @@ client why so it can say "this world is paused" instead of showing an empty one:
   its organization has no funds (insufficient_funds)").
 
 Everything resumes by itself within a minute of the app becoming `active` again:
-fund the wallet, raise the cap, or renew.
+fund the wallet, raise the cap, save a card, or renew.
 
 ## Connecting clients
 
