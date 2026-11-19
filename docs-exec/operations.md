@@ -235,9 +235,9 @@ paused: its organization has no funds (insufficient_funds)", "... it reached its
 (spend_cap)", or "... it is over its compute budget". It resumes by itself the minute after both
 conditions clear.
 
-What hubs write when they save their state is billed as compute-module writes, and each app's
-monthly free quota includes **1 GB** of them, enough for a small game's hubs to run unfunded
-([free tier](/management-api/shared-environment#free-tier)). A hub saves on every persist
+What hubs write when they save their state is billed as compute-module writes, and an
+organization's monthly free quota, shared by its apps, includes **3 GB** of them, enough for a
+small game's hubs to run unfunded ([free tier](/management-api/shared-environment#free-tier)). A hub saves on every persist
 interval, but a save identical to the one stored last is neither stored nor billed again, so an
 idle hub's state costs nothing more.
 
