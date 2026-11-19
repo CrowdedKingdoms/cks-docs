@@ -66,10 +66,9 @@ Some screenshots in this section were captured before the shared-only UI pivot. 
 
 ## Free tier and wallet
 
-- **Free apps:** up to `platformConfig.freeAppsPerOrg` (default **3**) per org.
-- **Free usage allowance:** each app includes a small hourly metered allowance at no cost.
-- **Above allowance:** usage debits the org **wallet** at published rates.
-- **Auto-billing:** optional saved card tops up the wallet when balance runs low.
+- **Free allowance:** an organization's apps share one free allowance each calendar month (UTC), and making more apps does not add to it. **[Free tier](/management-api/shared-environment#free-tier)** lists the amounts.
+- **Above the allowance:** usage debits the organization **wallet** at the published rates. If the wallet cannot cover it, CK denies each app that keeps using a meter whose allowance is used up, within about a minute.
+- **Auto-billing:** an optional saved card tops up the wallet when the balance runs low.
 
 Top up or configure auto-billing from the org **Wallet** tab before heavy testing or launch.
 
