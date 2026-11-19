@@ -15,13 +15,19 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-An org's free shared-app slot quota and how much of it is used. Apps beyond the quota still publish; metered usage is billed from the org wallet. Caller must be a member of the org.
+:::warning[DEPRECATED]
+
+Free app slots are retired. From allowancePool.effectiveFrom an organization's apps share one free allowance a month; read orgUsageProjection.allowancePools. Before then each app has its own allowance whatever its slot.
+
+:::
+
+An org's free shared-app slot quota and how much of it is used. The slots are a count only: they never change what is free or billed, and apps beyond the quota still publish. Caller must be a member of the org.
 
 
 ```graphql
 orgFreeAppQuota(
   orgId: BigInt!
-): FreeAppQuota!
+): FreeAppQuota! @deprecated
 ```
 
 
