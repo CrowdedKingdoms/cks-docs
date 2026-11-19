@@ -305,11 +305,16 @@ nothing. Requires `manage_billing` on the app's organization.
 When an app can't serve traffic, `appRuntimeState` reports a `runtimeStatus`
 other than `active` and a `runtimeDenialReason`:
 
-- `insufficient_funds` — the app needs to be paid for and cannot be: it is past a
-  free allowance and the wallet is empty with auto-billing unable to cover it.
-  Top up the wallet or enable auto-billing. (An app still inside its allowances
-  is not denied at all, so this reason covers both "out of allowance" and "out of
-  money" — they are the same situation.)
+- `insufficient_funds` — the app needs to be paid for and cannot be: it has used
+  more of a meter than its organization's free allowance has left, and the wallet
+  is empty with auto-billing unable to cover it. Top up the wallet or enable
+  auto-billing. CK checks each app meter by meter, within about a minute. It
+  denies an app that keeps using a meter whose allowance is used up, and all of
+  that app's traffic stops; an app that does not use that meter keeps running
+  (one that only spends CPU while the data-out allowance is used up, for
+  example). (An app still inside its allowances is not denied at all, so this
+  reason covers both "out of allowance" and "out of money" — they are the same
+  situation.)
 - `spend_cap` — an hourly/daily spend cap was reached. Raise the cap or wait for
   the window to reset.
 - `subscription_lapsed` — retired with the paid app slot; no current app can carry
