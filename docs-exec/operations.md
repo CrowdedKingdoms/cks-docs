@@ -232,8 +232,8 @@ An app's code is **paused** (`budgetPaused`) in two cases:
 
 A paused app is switched off entirely, as above, and a refused call names the cause: "app 456 is
 paused: its organization has no funds (insufficient_funds)", "... it reached its spend cap
-(spend_cap)", or "... it is over its compute budget". It resumes by itself the minute after both
-conditions clear.
+(spend_cap)", "... its organization has no payment method (payment_method_required)", or "... it
+is over its compute budget". It resumes by itself the minute after both conditions clear.
 
 What hubs write when they save their state is billed as compute-module writes, and each app's
 monthly free quota includes **1 GB** of them, enough for a small game's hubs to run unfunded

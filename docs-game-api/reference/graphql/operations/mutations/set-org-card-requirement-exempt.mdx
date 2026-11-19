@@ -1,0 +1,49 @@
+---
+id: set-org-card-requirement-exempt
+title: setOrgCardRequirementExempt
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. Exempts an organization from the free-tier card requirement, or ends its exemption, records the change in billing&#x005F;rate&#x005F;changes (scope SHARED, metric free&#x005F;tier&#x005F;card), and re-evaluates the organization's apps at once. For CK's own organizations; reason is required.
+
+
+```graphql
+setOrgCardRequirementExempt(
+  orgId: BigInt!
+  exempt: Boolean!
+  reason: String!
+): OrgCardRequirement!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgCardRequirementExempt.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+Organization to exempt, or to stop exempting.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgCardRequirementExempt.<b>exempt</b></code>](#exempt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #exempt */} 
+true to exempt the organization; false to end it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgCardRequirementExempt.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why, for the audit.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgCardRequirement</b></code>](/reference/graphql/types/objects/org-card-requirement.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Where one organization stands against the free-tier card requirement. met is what the usage gate asks: a saved card, a spendable wallet balance, or an exemption (CK's own organizations, and billing-exempt ones).

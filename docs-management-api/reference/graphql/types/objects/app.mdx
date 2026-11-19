@@ -158,7 +158,7 @@ Shared-environment runtime gate, mirrored to the game DB and enforced by game-ap
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #runtime-denial-reason */} 
-When runtimeStatus is not "active", why the runtime is gated: "insufficient&#x005F;funds", "spend&#x005F;cap", or "subscription&#x005F;lapsed". Null when active. Historical rows may carry "free&#x005F;allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient&#x005F;funds".
+When runtimeStatus is not "active", why the runtime is gated: "insufficient&#x005F;funds", "spend&#x005F;cap", "subscription&#x005F;lapsed", or "payment&#x005F;method&#x005F;required" (the free-tier card requirement applies and the organization has no saved card, no spendable wallet balance and no exemption). Null when active. Historical rows may carry "free&#x005F;allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient&#x005F;funds".
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>codeAdmissionMode</b></code>](#code-admission-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #code-admission-mode */} 

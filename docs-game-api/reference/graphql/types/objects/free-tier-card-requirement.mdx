@@ -1,0 +1,43 @@
+---
+id: free-tier-card-requirement
+title: FreeTierCardRequirement
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The free-tier card requirement on this tier: from requiredFrom, an organization's apps use the free allowance only while the organization has a saved card (saving one charges nothing), a spendable wallet balance or an exemption; otherwise they are paused with runtimeDenialReason payment&#x005F;method&#x005F;required. Organizations only; player wallets are not asked.
+
+
+```graphql
+type FreeTierCardRequirement {
+  requiredFrom: DateTime
+  requiredNow: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierCardRequirement.<b>requiredFrom</b></code>](#required-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #required-from */} 
+The instant the requirement applies from. Null while it is off on this tier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierCardRequirement.<b>requiredNow</b></code>](#required-now)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #required-now */} 
+Whether the requirement applies now.
+
+
+
+
+### Returned By
+
+[`freeTierCardRequirement`](/reference/graphql/operations/queries/free-tier-card-requirement.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setFreeTierCardRequirement`](/reference/graphql/operations/mutations/set-free-tier-card-requirement.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
