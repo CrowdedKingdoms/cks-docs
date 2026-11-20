@@ -1,0 +1,48 @@
+---
+id: org-app-limit
+title: OrgAppLimit
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+How many apps an organization has against the cap for organizations that have not funded their wallet: at most 10 that are not archived while the wallet has no spendable balance and auto-billing is off. A funded (or billing-exempt) organization has no cap. Creating or restoring an app past it is refused with APP&#x005F;LIMIT&#x005F;REACHED; no existing app is removed.
+
+
+```graphql
+type OrgAppLimit {
+  apps: Int!
+  funded: Boolean!
+  max: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAppLimit.<b>apps</b></code>](#apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #apps */} 
+The organization's apps that are not archived.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAppLimit.<b>funded</b></code>](#funded)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #funded */} 
+True when the organization has a spendable wallet balance, auto-billing on, or a billing exemption: then it has no cap.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAppLimit.<b>max</b></code>](#max)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max */} 
+The most apps it may have that are not archived, or null when it has no cap (funded).
+
+
+
+
+### Returned By
+
+[`orgAppLimit`](/reference/graphql/operations/queries/org-app-limit.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

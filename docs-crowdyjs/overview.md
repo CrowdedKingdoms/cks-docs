@@ -610,6 +610,8 @@ Helpers read the refusals a game shows the player: `accessRefusalOf(err)` (`ACCE
 (`ACCOUNT_BLOCKED`, with `blockedUntil` for a timed block; CrowdyJS 18.10.0),
 `groupMemberBannedOf(err)` (`GROUP_MEMBER_BANNED`), `groupLimitReachedOf(err)` (`GROUP_LIMIT_REACHED`, with the cap
 in `limit` and its value in `max`; CrowdyJS 18.34.0), `appPausedOf(err)` and `actorExistsOf(err)`.
+Studio tools read `appLimitReachedOf(err)` (`APP_LIMIT_REACHED`: an organization without a funded
+wallet or auto-billing already has the `max` apps, 10, it may have; CrowdyJS 18.35.0).
 For [org-managed players](/management-api/org-managed-players): `assertionRejectedOf(err)`
 (`ASSERTION_REJECTED`, with the failed check in `reason`) and `managedPlayerNotAllowedOf(err)`
 (`MANAGED_PLAYER_NOT_ALLOWED`: no wallet, or mods the organization has not switched on) from 18.16.0,

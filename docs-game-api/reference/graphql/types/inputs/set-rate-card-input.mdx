@@ -77,7 +77,7 @@ New period for the free allowance. Leaves the units as they are unless freeUnits
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #free-per-month */} 
-New monthly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. On the PLAYER card with metric player&#x005F;wasm&#x005F;compute&#x005F;units this is the pooled monthly TRIAL BUDGET per (player, app) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged. Like a price, it applies from a dimension's next period where a period has already been charged.
+New monthly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. On the PLAYER card with metric player&#x005F;wasm&#x005F;compute&#x005F;units this is the monthly TRIAL BUDGET of a player (in each app, or one across the apps of an organization from playerTrialPool.perOrganizationFrom) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged. Like a price, it applies from a dimension's next period where a period has already been charged.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>priceBands</b></code>](#price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RateCardBandInput!]</b></code>](/reference/graphql/types/inputs/rate-card-band-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> {/* #price-bands */} 

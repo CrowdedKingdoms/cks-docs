@@ -60,9 +60,14 @@ for each metered dimension.
 
 ## The free trial
 
-Every player gets a **monthly trial budget of 250,000 compute units in each
-app**, reset on the first of each UTC month. Usage inside the trial charges
-nothing and keeps an empty wallet fully active.
+Every player gets a **monthly trial budget of 250,000 compute units**, reset on
+the first of each UTC month: one in each app until November 30, 2026, then **one
+across all of an organization's apps** from December 1, 2026. A player who spends
+most of it in one app has the rest of it in the organization's other apps; another
+organization's games give the player a trial of their own. The public
+`playerTrialPool` query says from when a tier gives it per organization
+(`perOrganizationFrom`). Usage inside the trial charges nothing and keeps an empty
+wallet fully active.
 
 There is **no hourly free allowance**: a monthly budget lets a player
 experiment freely and asks sustained use to pay.
