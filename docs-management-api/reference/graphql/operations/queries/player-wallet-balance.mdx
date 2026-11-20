@@ -26,4 +26,4 @@ playerWalletBalance: PlayerWallet!
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>PlayerWallet</b></code>](/reference/graphql/types/objects/player-wallet.mdx) <Badge class="badge badge--secondary " text="object"/> 
-The caller's player wallet: one platform-scoped balance, across every org and app they play in, that pays for the player's mods past their monthly trial (250,000 compute units in each app) and for any Agentic Studio model requests charged to them. Out-of-band from org wallets — player usage never touches an org's money.
+The caller's player wallet: one platform-scoped balance, across every org and app they play in, that pays for the player's mods past their monthly trial (250,000 compute units a month in each app, or one trial across an organization's apps from playerTrialPool.perOrganizationFrom) and for any Agentic Studio model requests charged to them. Out-of-band from org wallets — player usage never touches an org's money.

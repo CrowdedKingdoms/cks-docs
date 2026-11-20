@@ -1,0 +1,39 @@
+---
+id: set-player-trial-pool
+title: setPlayerTrialPool
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. Sets (or switches off) the first calendar month whose player trial is one per player across an organization's apps on this tier, and records the change in billing&#x005F;rate&#x005F;changes (scope PLAYER, metric player&#x005F;trial&#x005F;pool). A month already settled keeps the trial it was settled with.
+
+
+```graphql
+setPlayerTrialPool(
+  input: SetPlayerTrialPoolInput!
+): PlayerTrialPoolSettings!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerTrialPool.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetPlayerTrialPoolInput!</b></code>](/reference/graphql/types/inputs/set-player-trial-pool-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerTrialPoolSettings</b></code>](/reference/graphql/types/objects/player-trial-pool-settings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The player compute trial: each player's monthly trial budget, and from when it is one trial per player across an organization's apps instead of one in each app.
