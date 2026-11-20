@@ -1,0 +1,48 @@
+---
+id: set-free-tier-levels-input
+title: SetFreeTierLevelsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only: the first month free tier levels size pools on this tier, or off.
+
+
+```graphql
+input SetFreeTierLevelsInput {
+  effectiveFrom: DateTime
+  off: Boolean
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetFreeTierLevelsInput.<b>effectiveFrom</b></code>](#effective-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-from */} 
+The first instant of a UTC month. Not with off: true.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetFreeTierLevelsInput.<b>off</b></code>](#off)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #off */} 
+True stops levels sizing pools.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetFreeTierLevelsInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why, for the audit (billing&#x005F;rate&#x005F;changes).
+
+
+
+
+### Member Of
+
+[`setFreeTierLevels`](/reference/graphql/operations/mutations/set-free-tier-levels.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

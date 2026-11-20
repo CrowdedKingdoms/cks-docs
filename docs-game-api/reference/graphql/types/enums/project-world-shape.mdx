@@ -1,0 +1,48 @@
+---
+id: project-world-shape
+title: ProjectWorldShape
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether the game is one world with everyone in it or many copies of a small one.
+
+
+```graphql
+enum ProjectWorldShape {
+  ONE_WORLD
+  MANY_COPIES
+  UNSURE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectWorldShape.<b>ONE&#x005F;WORLD</b></code>](#one-world) {/* #one-world */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectWorldShape.<b>MANY&#x005F;COPIES</b></code>](#many-copies) {/* #many-copies */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectWorldShape.<b>UNSURE</b></code>](#unsure) {/* #unsure */} 
+
+
+
+
+
+### Member Of
+
+[`OrgProjectProfile`](/reference/graphql/types/objects/org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SetOrgProjectProfileInput`](/reference/graphql/types/inputs/set-org-project-profile-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

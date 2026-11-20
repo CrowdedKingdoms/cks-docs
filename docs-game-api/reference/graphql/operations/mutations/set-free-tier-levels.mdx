@@ -1,0 +1,39 @@
+---
+id: set-free-tier-levels
+title: setFreeTierLevels
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. Sets the first month free tier levels size organizations' pools on this tier (the first instant of a UTC month), or stops them, and records the change in billing&#x005F;rate&#x005F;changes (scope SHARED, metric free&#x005F;tier&#x005F;levels). A month whose pools are already open keeps their size.
+
+
+```graphql
+setFreeTierLevels(
+  input: SetFreeTierLevelsInput!
+): FreeTierLevels!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setFreeTierLevels.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetFreeTierLevelsInput!</b></code>](/reference/graphql/types/inputs/set-free-tier-levels-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>FreeTierLevels</b></code>](/reference/graphql/types/objects/free-tier-levels.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The free tier ladder on this tier: what each earned level gives an organization's data out and data in a month. A daily check sets each organization's level for the next month.
