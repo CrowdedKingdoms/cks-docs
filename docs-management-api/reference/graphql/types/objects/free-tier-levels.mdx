@@ -1,0 +1,58 @@
+---
+id: free-tier-levels
+title: FreeTierLevels
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The free tier ladder on this tier: what each earned level gives an organization's data out and data in a month. A daily check sets each organization's level for the next month.
+
+
+```graphql
+type FreeTierLevels {
+  effectiveFrom: DateTime
+  levels: [FreeTierLevelRung!]!
+  measuredMinAccounts: Int!
+  measuredMinDays: Int!
+  measuredWindowDays: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevels.<b>effectiveFrom</b></code>](#effective-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-from */} 
+The first month levels size organizations' pools on this tier. Null while they size none.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevels.<b>levels</b></code>](#levels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FreeTierLevelRung!]!</b></code>](/reference/graphql/types/objects/free-tier-level-rung.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #levels */} 
+BASE, DOMAIN, PROFILE and MEASURED, lowest first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevels.<b>measuredMinAccounts</b></code>](#measured-min-accounts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #measured-min-accounts */} 
+MEASURED: distinct player accounts a day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevels.<b>measuredMinDays</b></code>](#measured-min-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #measured-min-days */} 
+MEASURED: days with that many.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevels.<b>measuredWindowDays</b></code>](#measured-window-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #measured-window-days */} 
+MEASURED: out of the last this many UTC days.
+
+
+
+
+### Returned By
+
+[`freeTierLevels`](/reference/graphql/operations/queries/free-tier-levels.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

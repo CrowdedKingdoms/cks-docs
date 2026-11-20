@@ -1,0 +1,113 @@
+---
+id: org-project-profile
+title: OrgProjectProfile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The organization's six-question project profile. Complete, it earns the PROFILE free tier level.
+
+
+```graphql
+type OrgProjectProfile {
+  orgId: BigInt!
+  whatBuilding: String
+  worldShape: ProjectWorldShape
+  playersPerWorldLaunch: Int
+  playersInViewLaunch: Int
+  playersPerWorldYear1: Int
+  playersInViewYear1: Int
+  stage: ProjectStage
+  launchDate: DateTime
+  engine: String
+  logicLocation: ProjectLogicLocation
+  currentNetworking: String
+  currentNetworkingMonthlyCostCents: Int
+  referenceConsent: Boolean
+  completedAt: DateTime
+  updatedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>whatBuilding</b></code>](#what-building)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #what-building */} 
+What the game is.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>worldShape</b></code>](#world-shape)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectWorldShape</b></code>](/reference/graphql/types/enums/project-world-shape.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #world-shape */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>playersPerWorldLaunch</b></code>](#players-per-world-launch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-per-world-launch */} 
+Players in one world at launch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>playersInViewLaunch</b></code>](#players-in-view-launch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-in-view-launch */} 
+Players each one sees at launch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>playersPerWorldYear1</b></code>](#players-per-world-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-per-world-year-1 */} 
+Players in one world a year on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>playersInViewYear1</b></code>](#players-in-view-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-in-view-year-1 */} 
+Players each one sees a year on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>stage</b></code>](#stage)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectStage</b></code>](/reference/graphql/types/enums/project-stage.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #stage */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>launchDate</b></code>](#launch-date)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #launch-date */} 
+The planned launch date.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>engine</b></code>](#engine)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #engine */} 
+The engine.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>logicLocation</b></code>](#logic-location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectLogicLocation</b></code>](/reference/graphql/types/enums/project-logic-location.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #logic-location */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>currentNetworking</b></code>](#current-networking)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #current-networking */} 
+The networking it uses today.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>currentNetworkingMonthlyCostCents</b></code>](#current-networking-monthly-cost-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #current-networking-monthly-cost-cents */} 
+What that networking costs a month, in US cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>referenceConsent</b></code>](#reference-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reference-consent */} 
+Whether Crowded Kingdoms may name the studio as a reference.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>completedAt</b></code>](#completed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #completed-at */} 
+When every answer was in; null while any is missing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
+
+
+
+
+
+### Returned By
+
+[`orgProjectProfile`](/reference/graphql/operations/queries/org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setOrgProjectProfile`](/reference/graphql/operations/mutations/set-org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
