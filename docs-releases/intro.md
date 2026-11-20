@@ -58,9 +58,8 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
   player trial is given once per player across all of an organization's apps instead of in each app;
   another organization's games still give a trial of their own. The public query `playerTrialPool`
   returns the budget and `perOrganizationFrom`. See [Player billing](/management-api/player-billing).
-- **The second data-out band is $0.0056 a GB** (was $0.0025): the realtime servers moved to a larger
-  type, and the band is 1.3 times what a GB costs on it. An app already charged at that band this
-  month keeps $0.0025 until the month ends. The first band (22 kbps per connection-minute at $0.05)
+- **The second data-out band is $0.0056 a GB** (was $0.0025), with the move to larger realtime
+  servers. An app already charged at that band this month keeps $0.0025 until the month ends. The first band (22 kbps per connection-minute at $0.05)
   is unchanged.
 
 ## 2026-11-19 (channel and team caps are enforced)
