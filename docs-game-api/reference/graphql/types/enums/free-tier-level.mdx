@@ -1,0 +1,58 @@
+---
+id: free-tier-level
+title: FreeTierLevel
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An organization's free tier level, which sets its free data out and data in a month. A level earned or agreed applies from the start of the next month.
+
+
+```graphql
+enum FreeTierLevel {
+  BASE
+  DOMAIN
+  PROFILE
+  MEASURED
+  AGREEMENT
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevel.<b>BASE</b></code>](#base) {/* #base */} 
+Every organization: the pool's own size (15 GB today).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevel.<b>DOMAIN</b></code>](#domain) {/* #domain */} 
+A member has confirmed an email address at the domain the organization gives as its own; free email providers' domains do not count. 100 GB.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevel.<b>PROFILE</b></code>](#profile) {/* #profile */} 
+The organization has completed its project profile. 200 GB.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevel.<b>MEASURED</b></code>](#measured) {/* #measured */} 
+One of the organization's apps had at least 10 different player accounts play on at least 3 of the last 7 UTC days; the organization's own members do not count. 500 GB.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevel.<b>AGREEMENT</b></code>](#agreement) {/* #agreement */} 
+A written agreement with Crowded Kingdoms sets the amount for whole months.
+
+
+
+
+### Member Of
+
+[`FreeTierLevelRung`](/reference/graphql/types/objects/free-tier-level-rung.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrgFreeTier`](/reference/graphql/types/objects/org-free-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrgFreeTierCondition`](/reference/graphql/types/objects/org-free-tier-condition.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrgFreeTierMonth`](/reference/graphql/types/objects/org-free-tier-month.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,39 @@
+---
+id: org-free-tier
+title: orgFreeTier
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where an organization stands on the free tier ladder: this month's level, next month's as the latest check decided it, the conditions it meets now, its own domain and its agreements. A level reached applies from the start of the next month. Requires the 'view&#x005F;billing' org permission.
+
+
+```graphql
+orgFreeTier(
+  orgId: BigInt!
+): OrgFreeTier!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgFreeTier.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+Organization id.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgFreeTier</b></code>](/reference/graphql/types/objects/org-free-tier.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Where an organization stands on the free tier ladder: this month's level, next month's, and which conditions it meets now. A level it reaches applies from the start of the next month.

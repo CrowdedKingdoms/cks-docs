@@ -1,0 +1,103 @@
+---
+id: set-org-project-profile-input
+title: SetOrgProjectProfileInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Answers to the project profile. An omitted field keeps its answer; null clears it. Complete when every answer is in.
+
+
+```graphql
+input SetOrgProjectProfileInput {
+  orgId: BigInt!
+  whatBuilding: String
+  worldShape: ProjectWorldShape
+  playersPerWorldLaunch: Int
+  playersInViewLaunch: Int
+  playersPerWorldYear1: Int
+  playersInViewYear1: Int
+  stage: ProjectStage
+  launchDate: DateTime
+  engine: String
+  logicLocation: ProjectLogicLocation
+  currentNetworking: String
+  currentNetworkingMonthlyCostCents: Int
+  referenceConsent: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+Organization id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>whatBuilding</b></code>](#what-building)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #what-building */} 
+What the game is (2,000 characters at most).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>worldShape</b></code>](#world-shape)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectWorldShape</b></code>](/reference/graphql/types/enums/project-world-shape.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #world-shape */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>playersPerWorldLaunch</b></code>](#players-per-world-launch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-per-world-launch */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>playersInViewLaunch</b></code>](#players-in-view-launch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-in-view-launch */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>playersPerWorldYear1</b></code>](#players-per-world-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-per-world-year-1 */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>playersInViewYear1</b></code>](#players-in-view-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-in-view-year-1 */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>stage</b></code>](#stage)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectStage</b></code>](/reference/graphql/types/enums/project-stage.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #stage */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>launchDate</b></code>](#launch-date)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #launch-date */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>engine</b></code>](#engine)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #engine */} 
+200 characters at most.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>logicLocation</b></code>](#logic-location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectLogicLocation</b></code>](/reference/graphql/types/enums/project-logic-location.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #logic-location */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>currentNetworking</b></code>](#current-networking)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #current-networking */} 
+2,000 characters at most.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>currentNetworkingMonthlyCostCents</b></code>](#current-networking-monthly-cost-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #current-networking-monthly-cost-cents */} 
+US cents a month, 0 to 2,000,000,000.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>referenceConsent</b></code>](#reference-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reference-consent */} 
+
+
+
+
+
+### Member Of
+
+[`setOrgProjectProfile`](/reference/graphql/operations/mutations/set-org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
