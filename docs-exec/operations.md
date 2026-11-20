@@ -197,9 +197,12 @@ Since ck-exec 0.11 two more limits keep one player from filling what everyone sh
   report `Unavailable` with the reason. Close the connections a game no longer uses.
 - **Instances.** Each app has an instance limit and a memory limit per datacenter, set by its
   organization's funding (ck-exec 0.15). An organization that cannot be charged (no spendable
-  wallet balance, no auto-billing) gets **16 instances reserving at most 1 GB**; one that can be
-  charged gets **16,384 instances and 64 GB**. An instance reserves its type's memory limit times
-  its concurrency, and mods count too. Past either limit nothing new of the app is placed until
+  wallet balance, no auto-billing) gets **16 instances reserving at most 1 GB per datacenter for
+  all of its apps together** (ck-exec 0.22; until then, for each app); one that can be charged
+  gets **16,384 instances and 64 GB for each app**. An instance reserves its type's memory limit
+  times its concurrency, and mods count too. `execAppStatus` reports the organization's shared
+  limit and what its apps hold (`orgMaxInstances`, `orgInstances`, `orgMaxReservedMb`,
+  `orgReservedMb`). Past either limit nothing new of the app is placed until
   some stop, whoever asks: a call to a hub key that is not running is answered `Unavailable` with
   a message naming the limit, and `execConnect` with a `nodeType` and `key` that would place one
   fails. Running instances are never stopped for it. Within that, **one player's own calls hold

@@ -1,0 +1,48 @@
+---
+id: player-trial-pool-settings
+title: PlayerTrialPoolSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The player compute trial: each player's monthly trial budget, and from when it is one trial per player across an organization's apps instead of one in each app.
+
+
+```graphql
+type PlayerTrialPoolSettings {
+  budgetUnits: BigInt!
+  perOrganizationFrom: DateTime
+  perOrganizationNow: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerTrialPoolSettings.<b>budgetUnits</b></code>](#budget-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #budget-units */} 
+The monthly trial budget in compute units (player&#x005F;free&#x005F;monthly&#x005F;allowances, player&#x005F;wasm&#x005F;compute&#x005F;units).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerTrialPoolSettings.<b>perOrganizationFrom</b></code>](#per-organization-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #per-organization-from */} 
+Calendar months starting on or after this instant give a player one trial across an organization's apps; earlier months give one in each app. Null: not switched on, so every month gives one in each app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerTrialPoolSettings.<b>perOrganizationNow</b></code>](#per-organization-now)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #per-organization-now */} 
+Whether the current calendar month gives one trial per player across an organization (its start is on or after perOrganizationFrom).
+
+
+
+
+### Returned By
+
+[`playerTrialPool`](/reference/graphql/operations/queries/player-trial-pool.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

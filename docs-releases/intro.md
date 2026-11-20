@@ -39,6 +39,29 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-20 (organizations without a funded wallet; the second data-out band)
+
+- **New apps are unlisted** (Game API v2.80.0). `createApp` creates an app `UNLISTED` unless
+  `visibility` is given; set it `PUBLIC` with `updateApp` (or in Studio, the app's settings) to list
+  it in the marketplace. Apps created before keep their visibility.
+- **At most 10 apps without a funded wallet or auto-billing.** `createApp`, and restoring an archived
+  app with `updateApp`, past 10 apps that are not archived fail with `APP_LIMIT_REACHED` (409;
+  `extensions.limit` is `apps`, `extensions.max` is 10). Archived apps don't count, and no app is
+  removed. The new query `orgAppLimit(orgId)` (`manage_apps`) returns `apps`, `funded` and `max`. See
+  [Error codes](/overview/error-codes).
+- **One compute limit for the organization** (ck-exec 0.22). An organization without a funded wallet
+  or auto-billing runs at most 16 instances reserving 1 GB per datacenter across all of its apps,
+  instead of 16 and 1 GB in each. `execAppStatus` adds `orgMaxInstances`, `orgMaxReservedMb`,
+  `orgInstances` and `orgReservedMb`. Running instances are never stopped for it. See
+  [limits](/exec/operations#usage-and-budgets).
+- **One player trial across an organization's apps from December 1, 2026.** The 250,000-unit monthly
+  player trial is given once per player across all of an organization's apps instead of in each app;
+  another organization's games still give a trial of their own. The public query `playerTrialPool`
+  returns the budget and `perOrganizationFrom`. See [Player billing](/management-api/player-billing).
+- **The second data-out band is $0.0056 a GB** (was $0.0025), with the move to larger realtime
+  servers. An app already charged at that band this month keeps $0.0025 until the month ends. The first band (22 kbps per connection-minute at $0.05)
+  is unchanged.
+
 ## 2026-11-19 (channel and team caps are enforced)
 
 - **`maxMembers` and `maxGroupsPerUser` now refuse** (Game API v2.77.0). The caps an app sets with

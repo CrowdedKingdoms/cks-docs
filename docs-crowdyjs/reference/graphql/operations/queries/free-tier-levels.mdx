@@ -1,0 +1,29 @@
+---
+id: free-tier-levels
+title: freeTierLevels
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+PUBLIC: no authentication required. The free tier ladder on this tier: an organization's free data out and data in a month at each earned level, the MEASURED thresholds, and the first month levels apply. Read-only.
+
+
+```graphql
+freeTierLevels: FreeTierLevels!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>FreeTierLevels</b></code>](/reference/graphql/types/objects/free-tier-levels.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The free tier ladder on this tier: what each earned level gives an organization's data out and data in a month. A daily check sets each organization's level for the next month.

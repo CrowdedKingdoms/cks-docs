@@ -1,0 +1,43 @@
+---
+id: crm-backfill-preview
+title: CrmBackfillPreview
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. The two lists the first CRM backfill is checked against before it runs (BIZ-028 Q12).
+
+
+```graphql
+type CrmBackfillPreview {
+  included: [CrmBackfillEntry!]!
+  excluded: [CrmBackfillEntry!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmBackfillPreview.<b>included</b></code>](#included)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrmBackfillEntry!]!</b></code>](/reference/graphql/types/objects/crm-backfill-entry.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #included */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmBackfillPreview.<b>excluded</b></code>](#excluded)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrmBackfillEntry!]!</b></code>](/reference/graphql/types/objects/crm-backfill-entry.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #excluded */} 
+
+
+
+
+
+### Returned By
+
+[`crmBackfillPreview`](/reference/graphql/operations/queries/crm-backfill-preview.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
