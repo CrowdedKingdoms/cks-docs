@@ -1,0 +1,39 @@
+---
+id: set-org-project-profile
+title: setOrgProjectProfile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Saves answers to the organization's project profile. An omitted field keeps its answer; null clears it. When every answer is in, the profile is complete and next month's free tier level is checked again at once (PROFILE). Requires the 'manage&#x005F;billing' org permission.
+
+
+```graphql
+setOrgProjectProfile(
+  input: SetOrgProjectProfileInput!
+): OrgProjectProfile!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgProjectProfile.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetOrgProjectProfileInput!</b></code>](/reference/graphql/types/inputs/set-org-project-profile-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgProjectProfile</b></code>](/reference/graphql/types/objects/org-project-profile.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The organization's six-question project profile. Complete, it earns the PROFILE free tier level.

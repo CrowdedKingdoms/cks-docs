@@ -1,0 +1,44 @@
+---
+id: set-org-own-domain
+title: setOrgOwnDomain
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Sets the domain the organization gives as its own (studio.com), or clears it with null. A member's confirmed email address at it, or at one of its subdomains, earns the DOMAIN free tier level; a free email provider's domain is refused (FREE&#x005F;EMAIL&#x005F;DOMAIN). Next month's level is checked again at once. Requires the 'manage&#x005F;billing' org permission.
+
+
+```graphql
+setOrgOwnDomain(
+  orgId: BigInt!
+  domain: String
+): OrgFreeTier!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgOwnDomain.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+Organization id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgOwnDomain.<b>domain</b></code>](#domain)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #domain */} 
+A host name such as studio.com; null clears it.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgFreeTier</b></code>](/reference/graphql/types/objects/org-free-tier.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Where an organization stands on the free tier ladder: this month's level, next month's, and which conditions it meets now. A level it reaches applies from the start of the next month.

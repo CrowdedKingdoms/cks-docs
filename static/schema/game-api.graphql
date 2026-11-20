@@ -1439,7 +1439,7 @@ type App {
   """
   runtimeStatus: String!
   """
-  When runtimeStatus is not "active", why the runtime is gated: "insufficient_funds", "spend_cap", or "subscription_lapsed". Null when active. Historical rows may carry "free_allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient_funds".
+  When runtimeStatus is not "active", why the runtime is gated: "insufficient_funds", "spend_cap", "subscription_lapsed", or "payment_method_required" (the free-tier card requirement applies to the organization and it has no saved card and no exemption). Null when active. Historical rows may carry "free_allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient_funds".
   """
   runtimeDenialReason: String
   """
@@ -1622,7 +1622,7 @@ type AppRuntimeGate {
   """ACTIVE when the app runs; anything else means paused."""
   status: AppRuntimeStatus!
   """
-  Why the app is paused: insufficient_funds, spend_cap or subscription_lapsed. Null while ACTIVE.
+  Why the app is paused: insufficient_funds, spend_cap, subscription_lapsed or payment_method_required. Null while ACTIVE.
   """
   reason: String
 }
@@ -2289,7 +2289,7 @@ type AppRuntimeState {
   """Current runtime gate decision (active / grace / denied / suspended)."""
   runtimeStatus: AppRuntimeStatus!
   """
-  insufficient_funds | spend_cap | subscription_lapsed when not active. Historical rows may carry free_allowance, which the gate no longer produces.
+  insufficient_funds | spend_cap | subscription_lapsed | payment_method_required when not active. payment_method_required: the free-tier card requirement (freeTierCardRequirement) applies to the organization, and it has no saved card and no exemption. Historical rows may carry free_allowance, which the gate no longer produces.
   """
   runtimeDenialReason: String
   """Owning org wallet balance, in cents."""
@@ -2696,6 +2696,233 @@ type AllowancePoolSettings {
   Whether the current calendar month is pooled on this tier (its start is on or after effectiveFrom).
   """
   pooledNow: Boolean!
+}
+
+"""
+The free-tier card requirement on this tier: from requiredFrom, an organization's apps run only while the organization has a saved card (saving one charges nothing) or an exemption, whatever its wallet holds; otherwise they are paused with runtimeDenialReason payment_method_required. An organization created before requiredFrom is asked existingOrganizationGraceDays later. Organizations only; player wallets are not asked.
+"""
+type FreeTierCardRequirement {
+  """
+  The instant the requirement applies from, for an organization created from then on. Null while it is off on this tier.
+  """
+  requiredFrom: DateTime
+  """
+  Whether the requirement applies now to an organization created from requiredFrom on.
+  """
+  requiredNow: Boolean!
+  """
+  How many days after requiredFrom the requirement applies to an organization created before it.
+  """
+  existingOrganizationGraceDays: Int!
+}
+
+"""
+Where one organization stands against the free-tier card requirement. met is what the usage gate asks: a saved card or an exemption (CK's own organizations, and billing-exempt ones). Wallet funds do not count.
+"""
+type OrgCardRequirement {
+  """
+  The instant the requirement applies to this organization: the tier's start, or the start plus existingOrganizationGraceDays for an organization created before it. Null while it is off.
+  """
+  requiredFrom: DateTime
+  """Whether the requirement applies to this organization now."""
+  requiredNow: Boolean!
+  """The organization has an active saved card (orgPaymentMethods)."""
+  cardOnFile: Boolean!
+  """
+  The organization is exempt: on the exemption list or exempt from billing.
+  """
+  exempt: Boolean!
+  """
+  cardOnFile or exempt. While the requirement applies and this is false, the organization's apps are paused (payment_method_required).
+  """
+  met: Boolean!
+}
+
+"""An organization the free-tier card requirement never refuses."""
+type CardRequirementExemption {
+  orgId: BigInt!
+  """The organization's name."""
+  orgName: String
+  """Why it is exempt."""
+  reason: String!
+  """The operator who exempted it."""
+  exemptedBy: BigInt
+  createdAt: DateTime!
+}
+
+"""One rung of the free tier ladder."""
+type FreeTierLevelRung {
+  level: FreeTierLevel!
+  """
+  Free data out and free data in, each, a month, in GB (1 GB = 1,000,000,000 bytes).
+  """
+  gigabytes: Int!
+}
+
+"""
+An organization's free tier level, which sets its free data out and data in a month. A level earned or agreed applies from the start of the next month.
+"""
+enum FreeTierLevel {
+  """Every organization: the pool's own size (15 GB today)."""
+  BASE
+  """
+  A member has confirmed an email address at the domain the organization gives as its own; free email providers' domains do not count. 100 GB.
+  """
+  DOMAIN
+  """The organization has completed its project profile. 200 GB."""
+  PROFILE
+  """
+  One of the organization's apps had at least 10 different player accounts play on at least 3 of the last 7 UTC days; the organization's own members do not count. 500 GB.
+  """
+  MEASURED
+  """
+  A written agreement with Crowded Kingdoms sets the amount for whole months.
+  """
+  AGREEMENT
+}
+
+"""
+The free tier ladder on this tier: what each earned level gives an organization's data out and data in a month. A daily check sets each organization's level for the next month.
+"""
+type FreeTierLevels {
+  """
+  The first month levels size organizations' pools on this tier. Null while they size none.
+  """
+  effectiveFrom: DateTime
+  """BASE, DOMAIN, PROFILE and MEASURED, lowest first."""
+  levels: [FreeTierLevelRung!]!
+  """MEASURED: distinct player accounts a day."""
+  measuredMinAccounts: Int!
+  """MEASURED: days with that many."""
+  measuredMinDays: Int!
+  """MEASURED: out of the last this many UTC days."""
+  measuredWindowDays: Int!
+}
+
+"""An organization's free tier level for one month."""
+type OrgFreeTierMonth {
+  """The month, as its first instant (UTC)."""
+  periodStart: DateTime!
+  level: FreeTierLevel!
+  """
+  Free data out and free data in, each, that month, in GB. For the current month, the pool's size once the organization's apps have drawn on it.
+  """
+  gigabytes: Int!
+}
+
+"""One earned level and whether its condition is met now."""
+type OrgFreeTierCondition {
+  level: FreeTierLevel!
+  gigabytes: Int!
+  met: Boolean!
+}
+
+"""A written agreement for a larger free allowance."""
+type OrgFreeTierAgreement {
+  """The first month it covers."""
+  startMonth: DateTime!
+  """The last month it covers."""
+  endMonth: DateTime!
+  """Free data out and data in, each, a month, in GB."""
+  gigabytes: Int!
+}
+
+"""
+Where an organization stands on the free tier ladder: this month's level, next month's, and which conditions it meets now. A level it reaches applies from the start of the next month.
+"""
+type OrgFreeTier {
+  orgId: BigInt!
+  """
+  The first month levels size pools on this tier (freeTierLevels.effectiveFrom).
+  """
+  effectiveFrom: DateTime
+  thisMonth: OrgFreeTierMonth!
+  """
+  Next month, as the latest check decided it. The daily check, and saving the profile or the domain, update it.
+  """
+  nextMonth: OrgFreeTierMonth!
+  """The level the conditions met now earn."""
+  earnedLevel: FreeTierLevel!
+  """DOMAIN, PROFILE and MEASURED, with whether each is met now."""
+  conditions: [OrgFreeTierCondition!]!
+  """The domain the organization gives as its own."""
+  ownDomain: String
+  """
+  MEASURED: the most days in the window on which one of the organization's apps had enough distinct player accounts.
+  """
+  measuredQualifyingDays: Int!
+  """Written agreements covering this month or later."""
+  agreements: [OrgFreeTierAgreement!]!
+  """When the daily check last looked at the organization."""
+  checkedAt: DateTime
+}
+
+"""
+The organization's six-question project profile. Complete, it earns the PROFILE free tier level.
+"""
+type OrgProjectProfile {
+  orgId: BigInt!
+  """What the game is."""
+  whatBuilding: String
+  worldShape: ProjectWorldShape
+  """Players in one world at launch."""
+  playersPerWorldLaunch: Int
+  """Players each one sees at launch."""
+  playersInViewLaunch: Int
+  """Players in one world a year on."""
+  playersPerWorldYear1: Int
+  """Players each one sees a year on."""
+  playersInViewYear1: Int
+  stage: ProjectStage
+  """The planned launch date."""
+  launchDate: DateTime
+  """The engine."""
+  engine: String
+  logicLocation: ProjectLogicLocation
+  """The networking it uses today."""
+  currentNetworking: String
+  """What that networking costs a month, in US cents."""
+  currentNetworkingMonthlyCostCents: Int
+  """Whether Crowded Kingdoms may name the studio as a reference."""
+  referenceConsent: Boolean
+  """When every answer was in; null while any is missing."""
+  completedAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+Whether the game is one world with everyone in it or many copies of a small one.
+"""
+enum ProjectWorldShape {
+  ONE_WORLD
+  MANY_COPIES
+  UNSURE
+}
+
+"""The project's stage."""
+enum ProjectStage {
+  PROTOTYPE
+  PRE_PRODUCTION
+  PRODUCTION
+  BETA
+  LIVE
+}
+
+"""
+Where the game's logic runs: on the clients, in light server code, or in a full server simulation.
+"""
+enum ProjectLogicLocation {
+  CLIENTS
+  LIGHT_SERVER_CODE
+  FULL_SERVER_SIMULATION
+}
+
+"""What a free tier check did."""
+type FreeTierCheckResult {
+  checked: Int!
+  """Organizations whose next month's level moved."""
+  changed: Int!
+  failed: Int!
 }
 
 """
@@ -6670,7 +6897,7 @@ type ExecAppStatus {
   """
   budgetPaused: Boolean!
   """
-  Why the app is paused: insufficient_funds, spend_cap, subscription_lapsed or compute_budget. Null when it is not paused (or the manager predates reasons).
+  Why the app is paused: insufficient_funds, spend_cap, subscription_lapsed, payment_method_required or compute_budget. Null when it is not paused (or the manager predates reasons).
   """
   budgetPauseReason: String
   """
@@ -8096,6 +8323,39 @@ type Query {
   PUBLIC: no authentication required. When this tier pools an organization's free allowance across its apps, and how large each pool is. Read-only.
   """
   allowancePool: AllowancePoolSettings!
+  """
+  PUBLIC: no authentication required. Whether this tier asks an organization for a saved card before its apps run, from when, and how much later for an organization created before then. Read-only.
+  """
+  freeTierCardRequirement: FreeTierCardRequirement!
+  """
+  Where an organization stands against the free-tier card requirement: from when it applies to this organization, and whether the organization has a saved card or an exemption. Studio reads it to ask for a card. Requires the 'view_billing' org permission.
+  """
+  orgCardRequirement(
+    """Organization id (BigInt)."""
+    orgId: BigInt!
+  ): OrgCardRequirement! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
+  """
+  Operator only. The organizations the free-tier card requirement never refuses. Billing-exempt organizations are not listed: the usage gate never refuses them for money.
+  """
+  cardRequirementExemptions: [CardRequirementExemption!]! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  PUBLIC: no authentication required. The free tier ladder on this tier: an organization's free data out and data in a month at each earned level, the MEASURED thresholds, and the first month levels apply. Read-only.
+  """
+  freeTierLevels: FreeTierLevels!
+  """
+  Where an organization stands on the free tier ladder: this month's level, next month's as the latest check decided it, the conditions it meets now, its own domain and its agreements. A level reached applies from the start of the next month. Requires the 'view_billing' org permission.
+  """
+  orgFreeTier(
+    """Organization id."""
+    orgId: BigInt!
+  ): OrgFreeTier! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
+  """
+  The organization's project profile, empty until answered. Requires the 'view_billing' org permission.
+  """
+  orgProjectProfile(
+    """Organization id."""
+    orgId: BigInt!
+  ): OrgProjectProfile! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
   """
   Public platform discovery. Returns the shared game-api URL clients use for shared-environment apps (served by the platform shared environment). No auth required.
   """
@@ -10419,6 +10679,49 @@ type Mutation {
   """
   setAllowancePool(input: SetAllowancePoolInput!): AllowancePoolSettings! @requiresPermission(scope: "operator", permission: "is_operator")
   """
+  Operator only. Sets when the free-tier card requirement applies on this tier (or switches it off) and the grace for organizations created before then, and records each change in billing_rate_changes (scope SHARED, metric free_tier_card). The usage gate applies it within about a minute.
+  """
+  setFreeTierCardRequirement(input: SetFreeTierCardRequirementInput!): FreeTierCardRequirement! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  Operator only. Exempts an organization from the free-tier card requirement, or ends its exemption, records the change in billing_rate_changes (scope SHARED, metric free_tier_card), and re-evaluates the organization's apps at once. For CK's own organizations; reason is required.
+  """
+  setOrgCardRequirementExempt(
+    """Organization to exempt, or to stop exempting."""
+    orgId: BigInt!
+    """true to exempt the organization; false to end it."""
+    exempt: Boolean!
+    """Why, for the audit."""
+    reason: String!
+  ): OrgCardRequirement! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  Saves answers to the organization's project profile. An omitted field keeps its answer; null clears it. When every answer is in, the profile is complete and next month's free tier level is checked again at once (PROFILE). Requires the 'manage_billing' org permission.
+  """
+  setOrgProjectProfile(input: SetOrgProjectProfileInput!): OrgProjectProfile! @requiresPermission(scope: "org", permission: "manage_billing", scopeArg: "input.orgId")
+  """
+  Sets the domain the organization gives as its own (studio.com), or clears it with null. A member's confirmed email address at it, or at one of its subdomains, earns the DOMAIN free tier level; a free email provider's domain is refused (FREE_EMAIL_DOMAIN). Next month's level is checked again at once. Requires the 'manage_billing' org permission.
+  """
+  setOrgOwnDomain(
+    """Organization id."""
+    orgId: BigInt!
+    """A host name such as studio.com; null clears it."""
+    domain: String
+  ): OrgFreeTier! @requiresPermission(scope: "org", permission: "manage_billing", scopeArg: "orgId")
+  """
+  Operator only. Sets the first month free tier levels size organizations' pools on this tier (the first instant of a UTC month), or stops them, and records the change in billing_rate_changes (scope SHARED, metric free_tier_levels). A month whose pools are already open keeps their size.
+  """
+  setFreeTierLevels(input: SetFreeTierLevelsInput!): FreeTierLevels! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  Operator only. Records a written agreement for a larger free allowance, for whole months starting next month or later, or revokes one (revoke: true with its startMonth). Recorded in billing_rate_changes (scope SHARED, metric free_tier_agreement); next month's level is checked again at once.
+  """
+  setOrgFreeTierAgreement(input: SetOrgFreeTierAgreementInput!): OrgFreeTier! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  Operator only. Runs the daily free tier check now, for one organization or all of them, writing next month's levels.
+  """
+  runFreeTierCheck(
+    """One organization; omit for all."""
+    orgId: BigInt
+  ): FreeTierCheckResult! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
   Publishes an app to the shared game-api environment. Free under the org's app-slot quota (result.free = true); beyond the quota, publish still succeeds and metered usage is charged to the org wallet. Requires the 'manage_apps' permission on the app's org. Blocked when SHARED_GAME_API_URL is not configured.
   """
   publishAppToShared(
@@ -12686,6 +12989,80 @@ input SetAllowancePoolInput {
   How many apps' allowances each pool is worth, at least 1. Applies to pools first claimed from after the change. Omit to leave unchanged.
   """
   factor: Int
+  """Why, for the audit (billing_rate_changes)."""
+  reason: String!
+}
+
+"""
+A change to the free-tier card requirement: its start, off, or the grace for organizations created before the start.
+"""
+input SetFreeTierCardRequirementInput {
+  """The instant the requirement applies from. Not with off: true."""
+  requiredFrom: DateTime
+  """True switches the requirement off. Not with requiredFrom."""
+  off: Boolean
+  """
+  Days after requiredFrom that the requirement applies to an organization created before it, 0 to 365. Omit to leave unchanged (30 by default).
+  """
+  existingOrganizationGraceDays: Int
+  """Why, for the audit (billing_rate_changes)."""
+  reason: String!
+}
+
+"""
+Answers to the project profile. An omitted field keeps its answer; null clears it. Complete when every answer is in.
+"""
+input SetOrgProjectProfileInput {
+  """Organization id."""
+  orgId: BigInt!
+  """What the game is (2,000 characters at most)."""
+  whatBuilding: String
+  worldShape: ProjectWorldShape
+  playersPerWorldLaunch: Int
+  playersInViewLaunch: Int
+  playersPerWorldYear1: Int
+  playersInViewYear1: Int
+  stage: ProjectStage
+  launchDate: DateTime
+  """200 characters at most."""
+  engine: String
+  logicLocation: ProjectLogicLocation
+  """2,000 characters at most."""
+  currentNetworking: String
+  """US cents a month, 0 to 2,000,000,000."""
+  currentNetworkingMonthlyCostCents: Int
+  referenceConsent: Boolean
+}
+
+"""
+Operator only: the first month free tier levels size pools on this tier, or off.
+"""
+input SetFreeTierLevelsInput {
+  """The first instant of a UTC month. Not with off: true."""
+  effectiveFrom: DateTime
+  """True stops levels sizing pools."""
+  off: Boolean
+  """Why, for the audit (billing_rate_changes)."""
+  reason: String!
+}
+
+"""
+Operator only: records a written agreement for a larger free allowance (whole months, starting next month or later), or revokes one.
+"""
+input SetOrgFreeTierAgreementInput {
+  orgId: BigInt!
+  """The first instant of the first UTC month it covers."""
+  startMonth: DateTime!
+  """
+  The first instant of the last UTC month it covers. Required unless revoke.
+  """
+  endMonth: DateTime
+  """
+  Free data out and data in, each, a month, in GB. Required unless revoke.
+  """
+  gigabytes: Int
+  """True revokes the agreement that starts at startMonth."""
+  revoke: Boolean
   """Why, for the audit (billing_rate_changes)."""
   reason: String!
 }

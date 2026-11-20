@@ -45,6 +45,8 @@ So in practice there is one model, and this page describes it.
   current month shares (`pooledNow`); `orgUsageProjection` reports
   `allowancePooled` and, for each shared meter, the quota (`poolUnits`) and how
   much of it is used (`usedUnits`) in `allowancePools`.
+- **Egress and ingress follow the organization's tier** from December 1, 2026; the
+  rest of the quota is the same at every tier. See [Free data tiers](#free-data-tiers).
 - `platformConfig.freeAppsPerOrg` (default **3**) is how many free app slots the
   deprecated `orgFreeAppQuota` counts; the slots were a count only and never
   changed what is free or billed.
@@ -87,6 +89,49 @@ So in practice there is one model, and this page describes it.
   [What "access denied" means](#what-access-denied-means)), and a funded app's
   spend is bounded by the [caps you set](#spend-caps). Until 2026-11-09 an unfunded
   app was also capped at about 1 MB/s; it no longer is.
+
+### Free data tiers
+
+An organization's free egress and free ingress a month, each, follow its tier.
+Compute, stored data and compute-module writes are the same at every tier.
+
+| Tier | Egress and ingress, each, a month | Condition |
+|---|---|---|
+| Base | 15 GB | Every organization |
+| Domain | 100 GB | A member has confirmed an email address at the domain the organization gives as its own; free email providers' domains do not count |
+| Profile | 200 GB | The organization has completed its project profile |
+| Measured | 500 GB | One of its apps had at least 10 different player accounts, not the organization's members, play on at least 3 of the last 7 UTC days |
+
+- **A tier applies from the start of the next month.** A check at 23:30 UTC every
+  day sets each organization's tier for the next month: the highest whose
+  condition it meets. A month's quota is fixed when the organization's apps first
+  draw on it, so a tier reached mid-month waits for the next one, and so does a
+  lower one. Saving the profile or the domain checks again at once. Tiers apply
+  from December 1, 2026.
+- **A written agreement** can give an organization a larger free allowance for
+  whole months; when it ends, the organization has the tier its conditions give it.
+- **Where to see it.** Studio's Plan and Usage tab, or `orgFreeTier(orgId)`
+  (`view_billing`): `thisMonth` and `nextMonth` (each a `level` and its
+  `gigabytes`), `earnedLevel`, each condition's state (`conditions`),
+  `ownDomain`, `measuredQualifyingDays` and `agreements`. `freeTierLevels`
+  (public) lists the tiers, the Measured thresholds and `effectiveFrom`, the
+  first month tiers apply on this environment (null while they do not). The API
+  calls a tier a level (`FreeTierLevel`: `BASE`, `DOMAIN`, `PROFILE`, `MEASURED`,
+  `AGREEMENT`).
+- **The domain.** `setOrgOwnDomain(orgId, domain)` (`manage_billing`) takes a host
+  name such as `studio.com` (a URL or `@studio.com` is tidied to it) and clears it
+  with `null`; a free email provider's domain is refused with
+  [`FREE_EMAIL_DOMAIN`](/overview/error-codes). A member's confirmed account email
+  at the domain, or at one of its subdomains, meets the condition.
+- **The project profile.** Six questions about the game, read with
+  `orgProjectProfile(orgId)` (`view_billing`) and saved with
+  `setOrgProjectProfile(input)` (`manage_billing`): an omitted field keeps its
+  answer and `null` clears it. `completedAt` is set while every answer is in.
+- **Usage reporting follows the tier.** `orgUsageProjection`'s
+  `totalFreeAllowanceBytes` and `allowancePools` report the egress and ingress
+  quotas at the organization's tier.
+- The terms are the [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html)
+  §3.5.
 
 **What counts as a billed byte.** Both directions, each against its own monthly
 allowance and at its own rate on the rate card: egress, the bytes the service

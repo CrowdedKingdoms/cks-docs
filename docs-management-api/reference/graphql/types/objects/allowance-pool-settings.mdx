@@ -1,0 +1,48 @@
+---
+id: allowance-pool-settings
+title: AllowancePoolSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The organization allowance pool: from the first calendar month starting on or after effectiveFrom, an organization's apps share one free allowance per meter, factor times one app's allowance on the rate card, instead of each app having its own. One app may use the whole pool.
+
+
+```graphql
+type AllowancePoolSettings {
+  factor: Int!
+  effectiveFrom: DateTime!
+  pooledNow: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AllowancePoolSettings.<b>factor</b></code>](#factor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #factor */} 
+How many apps' allowances the pool is worth: each meter's pool is this times the rate card's allowance for one app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AllowancePoolSettings.<b>effectiveFrom</b></code>](#effective-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-from */} 
+The pool applies to calendar months starting on or after this instant; earlier months keep an allowance per app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AllowancePoolSettings.<b>pooledNow</b></code>](#pooled-now)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #pooled-now */} 
+Whether the current calendar month is pooled on this tier (its start is on or after effectiveFrom).
+
+
+
+
+### Returned By
+
+[`allowancePool`](/reference/graphql/operations/queries/allowance-pool.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,63 @@
+---
+id: set-org-free-tier-agreement-input
+title: SetOrgFreeTierAgreementInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only: records a written agreement for a larger free allowance (whole months, starting next month or later), or revokes one.
+
+
+```graphql
+input SetOrgFreeTierAgreementInput {
+  orgId: BigInt!
+  startMonth: DateTime!
+  endMonth: DateTime
+  gigabytes: Int
+  revoke: Boolean
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgFreeTierAgreementInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgFreeTierAgreementInput.<b>startMonth</b></code>](#start-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #start-month */} 
+The first instant of the first UTC month it covers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgFreeTierAgreementInput.<b>endMonth</b></code>](#end-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #end-month */} 
+The first instant of the last UTC month it covers. Required unless revoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgFreeTierAgreementInput.<b>gigabytes</b></code>](#gigabytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #gigabytes */} 
+Free data out and data in, each, a month, in GB. Required unless revoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgFreeTierAgreementInput.<b>revoke</b></code>](#revoke)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #revoke */} 
+True revokes the agreement that starts at startMonth.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgFreeTierAgreementInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why, for the audit (billing&#x005F;rate&#x005F;changes).
+
+
+
+
+### Member Of
+
+[`setOrgFreeTierAgreement`](/reference/graphql/operations/mutations/set-org-free-tier-agreement.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
