@@ -84,6 +84,8 @@
       "setEarlyAccessOverride",
       "setInitialPassword",
       "setOperator",
+      "setOrgOwnDomain",
+      "setOrgProjectProfile",
       "setOrgStatus",
       "setPlayerAutoBilling",
       "setPlayerCodeListingStatus",
@@ -201,7 +203,14 @@
       "versionInfo",
       "walletBalance",
       "walletTransactions",
-      "walletTransactionsConnection"
+      "walletTransactionsConnection",
+      "allowancePool",
+      "walletTopUpMinimums",
+      "freeTierCardRequirement",
+      "orgCardRequirement",
+      "freeTierLevels",
+      "orgFreeTier",
+      "orgProjectProfile"
     ]
   },
   "retired": {

@@ -1,0 +1,48 @@
+---
+id: wallet-top-up-minimums
+title: WalletTopUpMinimums
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The smallest wallet top-ups createCheckout accepts, and the smallest auto-recharge amounts. A smaller amount is refused with TOP&#x005F;UP&#x005F;BELOW&#x005F;MINIMUM.
+
+
+```graphql
+type WalletTopUpMinimums {
+  orgWalletCents: BigInt!
+  playerWalletCents: BigInt!
+  currency: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>WalletTopUpMinimums.<b>orgWalletCents</b></code>](#org-wallet-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-wallet-cents */} 
+An organization wallet (ORG&#x005F;WALLET&#x005F;TOPUP, setAutoBilling), in USD cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WalletTopUpMinimums.<b>playerWalletCents</b></code>](#player-wallet-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #player-wallet-cents */} 
+A player wallet (PLAYER&#x005F;WALLET&#x005F;TOPUP, setPlayerAutoBilling), in USD cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WalletTopUpMinimums.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #currency */} 
+The currency both are in: usd.
+
+
+
+
+### Returned By
+
+[`walletTopUpMinimums`](/reference/graphql/operations/queries/wallet-top-up-minimums.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
