@@ -42,7 +42,7 @@ message's **sequence number**:
 
 - `sendActorUpdate` — spatial actor state
 - `sendVoxelUpdate` — voxel edits
-- `sendAudio` / `sendText` — spatial audio and text packets
+- `sendAudio` / `sendText` — spatial audio and text packets. A `SpatialSend` that leaves `distance` unset reaches 1 chunk for audio and video and 8 for everything else (0.88.0; before, 8 for every send)
 - `sendVideoFrame` — one encoded webcam frame, cut into up to 16 fragments and sent as `CLIENT_VIDEO_PACKET_2` (143) each; `sendVideo` sends a single pre-built fragment. Needs `use_video_chat`; see [Webcam video](#webcam-video)
 - `sendClientEvent` — typed client events (`eventType` + state bytes)
 - `sendGenericSpatial` — generic spatial payloads

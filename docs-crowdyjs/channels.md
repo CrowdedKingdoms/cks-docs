@@ -78,6 +78,10 @@ try {
 }
 ```
 
+A full channel refuses the same way: past the channel policy's `maxMembers` (or a player's
+`maxGroupsPerUser`), joining fails with `GROUP_LIMIT_REACHED`, and `groupLimitReachedOf(err)`
+returns which cap (`limit`) and its value (`max`) (Game API v2.77.0, CrowdyJS 18.34.0).
+
 A player whose access to the app is revoked or suspended loses every channel at once; see
 [revoking, suspending and banning](/management-api/game-setup#revoking-suspending-and-banning).
 

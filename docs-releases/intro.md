@@ -39,6 +39,16 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-19 (channel and team caps are enforced)
+
+- **`maxMembers` and `maxGroupsPerUser` now refuse** (Game API v2.77.0). The caps an app sets with
+  `setChannelPolicy` and `setTeamPolicy` were stored and returned but not checked. A join, an add
+  (including approving a request) or a creation past either now fails with `GROUP_LIMIT_REACHED`
+  (409); `extensions.limit` names the cap and `extensions.max` its value. Only active members
+  count. An app that set a cap lower than its groups already hold keeps those members, but no one
+  new joins until the group is under the cap. See [Channels](/game-api/channels) and
+  [Error codes](/overview/error-codes).
+
 ## 2026-11-19 (an organization's apps share one free allowance)
 
 - **One free allowance per organization** (Game API v2.75.0): an organization's apps share one

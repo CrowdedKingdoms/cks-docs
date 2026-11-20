@@ -77,7 +77,9 @@ The full method set mirrors the GraphQL surface:
   `ban`, `unban`, `setMemberRoles`. A ban (the team's `manage_members` permission,
   CrowdyJS 18.10.0) removes the member and refuses joining, requesting to join and
   being added with `GROUP_MEMBER_BANNED` (`groupMemberBannedOf(err)`) until `unban`;
-  leaving or being removed does not lift it.
+  leaving or being removed does not lift it. A join, an add or a creation past the
+  team policy's `maxMembers` or `maxGroupsPerUser` fails with `GROUP_LIMIT_REACHED`
+  (`groupLimitReachedOf(err)` returns `{ limit, max }`; Game API v2.77.0, CrowdyJS 18.34.0).
 - **Roles:** `createRole`, `updateRole`, `deleteRole`.
 
 Setting the per-app team policy (`setPolicy`) requires the `manage_apps`
