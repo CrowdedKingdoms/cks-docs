@@ -98,7 +98,9 @@ Some refusals carry more (0.8.0): `access_refusal_of(error)` reads `ACCESS_REVOK
 check `is_app_paused(token.runtime_gate)` and tell the player the world is paused.
 From 0.11.0, `account_blocked_of(error)` reads `ACCOUNT_BLOCKED` and when a timed block
 lifts, and `group_member_banned_of(error)` reads `GROUP_MEMBER_BANNED` from joining a
-channel or team you are banned from. For [org-managed players](/management-api/org-managed-players):
+channel or team you are banned from. From 0.35.0, `group_limit_reached_of(error)` reads
+`GROUP_LIMIT_REACHED` (a full channel or team, or a player in as many as the app allows) as
+`CrowdyGroupLimitReached(limit, max)`. For [org-managed players](/management-api/org-managed-players):
 
 - From 0.16.0, `assertion_rejected_of(error)` reads `ASSERTION_REJECTED` and the failed
   check, and `managed_player_not_allowed_of(error)` reads `MANAGED_PLAYER_NOT_ALLOWED`.

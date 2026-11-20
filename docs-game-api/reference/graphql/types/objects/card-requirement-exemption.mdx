@@ -1,0 +1,58 @@
+---
+id: card-requirement-exemption
+title: CardRequirementExemption
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An organization the free-tier card requirement never refuses.
+
+
+```graphql
+type CardRequirementExemption {
+  orgId: BigInt!
+  orgName: String
+  reason: String!
+  exemptedBy: BigInt
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CardRequirementExemption.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CardRequirementExemption.<b>orgName</b></code>](#org-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-name */} 
+The organization's name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CardRequirementExemption.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why it is exempt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CardRequirementExemption.<b>exemptedBy</b></code>](#exempted-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #exempted-by */} 
+The operator who exempted it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CardRequirementExemption.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
+
+
+
+
+
+### Returned By
+
+[`cardRequirementExemptions`](/reference/graphql/operations/queries/card-requirement-exemptions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -608,7 +608,8 @@ await actor.sendToActor('0123456789abcdef0123456789abcdef', 'aGVsbG8=', {
 Helpers read the refusals a game shows the player: `accessRefusalOf(err)` (`ACCESS_NOT_GRANTED`,
 `ACCESS_REVOKED`, `ACCESS_SUSPENDED` with `suspendedUntil`), `accountBlockedOf(err)`
 (`ACCOUNT_BLOCKED`, with `blockedUntil` for a timed block; CrowdyJS 18.10.0),
-`groupMemberBannedOf(err)` (`GROUP_MEMBER_BANNED`), `appPausedOf(err)` and `actorExistsOf(err)`.
+`groupMemberBannedOf(err)` (`GROUP_MEMBER_BANNED`), `groupLimitReachedOf(err)` (`GROUP_LIMIT_REACHED`, with the cap
+in `limit` and its value in `max`; CrowdyJS 18.34.0), `appPausedOf(err)` and `actorExistsOf(err)`.
 For [org-managed players](/management-api/org-managed-players): `assertionRejectedOf(err)`
 (`ASSERTION_REJECTED`, with the failed check in `reason`) and `managedPlayerNotAllowedOf(err)`
 (`MANAGED_PLAYER_NOT_ALLOWED`: no wallet, or mods the organization has not switched on) from 18.16.0,
