@@ -27,6 +27,10 @@ type ExecAppStatus {
   budgetPauseReason: String
   maxInstances: Int
   maxReservedMb: Int
+  orgMaxInstances: Int
+  orgMaxReservedMb: Int
+  orgInstances: Int
+  orgReservedMb: Int
   instanceLimit: Int
   instances: Int
   reservedMb: Int
@@ -57,11 +61,27 @@ Why the app is paused: insufficient&#x005F;funds, spend&#x005F;cap, subscription
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>maxInstances</b></code>](#max-instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-instances */} 
-The most instances the app may have placed in this datacenter. The free hub tier (an organization that has not funded the app) allows 16; null means the manager's default.
+The most instances the app may have placed in this datacenter. The free hub tier (an organization that has not funded its wallet) allows 16, shared with the organization's other apps (orgMaxInstances); null means the manager's default.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>maxReservedMb</b></code>](#max-reserved-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-reserved-mb */} 
-The most memory, in MB, the app's placed instances may reserve in this datacenter (each instance reserves its type's memory). The free hub tier allows 1,024; null means no memory limit beyond the instance count.
+The most memory, in MB, the app's placed instances may reserve in this datacenter (each instance reserves its type's memory). The free hub tier allows 1,024, shared with the organization's other apps (orgMaxReservedMb); null means no memory limit beyond the instance count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>orgMaxInstances</b></code>](#org-max-instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-max-instances */} 
+The most instances all of the organization's apps together may have placed in this datacenter while it has not funded its wallet: 16. Null when the organization is funded (no shared ceiling) or the manager predates ck-exec 0.22.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>orgMaxReservedMb</b></code>](#org-max-reserved-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-max-reserved-mb */} 
+The most memory, in MB, all of the organization's apps' placed instances together may reserve in this datacenter while it has not funded its wallet: 1,024. Null when the organization is funded or the manager predates ck-exec 0.22.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>orgInstances</b></code>](#org-instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-instances */} 
+Instances of all of the organization's apps placed and not yet stopped in this datacenter now (what orgMaxInstances limits). Null without a shared ceiling.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>orgReservedMb</b></code>](#org-reserved-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-reserved-mb */} 
+Memory, in MB, all of the organization's apps' instances reserve in this datacenter now (what orgMaxReservedMb limits). Null without a shared ceiling.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>instanceLimit</b></code>](#instance-limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #instance-limit */} 

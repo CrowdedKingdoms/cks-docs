@@ -1,0 +1,48 @@
+---
+id: set-player-trial-pool-input
+title: SetPlayerTrialPoolInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A change to when the player trial is per organization.
+
+
+```graphql
+input SetPlayerTrialPoolInput {
+  effectiveFrom: DateTime
+  off: Boolean
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerTrialPoolInput.<b>effectiveFrom</b></code>](#effective-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-from */} 
+The first instant whose calendar months give one trial per player across an organization, a UTC month start. A unit already settled this month keeps the trial it was settled with. Omit with off: true to switch it off.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerTrialPoolInput.<b>off</b></code>](#off)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #off */} 
+True to switch it off: months not settled yet give one trial in each app again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerTrialPoolInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why, for the audit (billing&#x005F;rate&#x005F;changes).
+
+
+
+
+### Member Of
+
+[`setPlayerTrialPool`](/reference/graphql/operations/mutations/set-player-trial-pool.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1583,6 +1583,22 @@ type AppsConnection {
 }
 
 """
+How many apps an organization has against the cap for organizations that have not funded their wallet: at most 10 that are not archived while the wallet has no spendable balance and auto-billing is off. A funded (or billing-exempt) organization has no cap. Creating or restoring an app past it is refused with APP_LIMIT_REACHED; no existing app is removed.
+"""
+type OrgAppLimit {
+  """The organization's apps that are not archived."""
+  apps: Int!
+  """
+  True when the organization has a spendable wallet balance, auto-billing on, or a billing exemption: then it has no cap.
+  """
+  funded: Boolean!
+  """
+  The most apps it may have that are not archived, or null when it has no cap (funded).
+  """
+  max: Int
+}
+
+"""
 An active or revoked app code-admission entry. Admission controls execution only; it never grants source access.
 """
 type AppCodeAdmission {
@@ -2488,7 +2504,7 @@ type RateCardEntryType {
   """
   freePerHour: BigInt
   """
-  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app), and player_wasm_compute_units is its canonical key. Null when this dimension has no monthly allowance.
+  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the monthly trial budget of a player: in each app, or one across the apps of an organization from playerTrialPool.perOrganizationFrom; player_wasm_compute_units is its canonical key. Null when this dimension has no monthly allowance.
   """
   freePerMonth: BigInt
   """
@@ -2591,7 +2607,7 @@ type PublicRateCardEntryType {
   """
   freePerHour: BigInt
   """
-  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
+  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the monthly trial budget of a player: in each app, or one across the apps of an organization from playerTrialPool.perOrganizationFrom. Null when this dimension has no monthly allowance.
   """
   freePerMonth: BigInt
   """
@@ -2696,6 +2712,24 @@ type AllowancePoolSettings {
   Whether the current calendar month is pooled on this tier (its start is on or after effectiveFrom).
   """
   pooledNow: Boolean!
+}
+
+"""
+The player compute trial: each player's monthly trial budget, and from when it is one trial per player across an organization's apps instead of one in each app.
+"""
+type PlayerTrialPoolSettings {
+  """
+  The monthly trial budget in compute units (player_free_monthly_allowances, player_wasm_compute_units).
+  """
+  budgetUnits: BigInt!
+  """
+  Calendar months starting on or after this instant give a player one trial across an organization's apps; earlier months give one in each app. Null: not switched on, so every month gives one in each app.
+  """
+  perOrganizationFrom: DateTime
+  """
+  Whether the current calendar month gives one trial per player across an organization (its start is on or after perOrganizationFrom).
+  """
+  perOrganizationNow: Boolean!
 }
 
 """
@@ -3037,6 +3071,68 @@ type WalletTopUpMinimums {
   currency: String!
 }
 
+"""Operator only. The Twenty sync's state in this environment."""
+type CrmSyncStatus {
+  mode: CrmSyncMode!
+  """The mode the drain runs in: LIVE needs the CRM key here."""
+  effectiveMode: CrmSyncMode!
+  """Whether this environment has the CRM key."""
+  configured: Boolean!
+  """Whether the signed webhook is accepted."""
+  webhookEnabled: Boolean!
+  """
+  When the first LIVE backfill was queued; the daily reconcile waits for it.
+  """
+  backfillDoneAt: DateTime
+  """Records waiting to be sent."""
+  pending: Int!
+  """Records given up on in the last 7 days."""
+  failedLast7Days: Int!
+  sentLast24Hours: Int!
+  lastSentAt: DateTime
+  lastError: String
+  """
+  Fields or picklist values the CRM workspace lacks for LIVE (empty without a key); run scripts/twenty/ensure-schema.mjs.
+  """
+  missingFields: [String!]!
+}
+
+"""
+Operator only. The Twenty sync's mode: OFF queues nothing; SHADOW queues and builds each record and sends nothing; LIVE writes to the CRM (and acts as SHADOW where this environment has no key).
+"""
+enum CrmSyncMode {
+  OFF
+  SHADOW
+  LIVE
+}
+
+"""
+Operator only. An organization the CRM backfill would add or leave out (BIZ-028 Q12).
+"""
+type CrmBackfillEntry {
+  orgId: String!
+  name: String!
+  ownerEmail: String
+  """The domain its Company is matched on; null when a new Company is made."""
+  matchDomain: String
+  """Why it is left out; null when it is added."""
+  reason: String
+}
+
+"""
+Operator only. The two lists the first CRM backfill is checked against before it runs (BIZ-028 Q12).
+"""
+type CrmBackfillPreview {
+  included: [CrmBackfillEntry!]!
+  excluded: [CrmBackfillEntry!]!
+}
+
+"""Operator only. What a CRM backfill queued."""
+type CrmBackfillResult {
+  organizations: Int!
+  records: Int!
+}
+
 type ServiceQuota {
   """Unique quota rule id (BigInt as a decimal string)."""
   quotaId: BigInt!
@@ -3075,7 +3171,7 @@ type ServiceQuota {
 }
 
 """
-The caller's player wallet: one platform-scoped balance, across every org and app they play in, that pays for the player's mods past their monthly trial (250,000 compute units in each app) and for any Agentic Studio model requests charged to them. Out-of-band from org wallets — player usage never touches an org's money.
+The caller's player wallet: one platform-scoped balance, across every org and app they play in, that pays for the player's mods past their monthly trial (250,000 compute units a month in each app, or one trial across an organization's apps from playerTrialPool.perOrganizationFrom) and for any Agentic Studio model requests charged to them. Out-of-band from org wallets — player usage never touches an org's money.
 """
 type PlayerWallet {
   """Wallet id."""
@@ -6901,13 +6997,29 @@ type ExecAppStatus {
   """
   budgetPauseReason: String
   """
-  The most instances the app may have placed in this datacenter. The free hub tier (an organization that has not funded the app) allows 16; null means the manager's default.
+  The most instances the app may have placed in this datacenter. The free hub tier (an organization that has not funded its wallet) allows 16, shared with the organization's other apps (orgMaxInstances); null means the manager's default.
   """
   maxInstances: Int
   """
-  The most memory, in MB, the app's placed instances may reserve in this datacenter (each instance reserves its type's memory). The free hub tier allows 1,024; null means no memory limit beyond the instance count.
+  The most memory, in MB, the app's placed instances may reserve in this datacenter (each instance reserves its type's memory). The free hub tier allows 1,024, shared with the organization's other apps (orgMaxReservedMb); null means no memory limit beyond the instance count.
   """
   maxReservedMb: Int
+  """
+  The most instances all of the organization's apps together may have placed in this datacenter while it has not funded its wallet: 16. Null when the organization is funded (no shared ceiling) or the manager predates ck-exec 0.22.
+  """
+  orgMaxInstances: Int
+  """
+  The most memory, in MB, all of the organization's apps' placed instances together may reserve in this datacenter while it has not funded its wallet: 1,024. Null when the organization is funded or the manager predates ck-exec 0.22.
+  """
+  orgMaxReservedMb: Int
+  """
+  Instances of all of the organization's apps placed and not yet stopped in this datacenter now (what orgMaxInstances limits). Null without a shared ceiling.
+  """
+  orgInstances: Int
+  """
+  Memory, in MB, all of the organization's apps' instances reserve in this datacenter now (what orgMaxReservedMb limits). Null without a shared ceiling.
+  """
+  orgReservedMb: Int
   """
   The instance limit in force: maxInstances, or the manager’s default when that is null. Null from a manager older than ck-exec 0.15.
   """
@@ -8047,6 +8159,13 @@ type Query {
     orgSlug: String!
   ): [App!]!
   """
+  Where an organization stands against the cap for organizations without a funded wallet or auto-billing: its apps that are not archived, whether it is funded, and the cap (10, or null when funded). Requires the 'manage_apps' permission on the organization; super admins bypass.
+  """
+  orgAppLimit(
+    """Organization id (BigInt)."""
+    orgId: BigInt!
+  ): OrgAppLimit! @requiresPermission(scope: "org", permission: "manage_apps", scopeArg: "orgId")
+  """
   Read an app's player-code admission mode. Requires 'view_compute_diagnostics'. IMPLICIT_ALLOW (the default) admits lawful player code without curation; ALLOW_LIST requires every running server/client artifact, including self-authored code, to match an active code, author, or org admission.
   """
   appCodeAdmissionMode(
@@ -8324,6 +8443,10 @@ type Query {
   """
   allowancePool: AllowancePoolSettings!
   """
+  PUBLIC: no authentication required. The player compute trial on this tier: its monthly budget, and from when it is one trial per player across an organization's apps. Read-only.
+  """
+  playerTrialPool: PlayerTrialPoolSettings!
+  """
   PUBLIC: no authentication required. Whether this tier asks an organization for a saved card before its apps run, from when, and how much later for an organization created before then. Read-only.
   """
   freeTierCardRequirement: FreeTierCardRequirement!
@@ -8489,6 +8612,14 @@ type Query {
   The smallest wallet top-ups and auto-recharge amounts this tier accepts, for a top-up form in Studio or a game. Public.
   """
   walletTopUpMinimums: WalletTopUpMinimums!
+  """
+  Operator only. The Twenty sync's mode, queue and last error in this environment, and what the CRM workspace lacks for LIVE.
+  """
+  crmSyncStatus: CrmSyncStatus! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  Operator only. The organizations the CRM backfill would add, and those it leaves out with why (BIZ-028 Q12). Holds owners' email addresses: for the operator only.
+  """
+  crmBackfillPreview: CrmBackfillPreview! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   Lists the org-scoped quota rules explicitly configured for an organization (excludes app-, tier-, and free-tier-default quotas). Use `effectiveQuota` to resolve the limit actually applied for a given metric. Requires the 'view_usage' org permission.
   """
@@ -10257,14 +10388,14 @@ type Mutation {
     idempotencyKey: String
   ): Boolean!
   """
-  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=LIVE unless overridden in the input. Neither setting decides who may play; the access tiers do.
+  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=UNLISTED and status=LIVE unless overridden in the input: an app reaches the marketplace only once it is set PUBLIC (updateApp). Neither setting decides who may play; the access tiers do. An organization without a funded wallet or auto-billing may have at most 10 apps that are not archived; one more is refused with APP_LIMIT_REACHED (orgAppLimit says where an organization stands).
   """
   createApp(
     """Details for the app to create."""
     input: CreateAppInput!
   ): App! @requiresPermission(scope: "org", permission: "manage_apps", scopeArg: "input.orgId")
   """
-  Update mutable fields of an existing app (name, description, visibility, status, metadata, wildernessWritesOpen, claimOwnerKeys, replayLoggingEnabled, replayLoggingRecordsMedia, replayLoggingRecordsVoice, replayLoggingRecordsVideo, minPlayerAge, idleTimeoutSeconds); only fields present in the input are changed. Turning replayLoggingEnabled on is refused with INPUT_LOG_FUNDS_NEEDED unless the org's wallet can spend at least the projected cost of keeping one retention period of the app's recent traffic (extensions.requiredMicrousd and spendableMicrousd say how much), or the org is billing-exempt; recordings already kept go on billing after it is turned off, until they age out. Turning it off is refused with SAFETY_LOG_REQUIRED while the app admits players under 18. Requires the 'manage_apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility, or restore an archived app (status back to DRAFT/LIVE). Throws if the app id does not exist.
+  Update mutable fields of an existing app (name, description, visibility, status, metadata, wildernessWritesOpen, claimOwnerKeys, replayLoggingEnabled, replayLoggingRecordsMedia, replayLoggingRecordsVoice, replayLoggingRecordsVideo, minPlayerAge, idleTimeoutSeconds); only fields present in the input are changed. Turning replayLoggingEnabled on is refused with INPUT_LOG_FUNDS_NEEDED unless the org's wallet can spend at least the projected cost of keeping one retention period of the app's recent traffic (extensions.requiredMicrousd and spendableMicrousd say how much), or the org is billing-exempt; recordings already kept go on billing after it is turned off, until they age out. Turning it off is refused with SAFETY_LOG_REQUIRED while the app admits players under 18. Requires the 'manage_apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility (PUBLIC lists the app in the marketplace), or restore an archived app (status back to DRAFT/LIVE); a restore counts against the cap of 10 apps for an organization without a funded wallet or auto-billing (APP_LIMIT_REACHED). Throws if the app id does not exist.
   """
   updateApp(
     """Numeric id of the app to update."""
@@ -10679,6 +10810,10 @@ type Mutation {
   """
   setAllowancePool(input: SetAllowancePoolInput!): AllowancePoolSettings! @requiresPermission(scope: "operator", permission: "is_operator")
   """
+  Operator only. Sets (or switches off) the first calendar month whose player trial is one per player across an organization's apps on this tier, and records the change in billing_rate_changes (scope PLAYER, metric player_trial_pool). A month already settled keeps the trial it was settled with.
+  """
+  setPlayerTrialPool(input: SetPlayerTrialPoolInput!): PlayerTrialPoolSettings! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
   Operator only. Sets when the free-tier card requirement applies on this tier (or switches it off) and the grace for organizations created before then, and records each change in billing_rate_changes (scope SHARED, metric free_tier_card). The usage gate applies it within about a minute.
   """
   setFreeTierCardRequirement(input: SetFreeTierCardRequirementInput!): FreeTierCardRequirement! @requiresPermission(scope: "operator", permission: "is_operator")
@@ -10846,6 +10981,23 @@ type Mutation {
     """
     idempotencyKey: String
   ): Checkout!
+  """
+  Operator only. Sets the Twenty sync's mode (OFF, SHADOW, LIVE) and whether its signed webhook is accepted; recorded in crm_sync_changes. LIVE sends studio and developer contacts to the CRM.
+  """
+  setCrmSync(input: SetCrmSyncInput!): CrmSyncStatus! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  Operator only. Queues every eligible organization for the Twenty sync (BIZ-028 Q12's backfill) and, in LIVE, records it so the daily reconcile starts. With orgId, queues that organization alone (a canary) and records nothing. Needs confirm: true.
+  """
+  runCrmBackfill(
+    """
+    Must be true: check crmBackfillPreview first, because the backfill sends contacts to the CRM in LIVE.
+    """
+    confirm: Boolean!
+    """
+    One organization to queue alone (a canary); the backfill is not recorded as done. Omit for every eligible organization.
+    """
+    orgId: ID
+  ): CrmBackfillResult! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   Creates or updates a quota enforcement rule (idempotent upsert keyed by org/app/tier + metric + period) and returns it. Scope is inferred from the input ids: an app-scoped rule requires the 'manage_quotas' app permission, an org-scoped rule requires the 'manage_quotas' org permission, and a global rule (no org/app/tier) requires super admin. Changes which limit `effectiveQuota` resolves for the metric; does not retroactively alter past usage.
   """
@@ -12511,7 +12663,9 @@ input CreateAppInput {
   datacenter: String!
   """Optional short plain-text description for listings."""
   description: String
-  """Optional initial visibility. Defaults to PUBLIC when omitted."""
+  """
+  Optional initial visibility. Defaults to UNLISTED when omitted: set PUBLIC to list the app in the marketplace.
+  """
   visibility: AppVisibility
   """Optional initial lifecycle status. Defaults to LIVE when omitted."""
   status: AppStatus
@@ -12943,7 +13097,7 @@ input SetRateCardInput {
   """
   freePeriod: AllowancePeriod
   """
-  New monthly free allowance in raw metric units, as a BigInt decimal string. Must be >= 0. On the PLAYER card with metric player_wasm_compute_units this is the pooled monthly TRIAL BUDGET per (player, app) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged. Like a price, it applies from a dimension's next period where a period has already been charged.
+  New monthly free allowance in raw metric units, as a BigInt decimal string. Must be >= 0. On the PLAYER card with metric player_wasm_compute_units this is the monthly TRIAL BUDGET of a player (in each app, or one across the apps of an organization from playerTrialPool.perOrganizationFrom) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged. Like a price, it applies from a dimension's next period where a period has already been charged.
   """
   freePerMonth: BigInt
   """
@@ -12989,6 +13143,20 @@ input SetAllowancePoolInput {
   How many apps' allowances each pool is worth, at least 1. Applies to pools first claimed from after the change. Omit to leave unchanged.
   """
   factor: Int
+  """Why, for the audit (billing_rate_changes)."""
+  reason: String!
+}
+
+"""A change to when the player trial is per organization."""
+input SetPlayerTrialPoolInput {
+  """
+  The first instant whose calendar months give one trial per player across an organization, a UTC month start. A unit already settled this month keeps the trial it was settled with. Omit with off: true to switch it off.
+  """
+  effectiveFrom: DateTime
+  """
+  True to switch it off: months not settled yet give one trial in each app again.
+  """
+  off: Boolean
   """Why, for the audit (billing_rate_changes)."""
   reason: String!
 }
@@ -13122,6 +13290,14 @@ input CreateCheckoutInput {
   Optional idempotency key. Recommended for retries: replaying with the same key and identical input returns the first checkout instead of opening a second provider session; the same key with different input returns IDEMPOTENCY_CONFLICT. Keys expire after 24h.
   """
   idempotencyKey: String
+}
+
+"""Operator only: the Twenty sync's mode and webhook switch."""
+input SetCrmSyncInput {
+  mode: CrmSyncMode
+  webhookEnabled: Boolean
+  """Why, for the audit (crm_sync_changes)."""
+  reason: String!
 }
 
 input SetQuotaInput {

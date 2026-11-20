@@ -33,7 +33,7 @@ There is **one origin per tier**, and the management and game surfaces are two s
 
 ## Hosting an app
 
-Every app runs on the **shared platform**. Publish it with `publishAppToShared` — free under your org's app-slot quota (`platformConfig.freeAppsPerOrg`, default 3), and metered against the org wallet beyond it — then read the app's routing fields (`gameApiUrl`, `deploymentTarget`) before a player joins.
+Every app runs on the **shared platform**. Publish it with `publishAppToShared` — your organization's apps share one free allowance, and usage above it is metered against the org wallet — then read the app's routing fields (`gameApiUrl`, `deploymentTarget`) before a player joins. An organization without a funded wallet or auto-billing may have 10 apps (`APP_LIMIT_REACHED` past it), and new apps are unlisted until set `PUBLIC`.
 
 See **[Shared environment & billing](/management-api/shared-environment)** for the model and the free allowances, or the **[portal guide](/management-ui/environments)** for the same thing in the Management UI.
 

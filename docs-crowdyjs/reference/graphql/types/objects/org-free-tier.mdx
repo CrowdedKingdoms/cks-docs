@@ -1,0 +1,83 @@
+---
+id: org-free-tier
+title: OrgFreeTier
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where an organization stands on the free tier ladder: this month's level, next month's, and which conditions it meets now. A level it reaches applies from the start of the next month.
+
+
+```graphql
+type OrgFreeTier {
+  orgId: BigInt!
+  effectiveFrom: DateTime
+  thisMonth: OrgFreeTierMonth!
+  nextMonth: OrgFreeTierMonth!
+  earnedLevel: FreeTierLevel!
+  conditions: [OrgFreeTierCondition!]!
+  ownDomain: String
+  measuredQualifyingDays: Int!
+  agreements: [OrgFreeTierAgreement!]!
+  checkedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>effectiveFrom</b></code>](#effective-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-from */} 
+The first month levels size pools on this tier (freeTierLevels.effectiveFrom).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>thisMonth</b></code>](#this-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrgFreeTierMonth!</b></code>](/reference/graphql/types/objects/org-free-tier-month.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #this-month */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>nextMonth</b></code>](#next-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OrgFreeTierMonth!</b></code>](/reference/graphql/types/objects/org-free-tier-month.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #next-month */} 
+Next month, as the latest check decided it. The daily check, and saving the profile or the domain, update it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>earnedLevel</b></code>](#earned-level)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>FreeTierLevel!</b></code>](/reference/graphql/types/enums/free-tier-level.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #earned-level */} 
+The level the conditions met now earn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>conditions</b></code>](#conditions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OrgFreeTierCondition!]!</b></code>](/reference/graphql/types/objects/org-free-tier-condition.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #conditions */} 
+DOMAIN, PROFILE and MEASURED, with whether each is met now.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>ownDomain</b></code>](#own-domain)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #own-domain */} 
+The domain the organization gives as its own.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>measuredQualifyingDays</b></code>](#measured-qualifying-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #measured-qualifying-days */} 
+MEASURED: the most days in the window on which one of the organization's apps had enough distinct player accounts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>agreements</b></code>](#agreements)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OrgFreeTierAgreement!]!</b></code>](/reference/graphql/types/objects/org-free-tier-agreement.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #agreements */} 
+Written agreements covering this month or later.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>checkedAt</b></code>](#checked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #checked-at */} 
+When the daily check last looked at the organization.
+
+
+
+
+### Returned By
+
+[`orgFreeTier`](/reference/graphql/operations/queries/org-free-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setOrgFreeTierAgreement`](/reference/graphql/operations/mutations/set-org-free-tier-agreement.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setOrgOwnDomain`](/reference/graphql/operations/mutations/set-org-own-domain.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

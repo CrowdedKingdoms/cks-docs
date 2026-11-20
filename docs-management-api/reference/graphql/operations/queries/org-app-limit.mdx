@@ -1,0 +1,39 @@
+---
+id: org-app-limit
+title: orgAppLimit
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where an organization stands against the cap for organizations without a funded wallet or auto-billing: its apps that are not archived, whether it is funded, and the cap (10, or null when funded). Requires the 'manage&#x005F;apps' permission on the organization; super admins bypass.
+
+
+```graphql
+orgAppLimit(
+  orgId: BigInt!
+): OrgAppLimit!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgAppLimit.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+Organization id (BigInt).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgAppLimit</b></code>](/reference/graphql/types/objects/org-app-limit.mdx) <Badge class="badge badge--secondary " text="object"/> 
+How many apps an organization has against the cap for organizations that have not funded their wallet: at most 10 that are not archived while the wallet has no spendable balance and auto-billing is off. A funded (or billing-exempt) organization has no cap. Creating or restoring an app past it is refused with APP&#x005F;LIMIT&#x005F;REACHED; no existing app is removed.
