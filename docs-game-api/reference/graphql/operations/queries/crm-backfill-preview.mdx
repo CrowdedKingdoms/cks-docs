@@ -1,0 +1,29 @@
+---
+id: crm-backfill-preview
+title: crmBackfillPreview
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. The organizations the CRM backfill would add, and those it leaves out with why (BIZ-028 Q12). Holds owners' email addresses: for the operator only.
+
+
+```graphql
+crmBackfillPreview: CrmBackfillPreview!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrmBackfillPreview</b></code>](/reference/graphql/types/objects/crm-backfill-preview.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Operator only. The two lists the first CRM backfill is checked against before it runs (BIZ-028 Q12).

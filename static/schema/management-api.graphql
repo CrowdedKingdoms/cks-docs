@@ -963,6 +963,22 @@ type AppsConnection {
 }
 
 """
+How many apps an organization has against the cap for organizations that have not funded their wallet: at most 10 that are not archived while the wallet has no spendable balance and auto-billing is off. A funded (or billing-exempt) organization has no cap. Creating or restoring an app past it is refused with APP_LIMIT_REACHED; no existing app is removed.
+"""
+type OrgAppLimit {
+  """The organization's apps that are not archived."""
+  apps: Int!
+  """
+  True when the organization has a spendable wallet balance, auto-billing on, or a billing exemption: then it has no cap.
+  """
+  funded: Boolean!
+  """
+  The most apps it may have that are not archived, or null when it has no cap (funded).
+  """
+  max: Int
+}
+
+"""
 An active or revoked app code-admission entry. Admission controls execution only; it never grants source access.
 """
 type AppCodeAdmission {
@@ -1765,7 +1781,7 @@ type PublicRateCardEntryType {
   """
   freePerHour: BigInt
   """
-  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
+  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the monthly trial budget of a player: in each app, or one across the apps of an organization from playerTrialPool.perOrganizationFrom. Null when this dimension has no monthly allowance.
   """
   freePerMonth: BigInt
   """
@@ -1824,6 +1840,24 @@ type AllowancePoolSettings {
   Whether the current calendar month is pooled on this tier (its start is on or after effectiveFrom).
   """
   pooledNow: Boolean!
+}
+
+"""
+The player compute trial: each player's monthly trial budget, and from when it is one trial per player across an organization's apps instead of one in each app.
+"""
+type PlayerTrialPoolSettings {
+  """
+  The monthly trial budget in compute units (player_free_monthly_allowances, player_wasm_compute_units).
+  """
+  budgetUnits: BigInt!
+  """
+  Calendar months starting on or after this instant give a player one trial across an organization's apps; earlier months give one in each app. Null: not switched on, so every month gives one in each app.
+  """
+  perOrganizationFrom: DateTime
+  """
+  Whether the current calendar month gives one trial per player across an organization (its start is on or after perOrganizationFrom).
+  """
+  perOrganizationNow: Boolean!
 }
 
 """
@@ -2183,7 +2217,7 @@ type ServiceQuota {
 }
 
 """
-The caller's player wallet: one platform-scoped balance, across every org and app they play in, that pays for the player's mods past their monthly trial (250,000 compute units in each app) and for any Agentic Studio model requests charged to them. Out-of-band from org wallets — player usage never touches an org's money.
+The caller's player wallet: one platform-scoped balance, across every org and app they play in, that pays for the player's mods past their monthly trial (250,000 compute units a month in each app, or one trial across an organization's apps from playerTrialPool.perOrganizationFrom) and for any Agentic Studio model requests charged to them. Out-of-band from org wallets — player usage never touches an org's money.
 """
 type PlayerWallet {
   """Wallet id."""
@@ -3700,6 +3734,13 @@ type Query {
     orgSlug: String!
   ): [App!]!
   """
+  Where an organization stands against the cap for organizations without a funded wallet or auto-billing: its apps that are not archived, whether it is funded, and the cap (10, or null when funded). Requires the 'manage_apps' permission on the organization; super admins bypass.
+  """
+  orgAppLimit(
+    """Organization id (BigInt)."""
+    orgId: BigInt!
+  ): OrgAppLimit! @requiresPermission(scope: "org", permission: "manage_apps", scopeArg: "orgId")
+  """
   Read an app's player-code admission mode. Requires 'view_compute_diagnostics'. IMPLICIT_ALLOW (the default) admits lawful player code without curation; ALLOW_LIST requires every running server/client artifact, including self-authored code, to match an active code, author, or org admission.
   """
   appCodeAdmissionMode(
@@ -3865,6 +3906,10 @@ type Query {
   PUBLIC: no authentication required. When this tier pools an organization's free allowance across its apps, and how large each pool is. Read-only.
   """
   allowancePool: AllowancePoolSettings!
+  """
+  PUBLIC: no authentication required. The player compute trial on this tier: its monthly budget, and from when it is one trial per player across an organization's apps. Read-only.
+  """
+  playerTrialPool: PlayerTrialPoolSettings!
   """
   PUBLIC: no authentication required. Whether this tier asks an organization for a saved card before its apps run, from when, and how much later for an organization created before then. Read-only.
   """
@@ -4688,14 +4733,14 @@ type Mutation {
     idempotencyKey: String
   ): Boolean!
   """
-  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=LIVE unless overridden in the input. Neither setting decides who may play; the access tiers do.
+  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=UNLISTED and status=LIVE unless overridden in the input: an app reaches the marketplace only once it is set PUBLIC (updateApp). Neither setting decides who may play; the access tiers do. An organization without a funded wallet or auto-billing may have at most 10 apps that are not archived; one more is refused with APP_LIMIT_REACHED (orgAppLimit says where an organization stands).
   """
   createApp(
     """Details for the app to create."""
     input: CreateAppInput!
   ): App! @requiresPermission(scope: "org", permission: "manage_apps", scopeArg: "input.orgId")
   """
-  Update mutable fields of an existing app (name, description, visibility, status, metadata, wildernessWritesOpen, claimOwnerKeys, replayLoggingEnabled, replayLoggingRecordsMedia, replayLoggingRecordsVoice, replayLoggingRecordsVideo, minPlayerAge, idleTimeoutSeconds); only fields present in the input are changed. Turning replayLoggingEnabled on is refused with INPUT_LOG_FUNDS_NEEDED unless the org's wallet can spend at least the projected cost of keeping one retention period of the app's recent traffic (extensions.requiredMicrousd and spendableMicrousd say how much), or the org is billing-exempt; recordings already kept go on billing after it is turned off, until they age out. Turning it off is refused with SAFETY_LOG_REQUIRED while the app admits players under 18. Requires the 'manage_apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility, or restore an archived app (status back to DRAFT/LIVE). Throws if the app id does not exist.
+  Update mutable fields of an existing app (name, description, visibility, status, metadata, wildernessWritesOpen, claimOwnerKeys, replayLoggingEnabled, replayLoggingRecordsMedia, replayLoggingRecordsVoice, replayLoggingRecordsVideo, minPlayerAge, idleTimeoutSeconds); only fields present in the input are changed. Turning replayLoggingEnabled on is refused with INPUT_LOG_FUNDS_NEEDED unless the org's wallet can spend at least the projected cost of keeping one retention period of the app's recent traffic (extensions.requiredMicrousd and spendableMicrousd say how much), or the org is billing-exempt; recordings already kept go on billing after it is turned off, until they age out. Turning it off is refused with SAFETY_LOG_REQUIRED while the app admits players under 18. Requires the 'manage_apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility (PUBLIC lists the app in the marketplace), or restore an archived app (status back to DRAFT/LIVE); a restore counts against the cap of 10 apps for an organization without a funded wallet or auto-billing (APP_LIMIT_REACHED). Throws if the app id does not exist.
   """
   updateApp(
     """Numeric id of the app to update."""
@@ -5471,7 +5516,9 @@ input CreateAppInput {
   datacenter: String!
   """Optional short plain-text description for listings."""
   description: String
-  """Optional initial visibility. Defaults to PUBLIC when omitted."""
+  """
+  Optional initial visibility. Defaults to UNLISTED when omitted: set PUBLIC to list the app in the marketplace.
+  """
   visibility: AppVisibility
   """Optional initial lifecycle status. Defaults to LIVE when omitted."""
   status: AppStatus

@@ -1,0 +1,88 @@
+---
+id: crm-sync-status
+title: CrmSyncStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. The Twenty sync's state in this environment.
+
+
+```graphql
+type CrmSyncStatus {
+  mode: CrmSyncMode!
+  effectiveMode: CrmSyncMode!
+  configured: Boolean!
+  webhookEnabled: Boolean!
+  backfillDoneAt: DateTime
+  pending: Int!
+  failedLast7Days: Int!
+  sentLast24Hours: Int!
+  lastSentAt: DateTime
+  lastError: String
+  missingFields: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrmSyncMode!</b></code>](/reference/graphql/types/enums/crm-sync-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #mode */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>effectiveMode</b></code>](#effective-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrmSyncMode!</b></code>](/reference/graphql/types/enums/crm-sync-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #effective-mode */} 
+The mode the drain runs in: LIVE needs the CRM key here.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>configured</b></code>](#configured)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #configured */} 
+Whether this environment has the CRM key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>webhookEnabled</b></code>](#webhook-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #webhook-enabled */} 
+Whether the signed webhook is accepted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>backfillDoneAt</b></code>](#backfill-done-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #backfill-done-at */} 
+When the first LIVE backfill was queued; the daily reconcile waits for it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>pending</b></code>](#pending)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #pending */} 
+Records waiting to be sent.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>failedLast7Days</b></code>](#failed-last-7-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #failed-last-7-days */} 
+Records given up on in the last 7 days.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>sentLast24Hours</b></code>](#sent-last-24-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #sent-last-24-hours */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>lastSentAt</b></code>](#last-sent-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #last-sent-at */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #last-error */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncStatus.<b>missingFields</b></code>](#missing-fields)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #missing-fields */} 
+Fields or picklist values the CRM workspace lacks for LIVE (empty without a key); run scripts/twenty/ensure-schema.mjs.
+
+
+
+
+### Returned By
+
+[`crmSyncStatus`](/reference/graphql/operations/queries/crm-sync-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setCrmSync`](/reference/graphql/operations/mutations/set-crm-sync.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

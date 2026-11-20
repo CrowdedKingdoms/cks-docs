@@ -47,6 +47,13 @@ So in practice there is one model, and this page describes it.
   much of it is used (`usedUnits`) in `allowancePools`.
 - **Egress and ingress follow the organization's tier** from December 1, 2026; the
   rest of the quota is the same at every tier. See [Free data tiers](#free-data-tiers).
+- **An organization that cannot be charged may have 10 apps** (no spendable wallet
+  balance, no auto-billing): creating an 11th, or restoring an archived app past
+  10, is refused with `APP_LIMIT_REACHED` until it funds its wallet, turns on
+  auto-billing or archives an app. Archived apps don't count, and no app is ever
+  removed. `orgAppLimit(orgId)` reports the count, the funding and the cap. New
+  apps are created **unlisted**: the marketplace lists an app only once it is set
+  `PUBLIC` (`updateApp`).
 - `platformConfig.freeAppsPerOrg` (default **3**) is how many free app slots the
   deprecated `orgFreeAppQuota` counts; the slots were a count only and never
   changed what is free or billed.
@@ -56,11 +63,12 @@ So in practice there is one model, and this page describes it.
   100 KB between them, saving every 30 seconds, writes about 12 MB per hour of
   play, so the 3 GB covers roughly 250 hours a month. Writes are charged by the
   byte only; how many rows a save touches does not matter.
-- **ck-exec instance limits follow funding.** An app whose organization cannot be
+- **ck-exec instance limits follow funding.** An organization that cannot be
   charged (no spendable wallet balance, no auto-billing) may run **16 hub
-  instances reserving 1 GB of memory** per datacenter at once; an organization
-  that can be charged gets **16,384 instances and 64 GB**. Past either limit the
-  next instance is refused until some stop; running ones are left alone. See
+  instances reserving 1 GB of memory** per datacenter at once **across all of its
+  apps**; an organization that can be charged gets **16,384 instances and 64 GB
+  for each app**. Past either limit the next instance is refused until some stop;
+  running ones are left alone. See
   [limits](/exec/operations#usage-and-budgets).
 - **Stored input logs have no free allowance.** An app records nothing until an
   org member with `manage_apps` turns on replay logging
