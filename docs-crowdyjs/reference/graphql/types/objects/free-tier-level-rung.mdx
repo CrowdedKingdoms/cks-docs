@@ -1,0 +1,43 @@
+---
+id: free-tier-level-rung
+title: FreeTierLevelRung
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One rung of the free tier ladder.
+
+
+```graphql
+type FreeTierLevelRung {
+  level: FreeTierLevel!
+  gigabytes: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevelRung.<b>level</b></code>](#level)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>FreeTierLevel!</b></code>](/reference/graphql/types/enums/free-tier-level.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #level */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierLevelRung.<b>gigabytes</b></code>](#gigabytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #gigabytes */} 
+Free data out and free data in, each, a month, in GB (1 GB = 1,000,000,000 bytes).
+
+
+
+
+### Member Of
+
+[`FreeTierLevels`](/reference/graphql/types/objects/free-tier-levels.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

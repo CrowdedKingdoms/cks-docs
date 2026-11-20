@@ -210,7 +210,9 @@
       "orgCardRequirement",
       "freeTierLevels",
       "orgFreeTier",
-      "orgProjectProfile"
+      "orgProjectProfile",
+      "orgAppLimit",
+      "playerTrialPool"
     ]
   },
   "retired": {

@@ -1,0 +1,39 @@
+---
+id: set-org-free-tier-agreement
+title: setOrgFreeTierAgreement
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. Records a written agreement for a larger free allowance, for whole months starting next month or later, or revokes one (revoke: true with its startMonth). Recorded in billing&#x005F;rate&#x005F;changes (scope SHARED, metric free&#x005F;tier&#x005F;agreement); next month's level is checked again at once.
+
+
+```graphql
+setOrgFreeTierAgreement(
+  input: SetOrgFreeTierAgreementInput!
+): OrgFreeTier!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgFreeTierAgreement.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetOrgFreeTierAgreementInput!</b></code>](/reference/graphql/types/inputs/set-org-free-tier-agreement-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgFreeTier</b></code>](/reference/graphql/types/objects/org-free-tier.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Where an organization stands on the free tier ladder: this month's level, next month's, and which conditions it meets now. A level it reaches applies from the start of the next month.
