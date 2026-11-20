@@ -1,0 +1,39 @@
+---
+id: run-free-tier-check
+title: runFreeTierCheck
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. Runs the daily free tier check now, for one organization or all of them, writing next month's levels.
+
+
+```graphql
+runFreeTierCheck(
+  orgId: BigInt
+): FreeTierCheckResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>runFreeTierCheck.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+One organization; omit for all.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>FreeTierCheckResult</b></code>](/reference/graphql/types/objects/free-tier-check-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+What a free tier check did.

@@ -1,0 +1,48 @@
+---
+id: free-tier-check-result
+title: FreeTierCheckResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What a free tier check did.
+
+
+```graphql
+type FreeTierCheckResult {
+  checked: Int!
+  changed: Int!
+  failed: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierCheckResult.<b>checked</b></code>](#checked)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #checked */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierCheckResult.<b>changed</b></code>](#changed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #changed */} 
+Organizations whose next month's level moved.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeTierCheckResult.<b>failed</b></code>](#failed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #failed */} 
+
+
+
+
+
+### Returned By
+
+[`runFreeTierCheck`](/reference/graphql/operations/mutations/run-free-tier-check.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
