@@ -244,9 +244,20 @@ small game's hubs to run unfunded ([free tier](/management-api/shared-environmen
 interval, but a save identical to the one stored last is neither stored nor billed again, so an
 idle hub's state costs nothing more.
 
+**Reserved memory** is billed by the GB-hour: what each instance reserves, held for as long as
+it runs, whatever it uses. A hub reserves its type's `memory_mb` (64 by default), a spoke that
+times its copies (16 by default), so a spoke at the defaults reserves 1 GiB, and a player's mod
+32 MiB. An idle instance keeps its reservation until its `evict_after_ms` stops it (5 minutes by
+default). An organization's monthly free quota includes **730 GB-hours** of it for all its apps
+together, 1 GB held all month; a four-player Game Kit starter, about 576 MiB, stays inside it. To
+reserve less, give small hubs a smaller `memory_mb` and keep spokes' `concurrency` to what they
+need. An app that was already reserving memory in the month the rate was posted keeps it free
+until that month ends.
+
 Players' [mods](mods) are not in the app's usage or budget: each bills its owner's player
 wallet, and billing switches off only that owner's mods; see
-[who pays for a mod](mods#who-pays-for-a-mod).
+[who pays for a mod](mods#who-pays-for-a-mod). The memory a mod reserves is the exception: it
+counts toward the app's organization, like the app's own instances.
 
 ## Developer connections
 
