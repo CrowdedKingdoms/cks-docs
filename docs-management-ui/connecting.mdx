@@ -84,15 +84,15 @@ Do not commit live tokens or secrets to source control.
 
 The Management UI does not configure in-world data (grids, actors, chunks). That happens through the Game API after clients can reach the shared endpoint with a valid app token.
 
-## Org API tokens (automation)
+## Org API tokens (org-managed players)
 
-For server-side scripts (CI, custom studio backends):
+An org API token is for your organization's own server, when your game signs its own players in as [org-managed players](/management-api/org-managed-players):
 
 1. Open `/orgs/:orgSlug` and select the **Tokens** tab.
-2. Create an org API token with the permissions you need.
-3. Call Management API GraphQL with the token (same operations you can run in the UI when permitted).
+2. Create an org API token with the scope you need: `players:mint` to sign players in, `players:manage` to manage them.
+3. Call the managed-player fields with it (`mintManagedPlayerToken`, `provisionManagedPlayers`, `managedPlayers` and the others on that page), from your server only. Any other field answers `ORG_TOKEN_NOT_ALLOWED`.
 
-See [Account and org basics](/management-ui/readme) and the [Management API GraphQL reference](/management-api/reference/graphql-overview) for `createApp`, `mintAppToken`, and related types.
+For other server-side scripts (CI, custom studio backends), sign in with an account your studio holds and use its session token. See [Account and org basics](/management-ui/readme) and the [Management API GraphQL reference](/management-api/reference/graphql-overview) for `createApp`, `mintAppToken`, and related types.
 
 Keep tokens secret; rotation and least-privilege labels are your responsibility.
 

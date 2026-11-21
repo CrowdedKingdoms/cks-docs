@@ -39,6 +39,19 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-21 (corrections from the site review)
+
+- **`setPlayerRateMarkup`'s description is corrected** (Game API v2.82.1). It said markup income
+  "is paid out via the P4b payout ledger", and no payout exists. Markup income is credited to your
+  organization's wallet with each player charge, and wallet credit pays only for Crowded Kingdoms fees
+  (API Terms §4.17). How markup works did not change.
+- **Corrected in these docs:** a new password account confirms its email once before it can mint an
+  app token (the agent guide, the native-clients page, the load-testing page and the Unreal SDK's
+  sign-in table said it needs no inbox); an org token calls only the
+  [org-managed player](/management-api/org-managed-players) fields; self-serve dedicated environments
+  were retired, and private environments exist only by Enterprise Agreement; `createCheckout` takes an
+  `idempotencyKey`; and while an organization cannot be charged, its apps share one instance ceiling.
+
 ## 2026-11-21 (reserved memory is charged)
 
 - **The memory your compute modules reserve is charged by the GB-hour** (Game API v2.81.0 and

@@ -69,8 +69,9 @@ redirect; finish with `socialLoginComplete({ provider, code, state })`.
 
 **Email + password.** `register({ email, password })` creates the account and
 returns a session; `login({ email, password })` returns to an existing one. This
-is the path that needs no browser and no inbox, so it is usually the right one
-for a headless or automated client.
+is the path that needs no browser, so it is usually the right one for a headless
+or automated client. A password account made since 2026-11-11 confirms its email
+(one link) before it can mint an app token (`EMAIL_CONFIRMATION_REQUIRED`).
 
 :::caution[Register your native redirect URIs]
 The server validates `redirectUri` **origins** for magic-link and social flows.
