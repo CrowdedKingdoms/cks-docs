@@ -6,11 +6,11 @@ title: Overview
 
 # Overview
 
-Crowded Kingdoms provides APIs that individuals and studios can use to create online games with unlimited player density (UPD). There are **two**: one GraphQL API, and the replication (UDP) protocol. Your game's server code runs on **ck-exec**, which players call through a WebSocket gateway that the GraphQL API hands them.
+Crowded Kingdoms delivers massive scale for real-time virtual environments: one shared world, with no sharding and no instancing. Individuals and studios build on its APIs, and there are **two**: one GraphQL API, and the replication (UDP) protocol. Your game's server code runs on **ck-exec**, which players call through a WebSocket gateway that the GraphQL API hands them.
 
 The GraphQL API has two surfaces — **management** (identity, orgs, billing, app registry) and **game** (world data and realtime) — but they are one service at one endpoint, documented separately here because they are read at different times. What separates them is the token, not the host: sign-in yields an identity session token, and gameplay needs an app-scoped token minted from it.
 
-Customer apps run on a shared platform scoped by `appId`. An app lives in **one datacenter**, so the API tells your client which endpoint to use for that app rather than expecting you to know. Dedicated per-org environments were retired without replacement.
+Customer apps run on a shared platform scoped by `appId`. An app lives in **one datacenter**, so the API tells your client which endpoint to use for that app rather than expecting you to know. Self-serve dedicated environments were retired; private environments exist only by Enterprise Agreement.
 
 SDKs wrap these APIs in a more user-friendly interface and paradigm.
 
@@ -39,7 +39,7 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 - Use the game API to get assigned one or more Buddies
 - You communicate directly to the IP address given by the game API via unencrypted UDP
 - You'll use Buddy to send spatially routed messages from one client to some or all nearby clients
-- The revolution that now makes true single shard games with unlimited player density possible is that Buddy servers work together to spatially route an unlimited number of messages per second. If you build your game on top of this kind of replication layer, you'll be able to deliver the necessary information to each client to render a virtually unlimited number of objects in your player's field of view.
+- What makes one shared world possible at this density is that Buddy servers work together to route messages spatially, so each client receives what is near it. In the September 20–21, 2026 load test, 7,500 clients in one dense space ran on 44 servers and 100,000 spread-out clients on 61, with zero dropped frames; the dense test stopped at a cloud quota, not at the cluster.
 
 ### ck-exec
 - Runs your game's server code: hubs that hold state and spokes that scale out, written in Rust and built to WebAssembly on the platform
