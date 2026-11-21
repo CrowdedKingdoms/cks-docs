@@ -9,18 +9,18 @@ title: Rate limits and query cost
 
 The public GraphQL APIs do **not** currently enforce a published per-key rate limit, and
 they do **not** return rate-limit headers or an `extensions.cost` budget on responses.
-There is no documented max query depth or complexity today. If and when limits are
-introduced, they will be documented here and announced in the
-[changelog](/releases/intro) before enforcement.
+There is no documented max query depth or complexity today. If limits are introduced,
+this page and the [changelog](/releases/intro) will describe them.
 
 This does not mean "unlimited" — treat the platform as a shared service and design for
 back-pressure:
 
 - **Back off on errors.** On `INTERNAL_SERVER_ERROR` or a transport failure, retry with
   exponential backoff and jitter. Do **not** tight-loop retry.
-- **Do not blind-retry economy mutations.** `createCheckout` and similar mutations are
-  not idempotent yet, so an aggressive retry can double-create. See
-  [Error codes](/overview/error-codes).
+- **Do not blind-retry economy mutations.** Send an `idempotencyKey` where a mutation
+  takes one (`createCheckout` takes it in its input): a retry with the same key and the
+  same input returns the first result instead of opening a second checkout. A retry
+  without one can double-create. See [Error codes](/overview/error-codes).
 - **Batch reads** with pagination (see [Pagination](/overview/pagination)) instead of
   many tiny requests.
 
@@ -33,9 +33,11 @@ long to wait. The limit is kept per host, so a player connected to hubs on two h
 120 on each, and calls between instances don't count.
 
 A player also holds at most **16 connections** to one app through a host; the 17th is
-answered `HTTP 429` before any socket opens. An app runs as many instances at once as its
-organization's funding allows (**16** while it cannot be charged, **16,384** once it can),
-mods included, and a call that would start another is answered `Unavailable`. One player's
+answered `HTTP 429` before any socket opens. How many instances run at once depends on the
+organization's funding: while it cannot be charged, **all of its apps together** get **16**
+per datacenter (reserving at most 1 GB); once it can, each app gets **16,384**. Mods count
+too, and a call that would start one more is answered `Unavailable` (see
+[ck-exec operations](/exec/operations)). One player's
 own calls hold at most **64** of them at once (ck-exec 0.17); past it their next new key is
 answered `Unavailable` while other players still place. A text
 message closes the connection, because the protocol is binary. See

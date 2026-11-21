@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Set the app's player rate-card markup (0..10000 basis points on the platform base price). Markup income accrues per charge to the org's income line and is paid out via the P4b payout ledger. Requires 'manage&#x005F;billing'.
+Set the app's player rate-card markup (0..10000 basis points on the platform base price). Markup income is credited to the organization's wallet with each player charge; wallet credit pays only for Crowded Kingdoms fees and is not paid out (API Terms §4.17). Requires 'manage&#x005F;billing'.
 
 
 ```graphql
