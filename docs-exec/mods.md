@@ -243,9 +243,11 @@ A mod bills its **owner**, not the app. Its compute is metered per owner and cha
 owner's [player wallet](/management-api/player-billing) at the player rate card, once the
 owner's monthly trial is used (250,000 compute units a month: in each app until November 30,
 2026, then one trial across all of an organization's apps). What its realtime streams
-send counts as the owner's player egress. The app's
-organization pays nothing for the mods its players run, and they don't count against the
-app's budget. A CLIENT half runs on the visitor's own hardware.
+send counts as the owner's player egress. The one exception is the memory a mod reserves,
+32 MiB while it runs: it counts toward the app's organization, in its reserved memory
+([Usage and budgets](operations#usage-and-budgets)). Otherwise the app's organization pays
+nothing for the mods its players run, and they don't count against the app's budget. A
+CLIENT half runs on the visitor's own hardware.
 
 When the owner's wallet is empty, or they reach a spend cap they set, billing switches that
 owner's mods off in that app. It uses the kill ladder: `execModSwitches` shows a `PLAYER`

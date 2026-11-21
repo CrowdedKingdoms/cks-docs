@@ -16,7 +16,11 @@ two halves that speak one protocol.
   NPCs and players' pets; and the genre starters (0.11.0): leaderboards, card tables, grid
   battles, waves and bosses, duels, private runs, arenas, races and ball games, control points
   and shrinking circles; and the economy (0.12.0): each player's own hub and markets. Each
-  starter is an ordinary hub crate: read it, copy it, replace its rules with your game's.
+  starter is an ordinary hub crate: read it, copy it, replace its rules with your game's. The
+  starters set no `memory_mb`, so each running hub reserves 64 MiB: a four-player game with a
+  world, a queue, a session, an area, a leaderboard and its players' hubs runs about nine,
+  about 576 MiB, which your organization's monthly 730 GB-hours of reserved memory covers
+  ([usage and budgets](/exec/operations#usage-and-budgets)).
 - **The client half** is the `kit` of each SDK: [CrowdyJS](/crowdyjs/intro)'s `client.kit(appId)`,
   [CrowdyCPP](/crowdycpp/intro)'s `makeKit(client, appId)` and [CrowdyPy](/crowdypy/intro)'s
   `client.kit(app_id)`. Each has the same modules, so a CrowdyJS player and a CrowdyPy bot play the
