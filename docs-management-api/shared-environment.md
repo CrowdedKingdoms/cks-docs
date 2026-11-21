@@ -29,9 +29,11 @@ So in practice there is one model, and this page describes it.
   three apps' quotas however many apps it has: **15 GB of client egress**,
   **15 GB of client ingress** (decimal GB: 1 GB = 1,000,000,000 bytes),
   **60 CPU-hours of compute** pooled across GraphQL resolvers and your apps'
-  [ck-exec](/exec/intro) code, **3 GB-months of stored data**, and **3 GB of
-  compute-module writes** (what your hubs write when they save their state). Any
-  app may use all of it, and making more apps does not add to it. Usage is set
+  [ck-exec](/exec/intro) code, **3 GB-months of stored data**, **3 GB of
+  compute-module writes** (what your hubs write when they save their state), and
+  **730 GB-hours of reserved memory** (what your compute modules reserve: 1 GB held
+  all month, for the whole organization). Any app may use all of it, and making
+  more apps does not add to it. Usage is set
   against what is left as it arrives, and what an app has used free stays free;
   once the quota is used up, every app's usage is billed from the organization
   wallet. Egress is the headline number and the one most games reach first.
@@ -63,13 +65,25 @@ So in practice there is one model, and this page describes it.
   100 KB between them, saving every 30 seconds, writes about 12 MB per hour of
   play, so the 3 GB covers roughly 250 hours a month. Writes are charged by the
   byte only; how many rows a save touches does not matter.
+- **Reserved memory is what your instances hold, whatever they use.** Each running
+  hub reserves its type's memory limit (64 MiB unless the manifest sets
+  `memory_mb`), a spoke that times its copies (16 by default), and a player's mod
+  32 MiB, until the instance stops. Your players' mods count toward your
+  organization's reserved memory, although their CPU bills their own wallets. A
+  four-player Game Kit starter reserves about 576 MiB, about 440 GB-hours a month,
+  inside the quota. An app that was already reserving memory in the month the rate
+  was posted keeps it free until that month ends. See
+  [Usage and budgets](/exec/operations#usage-and-budgets).
 - **ck-exec instance limits follow funding.** An organization that cannot be
   charged (no spendable wallet balance, no auto-billing) may run **16 hub
   instances reserving 1 GB of memory** per datacenter at once **across all of its
   apps**; an organization that can be charged gets **16,384 instances and 64 GB
   for each app**. Past either limit the next instance is refused until some stop;
   running ones are left alone. See
-  [limits](/exec/operations#usage-and-budgets).
+  [limits](/exec/operations#usage-and-budgets). An organization that holds its whole
+  1 GB ceiling all month reserves about 780 GB-hours, a little more than the quota,
+  so without a funded wallet its apps are refused near the end of a 30- or 31-day
+  month.
 - **Stored input logs have no free allowance.** An app records nothing until an
   org member with `manage_apps` turns on replay logging
   (`replayLoggingEnabled: true` on `updateApp`), which is refused with
@@ -79,7 +93,7 @@ So in practice there is one model, and this page describes it.
   second for a connected player who does nothing), and recordings already kept go
   on being billed after it is turned off, until they age out. See
   [Input logging](/replication-api/input-logging).
-- **You are billed for bytes, CPU and storage — never for counts.** A datagram,
+- **You are billed for bytes, CPU, storage and reserved memory — never for counts.** A datagram,
   an API operation, a notification or a row a hub writes is paid for by the bytes
   it moves or writes and the CPU it takes; there is no per-message,
   per-operation, per-notification or per-row rate on the card (the message and
@@ -101,7 +115,8 @@ So in practice there is one model, and this page describes it.
 ### Free data tiers
 
 An organization's free egress and free ingress a month, each, follow its tier.
-Compute, stored data and compute-module writes are the same at every tier.
+Compute, stored data, compute-module writes and reserved memory are the same at
+every tier.
 
 | Tier | Egress and ingress, each, a month | Condition |
 |---|---|---|

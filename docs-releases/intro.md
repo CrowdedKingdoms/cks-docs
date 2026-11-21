@@ -39,6 +39,22 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-21 (reserved memory is charged)
+
+- **The memory your compute modules reserve is charged by the GB-hour** (Game API v2.81.0 and
+  v2.82.0, ck-exec 0.23). Each running instance reserves its `memory_mb` times its copies (a hub 64 MiB
+  by default, a spoke 16 copies of that, a player's mod 32 MiB) for as long as it runs, whatever it
+  uses. Your organization gets **730 GB-hours** a month free across all its apps, 1 GB held all month;
+  above it, reserved memory costs $0.0175 a GB-hour. Your players' mods count toward your organization
+  here, although their CPU bills their own wallets. An app that was already reserving memory in the
+  month the rate was posted keeps it free until that month ends. See
+  [Usage and budgets](/exec/operations#usage-and-budgets).
+- **The rate card says which allowance is the organization's** (Game API v2.81.0).
+  `meteredRateCard` adds `allowancePerOrganization`, true for `wasm_memory_reserved`, whose
+  `freeUnits` (byte-seconds; 3,600,000,000,000 is a GB-hour) is the organization's already. Every
+  other allowance is one app's, and an organization's apps share `allowancePool.factor` times it.
+  `orgUsageProjection.allowancePools` lists reserved memory with its pool and what is used.
+
 ## 2026-11-20 (organizations without a funded wallet; the second data-out band)
 
 - **New apps are unlisted** (Game API v2.80.0). `createApp` creates an app `UNLISTED` unless
