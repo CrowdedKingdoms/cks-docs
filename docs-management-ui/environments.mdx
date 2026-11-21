@@ -76,13 +76,13 @@ Top up or configure auto-billing from the org **Wallet** tab before heavy testin
 ## Permissions and tokens
 
 - **Org members** manage apps through the UI according to org RBAC.
-- **Org API tokens** (created under the org **Tokens** tab) can call the same Management API mutations your user can, for automation — see the [Management API schema reference](/management-api/reference/graphql-overview) for `createApp`, `mintAppToken`, and related types.
+- **Org API tokens** (created under the org **Tokens** tab) are for your organization's own server, and they call only the [org-managed player](/management-api/org-managed-players) fields (scopes `players:mint` and `players:manage`); any other field answers `ORG_TOKEN_NOT_ALLOWED`. For other automation, such as `createApp` or `mintAppToken`, sign in with an account your studio holds — see the [Management API schema reference](/management-api/reference/graphql-overview).
 
-Keep tokens secret; they grant org-level power equivalent to a highly privileged member.
+Keep org tokens secret: whoever holds one can sign in and manage your organization's managed players.
 
 ## Dedicated environments (not self-service)
 
-**Dedicated** and **developer sandbox** stacks (isolated Game API + database + Buddy per org) were **retired without replacement** — not moved behind the operator console. There is no per-tenant stack to provision and no API for one. Contact Crowded Kingdoms if you need enterprise isolation.
+Self-serve **dedicated** and **developer sandbox** stacks (an isolated Game API, database and realtime servers per org) were retired; private environments exist only by Enterprise Agreement. There is no per-tenant stack to provision yourself and no API for one. Contact Crowded Kingdoms if you need one.
 
 - Customer integration docs: **[Shared environment & billing](/management-api/shared-environment)** and **[CrowdyJS → Loading an app's Game API](/crowdyjs/shared-environment-routing)**.
 - Every app uses the shared platform (`publishAppToShared`); customer-provisioned environments were retired.

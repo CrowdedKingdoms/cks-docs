@@ -15,7 +15,7 @@ GraphQL/HTTP API for Crowded Kingdoms **management** concerns:
 | Apps marketplace | Apps metadata, access tiers, `app_user_access` grants, purchases. |
 | Runtime catalog | `runtimePermissions` query — keys that can be assigned on tiers (not grid grants). |
 | Billing | Wallets, transactions, budgets, quotas, Stripe/PayPal checkouts. |
-| Hosting | Publish an app to the shared platform (`publishAppToShared`) and read its routing fields. Customer-provisioned environments were retired without replacement. |
+| Hosting | Publish an app to the shared platform (`publishAppToShared`) and read its routing fields. Self-serve customer environments were retired; private environments exist only by Enterprise Agreement. |
 
 Runtime game data (chunks, voxels, actors, grids, grid permissions, UDP) lives in the **[Game API](/game-api/intro)**, not here. Studio tools that configure grids must call the app’s **game API** GraphQL endpoint (`gameApiUrl`), not the management endpoint.
 
@@ -37,7 +37,7 @@ Every app runs on the **shared platform**. Publish it with `publishAppToShared` 
 
 See **[Shared environment & billing](/management-api/shared-environment)** for the model and the free allowances, or the **[portal guide](/management-ui/environments)** for the same thing in the Management UI.
 
-The customer-provisioned environment surface — `environmentDatacenters`, `environmentFlavors`, `environmentQuote`, `createEnvironment`, `orgEnvironment`, `linkAppToEnvironment`, `redeployEnvironment` — was **retired without replacement** and is not in the published SDL. Every app uses the shared platform (`publishAppToShared`).
+The customer-provisioned environment surface — `environmentDatacenters`, `environmentFlavors`, `environmentQuote`, `createEnvironment`, `orgEnvironment`, `linkAppToEnvironment`, `redeployEnvironment` — was **retired** and is not in the published SDL; private environments exist only by Enterprise Agreement. Every app uses the shared platform (`publishAppToShared`).
 
 ## Schema reference
 

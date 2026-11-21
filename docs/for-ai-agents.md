@@ -49,8 +49,10 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   password (`register` for a new account, `login` for an existing one), a magic
   link (`requestLoginLink` → `completeLoginLink`), or a social provider
   (`socialLoginStart` → `socialLoginComplete`; enabled providers in
-  `availableLoginProviders`). **Password is the one that needs no inbox and no
-  browser**, so it is usually the right choice for an agent.
+  `availableLoginProviders`). **Password is the one that needs no browser**, so it is
+  usually the right choice for an agent. It needs an inbox once: a password account made
+  since 2026-11-11 confirms its email (one link) before it can mint an app token
+  (`EMAIL_CONFIRMATION_REQUIRED`); its session token works for management calls before that.
   That session token is a **management-plane** credential and is **rejected for
   gameplay**; the Game API + realtime/UDP surface require an **app-scoped token**
   confined to one app. Mint one from the session token with
@@ -115,7 +117,8 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
 Use **production**, as any developer does: sign in, create an org and an app (the free
 tier covers it), and obtain your identity session token (then `mintAppToken` per app for
 gameplay). `register(registerUserInput:{ email, password })` gives an agent a session in
-one call and needs no inbox — see [Sign in](/management-api/authentication).
+one call; the account confirms its email (one link) before it can mint an app token for
+gameplay — see [Sign in](/management-api/authentication).
 Crowded Kingdoms' `dev` and `test` environments are internal and refuse outside accounts
 with `TIER_ACCESS_REQUIRED`.
 
@@ -139,6 +142,8 @@ mutation Register {
 # 2) Mint an app-scoped token (Management API, session token as the Bearer). Use THIS
 #    token for every Game API HTTP request and the realtime connection_init. (Browser
 #    games at a different origin use the PKCE portal flow instead — see CrowdyJS.)
+#    A password account made since 2026-11-11 confirms its email first, or this answers
+#    EMAIL_CONFIRMATION_REQUIRED.
 mutation Enter {
   mintAppToken(input: { appId: "1" }) {
     token expiresAt gameApiUrl gameApiWsUrl discoveryUrl
