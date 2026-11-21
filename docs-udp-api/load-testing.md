@@ -74,7 +74,10 @@ caps deliberately before testing on shared production capacity.
 
 Registration also sends one confirmation email per new account; with the
 default plus-addressing pattern they all land in the base inbox on the first
-run. Confirmation is not required for the test to run.
+run. A password account made since 2026-11-11 gets no app token until it
+confirms its email (`mintAppToken` answers `EMAIL_CONFIRMATION_REQUIRED`), so
+open the links in that inbox before the measured run, or run with accounts made
+before that date.
 
 ## Install and run
 

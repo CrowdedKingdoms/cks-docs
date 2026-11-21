@@ -1,0 +1,48 @@
+---
+id: org-free-tier-condition
+title: OrgFreeTierCondition
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One earned level and whether its condition is met now.
+
+
+```graphql
+type OrgFreeTierCondition {
+  level: FreeTierLevel!
+  gigabytes: Int!
+  met: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTierCondition.<b>level</b></code>](#level)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>FreeTierLevel!</b></code>](/reference/graphql/types/enums/free-tier-level.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #level */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTierCondition.<b>gigabytes</b></code>](#gigabytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #gigabytes */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTierCondition.<b>met</b></code>](#met)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #met */} 
+
+
+
+
+
+### Member Of
+
+[`OrgFreeTier`](/reference/graphql/types/objects/org-free-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

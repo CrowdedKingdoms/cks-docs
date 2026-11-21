@@ -30,6 +30,7 @@ type PublicRateCardEntryType {
   freePerMonth: BigInt
   freeUnits: BigInt
   freePeriod: AllowancePeriod
+  allowancePerOrganization: Boolean!
   priceBands: [RateCardBandType!]
   priceBandBasis: PriceBandBasis
 }
@@ -67,7 +68,7 @@ Raw metric units free per clock hour before anything is charged, as a BigInt dec
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #free-per-month */} 
-Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
+Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the monthly trial budget of a player: in each app, or one across the apps of an organization from playerTrialPool.perOrganizationFrom. Null when this dimension has no monthly allowance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freeUnits</b></code>](#free-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #free-units */} 
@@ -76,6 +77,10 @@ The allowance as the biller reads it: raw metric units free per freePeriod, as a
 
 #### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freePeriod</b></code>](#free-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AllowancePeriod</b></code>](/reference/graphql/types/enums/allowance-period.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #free-period */} 
 The period freeUnits resets on. Every dimension is billed as its period aggregate crosses each whole cent, within about a minute of the usage arriving.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>allowancePerOrganization</b></code>](#allowance-per-organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #allowance-per-organization */} 
+True when freeUnits is already the whole organization's allowance, shared by its apps: wasm&#x005F;memory&#x005F;reserved (reserved compute-module memory). False on every other dimension, whose allowance is one app's; in a pooled month an organization's apps share allowancePool.factor times it.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>priceBands</b></code>](#price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RateCardBandType!]</b></code>](/reference/graphql/types/objects/rate-card-band-type.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> {/* #price-bands */} 

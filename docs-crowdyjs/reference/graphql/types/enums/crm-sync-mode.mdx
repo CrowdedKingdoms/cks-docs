@@ -1,0 +1,48 @@
+---
+id: crm-sync-mode
+title: CrmSyncMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. The Twenty sync's mode: OFF queues nothing; SHADOW queues and builds each record and sends nothing; LIVE writes to the CRM (and acts as SHADOW where this environment has no key).
+
+
+```graphql
+enum CrmSyncMode {
+  OFF
+  SHADOW
+  LIVE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncMode.<b>OFF</b></code>](#off) {/* #off */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncMode.<b>SHADOW</b></code>](#shadow) {/* #shadow */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrmSyncMode.<b>LIVE</b></code>](#live) {/* #live */} 
+
+
+
+
+
+### Member Of
+
+[`CrmSyncStatus`](/reference/graphql/types/objects/crm-sync-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SetCrmSyncInput`](/reference/graphql/types/inputs/set-crm-sync-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

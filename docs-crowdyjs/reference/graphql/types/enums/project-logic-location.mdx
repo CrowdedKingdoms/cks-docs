@@ -1,0 +1,48 @@
+---
+id: project-logic-location
+title: ProjectLogicLocation
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where the game's logic runs: on the clients, in light server code, or in a full server simulation.
+
+
+```graphql
+enum ProjectLogicLocation {
+  CLIENTS
+  LIGHT_SERVER_CODE
+  FULL_SERVER_SIMULATION
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectLogicLocation.<b>CLIENTS</b></code>](#clients) {/* #clients */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectLogicLocation.<b>LIGHT&#x005F;SERVER&#x005F;CODE</b></code>](#light-server-code) {/* #light-server-code */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectLogicLocation.<b>FULL&#x005F;SERVER&#x005F;SIMULATION</b></code>](#full-server-simulation) {/* #full-server-simulation */} 
+
+
+
+
+
+### Member Of
+
+[`OrgProjectProfile`](/reference/graphql/types/objects/org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SetOrgProjectProfileInput`](/reference/graphql/types/inputs/set-org-project-profile-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
