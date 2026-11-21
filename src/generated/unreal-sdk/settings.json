@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-18T18:14:04Z",
-  "sdk_version": "2.26.0",
+  "generated_from": "2026-11-21T00:19:32Z",
+  "sdk_version": "2.27.0",
   "table": "settings",
   "columns": [
     {
@@ -553,6 +553,102 @@
       "config": true,
       "written_by": "you",
       "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoiceDeveloperSettings::PlaybackMode",
+      "class": "UCrowdyVoiceDeveloperSettings",
+      "property": "PlaybackMode",
+      "type": "ECrowdyVoicePlaybackMode",
+      "category": "Playback",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyVoice",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoiceDeveloperSettings::MaxSpeakers",
+      "class": "UCrowdyVoiceDeveloperSettings",
+      "property": "MaxSpeakers",
+      "type": "int32",
+      "category": "Playback",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyVoice",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoiceDeveloperSettings::Attenuation",
+      "class": "UCrowdyVoiceDeveloperSettings",
+      "property": "Attenuation",
+      "type": "TSoftObjectPtr<USoundAttenuation>",
+      "category": "Playback",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyVoice",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoiceDeveloperSettings::OcclusionChecksPerSecond",
+      "class": "UCrowdyVoiceDeveloperSettings",
+      "property": "OcclusionChecksPerSecond",
+      "type": "int32",
+      "category": "Playback",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyVoice",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoiceDeveloperSettings::PlayoutDelayMs",
+      "class": "UCrowdyVoiceDeveloperSettings",
+      "property": "PlayoutDelayMs",
+      "type": "int32",
+      "category": "Playback",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyVoice",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoiceDeveloperSettings::SilenceGateDb",
+      "class": "UCrowdyVoiceDeveloperSettings",
+      "property": "SilenceGateDb",
+      "type": "float",
+      "category": "Microphone",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyVoice",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoiceDeveloperSettings::SilenceHoldMs",
+      "class": "UCrowdyVoiceDeveloperSettings",
+      "property": "SilenceHoldMs",
+      "type": "int32",
+      "category": "Microphone",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyVoice",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVoiceDeveloperSettings::BitrateBps",
+      "class": "UCrowdyVoiceDeveloperSettings",
+      "property": "BitrateBps",
+      "type": "int32",
+      "category": "Microphone",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyVoice",
       "editor": false,
       "allowlist": ""
     }

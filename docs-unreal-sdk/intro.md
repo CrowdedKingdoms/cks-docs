@@ -9,17 +9,17 @@ description: What the Crowdy Unreal SDK is, the two planes of state it is built 
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.26**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.27**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
-## What 2.26 changes
+## What 2.27 changes
 
-2.26 breaks: a project on 2.25 needs changes before it compiles. Follow the plugin's `MIGRATION.md` step by step, including the steps to take on 2.25.x before you upgrade.
+Nothing breaks in Blueprint beyond a new **Limit Reached** pin to wire; a few C++ calls take one more argument. Follow the plugin's `MIGRATION.md`.
 
-- **The host and the deprecated surface are gone.** Everything 2.25 deprecated is deleted, and the role Host Owned is World Owned. [Removed after 2.25](./guides/deprecated.md) lists each item and what replaces it.
-- **A player's actor id is random and new at each sign-in.** The live pawn re-keys to it, and [Resolve Actor Owner](./services/player-safety.md#find-out-who-a-player-is) finds the user behind an actor id. See [Identity policies](./concepts/entities-identity-ownership.md#identity-policies).
-- **The writer and the owner user.** An entity's owner id is now its writer id, and every entity names its owner's user id. A client on 2.26 cannot play with an older one.
-- **Deploy your server code again.** The [Leader](./runtime/leader.md) publishes the actor id it writes under, through the SDK's changed Leader type.
-- **Voxels, claims and mods.** [Voxel Chunks](./runtime/voxel-chunks.md) with a live voxel world, [Chunk Claims](./runtime/chunk-claims.md), [Mods](./runtime/mods.md) and [Mod Scripts](./runtime/mod-scripts.md), [Video Frames](./runtime/video-frames.md) and the [Studio Dock](./runtime/studio-dock.md).
+- **Reach is set per map.** The [map profile](./runtime/map-profile.md) sets Movement Distance (8 chunks), Voice Distance (1 chunk, was 8), Emote Distance, Snap Distance and the new Movement Decay, and a Crowdy State change reaches 8 chunks (was 4).
+- **A teleport no longer glides.** Other players' copies snap to an update that lands farther than Snap Distance from the one before, on the actor pool and on Mass crowd rows. See [Continuous state](./runtime/continuous-state.md).
+- **Voice is heard the way you choose.** Flat or spatial playback, the nearest speakers instead of the first 16, and per-player mute and volume by user id. See [Voice chat](./services/voice-chat.md).
+- **Channel voice.** Hear a channel's members wherever they are and, in Talk mode, talk to them; an audience joins in Listen mode. See [Talk to a channel](./services/voice-chat.md#talk-to-a-channel).
+- **A full channel or team** fails with **Limit Reached**. See [Channels](./runtime/channels.md).
 
 [What's Changed](./guides/whats-changed.md) has the full list.
 
