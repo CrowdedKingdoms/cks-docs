@@ -39,6 +39,25 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-21 (your own voice and video stop coming back; keep-alives count as data in)
+
+Replication API v0.48.0. The capabilities flags are in
+[Wire formats](/replication-api/wire-formats#signed-bundles--message_bundle_signed-30-and-client_capabilities-29).
+
+- **A speaker is no longer sent its own spatial voice and video.** A `CLIENT_AUDIO_PACKET_2` or `CLIENT_VIDEO_PACKET_2`
+  used to come back to its sender when the sender was in range, and that copy counted as data out. Now the sender gets
+  it only when its `CLIENT_CAPABILITIES` sets bit 2 (`OWN_MEDIA_ECHO`). Every other message still comes back to its
+  sender, and channel audio never did. **What you do:** nothing, unless your game checks the microphone or camera by
+  playing back what came round. Then ask for the copy during the check and stop after it: `game.udp.setOwnMediaEcho`
+  in CrowdyJS 18.37.0 (or `realtime.ownMediaEcho` to start with it), `Connection::setOwnMediaEcho` in CrowdyCPP
+  0.90.0 (or `Config::ownMediaEcho`), `client.udp.set_own_media_echo` in CrowdyPy 0.37.0 (or `own_media_echo=True` on
+  `connect`). The Unreal SDK's **Toggle Owner Echo** needs a plugin release that asks; until then it plays nothing on
+  these servers.
+- **Keep-alives count as data in.** Actor heartbeats (`CLIENT_ACTOR_HEARTBEAT`) and capabilities messages now count as
+  the app's ingress, as the [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) says. Until
+  now the servers did not count them. An idle player who sends a heartbeat every 2 s sends about 0.3 MB an hour. The
+  servers do not count keep-alives while the app is paused for funds.
+
 ## 2026-11-21 (Unreal SDK v2.27.0: map settings for reach, channel voice, and copies that snap across a teleport)
 
 Voice reaches one chunk by default and Crowdy State eight, voice can go to a channel's members, and a teleport no longer glides. Per-item detail:

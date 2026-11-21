@@ -48,10 +48,14 @@ await game.udp.sendAudioPacket({
 });
 ```
 
-Your own packets come back to you only when your actor is near the target
-chunk, so an echo is not an acknowledgment (and the receive handler below skips
-your own uuid). Prefer the fire-and-forget send; a refusal arrives as a
-correlated `GenericErrorResponse`. Enable `realtime.binaryTransport: true`
+From replication server v0.48.0 your own packets do not come back to you, so
+you no longer pay data out for a copy that only a microphone check uses. To check the microphone by
+hearing yourself, call `game.udp.setOwnMediaEcho(true)` for the check and
+`setOwnMediaEcho(false)` after it (CrowdyJS 18.37.0, binary relay;
+`realtime.ownMediaEcho: true` starts with it on). Even then a copy comes back
+only when your actor is near the target chunk, so it is not an acknowledgment
+(and the receive handler below skips your own uuid). Prefer the fire-and-forget
+send; a refusal arrives as a correlated `GenericErrorResponse`. Enable `realtime.binaryTransport: true`
 when `gameClientBootstrap.binaryRelayEnabled` is true so voice (and video)
 does not ride one GraphQL mutation per frame.
 

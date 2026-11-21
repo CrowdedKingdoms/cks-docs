@@ -163,7 +163,9 @@ delivers to your clients, and ingress, the bytes your clients send to it (priced
 since 2026-09-06). Volume is measured as wire bytes at the network interface, so it includes the transport and network
 headers each frame carries, and it is counted after any compression the service
 applies. A `MESSAGE_BUNDLE` datagram carrying several messages is one frame and is
-metered once, in either direction. A client-side byte counter will not match it. The full basis is in the
+metered once, in either direction. Keep-alives count as ingress too (from replication
+server v0.48.0): an idle player sending a heartbeat every 2 s sends about 0.3 MB an
+hour. A client-side byte counter will not match it. The full basis is in the
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
 
 **Estimating a game's bill.** The pricing page's
