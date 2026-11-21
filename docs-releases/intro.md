@@ -39,6 +39,40 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-21 (Unreal SDK v2.27.0: map settings for reach, channel voice, and copies that snap across a teleport)
+
+Voice reaches one chunk by default and Crowdy State eight, voice can go to a channel's members, and a teleport no longer glides. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-21-sdk-v2270).
+
+- **Movement Distance on the map profile** sets how far an entity's movement travels. The default, Eight Chunks, is what
+  it was. Keep it at least as large as **Voice Distance** and **Relevance Distance**, which now also defaults to Eight
+  Chunks, up from four, so Crowdy State changes reach twice as far.
+- **Movement Decay on the map profile** (default No Decay) thins movement updates with distance. A steep decay at long
+  range can make far copies time out, because a copy is removed after 12 s without an update and an idle player sends
+  only a keyframe every 3 s. The SDK warns at startup when that is expected.
+- **Voice Distance on the map profile is one chunk, not eight.** **Set Voice Chat Distance** now replaces every
+  map's distance until the new **Reset Voice Chat Distance** goes back to the current map's. Set **Voice Distance**
+  on a map that needs more.
+- **Emote Distance on the map profile** sets how far an emote travels. The default, Two Chunks, is unchanged.
+- **Snap Distance on the map profile** (default 10 m): other players' copies jump to an update that lands farther than
+  this from the one before instead of gliding, so a teleport shows as one. Anything faster than 100 m/s at the default
+  Send Rate snaps on every update. Nothing to do for characters; raise it on a map with very fast movers.
+- **A player who arrives in another chunk and stands still is seen there within half a second**: the update that
+  changes chunk is sent again 0.5 s later, so one lost update no longer leaves them where they were until the keyframe.
+- **A remote copy on the actor pool is drawn at most one update interval past its newest update**, down from 0.2 s.
+  Nothing to do.
+- **A Crowdy Voice settings page, with flat or spatial playback.** Project Settings, Plugins, **Crowdy Voice** sets
+  Playback Mode (Flat (2D) by default, or Spatial (3D), played from where the speaker is drawn), Max Speakers,
+  Attenuation, Occlusion Checks Per Second, Playout Delay, Silence Gate, Silence Hold and Bit Rate. Keep Movement Distance at least as large as
+  Voice Distance for spatial voice.
+- **The nearest speakers are heard**, up to Max Speakers (16 by default), instead of the first 16 to speak.
+- **Voice to a channel's members**, wherever they are, with **Start Channel Voice** (Talk, or Listen for an audience),
+  plus mute and volume per channel.
+  Sending needs the new **Send Voice** permission; **Create Channel** gains **Members Can Speak** (a C++ call to
+  `CreateChannel` takes one more argument). Channel and team errors gain **Limit Reached**.
+- **Mute or turn down one player's voice** by user id with **Set Voice Speaker Muted** and **Set Voice Speaker Volume**;
+  it holds through that player's next sign-in and across map changes. Nothing to do.
+
 ## 2026-11-21 (corrections from the site review)
 
 - **`setPlayerRateMarkup`'s description is corrected** (Game API v2.82.1). It said markup income

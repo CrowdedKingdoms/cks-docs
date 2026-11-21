@@ -12,7 +12,7 @@ void ALanternGuestbook::BeginPlay()
 	Super::BeginPlay();
 	UCrowdyModScripts* Scripts = GetWorld()->GetSubsystem<UCrowdyModScripts>();
 	Scripts->SetHost(TScriptInterface<ICrowdyModScriptHost>(this));
-	Scripts->OnModScriptPrompt.AddDynamic(this, &ALanternGuestbook::OnModScriptPrompt);
+	Scripts->OnModScriptPrompt.AddDynamic(this, &ALanternGuestbook::AnswerPlotPrompt);
 	OnActorBeginOverlap.AddDynamic(this, &ALanternGuestbook::EnterPlot);
 	OnActorEndOverlap.AddDynamic(this, &ALanternGuestbook::LeavePlot);
 }

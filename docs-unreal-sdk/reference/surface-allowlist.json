@@ -86,7 +86,12 @@
   { "id": "UCrowdyVideoSender::HandleSendRefused", "reason": "internal", "note": "The sender's binding to the realtime registry's refusals." },
   { "id": "UCrowdyVideoSender::FrameIdSeedAt", "reason": "internal", "note": "The first frame id a sender uses, public so headless tests can check the wrap." },
   { "id": "UCrowdyProximityChat::EnsureSubscription", "reason": "internal", "note": "Subscribes the subsystem to received lines; UCrowdySDKSubsystem calls it when it creates the realtime registry." },
-  { "id": "FCrowdyVoiceSpeakerStream", "reason": "internal", "note": "One remote speaker's playback (a procedural wave and a 2D audio component) that UVoiceChatSubsystem keeps for itself." },
+  { "id": "FCrowdyVoiceSpeakerStream", "reason": "internal", "note": "One remote speaker's playback (a procedural wave and an audio component, 2D or following the speaker) that UVoiceChatSubsystem keeps for itself." },
+  { "id": "FSpeakerInfo", "reason": "internal", "note": "UVoiceChatSubsystem's private record of one speaker stream: who it is, where it was sent from and whether its user is known." },
+  { "id": "UVoiceChatSubsystem::AdmitsSpeaker", "reason": "internal", "note": "The rule for whether a speaker's packets play while players are muted, public so headless tests can state it; voice-chat documents the behaviour." },
+  { "id": "UVoiceChatSubsystem::ChannelStreamKey", "reason": "internal", "note": "The key a channel speaker's stream plays under, public so headless tests can check it." },
+  { "id": "UVoiceChatSubsystem::ChannelStreamRank", "reason": "internal", "note": "How a channel stream ranks for a speaker place, public so headless tests can state it; voice-chat documents the behaviour." },
+  { "id": "UCrowdyMassEntitySubsystem::TryGetEntityLocation", "reason": "internal", "note": "Where a remote crowd row is drawn; the Mass backend's TryGetDrawnLocation answers from it, and rendering-backends documents that override." },
   { "id": "CrowdyVoiceTrace::Voice", "reason": "internal", "note": "Whether crowdy.voice.trace is on, so the voice code logs its info lines; the page documents the CVar." },
   { "id": "FKindActors", "reason": "internal", "note": "The Crowdy Kit Actor subsystem's private list of one kind's kit actors; Get Kit Actor and ViewKitActors read it." },
   { "id": "FKitSlot", "reason": "internal", "note": "The Crowdy Kit Actor subsystem's private record of where one kit actor is held; nothing outside the class sees it." },
@@ -419,6 +424,16 @@
     "note": "Cadence rule and storage of the continuous channel; the map profile fields that drive it are on continuous-state."
   },
   {
+    "id": "CrowdyAutoReplication::EdgeObserverGapSeconds",
+    "reason": "internal",
+    "note": "Cadence rule and storage of the continuous channel; the map profile fields that drive it are on continuous-state."
+  },
+  {
+    "id": "CrowdyAutoReplication::NextKeyframeDelay",
+    "reason": "internal",
+    "note": "Cadence rule and storage of the continuous channel; the map profile fields that drive it are on continuous-state."
+  },
+  {
     "id": "CrowdyAutoReplication::HasStateChanged",
     "reason": "internal",
     "note": "Cadence rule and storage of the continuous channel; the map profile fields that drive it are on continuous-state."
@@ -740,6 +755,16 @@
   },
   {
     "id": "FActorUpdateRequestMessage",
+    "reason": "internal",
+    "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
+  },
+  {
+    "id": "FChannelAudioNotification",
+    "reason": "internal",
+    "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
+  },
+  {
+    "id": "FChannelAudioRequest",
     "reason": "internal",
     "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
   },
@@ -4155,6 +4180,11 @@
   },
   {
     "id": "FCrowdyCppReplication::SendChannelMessage",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::SendChannelAudio",
     "reason": "internal",
     "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
   },
