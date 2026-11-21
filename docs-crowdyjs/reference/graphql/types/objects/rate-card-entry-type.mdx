@@ -30,6 +30,7 @@ type RateCardEntryType {
   freePerMonth: BigInt
   freeUnits: BigInt
   freePeriod: AllowancePeriod
+  allowancePerOrganization: Boolean!
   description: String
   priceBands: [RateCardBandType!]
   priceBandBasis: PriceBandBasis
@@ -77,6 +78,10 @@ The allowance as the biller reads it: raw metric units free per freePeriod, as a
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>freePeriod</b></code>](#free-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AllowancePeriod</b></code>](/reference/graphql/types/enums/allowance-period.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #free-period */} 
 The period freeUnits resets on. Null when the dimension has no allowance row.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>allowancePerOrganization</b></code>](#allowance-per-organization)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #allowance-per-organization */} 
+True when freeUnits is already the whole organization's allowance, shared by its apps: wasm&#x005F;memory&#x005F;reserved (reserved compute-module memory). False on every other dimension, whose allowance is one app's; in a pooled month an organization's apps share allowancePool.factor times it.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #description */} 

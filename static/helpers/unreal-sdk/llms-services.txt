@@ -26,7 +26,7 @@ The session token is rejected for gameplay and the app token cannot manage the a
 
 | Method | Needs | Call |
 |---|---|---|
-| Email and password | Nothing but the two strings. No inbox, no browser. Permanent and first-class, not a legacy path. | `Login`, or `Register` for a new account |
+| Email and password | The two strings, and no browser. A new account opens one confirmation link before it plays ([below](#when-the-email-is-not-confirmed-yet)). Permanent and first-class, not a legacy path. | `Login`, or `Register` for a new account |
 | Magic link | An inbox the player can reach while the game runs | `BeginMagicLinkSignIn` |
 | Social provider | The system browser, and a provider the server has enabled | `BeginSocialSignIn` |
 | A saved session | A previous sign-in on this machine | `RestoreSession` |
