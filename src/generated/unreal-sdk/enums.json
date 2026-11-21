@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-18T18:14:04Z",
-  "sdk_version": "2.26.0",
+  "generated_from": "2026-11-21T00:19:32Z",
+  "sdk_version": "2.27.0",
   "table": "enums",
   "columns": [
     {
@@ -114,7 +114,8 @@
         "NotMember",
         "NetworkError",
         "ServerError",
-        "Banned"
+        "Banned",
+        "LimitReached"
       ],
       "module": "CrowdyNet",
       "header": "FCrowdyChannelError.h",
@@ -145,7 +146,8 @@
         "ManageChannel",
         "ManageMembers",
         "ManageRoles",
-        "InviteMembers"
+        "InviteMembers",
+        "SendVoice"
       ],
       "module": "CrowdyNet",
       "header": "ECrowdyChannelPermission.h",
@@ -179,7 +181,8 @@
         "NotMember",
         "NetworkError",
         "ServerError",
-        "Banned"
+        "Banned",
+        "LimitReached"
       ],
       "module": "CrowdyNet",
       "header": "FCrowdyTeamError.h",
@@ -818,6 +821,32 @@
       "page": "",
       "editor": false,
       "allowlist": "deprecated"
+    },
+    {
+      "id": "ECrowdyChannelVoiceMode",
+      "name": "ECrowdyChannelVoiceMode",
+      "values": [
+        "Listen",
+        "Talk"
+      ],
+      "module": "CrowdyVoice",
+      "header": "CrowdyChannelVoiceMode.h",
+      "page": "services/voice-chat",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyVoicePlaybackMode",
+      "name": "ECrowdyVoicePlaybackMode",
+      "values": [
+        "Flat",
+        "Spatial"
+      ],
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoiceDeveloperSettings.h",
+      "page": "services/voice-chat",
+      "editor": false,
+      "allowlist": ""
     },
     {
       "id": "E_MovementMode",

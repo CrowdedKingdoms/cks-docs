@@ -85,7 +85,7 @@ In Oakford, everyone talks on the square. **In Blueprint**, add **Find Or Create
 
 ## Send an emote
 
-**Send Emote** sends an emote from the local player's pawn to the players within two chunks of it, aimed at **Target**, an actor, or at nobody. It answers false, with **Reason** saying why, when nothing went out: the emote is empty, the emote and its target do not fit in 1024 bytes, the player is not signed in or not connected, there is no local pawn, or the target is not a replicated actor this client has heard from. True means the connection took it, not that anyone saw it.
+**Send Emote** sends an emote from the local player's pawn to the players within the map profile's **Emote Distance** of it (two chunks by default), aimed at **Target**, an actor, or at nobody. It answers false, with **Reason** saying why, when nothing went out: the emote is empty, the emote and its target do not fit in 1024 bytes, the player is not signed in or not connected, there is no local pawn, or the target is not a replicated actor this client has heard from. True means the connection took it, not that anyone saw it.
 
 **On Emote** on the world's **Crowdy Kit Emotes** subsystem (**Get Kit Emotes**) fires for each emote that reaches this client, with the **Sender Actor** and **Target Actor** (None when this client has no such actor), their **Sender Uuid** and **Target Uuid** (empty when it is aimed at nobody) and the **Emote**. Nothing about an emote is kept or checked: the sender and the text are what the sender's client says. Map the text through your own list of emotes before playing an animation for it, and use a [Server Object](../exec/overview.md) for anything a player must not fake.
 

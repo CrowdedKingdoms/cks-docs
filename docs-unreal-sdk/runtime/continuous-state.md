@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 # Continuous State
 
-Continuous state is how a moving entity moves on every other client. When the entity component replicates movement, every replication interval the owner sends a snapshot of the actor's location, rotation and aim pitch; each other client in range applies it to a proxy through the [rendering backend](./rendering-backends.md). There is nothing to write for that: the SDK's default executor takes the snapshot for you.
+Continuous state is how a moving entity moves on every other client. When the entity component replicates movement, every replication interval the owner sends a snapshot of the actor's location, rotation and aim pitch; each other client within the map profile's [Movement Distance](./map-profile.md) (eight chunks by default) applies it to a proxy through the [rendering backend](./rendering-backends.md). There is nothing to write for that: the SDK's default executor takes the snapshot for you.
 
 ## When to use it
 
@@ -123,6 +123,16 @@ A remote proxy is fed from the network and never calls it, so a side effect insi
 :::
 
 The owner evaluates `GetActorState` every interval (`ReplicationIntervalHz`, 10 by default, 1 to 10 Hz, one clock shared with Crowdy State; `bUseAutoReplicator` off means no polling at all). With `bSendActorStateOnlyOnChange` on, the default, an unchanged snapshot does not repeat: a full keyframe goes out every `ActorKeyframeIntervalSeconds` (3 s), which is what other players receive from an idle entity and so what keeps it on their screens, and a heartbeat every `ActorHeartbeatIntervalSeconds` (1 s), which only keeps its presence on the server from going stale; off, the snapshot goes out every interval whether it changed or not. The [map profile](./map-profile.md) page lists each field. A field lives on exactly one channel: a `CrowdyState` property whose name and canonical type also match a field of the executor struct is dropped from the Crowdy State layout at discovery, with an error mentioning `also lives in its executor state struct`.
+
+## Teleporting a player
+
+To teleport your own player, move the pawn: `SetActorLocation` with teleport physics, or `TeleportTo`. Nothing else is needed for other players to see a snap.
+
+On the actor pool backend and on the Mass backend (crowd rows), a copy glides between updates, but an update farther than the map profile's **Snap Distance** (default 10 m) from the one before it places the copy at the new spot: no glide across the gap and nothing drawn past it. Each client decides this from the positions alone, so it works for any sender, an older Unreal client or the web SDK included. On the actor pool it is the shipped `UCrowdyTransformRepPolicy` (or a subclass) that snaps, given the distance with `SetSnapDistance`; a [replication policy](./rendering-backends.md) of your own glides across a teleport unless it snaps itself.
+
+Anything that moves farther than Snap Distance between two updates snaps on every update instead of gliding. At the default Send Rate of 10 updates a second and 10 m, that is anything faster than 100 m/s (360 km/h), so characters are never affected; a map with fast vehicles sets a larger **Snap Distance**. A burst of lost packets on a fast mover can also snap instead of glide.
+
+**Request Teleport Permission** on the Crowdy SDK subsystem asks the platform whether the destination chunk may be entered. It is optional and separate: it moves nothing. See [Grids](../studio/grids.md).
 
 ## Gotchas
 

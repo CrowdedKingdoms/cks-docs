@@ -34,7 +34,7 @@ The bootstrap joins named channels; it never invents one, because a missing name
 
 ## Create and join
 
-`CreateChannel(Name, Description, MembershipPolicy, bMembersCanSend, OnSuccess, OnError)` creates one; the creator becomes its owner with the system `leader` role, which holds every permission including `send_messages`. `ECrowdyChannelMembershipPolicy` decides how others get in: `Open` (join at once), `Request` (a join request awaits approval), `Invite` (managers add members), `Admin` (app admins only). `bMembersCanSend` true creates a default `member` role granting `send_messages` to everyone who joins; false makes an announce-only channel where joiners receive but cannot post until given a role. The app's `FCrowdyChannelPolicy` (read with `GetChannelPolicy`) holds who may create channels at all (`ECrowdyChannelCreationPolicy`: `Admin`, `Member`, `Anyone`), the default membership policy, and the caps `MaxMembers` and `MaxChannelsPerUser` (0 means none); `SetChannelPolicy` sets the two policies, and the caps are set in Crowdy Studio.
+`CreateChannel(Name, Description, MembershipPolicy, bMembersCanSend, bMembersCanSpeak, OnSuccess, OnError)` creates one; the creator becomes its owner with the system `leader` role, which holds every permission including `send_messages`. `ECrowdyChannelMembershipPolicy` decides how others get in: `Open` (join at once), `Request` (a join request awaits approval), `Invite` (managers add members), `Admin` (app admins only). `bMembersCanSend` true creates a default `member` role granting `send_messages` to everyone who joins; false makes an announce-only channel where joiners receive but cannot post until given a role. `bMembersCanSpeak`, which follows it (**Members Can Speak** on the Blueprint node, off by default), does the same for `send_voice`; see [Let members speak](#let-members-speak). The app's `FCrowdyChannelPolicy` (read with `GetChannelPolicy`) holds who may create channels at all (`ECrowdyChannelCreationPolicy`: `Admin`, `Member`, `Anyone`), the default membership policy, and the caps `MaxMembers` and `MaxChannelsPerUser` (0 means none); `SetChannelPolicy` sets the two policies, and the caps are set in Crowdy Studio.
 
 The lantern village creates a `village` channel for lit notices once the connection is up: `CreateVillageChannel`, called from the game instance's connected handler (the create needs the game token), and `HandleVillageChannelCreated` stores the id behind `GetVillageChannelId`, the one place the id lives.
 
@@ -46,7 +46,7 @@ The lantern village creates a `village` channel for lit notices once the connect
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, and `Members Can Send` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at BeginPlay there may be no token yet and the create would answer on **On Error**. The Game Mode belongs to one map, so keep the id in a variable on the Game Instance if the next map needs it. (Do not start from the Game Instance's **Event Init**: it runs before the SDK's subsystems exist, see [Authentication](../services/authentication.md#signing-in).) To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
+In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, `Members Can Send`, and `Members Can Speak` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at BeginPlay there may be no token yet and the create would answer on **On Error**. The Game Mode belongs to one map, so keep the id in a variable on the Game Instance if the next map needs it. (Do not start from the Game Instance's **Event Init**: it runs before the SDK's subsystems exist, see [Authentication](../services/authentication.md#signing-in).) To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
 
 <Blueprint src="ch-create" title="Event BeginPlay, Crowdy SDK Subsystem, Bind Event to On UDP Connection Success, OnConnected, Create Channel" />
 
@@ -56,6 +56,12 @@ In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** ge
 Every connecting client running this asks the server to create the channel. A real game has one client create it, the Leader for instance, or calls `GetChannels` first and creates only on a miss; the server's creation policy is the real gate on who may.
 
 `JoinChannel(ChannelId, ...)` joins an open channel and `RequestToJoinChannel` files a request on a `Request` channel; `LeaveChannel` leaves. The creator is already a member and needs neither, though the local cache (`HasCachedChannels`, `IsPlayerInChannel`) does not show the new channel until `GetMyChannels` has run.
+
+## Let members speak
+
+A channel can carry voice as well as messages; see [Talk to a channel](../services/voice-chat.md#talk-to-a-channel). Sending voice needs the `send_voice` permission (`ECrowdyChannelPermission::SendVoice`, the **Send Voice** flag of `FCrowdyChannelPermissions`) on one of the sender's roles, and the player needs voice chat allowed. The `leader` role holds it, so the player who creates a channel can always talk on it. **Members Can Speak** on **Create Channel** gives the default `member` role `send_voice`; it is off by default, so on a channel made without it the server drops a member's voice until a role with the permission is granted; such members join the channel's voice in **Listen** mode. The SDK logs that refusal as a warning naming Send Voice. Receiving voice needs only membership.
+
+A change to the signature: in C++, `CreateChannel` takes `bMembersCanSpeak` right after `bMembersCanSend`, so existing calls need the new argument. The Blueprint node gains the pin, off.
 
 ## Ban a member
 
@@ -103,6 +109,10 @@ On the **Join Channel** node's **On Error** pin, open `Error` with **Break Crowd
 </TabItem>
 </Tabs>
 
+## Handle a full channel
+
+A join, a request to join, an add or a create fails with the error code `LimitReached` (**Limit Reached** on the Blueprint enum) when the channel is full, or when the player is already in as many channels as the app allows. Teams report the same code for their caps. Retrying does not help until someone leaves, so tell the player instead. Branch on it the way [Handle a ban on join](#handle-a-ban-on-join) does for `Banned`. Both caps are set in Crowdy Studio, and the Game API names the code `GROUP_LIMIT_REACHED`.
+
 ## Publish and receive
 
 `PublishChannelMessage(ChannelId, Payload)` sends raw bytes to every active member except the sender. The caller must already be a member holding `send_messages`; an open channel's default member role grants it. The server caps a channel message payload at 1024 bytes. `PublishChannelMessageAs(ChannelId, SenderUuid, Payload)` sends under a sender id you choose, as the Game Kit's chat does, since the session's own id is empty until the player's entity resolves; a receiver sees that id, which proves nothing. `CanPublishChannelMessage()` is true once the game session exists and the realtime connection is routing.
@@ -149,7 +159,7 @@ The server does not sign the delivery, and any member with `send_messages` could
 
 ## The full surface
 
-Cache and queries, on `UCrowdyChannels`: `HasCachedChannels` (has `GetMyChannels` ever completed), `GetCachedMyChannels` (the memberships, no round trip), `IsPlayerInChannel`, `GetMyChannelById`, `IsInAnyChannel`, `HasPermissionInChannel` (an `ECrowdyChannelPermission`: `SendMessages`, `ManageChannel`, `ManageMembers`, `ManageRoles`, `InviteMembers`), `GetMyChannels`, `GetChannel`, `GetChannels`, `GetChannelMembers`, `GetChannelRoles`, `GetChannelPolicy`, `GetPendingJoinRequests`. `OnMyChannelsCacheChanged` fires when the cached membership list changes.
+Cache and queries, on `UCrowdyChannels`: `HasCachedChannels` (has `GetMyChannels` ever completed), `GetCachedMyChannels` (the memberships, no round trip), `IsPlayerInChannel`, `GetMyChannelById`, `IsInAnyChannel`, `HasPermissionInChannel` (an `ECrowdyChannelPermission`: `SendMessages`, `ManageChannel`, `ManageMembers`, `ManageRoles`, `InviteMembers`, `SendVoice`), `GetMyChannels`, `GetChannel`, `GetChannels`, `GetChannelMembers`, `GetChannelRoles`, `GetChannelPolicy`, `GetPendingJoinRequests`. `OnMyChannelsCacheChanged` fires when the cached membership list changes.
 
 Mutations: `CreateChannel`, `UpdateChannel`, `DeleteChannel`, `JoinChannel`, `RequestToJoinChannel`, `LeaveChannel`, `AddChannelMember`, `RemoveChannelMember`, `BanChannelMember`, `UnbanChannelMember`, `CreateChannelRole`, `UpdateChannelRole`, `DeleteChannelRole`, `SetChannelMemberRoles`, `SetChannelPolicy`.
 
@@ -165,9 +175,9 @@ The types:
 | `FCrowdyChannelMember` | `ChannelMemberId`, `ChannelId`, `UserId`, `Status` (`active`; `pending` while a request waits; `banned` in the answer to a ban), `Roles` sorted by rank, `CreatedAt`. |
 | `FCrowdyChannelMembership` | Your own membership of one channel: `Channel`, `Roles`, the effective `Permissions` across them, `JoinedAt`. |
 | `FCrowdyChannelRole` | `ChannelRoleId`, `ChannelId`, `RoleName`, `Rank`, `bIsSystem`, `Permissions`, `CreatedAt`. Every channel has a non-deletable `leader` role. |
-| `FCrowdyChannelPermissions` | The five flags: `bSendMessages`, `bManageChannel`, `bManageMembers`, `bManageRoles`, `bInviteMembers`. |
+| `FCrowdyChannelPermissions` | The six flags: `bSendMessages`, `bManageChannel`, `bManageMembers`, `bManageRoles`, `bInviteMembers`, `bSendVoice`. |
 | `FCrowdyChannelPolicy` | `AppId`, `CreationPolicy`, `DefaultMembershipPolicy`, `MaxMembers`, `MaxChannelsPerUser`. |
-| `FCrowdyChannelError` | An `ECrowdyChannelErrorCode` (`Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`) and the `Message` to show. All but `Banned` are a best-effort classification of the message text; `Banned` comes from the server's own error code. |
+| `FCrowdyChannelError` | An `ECrowdyChannelErrorCode` (`Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`, `LimitReached`) and the `Message` to show. All but `Banned` and `LimitReached` are a best-effort classification of the message text; those two come from the server's own error code. |
 
 Every id is an `int64`; the server's ids are 64-bit.
 
