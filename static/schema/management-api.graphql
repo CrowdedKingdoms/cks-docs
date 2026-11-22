@@ -773,7 +773,7 @@ type App {
   """
   isTrusted: Boolean!
   """
-  OAuth-style redirect-URI allow-list for the portal handoff. A portal authorization code’s redirect_uri must match one of these by origin; empty disallows browser portal entry to this app.
+  OAuth-style redirect-URI allow-list for the portal handoff. A portal authorization code’s redirect_uri must match one of these by origin; empty disallows browser portal entry to this app. Empty unless the caller holds manage_apps on this app, including an anonymous appBySlug lookup. Hosted sign-in Cancel uses portalReturnAllowed instead of reading this list.
   """
   redirectUris: [String!]!
   """
@@ -785,7 +785,7 @@ type App {
   """
   metadata: String
   """
-  Base64-encoded binary blob of the app's persisted runtime/world state; opaque to clients and potentially large. Null when no state has been saved.
+  Base64-encoded binary blob of the app's persisted runtime/world state; opaque to clients and potentially large. Null when no state has been saved, and null unless the caller holds manage_apps on this app.
   """
   state: String
   """Numeric user id of the account that created the app."""
@@ -823,7 +823,7 @@ type App {
   """
   runtimeStatus: String!
   """
-  When runtimeStatus is not "active", why the runtime is gated: "insufficient_funds", "spend_cap", "subscription_lapsed", or "payment_method_required" (the free-tier card requirement applies to the organization and it has no saved card and no exemption). Null when active. Historical rows may carry "free_allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient_funds".
+  When runtimeStatus is not "active", why the runtime is gated: "insufficient_funds", "spend_cap", "subscription_lapsed", or "payment_method_required" (the free-tier card requirement applies to the organization and it has no saved card and no exemption). Null when active, and null unless the caller is a member of the app's organization (a super admin counts). Historical rows may carry "free_allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient_funds".
   """
   runtimeDenialReason: String
   """
@@ -3747,7 +3747,7 @@ type Query {
     filter: AppMarketplaceFilterInput
   ): AppsConnection!
   """
-  Look up a single app by its org slug + app slug (the marketplace URL path). PUBLIC: no authentication required, and NOT filtered by visibility/status, so it can resolve unlisted or draft apps when the exact slugs are known. Returns null if no matching app exists.
+  Look up a single app by its org slug + app slug (the marketplace URL path). PUBLIC: no authentication required, and NOT filtered by visibility/status, so it can resolve unlisted or draft apps when the exact slugs are known. Returns null if no matching app exists. redirectUris and state are empty unless the caller holds manage_apps; runtimeDenialReason is null unless the caller is a member of the app's organization. launchUrl is returned to every caller.
   """
   appBySlug(
     """
@@ -3758,7 +3758,7 @@ type Query {
     appSlug: String!
   ): App
   """
-  Fetch a single app by its numeric id. Requires authentication (any signed-in user); does NOT enforce org/app permissions, so it can read apps the caller does not own, of any visibility/status. Returns null if the id does not exist. Prefer appBySlug for slug-based marketplace lookups.
+  Fetch a single app by its numeric id. Requires authentication (any signed-in user) and does not require org membership, so it can name apps the caller does not own, of any visibility/status. Returns null if the id does not exist. redirectUris and state are empty unless the caller holds manage_apps; runtimeDenialReason is null unless the caller is a member of the app's organization. Prefer appBySlug for slug-based marketplace lookups.
   """
   app(
     """Numeric id of the app to fetch."""
@@ -3769,7 +3769,7 @@ type Query {
   """
   myApps: [App!]!
   """
-  All apps belonging to an organization, identified by the org's slug, regardless of visibility or status (includes drafts and archived). Requires authentication; intended for org dashboards. Ordered newest-first. Returns an empty list for an unknown slug.
+  All apps belonging to an organization, identified by the org's slug, regardless of visibility or status (includes drafts and archived). Requires authentication and an active membership of that organization (super admins pass). Ordered newest-first. Returns an empty list for an unknown slug. A known organization the caller is not a member of is FORBIDDEN.
   """
   appsForOrg(
     """URL slug of the organization whose apps to list."""
