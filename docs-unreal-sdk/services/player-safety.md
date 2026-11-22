@@ -98,6 +98,7 @@ A custom event, **BlockVillager** with a **Player Id**, calls **Block Player**. 
 
 A block stops voice, video, text, direct messages, channel messages and a player's events between the two players, both ways. Blocking also removes every contact and request between them, and unblocking does not bring them back.
 
+- **Voice has a lighter control too.** **Set Voice Speaker Muted** and **Set Voice Speaker Volume** quiet one player's voice for this client only, by user id, and the other player is not affected. Nothing is enforced and nothing else is stopped, so a block is still the stronger control. See [Mute or turn down one player](./voice-chat.md#mute-or-turn-down-one-player).
 - **Movement, actor state and voxel edits still pass,** so both players go on seeing the same world.
 - **What your app's own server code sends is not filtered.** A hub that relays one player's words to another checks the block first: see [blocks in Server Objects](/exec/players-and-safety#blocks).
 

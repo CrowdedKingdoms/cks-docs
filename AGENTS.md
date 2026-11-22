@@ -117,7 +117,10 @@ viewer function is ever detached.
   SDL regen, use the **same** tier branch as the docs branch under test
   (`dev`↔`dev`, `test`↔`test`, `prod`↔`prod`). Do not validate docs-`dev`
   against a `prod` sibling checkout, and do not cite CrowdyJS `latest` as the
-  pin for a non-prod docs tier.
+  pin for a non-prod docs tier. On a `dev` docs branch that means CrowdyJS at
+  `origin/dev` too, before `sdl:gen`: until 2026-11-21 docs `dev` still carried
+  the `crowdyjs.graphql` of Game API v2.73.0, while `promote.mjs` had brought
+  `test` and `prod` up to date at each promotion.
 - **The committed generated files are checked now — but only two of the three
   hops, and the third is the one that matters.** `npm run check:generated`
   re-runs the generators and refuses on a difference; Docs CI runs it on every
