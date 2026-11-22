@@ -183,12 +183,13 @@ compare its `Code` with **Banned** in a **Branch** to handle a ban on **Join Tea
 | `ECrowdyTeamCreationPolicy` | `Admin`, `Member`, `Anyone` |
 | `ECrowdyTeamMembershipPolicy` | `Open`, `Request`, `Invite`, `Admin` |
 | `ECrowdyTeamPermission` | `ManageTeam`, `ManageMembers`, `ManageRoles`, `InviteMembers` |
-| `ECrowdyTeamErrorCode` | `Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned` |
+| `ECrowdyTeamErrorCode` | `Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`, `LimitReached` |
 
-:::note[Code is a coarse bucket, not a precise diagnosis, except Banned.]
-`FCrowdyTeamError` is built by pattern-matching the server's message text, so every `Code` but one is a
-guess. `Banned` is the exception: it comes from the server's own error code. Read `Message` for the detail
-and branch on `Code` only for the broad cases.
+:::note[Code is a coarse bucket, not a precise diagnosis, except Banned and Limit Reached.]
+`FCrowdyTeamError` is built by pattern-matching the server's message text, so every `Code` but two is a
+guess. `Banned` and `LimitReached` are the exceptions: they come from the server's own error code.
+`LimitReached` means the team is full, or the player is in as many teams as the app allows; retrying does not
+help until someone leaves. Read `Message` for the detail and branch on `Code` only for the broad cases.
 :::
 
 ## Blueprint nodes
@@ -326,8 +327,8 @@ same one.
   `IsPlayerInTeam` still answers from before it.
 - `GetPendingJoinRequests` filters the full member list on the client; it is not a dedicated server call.
 - `SetTeamMemberRoles` replaces the member's role set. Pass the full set every time.
-- `FCrowdyTeamError::Code` is pattern-matched from the server's message text, except `Banned`, which is the
-  server's own code; treat the rest as a coarse bucket and `Message` as the detail.
+- `FCrowdyTeamError::Code` is pattern-matched from the server's message text, except `Banned` and `LimitReached`, which are the
+  server's own codes; treat the rest as a coarse bucket and `Message` as the detail.
 - A per-call delegate needs a `UFUNCTION` on a `UObject` that outlives the request, including when the
   request never reaches the server.
 - The array delegates take `const TArray<T>&` handlers; a mismatch fails to bind. The async-action nodes

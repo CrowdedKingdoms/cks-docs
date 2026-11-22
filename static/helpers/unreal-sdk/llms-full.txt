@@ -5,17 +5,17 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.26**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.27**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
-## What 2.26 changes
+## What 2.27 changes
 
-2.26 breaks: a project on 2.25 needs changes before it compiles. Follow the plugin's `MIGRATION.md` step by step, including the steps to take on 2.25.x before you upgrade.
+Nothing breaks in Blueprint beyond a new **Limit Reached** pin to wire; a few C++ calls take one more argument. Follow the plugin's `MIGRATION.md`.
 
-- **The host and the deprecated surface are gone.** Everything 2.25 deprecated is deleted, and the role Host Owned is World Owned. [Removed after 2.25](./guides/deprecated.md) lists each item and what replaces it.
-- **A player's actor id is random and new at each sign-in.** The live pawn re-keys to it, and [Resolve Actor Owner](./services/player-safety.md#find-out-who-a-player-is) finds the user behind an actor id. See [Identity policies](./concepts/entities-identity-ownership.md#identity-policies).
-- **The writer and the owner user.** An entity's owner id is now its writer id, and every entity names its owner's user id. A client on 2.26 cannot play with an older one.
-- **Deploy your server code again.** The [Leader](./runtime/leader.md) publishes the actor id it writes under, through the SDK's changed Leader type.
-- **Voxels, claims and mods.** [Voxel Chunks](./runtime/voxel-chunks.md) with a live voxel world, [Chunk Claims](./runtime/chunk-claims.md), [Mods](./runtime/mods.md) and [Mod Scripts](./runtime/mod-scripts.md), [Video Frames](./runtime/video-frames.md) and the [Studio Dock](./runtime/studio-dock.md).
+- **Reach is set per map.** The [map profile](./runtime/map-profile.md) sets Movement Distance (8 chunks), Voice Distance (1 chunk, was 8), Emote Distance, Snap Distance and the new Movement Decay, and a Crowdy State change reaches 8 chunks (was 4).
+- **A teleport no longer glides.** Other players' copies snap to an update that lands farther than Snap Distance from the one before, on the actor pool and on Mass crowd rows. See [Continuous state](./runtime/continuous-state.md).
+- **Voice is heard the way you choose.** Flat or spatial playback, the nearest speakers instead of the first 16, and per-player mute and volume by user id. See [Voice chat](./services/voice-chat.md).
+- **Channel voice.** Hear a channel's members wherever they are and, in Talk mode, talk to them; an audience joins in Listen mode. See [Talk to a channel](./services/voice-chat.md#talk-to-a-channel).
+- **A full channel or team** fails with **Limit Reached**. See [Channels](./runtime/channels.md).
 
 [What's Changed](./guides/whats-changed.md) has the full list.
 
@@ -84,12 +84,12 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 Download the plugin from its public repository on GitHub, [CrowdedKingdoms/CrowdySDK-Unreal](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal):
 
-- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.26.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.26.0`; rename that folder to `CrowdySDK`.
-- **Or with git:** `git clone --branch v2.26.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
+- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.27.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.27.0`; rename that folder to `CrowdySDK`.
+- **Or with git:** `git clone --branch v2.27.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
 
 The repository's root is the plugin root: the folder you download is the one that goes at `Plugins/CrowdySDK` in Step 2.
 
-:::note[The release you install must match the version this guide describes (2.26).]
+:::note[The release you install must match the version this guide describes (2.27).]
 :::
 
 From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
@@ -2303,7 +2303,7 @@ A plain `SpawnActor` never broadcasts the spawn event. The component still regis
 :::
 
 :::caution[The spawn event of an entity that replicates movement is a one-shot spatial send, so a client that joins later never receives its `InitialState`.]
-It reaches the clients within eight chunks of the spawn point at that moment and is never replayed. A client that joins afterwards, or comes into range later, still draws an entity that replicates movement from its position updates, but with no spawn event `OnCrowdySpawned` does not fire there. An entity that sends no movement is different: its owner repeats the spawn event every 4 seconds (below), so a late joiner gets the actor, its owner, and `OnCrowdySpawned` with the `InitialState`. Anything a late joiner must see on such an entity belongs in class defaults or in replicated state, and anything that must exist for everyone from the start is level-placed.
+It reaches the clients within the map profile's **Movement Distance** (eight chunks by default) of the spawn point at that moment and is never replayed. A client that joins afterwards, or comes into range later, still draws an entity that replicates movement from its position updates, but with no spawn event `OnCrowdySpawned` does not fire there. An entity that sends no movement is different: its owner repeats the spawn event every 4 seconds (below), so a late joiner gets the actor, its owner, and `OnCrowdySpawned` with the `InitialState`. Anything a late joiner must see on such an entity belongs in class defaults or in replicated state, and anything that must exist for everyone from the start is level-placed.
 :::
 
 **Success signal.** On a second client the proxy appears and its `OnCrowdySpawned` fires with `bIsLocallyOwned` false. A single client can only confirm the send: `crowdy.entity.trace 1` logs the registration and the spawn event; `crowdy.rpc.loopback` replays RPC calls, not spawn events, so no proxy appears.
@@ -2377,7 +2377,7 @@ On a map drawn with the Crowdy Mass Rendering Backend, Mass is the only body of 
 
 An entity that replicates movement (see [Continuous state](./continuous-state.md)) streams position updates, and each update carries the class id and the state struct type. The `UCrowdyActorManager` resolves the class from that (`RegisterStateClass` is filled in for you by each entity component's `BeginPlay`) and asks the rendering backend to draw a proxy, so a moving entity shows up on a client that joined late without any spawn round trip.
 
-An entity that sends no movement, spawned with `SpawnEntity`, sends no updates, so its owner repeats the spawn event instead: every 4 seconds while a client owns it, that client sends the spawn event again, from where the entity is now, naming its owner and carrying its `InitialState`. A client that joins later builds the entity from a repeat exactly as if it had seen the spawn, and its `OnCrowdySpawned` fires there. A client that already has the entity ignores repeats, and `OnCrowdySpawned` never fires twice. A repeat costs about 280 bytes plus your `InitialState`: about 70 bytes per second of upload per entity on its owner, and the same in download for each client within eight chunks. A spawn event for an entity destroyed less than 10 seconds earlier is ignored, so a repeat already on its way cannot bring it back; an owner that never received the destroy keeps repeating, and the entity reappears after those 10 seconds. An entity that sends no movement, placed in the level or registered with `RegisterStaticEntity`, sends nothing.
+An entity that sends no movement, spawned with `SpawnEntity`, sends no updates, so its owner repeats the spawn event instead: every 4 seconds while a client owns it, that client sends the spawn event again, from where the entity is now, naming its owner and carrying its `InitialState`. A client that joins later builds the entity from a repeat exactly as if it had seen the spawn, and its `OnCrowdySpawned` fires there. A client that already has the entity ignores repeats, and `OnCrowdySpawned` never fires twice. A repeat costs about 280 bytes plus your `InitialState`: about 70 bytes per second of upload per entity on its owner, and the same in download for each client within the map's **Movement Distance**. A spawn event for an entity destroyed less than 10 seconds earlier is ignored, so a repeat already on its way cannot bring it back; an owner that never received the destroy keeps repeating, and the entity reappears after those 10 seconds. An entity that sends no movement, placed in the level or registered with `RegisterStaticEntity`, sends nothing.
 
 :::warning[Preloaded Entity Classes is empty by default, and an observer on this path needs it.]
 This path resolves the class by id against loaded classes; a spawn event carries the class path and loads it for you, this does not. The startup scan walks loaded classes, and a Blueprint entity class that nobody on this client has spawned yet is not loaded, so an observer that meets it first over the network cannot name it. The actor manager warns `cannot resolve to a loaded class ... Preload the entity class or give it a ClassIDOverride` and the entity stays undrawn. List every Blueprint entity class a client can be shown before it spawns one itself under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes** (`PreloadedEntityClasses` on `UCrowdySDKDeveloperSettings`). Classes already loaded for another reason need no entry, and a duplicate costs nothing.
@@ -3112,7 +3112,7 @@ Write the notify as the one place the value is applied to the world, the way `On
 
 ## What ships, and when
 
-Only the owning client diffs. A remote proxy never diffs; it applies. The cadence is the map profile's `ReplicationIntervalHz` (1 to 10, default 10), the same clock the continuous channel uses, though the two send independently. Each tick the replicator compares every auto-diffed property of every entity this client drives against a shadow copy of the last sent value and encodes the changed ones into an `FCrowdyStateDelta`; owner-only properties go out as a second, targeted delta. Every `StateKeyframeIntervalSeconds` (default 2, on the map profile; 0 turns it off) each entity also emits a keyframe carrying its `CrowdyHeartbeat` properties, unless the entity's `StateHeartbeat` is Off. A delta travels as far as the profile's `StateRelevanceDistance` (Four Chunks by default), which is tighter than the continuous channel.
+Only the owning client diffs. A remote proxy never diffs; it applies. The cadence is the map profile's `ReplicationIntervalHz` (1 to 10, default 10), the same clock the continuous channel uses, though the two send independently. Each tick the replicator compares every auto-diffed property of every entity this client drives against a shadow copy of the last sent value and encodes the changed ones into an `FCrowdyStateDelta`; owner-only properties go out as a second, targeted delta. Every `StateKeyframeIntervalSeconds` (default 2, on the map profile; 0 turns it off) each entity also emits a keyframe carrying its `CrowdyHeartbeat` properties, unless the entity's `StateHeartbeat` is Off. A delta travels as far as the profile's `StateRelevanceDistance` (Eight Chunks by default).
 
 One delta holds about 1 KB of state: 1029 bytes on an actor, and 969 on a replicated subsystem, which rides the session channel. A larger update is split into several deltas in the same tick, so its properties can land a moment apart. A single property too big for one delta is not sent. It stays pending, clients keep their old value, the owner's notify does not run, and a warning names the property and entity once. It goes as soon as it fits, and the rest of the update does not wait for it. A value that can grow that far belongs elsewhere: see [Where the list you wanted belongs](#where-the-list-you-wanted-belongs).
 
@@ -3305,7 +3305,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/runtime/continuous-state
 
 # Continuous State
 
-Continuous state is how a moving entity moves on every other client. When the entity component replicates movement, every replication interval the owner sends a snapshot of the actor's location, rotation and aim pitch; each other client in range applies it to a proxy through the [rendering backend](./rendering-backends.md). There is nothing to write for that: the SDK's default executor takes the snapshot for you.
+Continuous state is how a moving entity moves on every other client. When the entity component replicates movement, every replication interval the owner sends a snapshot of the actor's location, rotation and aim pitch; each other client within the map profile's [Movement Distance](./map-profile.md) (eight chunks by default) applies it to a proxy through the [rendering backend](./rendering-backends.md). There is nothing to write for that: the SDK's default executor takes the snapshot for you.
 
 ## When to use it
 
@@ -3511,6 +3511,16 @@ A remote proxy is fed from the network and never calls it, so a side effect insi
 :::
 
 The owner evaluates `GetActorState` every interval (`ReplicationIntervalHz`, 10 by default, 1 to 10 Hz, one clock shared with Crowdy State; `bUseAutoReplicator` off means no polling at all). With `bSendActorStateOnlyOnChange` on, the default, an unchanged snapshot does not repeat: a full keyframe goes out every `ActorKeyframeIntervalSeconds` (3 s), which is what other players receive from an idle entity and so what keeps it on their screens, and a heartbeat every `ActorHeartbeatIntervalSeconds` (1 s), which only keeps its presence on the server from going stale; off, the snapshot goes out every interval whether it changed or not. The [map profile](./map-profile.md) page lists each field. A field lives on exactly one channel: a `CrowdyState` property whose name and canonical type also match a field of the executor struct is dropped from the Crowdy State layout at discovery, with an error mentioning `also lives in its executor state struct`.
+
+## Teleporting a player
+
+To teleport your own player, move the pawn: `SetActorLocation` with teleport physics, or `TeleportTo`. Nothing else is needed for other players to see a snap.
+
+On the actor pool backend and on the Mass backend (crowd rows), a copy glides between updates, but an update farther than the map profile's **Snap Distance** (default 10 m) from the one before it places the copy at the new spot: no glide across the gap and nothing drawn past it. Each client decides this from the positions alone, so it works for any sender, an older Unreal client or the web SDK included. On the actor pool it is the shipped `UCrowdyTransformRepPolicy` (or a subclass) that snaps, given the distance with `SetSnapDistance`; a [replication policy](./rendering-backends.md) of your own glides across a teleport unless it snaps itself.
+
+Anything that moves farther than Snap Distance between two updates snaps on every update instead of gliding. At the default Send Rate of 10 updates a second and 10 m, that is anything faster than 100 m/s (360 km/h), so characters are never affected; a map with fast vehicles sets a larger **Snap Distance**. A burst of lost packets on a fast mover can also snap instead of glide.
+
+**Request Teleport Permission** on the Crowdy SDK subsystem asks the platform whether the destination chunk may be entered. It is optional and separate: it moves nothing. See [Grids](../studio/grids.md).
 
 ## Gotchas
 
@@ -3820,7 +3830,7 @@ The grant, on the owner: `HandleOwnershipRequested`, bound to `OnOwnershipReques
 ```cpp
 // LanternPost.h
 UFUNCTION()
-void HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID);
+void HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID, int64 RequesterUserID);
 
 // LanternPost.cpp
 #include "Replication/Ownership/CrowdyOwnershipTransfer.h"
@@ -3828,13 +3838,14 @@ void HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, cons
 
 GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>()->OnOwnershipRequested.AddDynamic(this, &ALanternPost::HandleOwnershipRequested);
 
-void ALanternPost::HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID)
+void ALanternPost::HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID,
+	int64 RequesterUserID)
 {
 	if (TargetEntity != this)
 	{
 		return;
 	}
-	UCrowdyOwnershipTransfer::GrantOwnershipTransferToPlayer(this, this, RequesterID);
+	UCrowdyOwnershipTransfer::GrantOwnershipTransferToPlayer(this, this, RequesterID, RequesterUserID);
 }
 ```
 
@@ -4091,7 +4102,7 @@ The bootstrap joins named channels; it never invents one, because a missing name
 
 ## Create and join
 
-`CreateChannel(Name, Description, MembershipPolicy, bMembersCanSend, OnSuccess, OnError)` creates one; the creator becomes its owner with the system `leader` role, which holds every permission including `send_messages`. `ECrowdyChannelMembershipPolicy` decides how others get in: `Open` (join at once), `Request` (a join request awaits approval), `Invite` (managers add members), `Admin` (app admins only). `bMembersCanSend` true creates a default `member` role granting `send_messages` to everyone who joins; false makes an announce-only channel where joiners receive but cannot post until given a role. The app's `FCrowdyChannelPolicy` (read with `GetChannelPolicy`) holds who may create channels at all (`ECrowdyChannelCreationPolicy`: `Admin`, `Member`, `Anyone`), the default membership policy, and the caps `MaxMembers` and `MaxChannelsPerUser` (0 means none); `SetChannelPolicy` sets the two policies, and the caps are set in Crowdy Studio.
+`CreateChannel(Name, Description, MembershipPolicy, bMembersCanSend, bMembersCanSpeak, OnSuccess, OnError)` creates one; the creator becomes its owner with the system `leader` role, which holds every permission including `send_messages`. `ECrowdyChannelMembershipPolicy` decides how others get in: `Open` (join at once), `Request` (a join request awaits approval), `Invite` (managers add members), `Admin` (app admins only). `bMembersCanSend` true creates a default `member` role granting `send_messages` to everyone who joins; false makes an announce-only channel where joiners receive but cannot post until given a role. `bMembersCanSpeak`, which follows it (**Members Can Speak** on the Blueprint node, off by default), does the same for `send_voice`; see [Let members speak](#let-members-speak). The app's `FCrowdyChannelPolicy` (read with `GetChannelPolicy`) holds who may create channels at all (`ECrowdyChannelCreationPolicy`: `Admin`, `Member`, `Anyone`), the default membership policy, and the caps `MaxMembers` and `MaxChannelsPerUser` (0 means none); `SetChannelPolicy` sets the two policies, and the caps are set in Crowdy Studio.
 
 The lantern village creates a `village` channel for lit notices once the connection is up: `CreateVillageChannel`, called from the game instance's connected handler (the create needs the game token), and `HandleVillageChannelCreated` stores the id behind `GetVillageChannelId`, the one place the id lives.
 
@@ -4123,7 +4134,7 @@ void ULanternGameInstance::CreateVillageChannel()
 	FOnChannelSuccess Created;
 	Created.BindDynamic(this, &ULanternGameInstance::HandleVillageChannelCreated);
 	Channels->CreateChannel(TEXT("village"), TEXT("Lantern lit notices"),
-		ECrowdyChannelMembershipPolicy::Open, true, Created, FOnChannelError());
+		ECrowdyChannelMembershipPolicy::Open, true, false, Created, FOnChannelError());
 }
 
 void ULanternGameInstance::HandleVillageChannelCreated(FCrowdyChannel Channel)
@@ -4135,7 +4146,7 @@ void ULanternGameInstance::HandleVillageChannelCreated(FCrowdyChannel Channel)
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, and `Members Can Send` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at BeginPlay there may be no token yet and the create would answer on **On Error**. The Game Mode belongs to one map, so keep the id in a variable on the Game Instance if the next map needs it. (Do not start from the Game Instance's **Event Init**: it runs before the SDK's subsystems exist, see [Authentication](../services/authentication.md#signing-in).) To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
+In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, `Members Can Send`, and `Members Can Speak` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at BeginPlay there may be no token yet and the create would answer on **On Error**. The Game Mode belongs to one map, so keep the id in a variable on the Game Instance if the next map needs it. (Do not start from the Game Instance's **Event Init**: it runs before the SDK's subsystems exist, see [Authentication](../services/authentication.md#signing-in).) To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
 
 [Blueprint snippet: ch-create, see /bp/unreal-sdk/ch-create.txt]
 
@@ -4145,6 +4156,12 @@ In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** ge
 Every connecting client running this asks the server to create the channel. A real game has one client create it, the Leader for instance, or calls `GetChannels` first and creates only on a miss; the server's creation policy is the real gate on who may.
 
 `JoinChannel(ChannelId, ...)` joins an open channel and `RequestToJoinChannel` files a request on a `Request` channel; `LeaveChannel` leaves. The creator is already a member and needs neither, though the local cache (`HasCachedChannels`, `IsPlayerInChannel`) does not show the new channel until `GetMyChannels` has run.
+
+## Let members speak
+
+A channel can carry voice as well as messages; see [Talk to a channel](../services/voice-chat.md#talk-to-a-channel). Sending voice needs the `send_voice` permission (`ECrowdyChannelPermission::SendVoice`, the **Send Voice** flag of `FCrowdyChannelPermissions`) on one of the sender's roles, and the player needs voice chat allowed. The `leader` role holds it, so the player who creates a channel can always talk on it. **Members Can Speak** on **Create Channel** gives the default `member` role `send_voice`; it is off by default, so on a channel made without it the server drops a member's voice until a role with the permission is granted; such members join the channel's voice in **Listen** mode. The SDK logs that refusal as a warning naming Send Voice. Receiving voice needs only membership.
+
+A change to the signature: in C++, `CreateChannel` takes `bMembersCanSpeak` right after `bMembersCanSend`, so existing calls need the new argument. The Blueprint node gains the pin, off.
 
 ## Ban a member
 
@@ -4261,6 +4278,10 @@ On the **Join Channel** node's **On Error** pin, open `Error` with **Break Crowd
 </TabItem>
 </Tabs>
 
+## Handle a full channel
+
+A join, a request to join, an add or a create fails with the error code `LimitReached` (**Limit Reached** on the Blueprint enum) when the channel is full, or when the player is already in as many channels as the app allows. Teams report the same code for their caps. Retrying does not help until someone leaves, so tell the player instead. Branch on it the way [Handle a ban on join](#handle-a-ban-on-join) does for `Banned`. Both caps are set in Crowdy Studio, and the Game API names the code `GROUP_LIMIT_REACHED`.
+
 ## Publish and receive
 
 `PublishChannelMessage(ChannelId, Payload)` sends raw bytes to every active member except the sender. The caller must already be a member holding `send_messages`; an open channel's default member role grants it. The server caps a channel message payload at 1024 bytes. `PublishChannelMessageAs(ChannelId, SenderUuid, Payload)` sends under a sender id you choose, as the Game Kit's chat does, since the session's own id is empty until the player's entity resolves; a receiver sees that id, which proves nothing. `CanPublishChannelMessage()` is true once the game session exists and the realtime connection is routing.
@@ -4348,7 +4369,7 @@ The server does not sign the delivery, and any member with `send_messages` could
 
 ## The full surface
 
-Cache and queries, on `UCrowdyChannels`: `HasCachedChannels` (has `GetMyChannels` ever completed), `GetCachedMyChannels` (the memberships, no round trip), `IsPlayerInChannel`, `GetMyChannelById`, `IsInAnyChannel`, `HasPermissionInChannel` (an `ECrowdyChannelPermission`: `SendMessages`, `ManageChannel`, `ManageMembers`, `ManageRoles`, `InviteMembers`), `GetMyChannels`, `GetChannel`, `GetChannels`, `GetChannelMembers`, `GetChannelRoles`, `GetChannelPolicy`, `GetPendingJoinRequests`. `OnMyChannelsCacheChanged` fires when the cached membership list changes.
+Cache and queries, on `UCrowdyChannels`: `HasCachedChannels` (has `GetMyChannels` ever completed), `GetCachedMyChannels` (the memberships, no round trip), `IsPlayerInChannel`, `GetMyChannelById`, `IsInAnyChannel`, `HasPermissionInChannel` (an `ECrowdyChannelPermission`: `SendMessages`, `ManageChannel`, `ManageMembers`, `ManageRoles`, `InviteMembers`, `SendVoice`), `GetMyChannels`, `GetChannel`, `GetChannels`, `GetChannelMembers`, `GetChannelRoles`, `GetChannelPolicy`, `GetPendingJoinRequests`. `OnMyChannelsCacheChanged` fires when the cached membership list changes.
 
 Mutations: `CreateChannel`, `UpdateChannel`, `DeleteChannel`, `JoinChannel`, `RequestToJoinChannel`, `LeaveChannel`, `AddChannelMember`, `RemoveChannelMember`, `BanChannelMember`, `UnbanChannelMember`, `CreateChannelRole`, `UpdateChannelRole`, `DeleteChannelRole`, `SetChannelMemberRoles`, `SetChannelPolicy`.
 
@@ -4364,9 +4385,9 @@ The types:
 | `FCrowdyChannelMember` | `ChannelMemberId`, `ChannelId`, `UserId`, `Status` (`active`; `pending` while a request waits; `banned` in the answer to a ban), `Roles` sorted by rank, `CreatedAt`. |
 | `FCrowdyChannelMembership` | Your own membership of one channel: `Channel`, `Roles`, the effective `Permissions` across them, `JoinedAt`. |
 | `FCrowdyChannelRole` | `ChannelRoleId`, `ChannelId`, `RoleName`, `Rank`, `bIsSystem`, `Permissions`, `CreatedAt`. Every channel has a non-deletable `leader` role. |
-| `FCrowdyChannelPermissions` | The five flags: `bSendMessages`, `bManageChannel`, `bManageMembers`, `bManageRoles`, `bInviteMembers`. |
+| `FCrowdyChannelPermissions` | The six flags: `bSendMessages`, `bManageChannel`, `bManageMembers`, `bManageRoles`, `bInviteMembers`, `bSendVoice`. |
 | `FCrowdyChannelPolicy` | `AppId`, `CreationPolicy`, `DefaultMembershipPolicy`, `MaxMembers`, `MaxChannelsPerUser`. |
-| `FCrowdyChannelError` | An `ECrowdyChannelErrorCode` (`Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`) and the `Message` to show. All but `Banned` are a best-effort classification of the message text; `Banned` comes from the server's own error code. |
+| `FCrowdyChannelError` | An `ECrowdyChannelErrorCode` (`Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`, `LimitReached`) and the `Message` to show. All but `Banned` and `LimitReached` are a best-effort classification of the message text; those two come from the server's own error code. |
 
 Every id is an `int64`; the server's ids are 64-bit.
 
@@ -4408,7 +4429,7 @@ When a map needs settings the shipped default does not have: a Backend Config of
 
 ## Create the asset
 
-In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**. The Details panel groups the settings by what they decide: **Events**, **Remote Entities**, **Movement** and **Crowdy State**. Tuning settings that most maps never change sit under the **Remote Entities** group's **Advanced** row.
+In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**. The Details panel groups the settings by what they decide: **Events**, **Remote Entities**, **Movement**, **Crowdy State**, **Voice** and **Emotes**. Tuning settings that most maps never change sit under the **Remote Entities** group's **Advanced** row.
 
 ![The shipped default map profile asset in the Details panel](/img/unreal-sdk/map-profile-asset.png)
 
@@ -4419,13 +4440,28 @@ The screenshot is the SDK's own shipped default profile. **Backend Config** is e
 | `bEnableNetworking` (**Handle Events and Spawns**) | on | Spawn and destroy events, Crowdy Events and Crowdy State arriving over the realtime connection. Off does not stop movement, drawing or sending: those have their own switches below. |
 | `ActorManagement` (the **Remote Entities** group) | see [Entities and spawning](./entities-and-spawning.md#the-actor-tracker) | **Draw Remote Entities**, the **Backend Class** and **Backend Config** that draw them, the **Interpolation Delay**, and the tracker's tuning under **Advanced**. Pick **Crowdy Mass Rendering Backend** as the **Backend Class** to draw a crowd; see [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md). |
 | `bUseAutoReplicator` (**Send Movement**) | on | The continuous channel: each entity's movement, or its executor's state. See [Continuous state](./continuous-state.md). |
+| `MovementDistance` (**Movement Distance**, Movement) | Eight Chunks | How far each entity's movement and its spawn event travel, in chunks around it (`ECrowdyReplicationDistance`): other players see it only within this range. At the default chunk size of 1600 units, eight chunks is 128 m in each direction. Keep it at least as large as **Voice Distance** and **Relevance Distance**, or players hear someone they cannot see, and a Crowdy State change arrives for a player who has no copy. |
+| `MovementDecay` (**Movement Decay**, Movement) | No Decay | Thins movement updates with distance, so far players get fewer of them. It uses the decay rates events use: **No Decay**; **Exponential Decay**, where each ring of chunks gets half the updates of the ring before; **Linear 50 Decay**, **Linear 25 Decay**, **Linear 10 Decay** and **Linear 5 Decay**, where the farthest ring gets that percentage, in one block of a 20-update cycle. The spawn announce is never thinned. Read [Thinning movement with distance](#thinning-movement-with-distance) before turning it on. |
+| `SnapDistance` (**Snap Distance**, Movement) | 1000 cm (10 m), minimum 0 | Other players' copies jump straight to an update that lands farther than this from the one before it, as a teleport does, instead of gliding there. Keep it above the farthest anything on the map moves between two updates a player receives (its top speed divided by **Send Rate**, and farther where **Movement Decay** thins far updates); something faster snaps on every update. 0 never snaps. See [Teleporting a player](./continuous-state.md#teleporting-a-player). |
 | `ReplicationIntervalHz` (**Send Rate**) | 10 Hz (1 to 10) | How many times a second movement and Crowdy State are sent. Editable while either is on. |
 | `bSendActorStateOnlyOnChange` (**Send Only On Change**) | on | An unchanged entity sends the keyframes and heartbeats below instead of restating its state every interval. |
 | `ActorKeyframeIntervalSeconds` (**Keyframe Interval**, Movement) | 3 s | Full re-send of an unchanged entity's state. It is the only thing other players receive from an entity standing still, so it is what keeps it on their screens and lets a late observer catch up. 0 turns keyframes off. |
 | `ActorHeartbeatIntervalSeconds` (**Heartbeat Interval**) | 1 s | A cheap "still here" for an unchanged entity: the spatial header and no state. It keeps the entity's presence on the server, which goes stale after about 5 s; other players never receive it. 0 turns heartbeats off. |
 | `bUseStateReplicator` (**Replicate Crowdy State**) | on | Crowdy State property replication. See [Crowdy State](./crowdy-state.md). |
-| `StateRelevanceDistance` (**Relevance Distance**) | Four Chunks | How far a Crowdy State change travels, as a chunk count (`ECrowdyReplicationDistance`). |
+| `StateRelevanceDistance` (**Relevance Distance**) | Eight Chunks | How far a Crowdy State change travels, as a chunk count (`ECrowdyReplicationDistance`). |
 | `StateKeyframeIntervalSeconds` (**Keyframe Interval**, Crowdy State) | 2 s | Full re-send of every property marked `CrowdyHeartbeat`. 0 turns the keyframe off map-wide; changes still send. |
+| `VoiceDistance` (**Voice Distance**, Voice) | One Chunk | How far a player's voice reaches on this map, in chunks, unless the game calls **Set Voice Chat Distance**. See [How far your voice reaches](../services/voice-chat.md#how-far-your-voice-reaches). |
+| `EmoteDistance` (**Emote Distance**, Emotes) | Two Chunks | How far an emote travels from the player who sends it. |
+
+## Thinning movement with distance
+
+**Movement Decay** trades update rate for reach. A copy that is not updated is removed after the **Actor Timeout** (12 s on the **Remote Entities** group's **Advanced** row), and an entity that stands still sends only keyframes, one every **Keyframe Interval** (3 s by default). A steep decay at long range can therefore starve a far copy until it times out.
+
+With **Exponential Decay** at the default eight chunks, the outermost ring gets 1 update in 128. A player in it sees a player standing still update once every 384 s, so the copy is gone long before the next one.
+
+The **Linear** decays do not spread updates out evenly: the server delivers each ring in one block of a 20-update cycle and skips it for the rest. The farthest ring under **Linear 50 Decay** gets 10 updates in a row and then misses 10, so with a 3 s **Keyframe Interval** a player standing still there goes 33 s between updates. At the defaults, every Linear decay times far copies out, at any distance beyond the sender's own chunk: the outermost ring gets the same share however far it is. Only a longer **Actor Timeout** helps, or a **Keyframe Interval** under the timeout divided by 11, 16, 19 or 20 for **Linear 50**, **25**, **10** or **5 Decay** (about 1.09, 0.75, 0.63 or 0.6 s at the default 12 s).
+
+The SDK logs a warning when a map starts if the expected gap at the edge reaches the **Actor Timeout**. Fix it with a gentler decay, a shorter **Keyframe Interval**, a longer **Actor Timeout**, or, for **Exponential Decay**, a shorter **Movement Distance**.
 
 ## Checks when you save
 
@@ -4579,7 +4615,7 @@ The policy is what moves a remote player's proxy. Continuous state is how pawns,
 
 #### The sample ring
 
-Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most 0.2 seconds beyond the newest; after that it holds the value extrapolated to 0.2 seconds. The step is measured over at least the average gap of the last four samples (50 ms when only two are held), so two updates that arrive almost together after a sender hitch extrapolate at the sender's normal pace instead of throwing the proxy far ahead for a frame. A render time older than the oldest sample holds the oldest sample; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
+Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most one update interval beyond the newest (100 ms at the default 10 Hz) and never more than 0.2 seconds; after that it holds the value extrapolated to that point, so a player who stops is drawn no more than one step past where they stopped. The step is measured over at least the average gap of the last four samples (50 ms when only two are held), so two updates that arrive almost together after a sender hitch extrapolate at the sender's normal pace instead of throwing the proxy far ahead for a frame. A render time older than the oldest sample holds the oldest sample; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `Newest()` is the newest sample, meaningful only while one is held. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
 
 The reason a proxy built on it does not jitter is the render time itself: the actor manager renders at the estimated server time minus the interpolation delay (**Interpolation Delay** in the [map profile](./map-profile.md)'s Remote Entities group, 100 ms by default), so the proxy is always drawn a little behind the newest sample, between two samples it already holds, and never snaps to the latest one as it lands. Extrapolation only runs when an update is late, and its cap keeps a lost stream from sliding a proxy across the map.
 
@@ -4707,7 +4743,7 @@ Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`),
 
 ## Writing a backend
 
-Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and six optional:
+Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and seven optional:
 
 | Override | Required | Contract |
 |---|---|---|
@@ -4720,6 +4756,7 @@ Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendCo
 | `IsInstanceActive(SlotId)` | no | Whether `SlotId` holds something drawn. Return false when `ActivateInstance` could not acquire a resource (a full pool), and the actor manager calls `ActivateInstance` again once capacity may have freed or the entity registers. The default, true, never retries. |
 | `TakeSpawnData(UUID, InitialState)` | no | Only on a backend whose `DrawsEntitiesAsCrowdRows()` is true: the spawn event of an entity that replicates movement, with no actor spawned for it. Land the data on its representation. |
 | `ReleaseDestroyedInstance(SlotId, UUID)` | no | A destroy event named the entity. Return true when you stopped drawing it; the default returns false. |
+| `TryGetDrawnLocation(SlotId, OutLocation)` | no | Where the slot's entity is drawn now. `UCrowdyActorManager::TryGetRemoteLocation(UUID, OutLocation)` answers from it, and voice chat plays and ranks speakers by it. The default returns false, so on your backend spatial voice plays from the centre of the speaker's chunk and every speaker ranks as farthest. |
 | `GetBackendConfigClass()` | no | The config class your backend reads, so saving a map profile that pairs your backend with another config reports it. Read off the class default object; the default, null, skips the check. |
 
 `DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. The Crowdy Mass Rendering Backend that ships in the SDK is the one backend that returns true; choose it as the map profile's **Backend Class** and see [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md).
@@ -5951,7 +5988,7 @@ void ALanternGuestbook::BeginPlay()
 	Super::BeginPlay();
 	UCrowdyModScripts* Scripts = GetWorld()->GetSubsystem<UCrowdyModScripts>();
 	Scripts->SetHost(TScriptInterface<ICrowdyModScriptHost>(this));
-	Scripts->OnModScriptPrompt.AddDynamic(this, &ALanternGuestbook::OnModScriptPrompt);
+	Scripts->OnModScriptPrompt.AddDynamic(this, &ALanternGuestbook::AnswerPlotPrompt);
 	OnActorBeginOverlap.AddDynamic(this, &ALanternGuestbook::EnterPlot);
 	OnActorEndOverlap.AddDynamic(this, &ALanternGuestbook::LeavePlot);
 }
@@ -6066,10 +6103,10 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lantern")
 bool bRunPlotScripts = true;
 
 UFUNCTION()
-void OnModScriptPrompt(const FCrowdyModScriptPrompt& Prompt);
+void AnswerPlotPrompt(const FCrowdyModScriptPrompt& Prompt);
 
 // LanternGuestbook.cpp
-void ALanternGuestbook::OnModScriptPrompt(const FCrowdyModScriptPrompt& Prompt)
+void ALanternGuestbook::AnswerPlotPrompt(const FCrowdyModScriptPrompt& Prompt)
 {
 	Sign->SetText(FText::Format(INVTEXT("Run {0} scripts by this plot's owner?"), Prompt.Scripts.Num()));
 	GetWorld()->GetSubsystem<UCrowdyModScripts>()->AnswerPrompt(Prompt.PromptId, bRunPlotScripts);
@@ -17523,12 +17560,13 @@ compare its `Code` with **Banned** in a **Branch** to handle a ban on **Join Tea
 | `ECrowdyTeamCreationPolicy` | `Admin`, `Member`, `Anyone` |
 | `ECrowdyTeamMembershipPolicy` | `Open`, `Request`, `Invite`, `Admin` |
 | `ECrowdyTeamPermission` | `ManageTeam`, `ManageMembers`, `ManageRoles`, `InviteMembers` |
-| `ECrowdyTeamErrorCode` | `Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned` |
+| `ECrowdyTeamErrorCode` | `Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`, `LimitReached` |
 
-:::note[Code is a coarse bucket, not a precise diagnosis, except Banned.]
-`FCrowdyTeamError` is built by pattern-matching the server's message text, so every `Code` but one is a
-guess. `Banned` is the exception: it comes from the server's own error code. Read `Message` for the detail
-and branch on `Code` only for the broad cases.
+:::note[Code is a coarse bucket, not a precise diagnosis, except Banned and Limit Reached.]
+`FCrowdyTeamError` is built by pattern-matching the server's message text, so every `Code` but two is a
+guess. `Banned` and `LimitReached` are the exceptions: they come from the server's own error code.
+`LimitReached` means the team is full, or the player is in as many teams as the app allows; retrying does not
+help until someone leaves. Read `Message` for the detail and branch on `Code` only for the broad cases.
 :::
 
 ## Blueprint nodes
@@ -17781,8 +17819,8 @@ same one.
   `IsPlayerInTeam` still answers from before it.
 - `GetPendingJoinRequests` filters the full member list on the client; it is not a dedicated server call.
 - `SetTeamMemberRoles` replaces the member's role set. Pass the full set every time.
-- `FCrowdyTeamError::Code` is pattern-matched from the server's message text, except `Banned`, which is the
-  server's own code; treat the rest as a coarse bucket and `Message` as the detail.
+- `FCrowdyTeamError::Code` is pattern-matched from the server's message text, except `Banned` and `LimitReached`, which are the
+  server's own codes; treat the rest as a coarse bucket and `Message` as the detail.
 - A per-call delegate needs a `UFUNCTION` on a `UObject` that outlives the request, including when the
   request never reaches the server.
 - The array delegates take `const TArray<T>&` handlers; a mismatch fails to bind. The async-action nodes
@@ -17880,7 +17918,7 @@ In Oakford, everyone talks on the square. **In Blueprint**, add **Find Or Create
 
 ## Send an emote
 
-**Send Emote** sends an emote from the local player's pawn to the players within two chunks of it, aimed at **Target**, an actor, or at nobody. It answers false, with **Reason** saying why, when nothing went out: the emote is empty, the emote and its target do not fit in 1024 bytes, the player is not signed in or not connected, there is no local pawn, or the target is not a replicated actor this client has heard from. True means the connection took it, not that anyone saw it.
+**Send Emote** sends an emote from the local player's pawn to the players within the map profile's **Emote Distance** of it (two chunks by default), aimed at **Target**, an actor, or at nobody. It answers false, with **Reason** saying why, when nothing went out: the emote is empty, the emote and its target do not fit in 1024 bytes, the player is not signed in or not connected, there is no local pawn, or the target is not a replicated actor this client has heard from. True means the connection took it, not that anyone saw it.
 
 **On Emote** on the world's **Crowdy Kit Emotes** subsystem (**Get Kit Emotes**) fires for each emote that reaches this client, with the **Sender Actor** and **Target Actor** (None when this client has no such actor), their **Sender Uuid** and **Target Uuid** (empty when it is aimed at nobody) and the **Emote**. Nothing about an emote is kept or checked: the sender and the text are what the sender's client says. Map the text through your own list of emotes before playing an animation for it, and use a [Server Object](../exec/overview.md) for anything a player must not fake.
 
@@ -18205,11 +18243,17 @@ Everything lives on the **Crowdy SDK Subsystem** (`UCrowdySDKSubsystem`, a Game 
 | **Mute Voice Chat** | `MuteVoiceChat()` | Stops you hearing other players. |
 | **Set Voice Chat Stream Timeout Threshold** | `SetVoiceChatStreamTimeoutThreshold(float InSeconds)` | How long a silent player's stream is kept before it is released. Default 2 seconds; the value is clamped to 0.5 seconds up to 1 hour. |
 | **Toggle Owner Echo** | `ToggleOwnerEcho(bool bEnable)` | Plays your own voice back to you, as other players hear it. |
-| **Set Voice Chat Distance** | `SetVoiceChatDistance(int32 Chunks)` | How far your voice reaches, in chunks around the chunk your pawn stands in: 0 to 8, default 8. |
-| **Get Voice Chat Distance** | `GetVoiceChatDistance()` | The distance last set. |
+| **Set Voice Chat Distance** | `SetVoiceChatDistance(int32 Chunks)` | How far your voice reaches, in chunks around the chunk your pawn stands in: 0 to 8. It replaces every map's **Voice Distance** until **Reset Voice Chat Distance**. |
+| **Reset Voice Chat Distance** | `ResetVoiceChatDistance()` | Goes back to the current map's **Voice Distance**, and follows each map's again from here on. |
+| **Get Voice Chat Distance** | `GetVoiceChatDistance()` | The distance in use: the one you set, or else the map's **Voice Distance**. |
+| **Set Voice Speaker Muted** | `SetVoiceSpeakerMuted(int64 UserId, bool bMuted)` | Stops you hearing one player, by user id. |
+| **Is Voice Speaker Muted** | `IsVoiceSpeakerMuted(int64 UserId)` | Whether that player is muted. |
+| **Set Voice Speaker Volume** | `SetVoiceSpeakerVolume(int64 UserId, float Volume)` | How loud one player is: 0 to 4, 1 is as received. |
+| **Get Voice Speaker Volume** | `GetVoiceSpeakerVolume(int64 UserId)` | The volume set for that player. |
+| **Get Voice Speaker User Id** | `GetVoiceSpeakerUserId(const FString& SpeakerUuid)` | The user id behind a **Speaker Uuid**, or 0 until it is known. |
 | **Get Voice Mic State** | `GetVoiceMicState()` | What your microphone is doing right now. |
 | **On Voice Mic State Changed** | `OnVoiceMicStateChanged` | Fires when that state changes. |
-| **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking. |
+| **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking to the players near them. Channel voice has its own, see [Talk to a channel](#talk-to-a-channel). |
 
 Sending and hearing are independent. You can send without listening, listen without sending, or do both. Other players' voices are muted until you call **Play Voice Chat**, so a game that wants to hear anyone calls it once, for example when it starts.
 
@@ -18325,9 +18369,9 @@ The example keeps no list of speakers, so with several people talking the torch 
 
 ## How far your voice reaches
 
-Your voice is addressed to the chunk your pawn stands in and reaches every player whose chunk is within the voice distance of it on each axis. The distance counts whole chunks: 0 is your own chunk only, and 8, the default, is the farthest the server relays. At the default chunk size of 1600 units, a distance of 1 is a 4800-unit square centred on your chunk. See [Recipients and routing](../runtime/recipients-and-routing.md) for how chunk rings work.
+Your voice is addressed to the chunk your pawn stands in and reaches every player whose chunk is within the voice distance of it on each axis. The distance counts whole chunks: 0 is your own chunk only, and 8 is the farthest the server relays. At the default chunk size of 1600 units, a distance of 1 is a 4800-unit square centred on your chunk. See [Recipients and routing](../runtime/recipients-and-routing.md) for how chunk rings work.
 
-Set it once, for example when the player arrives. It is kept across map changes like the other voice settings.
+Each map decides it with the **Voice Distance** of its [map profile](../runtime/map-profile.md), One Chunk unless the profile says otherwise. **Set Voice Chat Distance** replaces that on every map, for example when the player arrives, and it is kept across map changes until **Reset Voice Chat Distance** goes back to the current map's. Keep the map's **Movement Distance** at least as large as the voice distance in use: a player whose movement does not reach a listener is heard with no copy of them there.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -18360,6 +18404,79 @@ Event BeginPlay calls **Set Voice Chat Distance** with **Chunks** set to 1.
 
 Nearby text has a distance of its own on every line; see [Nearby Text Chat](./nearby-text-chat.md). Who a player hears and who hears them is theirs to choose; see [Player Safety](./player-safety.md).
 
+## Flat or spatial playback
+
+By default every voice plays flat (2D), at the volume it was sent. Open **Project Settings > Plugins > Crowdy Voice** (`UCrowdyVoiceDeveloperSettings`) to change that. The settings are read when a map's voice chat starts, so a change takes effect on the next map.
+
+| Setting | Default | Does |
+|---|---|---|
+| **Playback Mode** (`PlaybackMode`, an `ECrowdyVoicePlaybackMode`) | Flat (2D) | **Spatial (3D)** plays each voice from where its speaker's character is drawn on this client, every frame, on the actor pool and on Mass crowd rows. |
+| **Max Speakers** (`MaxSpeakers`) | 16 | How many players are heard at once, 1 to 64. See [The nearest speakers are heard](#the-nearest-speakers-are-heard). |
+| **Attenuation** (`Attenuation`) | `SA_CrowdyVoice` | Spatial only. How a voice fades, pans and muffles. The SDK's `/CrowdySDK/Data/Voice/SA_CrowdyVoice` follows real hearing: full volume within 2 m, then 6 dB quieter each time the distance doubles, eased to silence by 40 m; duller with distance; a little quieter behind you; muffled and half as loud behind a wall (anything that blocks the Visibility channel); binaural where your project has a spatialization plugin. Pick your own **Sound Attenuation** asset to change it. |
+| **Occlusion Checks Per Second** (`OcclusionChecksPerSecond`) | 10 | Spatial only, where the attenuation muffles voices behind walls: how often each heard voice traces for a wall, 1 to 30. One trace each time, off the game thread. |
+| **Playout Delay** (`PlayoutDelayMs`) | 120 ms | How far behind received voice plays, 40 to 400 ms. A longer delay absorbs more uneven delivery. |
+| **Silence Gate** (`SilenceGateDb`) | -50 dB | Below this level your microphone sends nothing, -90 to -10 dB. |
+| **Silence Hold** (`SilenceHoldMs`) | 300 ms | How long the gate stays open after your voice drops below it, 20 to 2000 ms. |
+| **Bit Rate (bits per second)** (`BitrateBps`) | 24000 | Bits per second of the sent voice, 6000 to 64000. |
+
+When this client has no copy of the speaker, the voice plays from the centre of the chunk it was sent from, up to about 14 m off at the default chunk size. That happens for a player outside the map's **Movement Distance** but inside their voice range, and for a moment before a new player's copy appears; the voice moves to the copy once it exists. Keep **Movement Distance** at least as large as **Voice Distance** (the defaults, 8 and 1, already are) so you see whoever you hear.
+
+## The nearest speakers are heard
+
+At most **Max Speakers** players are heard at once. When every place is taken, a new speaker takes one only if they are at most 90% as far away as the farthest speaker heard, and that speaker is dropped once the newcomer's voice is ready to play. Two speakers at a similar distance do not trade places. Distance is to where your client draws the speaker, so a speaker it does not draw counts as farthest and never takes the place of a player you can see. A speaker who falls silent frees their place after the stream timeout.
+
+## Talk to a channel
+
+Your voice can go to the members of a [channel](../runtime/channels.md) wherever they are, in addition to the players near you or instead of them. These nodes are on the **Crowdy SDK Subsystem** like the rest.
+
+| Blueprint | C++ | Does |
+|---|---|---|
+| **Start Channel Voice** (Channel Id, Mode) | `StartChannelVoice(int64 ChannelId, ECrowdyChannelVoiceMode Mode = Talk)` | Joins that channel's voice: you hear its members. In **Talk** mode (the default) they hear you while **Start Voice Chat** has your microphone open; in **Listen** mode you send nothing, as an audience does. Call it once per channel. |
+| **Set Channel Voice Mode** (Channel Id, Mode) | `SetChannelVoiceMode(int64 ChannelId, ECrowdyChannelVoiceMode Mode)` | Switches a joined channel between **Listen** and **Talk**, as when a listener is given the floor. |
+| **Get Channel Voice Mode** (Channel Id) | `GetChannelVoiceMode(int64 ChannelId)` | The channel's mode now; **Listen** for a channel you have not joined. |
+| **Stop Channel Voice** (Channel Id) | `StopChannelVoice(int64 ChannelId)` | Leaves that channel's voice: you stop hearing it and sending to it. |
+| **Is Channel Voice On** (Channel Id) | `IsChannelVoiceOn(int64 ChannelId)` | Whether you joined that channel's voice. |
+| **Set Spatial Voice Enabled** (Enabled) | `SetSpatialVoiceEnabled(bool bEnabled)` | On by default. Off sends your voice only to the channels you joined in **Talk** mode, not to the players near you. |
+| **Is Spatial Voice Enabled** | `IsSpatialVoiceEnabled()` | Whether the players near you hear you. |
+| **Set Voice Channel Muted** (Channel Id, Muted) | `SetVoiceChannelMuted(int64 ChannelId, bool bMuted)` | Stops you hearing that channel. |
+| **Is Voice Channel Muted** (Channel Id) | `IsVoiceChannelMuted(int64 ChannelId)` | Whether that channel is muted. |
+| **Set Voice Channel Volume** (Channel Id, Volume) | `SetVoiceChannelVolume(int64 ChannelId, float Volume)` | How loud that channel is: 0 is silent, 1 is as received, up to 4. It multiplies the speaker's own volume from **Set Voice Speaker Volume**. |
+| **Get Voice Channel Volume** (Channel Id) | `GetVoiceChannelVolume(int64 ChannelId)` | The volume set for that channel. |
+| **On Voice Channel Speaker Talking** | `OnVoiceChannelSpeakerTalking` (`int64 ChannelId`, `FString SpeakerUuid`, `bool bTalking`) | Fires with **Channel Id**, **Speaker Uuid** and **Talking** when a member starts or stops talking on a channel. |
+
+All of these carry over across map changes, like the other voice settings; when another account signs in on the same game instance, it starts with no channel's voice joined. **On Voice Speaker Talking** fires for spatial voice only; bind **On Voice Channel Speaker Talking** for channels.
+
+**Join to hear.** Being a member of a channel is not enough to hear its voice: every member who should hear it calls **Start Channel Voice**. Members who may not talk there (an audience, a channel made without **Members Can Speak**) join in **Listen** mode; in **Talk** mode the server refuses every packet they send, about 50 a second while their microphone is open, and the log fills with the refusals. A channel whose voice you have not joined is never played. This matters because every player is a member of channels the SDK uses for its own messages. Call **Stop Channel Voice** when the player leaves the channel; until then the SDK keeps sending to it, and the server refuses each packet.
+
+**Who may talk.** The server drops channel voice from a member who is not allowed to send it. The member's role in the channel needs the **Send Voice** permission, and the player needs voice chat allowed. **Create Channel** has a **Members Can Speak** input (off by default) that gives the default member role **Send Voice**; without it only roles you grant it to can talk. Hearing a channel needs only membership. The server does not send your own channel voice back to you. See [Channels](../runtime/channels.md#let-members-speak).
+
+**How it plays.** Channel voice always plays flat (2D), whatever **Playback Mode** says. It takes speaker places like spatial voice, up to **Max Speakers**. A channel speaker whose player is known ranks ahead of every spatial speaker, so a nearer spatial speaker never displaces them. Their player is known usually a moment after they first speak; until then, and for an actor id that belongs to no known player, they rank behind every spatial speaker, so made-up ids cannot hold places. With every place taken by nearby speakers, a party member's first words can be lost while that happens. A player you muted with **Set Voice Speaker Muted** is muted on channels too. Each channel a player talks on is its own stream, so a player who talks on two channels is heard on both, once each.
+
+**You can hear someone twice.** A listener who shares a channel with a speaker standing nearby hears that speaker spatially and on the channel. This is deliberate, and it is how CrowdyJS behaves. If your game does not want it, the speaker can turn spatial voice off with **Set Spatial Voice Enabled** while talking on the channel (then nobody near them hears them spatially), or a listener can mute the channel with **Set Voice Channel Muted**.
+
+**A known limit.** The server does not yet check that channel voice comes from the player whose actor id it carries, so a member who may talk on a channel can send voice that claims to be another player's. Such voice is heard, shown in talking events and muted as that player, so muting the voice you hear mutes the player it claims to be and does not stop it; muting the channel does. It reaches only listeners who joined that channel's voice.
+
+**What it costs.** One 20 ms frame is encoded once and sent once for each channel you talk on, plus once spatially. Every channel you add is another packet per frame, and channel delivery is billed per member. Talking on more than about three channels at once can hide the server's refusals from the log: the connection numbers its sends with one byte, and past about 256 sends a second it can no longer tell which send a refusal is about.
+
+## Mute or turn down one player
+
+The mute and volume nodes take a **User Id**, not an actor id, so they hold through that player's next sign-in, which gives them a new actor id, and across map changes. To act on a player who is talking, turn their **Speaker Uuid** into a user id first.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+Bind `OnVoiceSpeakerTalking`. In the handler, call `GetVoiceSpeakerUserId(SpeakerUuid)`; when it returns a non-zero id, call `SetVoiceSpeakerMuted(UserId, true)`.
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+**On Voice Speaker Talking** gives **Speaker Uuid**. Wire it into **Get Voice Speaker User Id** on the **Crowdy SDK Subsystem**, then wire that user id into **Set Voice Speaker Muted** with **Muted** set to true.
+
+</TabItem>
+</Tabs>
+
+**Get Voice Speaker User Id** answers 0 until the user is known, usually a moment after they first speak, and 0 for a speaker not heard on this map in the last minute, so check for 0 before you use it. A lookup that finds no user is tried again every 10 seconds. A muted player's voice is not decoded and takes no speaker place. While anyone is muted, a new speaker is held silent for up to 1.5 seconds until their user is known, so a muted player is not heard for a moment after they sign in again. Muting is yours to offer; blocking, which the platform enforces, is stronger and is covered in [Player Safety](./player-safety.md#what-a-block-covers).
+
 ## Reading the microphone
 
 **Get Voice Mic State** returns one of five values, and **On Voice Mic State Changed** fires with the new one.
@@ -18380,6 +18497,10 @@ Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, a
 
 You need **Play Voice Chat** for this too, since echo is played like anyone else's voice.
 
+:::note[Realtime servers from v0.48.0 send your own voice back only when the plugin asks.]
+The servers no longer return a speaker's own voice by default, which saves the data out that copy cost. The plugin needs a release that asks while owner echo is on; until you have one, **Toggle Owner Echo** plays nothing on those servers. The [changelog](/releases/intro) says which release asks.
+:::
+
 :::caution[Turn owner echo back off once capture is confirmed.]
 Leaving it on means the player hears their own microphone continuously, not just during the check. The setting carries across map changes, so it stays on until you turn it off.
 :::
@@ -18387,11 +18508,11 @@ Leaving it on means the player hears their own microphone continuously, not just
 ## What to expect
 
 - **Your pawn places your voice.** Each frame is addressed to the chunk your pawn stands in when it is sent, so voice follows the player as they move. Between pawns, during a respawn or as a map ends, it stays where the pawn last stood in that map. Before the map's first pawn, it is addressed to the chunk last given to **Set Player Current Chunk Coordinates** on the game session, which is the origin chunk unless your game sets it. Frames are dropped until the connection is up and your player has an id.
-- **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo, the distance and the timeout all stay as you set them when the next map loads. You do not call anything again after a map change.
+- **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo and the timeout stay as you set them when the next map loads, and so does a distance you set with **Set Voice Chat Distance**. A distance you never set follows each map's **Voice Distance** instead. You do not call anything again after a map change.
 - **A missing microphone is not a failure.** The state reads **No Device**, and voice chat opens the microphone as soon as one is available. On Windows a newly connected microphone is noticed right away; elsewhere voice chat looks again every couple of seconds.
 - **A changed default microphone restarts capture on Windows.** If the player unplugs a headset or picks another default device, voice chat reopens the microphone by itself.
-- **Up to 16 speakers are heard at once.** A seventeenth speaker is not played until one of the others is released.
-- **Received voice plays about 120 ms behind.** The delay absorbs uneven delivery, and it is on top of the network time.
+- **The nearest speakers are heard.** Up to **Max Speakers** (16 by default); a farther speaker is not played while every place is taken.
+- **Received voice plays 120 ms behind by default.** **Playout Delay** sets it. The delay absorbs uneven delivery, and it is on top of the network time.
 - **Lost packets are concealed.** Short gaps are filled in rather than heard as clicks.
 
 ## Platforms
@@ -18406,12 +18527,13 @@ The nodes above are the normal way in, and the Crowdy SDK subsystem keeps your s
 
 `ECrowdyVoiceMicState` is the enum behind **Get Voice Mic State**: `Off`, `Starting`, `Capturing`, `NoDevice` (shown as **No Device**) and `Error`. Each means what the table under [Reading the microphone](#reading-the-microphone) says.
 
-On `UCrowdySDKSubsystem` the two Blueprint events have delegate types you can bind from C++ with `AddDynamic`:
+On `UCrowdySDKSubsystem` the Blueprint events have delegate types you can bind from C++ with `AddDynamic`:
 
 | Delegate type | Property | Parameters |
 |---|---|---|
 | `FOnVoiceMicStateChanged` | `OnVoiceMicStateChanged` | `ECrowdyVoiceMicState State` |
 | `FOnVoiceSpeakerTalking` | `OnVoiceSpeakerTalking` | `FString SpeakerUuid`, `bool bTalking` |
+| `FOnVoiceChannelSpeakerTalking` | `OnVoiceChannelSpeakerTalking` | `int64 ChannelId`, `FString SpeakerUuid`, `bool bTalking` |
 
 `UVoiceChatSubsystem` is the voice chat of one map: a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()` gives you the one for the current map, and it ends with the map. Its members:
 
@@ -18421,14 +18543,17 @@ On `UCrowdySDKSubsystem` the two Blueprint events have delegate types you can bi
 | `IsCapturing()` | True while the state is `Capturing`. |
 | `IsPlaying()` | True while other players' voices are being played, after `PlayVoiceChat()` and before `MuteVoiceChat()`. |
 | `SetOwnerEcho(bool bEnable)` | Plays your own voice back to you, as **Toggle Owner Echo** does. |
-| `SetDistance(int32 Chunks)`, `GetDistance()` | How far your voice reaches in this map, as **Set Voice Chat Distance** sets it for every map. |
+| `SetDistance(int32 Chunks)`, `GetDistance()` | How far your voice reaches in this map: the map's **Voice Distance** until set. **Set Voice Chat Distance** sets it for every map. |
+| `SetUserMuted`, `IsUserMuted`, `SetUserVolume`, `GetUserVolume`, `GetSpeakerUserId` | One player's mute and volume by user id in this map, as the **Set Voice Speaker** nodes set them for every map. |
+| `SetChannelVoice(int64 ChannelId, bool bOn, ECrowdyChannelVoiceMode Mode)`, `GetChannelVoiceMode`, `SetSpatialVoiceEnabled`, `SetChannelMuted`, `IsChannelMuted`, `SetChannelVolume`, `GetChannelVolume` | Channel voice in this map, as the nodes under [Talk to a channel](#talk-to-a-channel) set it for every map. |
 | `FeedVoicePcm(TConstArrayView<int16> Samples)` | Sends 48 kHz mono samples as your voice, through the same silence gate, encoder and send path as the microphone. See [Sending audio that is not the microphone](#sending-audio-that-is-not-the-microphone). |
 | `EndVoiceFeed()` | Ends the talk burst `FeedVoicePcm` started, so listeners see you stop talking. |
 | `GetStats()` | Returns an `FCrowdyVoiceStats` of running counters for this map; see [Watching activity](#watching-activity). |
 | `OnMicStateChanged` | Native multicast delegate (`FOnCrowdyVoiceMicStateChanged`) with the new `ECrowdyVoiceMicState`. Fires on the game thread, and also when the map ends with the microphone open. |
-| `OnSpeakerTalking` | Native multicast delegate (`FOnCrowdyVoiceSpeakerTalking`) with the speaker's actor id as an `FString` and a `bool` for talking. Fires on the game thread. |
+| `OnSpeakerTalking` | Native multicast delegate (`FOnCrowdyVoiceSpeakerTalking`) with the speaker's actor id as an `FString` and a `bool` for talking. Fires on the game thread, for spatial voice only. |
+| `OnChannelSpeakerTalking` | Native multicast delegate (`FOnCrowdyChannelVoiceTalking`) with the channel id, the speaker's actor id and a `bool` for talking. Fires on the game thread. |
 
-The native delegates are bound with `AddUObject` or `AddLambda`, not `AddDynamic`, and a binding on `UVoiceChatSubsystem` is gone when the map is. The subsystem's start, stop, play, mute and distance calls are better made through the nodes, so your settings carry to the next map.
+The native delegates are bound with `AddUObject` or `AddLambda`, not `AddDynamic`, and a binding on `UVoiceChatSubsystem` is gone when the map is. The subsystem's start, stop, play, mute, distance, player and channel calls are better made through the nodes, so your settings carry to the next map.
 
 ### Sending audio that is not the microphone
 
@@ -18440,13 +18565,13 @@ The feed and the microphone share one stream, so `FeedVoicePcm` answers false an
 
 The tool for troubleshooting is a console variable. `crowdy.voice.trace 1` turns on `LogCrowdyVoice` info logging for the microphone, playback and device changes. Warnings and errors are always on. Use it as a troubleshooting knob, not as a gameplay hook; for gameplay, bind **On Voice Speaker Talking** and **On Voice Mic State Changed**.
 
-From C++, `UVoiceChatSubsystem::GetStats()` (a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`) returns running counters for the current map: packets sent, silent frames the gate skipped, packets received, frames played, frames concealed for loss, frames dropped because a speaker's playback was full, malformed packets, and the number of speakers heard right now. A debug overlay or a soak test can read them; they are not a Blueprint node.
+From C++, `UVoiceChatSubsystem::GetStats()` (a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`) returns running counters for the current map: packets sent, silent frames the gate skipped, packets received, frames played, frames concealed for loss, frames dropped because a speaker's playback was full, malformed packets, packets from speakers beyond **Max Speakers** (`PacketsOverCap`), speakers displaced by a nearer one (`SpeakersDisplaced`), packets from muted players and channels, or held while a new speaker's user is looked up (`PacketsMuted`), channel voice packets sent and received (`ChannelPacketsSent`, `ChannelPacketsReceived`) and those from a channel whose voice you have not joined (`ChannelPacketsIgnored`), and the number of speakers heard right now. A debug overlay or a soak test can read them; they are not a Blueprint node.
 
 ## How the transport works
 
 Your voice is cut into 20 ms frames, compressed with Opus, and sent as an ordinary audio message over the same UDP connection every other message uses, not a separate one. Frames go out only while you speak, and the last one of a burst tells listeners you stopped.
 
-On the receiving side the SDK puts each player's packets back in order, decodes them, conceals lost frames, and plays them through a 2D audio component per speaker, so voice is not positional and needs no sound asset. The `CrowdyVoice` module holds all of this and is a public dependency of `CrowdySDK`, so you do not list it yourself. Apart from the members listed under [From C++ beyond the nodes](#from-c-beyond-the-nodes), the voice classes inside it are internal, and the nodes above are the supported way in.
+On the receiving side the SDK puts each player's packets back in order, decodes them, conceals lost frames, and plays each speaker through an audio component, flat or spatial as set under [Flat or spatial playback](#flat-or-spatial-playback). Flat playback needs no sound asset. The `CrowdyVoice` module holds all of this and is a public dependency of `CrowdySDK`, so you do not list it yourself. Apart from the members listed under [From C++ beyond the nodes](#from-c-beyond-the-nodes), the voice classes inside it are internal, and the nodes above are the supported way in.
 
 ## Gotchas
 
@@ -18455,9 +18580,14 @@ On the receiving side the SDK puts each player's packets back in order, decodes 
 - **Capturing** means the microphone is live, not that the player is speaking.
 - **Toggle Owner Echo** true is a one-time check, not a setting to leave on, and it survives map changes.
 - **Set Voice Chat Stream Timeout Threshold** only affects how long a silent stream is kept; it does not mute or cut off active audio. A value outside 0.5 seconds to 1 hour is clamped and logged.
-- **Set Voice Chat Distance** counts chunks from the chunk your pawn stands in, not units from the pawn, and a value outside 0 to 8 is clamped and logged.
+- **Set Voice Chat Distance** counts chunks from the chunk your pawn stands in, not units from the pawn, and a value outside 0 to 8 is clamped and logged. It overrides every map's **Voice Distance** until **Reset Voice Chat Distance**.
+- Voice reaches one chunk unless the map profile or **Set Voice Chat Distance** says otherwise. It used to reach 8.
 - A player whose access tier lacks `use_voice_chat` has every voice packet refused. The refusal arrives late on the realtime subsystem's **On Send Refused**, with the message type 134; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
 - A packaged Mac game needs `NSMicrophoneUsageDescription` in its Info.plist, and the engine's Mac template does not include it.
+- Spatial voice follows the speaker's drawn character. With no copy of them on this client it plays from the centre of the chunk it was sent from, so keep **Movement Distance** at least as large as **Voice Distance**.
+- Channel voice needs the **Send Voice** permission on the sender's role, and the server drops it without. Create the channel with **Members Can Speak** on, or grant the role.
+- Only the nearest **Max Speakers** are heard; with the default of 16, the 17th-nearest speaker is silent.
+- The mute and volume nodes take a user id. **Get Voice Speaker User Id** answers 0 until the user is known. While anyone is muted, a new speaker is held silent for up to 1.5 seconds until their user is known.
 - The old voice events `OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived` and `OnStreamTimeout` are gone. Use **On Voice Speaker Talking** for who is talking.
 
 ## Related
@@ -18801,6 +18931,7 @@ A custom event, **BlockVillager** with a **Player Id**, calls **Block Player**. 
 
 A block stops voice, video, text, direct messages, channel messages and a player's events between the two players, both ways. Blocking also removes every contact and request between them, and unblocking does not bring them back.
 
+- **Voice has a lighter control too.** **Set Voice Speaker Muted** and **Set Voice Speaker Volume** quiet one player's voice for this client only, by user id, and the other player is not affected. Nothing is enforced and nothing else is stopped, so a block is still the stronger control. See [Mute or turn down one player](./voice-chat.md#mute-or-turn-down-one-player).
 - **Movement, actor state and voxel edits still pass,** so both players go on seeing the same world.
 - **What your app's own server code sends is not filtered.** A hub that relays one player's words to another checks the block first: see [blocks in Server Objects](/exec/players-and-safety#blocks).
 
@@ -19988,6 +20119,24 @@ You built against the SDK in July, you are updating the plugin to 2.15 or later 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-11-21 (SDK v2.27.0)
+
+This release makes how far movement, voice and emotes reach settings on the map profile (voice now reaches one chunk by default, and Crowdy State eight instead of four), lets movement thin with distance, and makes other players' copies snap across a teleport instead of gliding. Voice gains a settings page, spatial playback, nearest-speaker selection, per-player mute and volume, and voice to a channel's members.
+
+- **A teleport or a very fast move snaps on other players' screens, and Snap Distance sets the threshold.** **Snap Distance** on the map profile (category Movement, default 10 m) makes other players' copies jump straight to an update that lands farther than it from the one before, on the actor pool (with its shipped movement policy) and Mass backends, instead of gliding across the gap. It is decided on each receiving client from the positions, so it works for any sender. Anything that moves farther than Snap Distance between two updates snaps on every update: at the default Send Rate of 10 and 10 m, that is anything faster than 100 m/s (360 km/h). **What you do:** nothing for characters; to teleport your own player, move the pawn. Raise **Snap Distance** on a map with very fast movers. See [Teleporting a player](../runtime/continuous-state.md#teleporting-a-player).
+- **A remote copy on the actor pool is drawn at most one update interval past its newest update.** It was up to 0.2 s, two intervals at 10 Hz, so a player who stops is now drawn no more than one step past where they stopped. **What you do:** nothing. See [Rendering backends](../runtime/rendering-backends.md).
+- **A player who arrives in another chunk and stands still is seen there within half a second.** The update that changes chunk is sent again 0.5 s later, so if that one update is lost, other players no longer see the player where they left until the next keyframe (3 s by default). A moving player's next update makes it moot, so it costs one update only when a player stops right after crossing. **What you do:** nothing.
+- **How far movement travels is a map setting, and the default is still eight chunks.** **Movement Distance** on the Crowdy Map Profile (category Movement) sets how far each entity's movement travels, in chunks around its own, and its spawn event with it; other players see the entity only within it. Both were fixed at eight chunks, and the default is Eight Chunks, 128 m in each direction at the default chunk size of 1600 units, the same as CrowdyJS and CrowdyCPP. **Relevance Distance**, how far a Crowdy State change travels, now also defaults to Eight Chunks; it was Four Chunks, so on a map whose profile left it alone a Crowdy State change now reaches twice as far. **What you do:** nothing, unless a map should show less: set a smaller **Movement Distance**, and set **Relevance Distance** to Four Chunks to keep Crowdy State's old reach. Keep it at least as large as **Voice Distance** and **Relevance Distance**, or players hear someone they cannot see, and a Crowdy State change arrives for a player who has no copy. See [Map Profiles](../runtime/map-profile.md).
+- **Movement Decay thins movement updates with distance, and a steep one can time out far copies.** **Movement Decay** on the map profile (category Movement, default No Decay) uses the decay rates events use: No Decay; Exponential Decay, where each ring of chunks gets half the updates of the ring before; Linear 50, 25, 10 and 5 Decay, where the farthest ring gets that percentage. The spawn announce is never thinned. A copy is removed after the **Actor Timeout** (12 s) without an update, and an idle player sends only keyframes (every 3 s by default), so a steep decay at long range makes far copies time out: Exponential at eight chunks leaves the edge ring 1 update in 128, one every 384 s for an idle player, and a Linear decay delivers the edge ring in one block of a 20-update cycle, so Linear 50 at eight chunks leaves an idle player's copy 33 s between updates. The SDK logs a warning at startup when the expected gap at the edge reaches the timeout. **What you do:** nothing unless you turn it on; if the warning appears, use a gentler decay, a shorter **Keyframe Interval**, a longer **Actor Timeout** or, for Exponential Decay, a shorter **Movement Distance** (a Linear decay warns at any distance). See [Thinning movement with distance](../runtime/map-profile.md#thinning-movement-with-distance).
+- **Voice reaches one chunk unless the map says otherwise, and Reset Voice Chat Distance is new.** **Voice Distance** on the map profile (category Voice, default One Chunk) is how far a player's voice reaches on that map. The default was eight chunks, so voice on an existing map now reaches 1. **Set Voice Chat Distance** (0 to 8) replaces every map's **Voice Distance**, across map changes, until the new **Reset Voice Chat Distance** (`ResetVoiceChatDistance()`) goes back to the current map's. **Get Voice Chat Distance** reads the distance in use. **What you do:** set **Voice Distance** on each map that needs more, or call **Set Voice Chat Distance**; keep **Movement Distance** at least as large. See [How far your voice reaches](../services/voice-chat.md#how-far-your-voice-reaches).
+- **Voice can play from where the speaker is, and the Crowdy Voice settings page is new.** Project Settings, Plugins, **Crowdy Voice** has **Playback Mode** (Flat (2D), the default and what it was, or Spatial (3D)), **Max Speakers** (16, 1 to 64), **Attenuation** (Spatial only; the SDK's `SA_CrowdyVoice` follows real hearing: full volume within 2 m, 6 dB quieter each time the distance doubles, silent by 40 m, duller far away, muffled behind walls; your own **Sound Attenuation** asset replaces it), **Occlusion Checks Per Second** (10), **Playout Delay** (120 ms, 40 to 400), **Silence Gate** (-50 dB, -90 to -10), **Silence Hold** (300 ms, 20 to 2000) and **Bit Rate (bits per second)** (24000, 6000 to 64000). They are read when a map's voice chat starts. Spatial voice plays from where the speaker's character is drawn on this client, every frame, on the actor pool and on Mass crowd rows. With no copy of the speaker here, it plays from the centre of the chunk it was sent from (up to about 14 m off at the default chunk size) and moves to the copy once it exists. **What you do:** nothing to keep flat playback; to go spatial, set **Playback Mode**, and keep **Movement Distance** at least as large as **Voice Distance**. See [Flat or spatial playback](../services/voice-chat.md#flat-or-spatial-playback).
+- **The nearest speakers are heard, not the first 16.** At most **Max Speakers** are heard. With every place taken, a new speaker at most 90% as far away as the farthest one heard takes that place, so two speakers at a similar distance do not trade places. A speaker who falls silent frees their place after the stream timeout. The voice stats count `PacketsOverCap`, `SpeakersDisplaced` and `PacketsMuted`. **What you do:** nothing. See [The nearest speakers are heard](../services/voice-chat.md#the-nearest-speakers-are-heard).
+- **Mute or turn down one player's voice.** On the Crowdy SDK subsystem, **Set Voice Speaker Muted** and **Is Voice Speaker Muted**, **Set Voice Speaker Volume** and **Get Voice Speaker Volume** (0 to 4, 1 as received) take a user id, so they hold through that player's next sign-in and across map changes. **Get Voice Speaker User Id** turns the **Speaker Uuid** from **On Voice Speaker Talking** into a user id, 0 until it is known (usually a moment after they first speak). A muted player's voice is not decoded and takes no speaker place. While anyone is muted, a new speaker is held silent for up to 1.5 s until their user is known. **What you do:** nothing; it is new. See [Mute or turn down one player](../services/voice-chat.md#mute-or-turn-down-one-player).
+- **Voice can go to a channel's members wherever they are.** On the Crowdy SDK subsystem, **Start Channel Voice** and **Stop Channel Voice** take a **Channel Id** and join or leave that channel's voice, in **Talk** mode (the default) or **Listen** mode for an audience, switched with **Set Channel Voice Mode** (every member who should hear it joins; a channel whose voice you have not joined is never played, and another account signing in starts with none), **Set Spatial Voice Enabled** (on by default; off sends only to channels) and **Is Spatial Voice Enabled** control the players near you, **Set Voice Channel Muted**, **Set Voice Channel Volume** (0 silent, 1 as received, up to 4; it multiplies the speaker's own volume) and their getters control what you hear, and **On Voice Channel Speaker Talking** gives **Channel Id**, **Speaker Uuid** and **Talking**. The settings carry across map changes. **On Voice Speaker Talking** still fires for spatial voice only. Channel voice always plays flat (2D) and takes speaker places like spatial voice; a known player on the channel is never displaced by a nearer spatial speaker, and an actor id with no known player ranks last. A listener in a channel with a nearby speaker hears that speaker twice, as CrowdyJS does; the speaker can turn spatial voice off, or the listener can mute the channel, to avoid it. Each channel you talk on costs its own packets per frame. **What you do:** nothing unless you want it; see [Talk to a channel](../services/voice-chat.md#talk-to-a-channel).
+- **Sending voice to a channel needs the new Send Voice permission, and Create Channel has Members Can Speak.** `FCrowdyChannelPermissions` gains **Send Voice** (`ECrowdyChannelPermission::SendVoice`), and the player needs voice chat allowed. **Create Channel** gains **Members Can Speak** (off by default), which gives the default member role **Send Voice**; without it the server drops a member's channel voice. Receiving needs only membership. **What you do:** in C++, `UCrowdyChannels::CreateChannel` takes `bMembersCanSpeak` after `bMembersCanSend`, so add the argument; Blueprint nodes gain the pin, off. Turn it on, or grant the role the permission, on a channel whose members should talk. For the C++ bridge, `FCrowdyCppReplication::SendChannelAudio` sends channel voice and `FCrowdyCppChannelMessage` carries an `Opcode` (18 message, 36 audio). See [Let members speak](../runtime/channels.md#let-members-speak).
+- **Channel and team errors gain Limit Reached.** The channel or team is full, or the player is in as many as the app allows (the server's `GROUP_LIMIT_REACHED`). Retrying does not help until someone leaves. **What you do:** branch on it where you handle a failed join, request or add. See [Handle a full channel](../runtime/channels.md#handle-a-full-channel).
+- **How far an emote travels is a map setting.** **Emote Distance** on the map profile (category Emotes) sets it; the default, Two Chunks, is what it was. **What you do:** nothing. See [Send an emote](../services/play-together.md#send-an-emote).
 
 ## 2026-11-19 (SDK v2.26.0)
 

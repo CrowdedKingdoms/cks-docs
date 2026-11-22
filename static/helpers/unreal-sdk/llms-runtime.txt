@@ -377,7 +377,7 @@ A plain `SpawnActor` never broadcasts the spawn event. The component still regis
 :::
 
 :::caution[The spawn event of an entity that replicates movement is a one-shot spatial send, so a client that joins later never receives its `InitialState`.]
-It reaches the clients within eight chunks of the spawn point at that moment and is never replayed. A client that joins afterwards, or comes into range later, still draws an entity that replicates movement from its position updates, but with no spawn event `OnCrowdySpawned` does not fire there. An entity that sends no movement is different: its owner repeats the spawn event every 4 seconds (below), so a late joiner gets the actor, its owner, and `OnCrowdySpawned` with the `InitialState`. Anything a late joiner must see on such an entity belongs in class defaults or in replicated state, and anything that must exist for everyone from the start is level-placed.
+It reaches the clients within the map profile's **Movement Distance** (eight chunks by default) of the spawn point at that moment and is never replayed. A client that joins afterwards, or comes into range later, still draws an entity that replicates movement from its position updates, but with no spawn event `OnCrowdySpawned` does not fire there. An entity that sends no movement is different: its owner repeats the spawn event every 4 seconds (below), so a late joiner gets the actor, its owner, and `OnCrowdySpawned` with the `InitialState`. Anything a late joiner must see on such an entity belongs in class defaults or in replicated state, and anything that must exist for everyone from the start is level-placed.
 :::
 
 **Success signal.** On a second client the proxy appears and its `OnCrowdySpawned` fires with `bIsLocallyOwned` false. A single client can only confirm the send: `crowdy.entity.trace 1` logs the registration and the spawn event; `crowdy.rpc.loopback` replays RPC calls, not spawn events, so no proxy appears.
@@ -451,7 +451,7 @@ On a map drawn with the Crowdy Mass Rendering Backend, Mass is the only body of 
 
 An entity that replicates movement (see [Continuous state](./continuous-state.md)) streams position updates, and each update carries the class id and the state struct type. The `UCrowdyActorManager` resolves the class from that (`RegisterStateClass` is filled in for you by each entity component's `BeginPlay`) and asks the rendering backend to draw a proxy, so a moving entity shows up on a client that joined late without any spawn round trip.
 
-An entity that sends no movement, spawned with `SpawnEntity`, sends no updates, so its owner repeats the spawn event instead: every 4 seconds while a client owns it, that client sends the spawn event again, from where the entity is now, naming its owner and carrying its `InitialState`. A client that joins later builds the entity from a repeat exactly as if it had seen the spawn, and its `OnCrowdySpawned` fires there. A client that already has the entity ignores repeats, and `OnCrowdySpawned` never fires twice. A repeat costs about 280 bytes plus your `InitialState`: about 70 bytes per second of upload per entity on its owner, and the same in download for each client within eight chunks. A spawn event for an entity destroyed less than 10 seconds earlier is ignored, so a repeat already on its way cannot bring it back; an owner that never received the destroy keeps repeating, and the entity reappears after those 10 seconds. An entity that sends no movement, placed in the level or registered with `RegisterStaticEntity`, sends nothing.
+An entity that sends no movement, spawned with `SpawnEntity`, sends no updates, so its owner repeats the spawn event instead: every 4 seconds while a client owns it, that client sends the spawn event again, from where the entity is now, naming its owner and carrying its `InitialState`. A client that joins later builds the entity from a repeat exactly as if it had seen the spawn, and its `OnCrowdySpawned` fires there. A client that already has the entity ignores repeats, and `OnCrowdySpawned` never fires twice. A repeat costs about 280 bytes plus your `InitialState`: about 70 bytes per second of upload per entity on its owner, and the same in download for each client within the map's **Movement Distance**. A spawn event for an entity destroyed less than 10 seconds earlier is ignored, so a repeat already on its way cannot bring it back; an owner that never received the destroy keeps repeating, and the entity reappears after those 10 seconds. An entity that sends no movement, placed in the level or registered with `RegisterStaticEntity`, sends nothing.
 
 :::warning[Preloaded Entity Classes is empty by default, and an observer on this path needs it.]
 This path resolves the class by id against loaded classes; a spawn event carries the class path and loads it for you, this does not. The startup scan walks loaded classes, and a Blueprint entity class that nobody on this client has spawned yet is not loaded, so an observer that meets it first over the network cannot name it. The actor manager warns `cannot resolve to a loaded class ... Preload the entity class or give it a ClassIDOverride` and the entity stays undrawn. List every Blueprint entity class a client can be shown before it spawns one itself under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes** (`PreloadedEntityClasses` on `UCrowdySDKDeveloperSettings`). Classes already loaded for another reason need no entry, and a duplicate costs nothing.
@@ -1186,7 +1186,7 @@ Write the notify as the one place the value is applied to the world, the way `On
 
 ## What ships, and when
 
-Only the owning client diffs. A remote proxy never diffs; it applies. The cadence is the map profile's `ReplicationIntervalHz` (1 to 10, default 10), the same clock the continuous channel uses, though the two send independently. Each tick the replicator compares every auto-diffed property of every entity this client drives against a shadow copy of the last sent value and encodes the changed ones into an `FCrowdyStateDelta`; owner-only properties go out as a second, targeted delta. Every `StateKeyframeIntervalSeconds` (default 2, on the map profile; 0 turns it off) each entity also emits a keyframe carrying its `CrowdyHeartbeat` properties, unless the entity's `StateHeartbeat` is Off. A delta travels as far as the profile's `StateRelevanceDistance` (Four Chunks by default), which is tighter than the continuous channel.
+Only the owning client diffs. A remote proxy never diffs; it applies. The cadence is the map profile's `ReplicationIntervalHz` (1 to 10, default 10), the same clock the continuous channel uses, though the two send independently. Each tick the replicator compares every auto-diffed property of every entity this client drives against a shadow copy of the last sent value and encodes the changed ones into an `FCrowdyStateDelta`; owner-only properties go out as a second, targeted delta. Every `StateKeyframeIntervalSeconds` (default 2, on the map profile; 0 turns it off) each entity also emits a keyframe carrying its `CrowdyHeartbeat` properties, unless the entity's `StateHeartbeat` is Off. A delta travels as far as the profile's `StateRelevanceDistance` (Eight Chunks by default).
 
 One delta holds about 1 KB of state: 1029 bytes on an actor, and 969 on a replicated subsystem, which rides the session channel. A larger update is split into several deltas in the same tick, so its properties can land a moment apart. A single property too big for one delta is not sent. It stays pending, clients keep their old value, the owner's notify does not run, and a warning names the property and entity once. It goes as soon as it fits, and the rest of the update does not wait for it. A value that can grow that far belongs elsewhere: see [Where the list you wanted belongs](#where-the-list-you-wanted-belongs).
 
@@ -1379,7 +1379,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/runtime/continuous-state
 
 # Continuous State
 
-Continuous state is how a moving entity moves on every other client. When the entity component replicates movement, every replication interval the owner sends a snapshot of the actor's location, rotation and aim pitch; each other client in range applies it to a proxy through the [rendering backend](./rendering-backends.md). There is nothing to write for that: the SDK's default executor takes the snapshot for you.
+Continuous state is how a moving entity moves on every other client. When the entity component replicates movement, every replication interval the owner sends a snapshot of the actor's location, rotation and aim pitch; each other client within the map profile's [Movement Distance](./map-profile.md) (eight chunks by default) applies it to a proxy through the [rendering backend](./rendering-backends.md). There is nothing to write for that: the SDK's default executor takes the snapshot for you.
 
 ## When to use it
 
@@ -1585,6 +1585,16 @@ A remote proxy is fed from the network and never calls it, so a side effect insi
 :::
 
 The owner evaluates `GetActorState` every interval (`ReplicationIntervalHz`, 10 by default, 1 to 10 Hz, one clock shared with Crowdy State; `bUseAutoReplicator` off means no polling at all). With `bSendActorStateOnlyOnChange` on, the default, an unchanged snapshot does not repeat: a full keyframe goes out every `ActorKeyframeIntervalSeconds` (3 s), which is what other players receive from an idle entity and so what keeps it on their screens, and a heartbeat every `ActorHeartbeatIntervalSeconds` (1 s), which only keeps its presence on the server from going stale; off, the snapshot goes out every interval whether it changed or not. The [map profile](./map-profile.md) page lists each field. A field lives on exactly one channel: a `CrowdyState` property whose name and canonical type also match a field of the executor struct is dropped from the Crowdy State layout at discovery, with an error mentioning `also lives in its executor state struct`.
+
+## Teleporting a player
+
+To teleport your own player, move the pawn: `SetActorLocation` with teleport physics, or `TeleportTo`. Nothing else is needed for other players to see a snap.
+
+On the actor pool backend and on the Mass backend (crowd rows), a copy glides between updates, but an update farther than the map profile's **Snap Distance** (default 10 m) from the one before it places the copy at the new spot: no glide across the gap and nothing drawn past it. Each client decides this from the positions alone, so it works for any sender, an older Unreal client or the web SDK included. On the actor pool it is the shipped `UCrowdyTransformRepPolicy` (or a subclass) that snaps, given the distance with `SetSnapDistance`; a [replication policy](./rendering-backends.md) of your own glides across a teleport unless it snaps itself.
+
+Anything that moves farther than Snap Distance between two updates snaps on every update instead of gliding. At the default Send Rate of 10 updates a second and 10 m, that is anything faster than 100 m/s (360 km/h), so characters are never affected; a map with fast vehicles sets a larger **Snap Distance**. A burst of lost packets on a fast mover can also snap instead of glide.
+
+**Request Teleport Permission** on the Crowdy SDK subsystem asks the platform whether the destination chunk may be entered. It is optional and separate: it moves nothing. See [Grids](../studio/grids.md).
 
 ## Gotchas
 
@@ -1894,7 +1904,7 @@ The grant, on the owner: `HandleOwnershipRequested`, bound to `OnOwnershipReques
 ```cpp
 // LanternPost.h
 UFUNCTION()
-void HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID);
+void HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID, int64 RequesterUserID);
 
 // LanternPost.cpp
 #include "Replication/Ownership/CrowdyOwnershipTransfer.h"
@@ -1902,13 +1912,14 @@ void HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, cons
 
 GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>()->OnOwnershipRequested.AddDynamic(this, &ALanternPost::HandleOwnershipRequested);
 
-void ALanternPost::HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID)
+void ALanternPost::HandleOwnershipRequested(AActor* TargetEntity, AActor* RequesterActor, const FGuid& RequesterID,
+	int64 RequesterUserID)
 {
 	if (TargetEntity != this)
 	{
 		return;
 	}
-	UCrowdyOwnershipTransfer::GrantOwnershipTransferToPlayer(this, this, RequesterID);
+	UCrowdyOwnershipTransfer::GrantOwnershipTransferToPlayer(this, this, RequesterID, RequesterUserID);
 }
 ```
 
@@ -2165,7 +2176,7 @@ The bootstrap joins named channels; it never invents one, because a missing name
 
 ## Create and join
 
-`CreateChannel(Name, Description, MembershipPolicy, bMembersCanSend, OnSuccess, OnError)` creates one; the creator becomes its owner with the system `leader` role, which holds every permission including `send_messages`. `ECrowdyChannelMembershipPolicy` decides how others get in: `Open` (join at once), `Request` (a join request awaits approval), `Invite` (managers add members), `Admin` (app admins only). `bMembersCanSend` true creates a default `member` role granting `send_messages` to everyone who joins; false makes an announce-only channel where joiners receive but cannot post until given a role. The app's `FCrowdyChannelPolicy` (read with `GetChannelPolicy`) holds who may create channels at all (`ECrowdyChannelCreationPolicy`: `Admin`, `Member`, `Anyone`), the default membership policy, and the caps `MaxMembers` and `MaxChannelsPerUser` (0 means none); `SetChannelPolicy` sets the two policies, and the caps are set in Crowdy Studio.
+`CreateChannel(Name, Description, MembershipPolicy, bMembersCanSend, bMembersCanSpeak, OnSuccess, OnError)` creates one; the creator becomes its owner with the system `leader` role, which holds every permission including `send_messages`. `ECrowdyChannelMembershipPolicy` decides how others get in: `Open` (join at once), `Request` (a join request awaits approval), `Invite` (managers add members), `Admin` (app admins only). `bMembersCanSend` true creates a default `member` role granting `send_messages` to everyone who joins; false makes an announce-only channel where joiners receive but cannot post until given a role. `bMembersCanSpeak`, which follows it (**Members Can Speak** on the Blueprint node, off by default), does the same for `send_voice`; see [Let members speak](#let-members-speak). The app's `FCrowdyChannelPolicy` (read with `GetChannelPolicy`) holds who may create channels at all (`ECrowdyChannelCreationPolicy`: `Admin`, `Member`, `Anyone`), the default membership policy, and the caps `MaxMembers` and `MaxChannelsPerUser` (0 means none); `SetChannelPolicy` sets the two policies, and the caps are set in Crowdy Studio.
 
 The lantern village creates a `village` channel for lit notices once the connection is up: `CreateVillageChannel`, called from the game instance's connected handler (the create needs the game token), and `HandleVillageChannelCreated` stores the id behind `GetVillageChannelId`, the one place the id lives.
 
@@ -2197,7 +2208,7 @@ void ULanternGameInstance::CreateVillageChannel()
 	FOnChannelSuccess Created;
 	Created.BindDynamic(this, &ULanternGameInstance::HandleVillageChannelCreated);
 	Channels->CreateChannel(TEXT("village"), TEXT("Lantern lit notices"),
-		ECrowdyChannelMembershipPolicy::Open, true, Created, FOnChannelError());
+		ECrowdyChannelMembershipPolicy::Open, true, false, Created, FOnChannelError());
 }
 
 void ULanternGameInstance::HandleVillageChannelCreated(FCrowdyChannel Channel)
@@ -2209,7 +2220,7 @@ void ULanternGameInstance::HandleVillageChannelCreated(FCrowdyChannel Channel)
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, and `Members Can Send` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at BeginPlay there may be no token yet and the create would answer on **On Error**. The Game Mode belongs to one map, so keep the id in a variable on the Game Instance if the next map needs it. (Do not start from the Game Instance's **Event Init**: it runs before the SDK's subsystems exist, see [Authentication](../services/authentication.md#signing-in).) To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
+In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, `Members Can Send`, and `Members Can Speak` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at BeginPlay there may be no token yet and the create would answer on **On Error**. The Game Mode belongs to one map, so keep the id in a variable on the Game Instance if the next map needs it. (Do not start from the Game Instance's **Event Init**: it runs before the SDK's subsystems exist, see [Authentication](../services/authentication.md#signing-in).) To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
 
 [Blueprint snippet: ch-create, see /bp/unreal-sdk/ch-create.txt]
 
@@ -2219,6 +2230,12 @@ In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** ge
 Every connecting client running this asks the server to create the channel. A real game has one client create it, the Leader for instance, or calls `GetChannels` first and creates only on a miss; the server's creation policy is the real gate on who may.
 
 `JoinChannel(ChannelId, ...)` joins an open channel and `RequestToJoinChannel` files a request on a `Request` channel; `LeaveChannel` leaves. The creator is already a member and needs neither, though the local cache (`HasCachedChannels`, `IsPlayerInChannel`) does not show the new channel until `GetMyChannels` has run.
+
+## Let members speak
+
+A channel can carry voice as well as messages; see [Talk to a channel](../services/voice-chat.md#talk-to-a-channel). Sending voice needs the `send_voice` permission (`ECrowdyChannelPermission::SendVoice`, the **Send Voice** flag of `FCrowdyChannelPermissions`) on one of the sender's roles, and the player needs voice chat allowed. The `leader` role holds it, so the player who creates a channel can always talk on it. **Members Can Speak** on **Create Channel** gives the default `member` role `send_voice`; it is off by default, so on a channel made without it the server drops a member's voice until a role with the permission is granted; such members join the channel's voice in **Listen** mode. The SDK logs that refusal as a warning naming Send Voice. Receiving voice needs only membership.
+
+A change to the signature: in C++, `CreateChannel` takes `bMembersCanSpeak` right after `bMembersCanSend`, so existing calls need the new argument. The Blueprint node gains the pin, off.
 
 ## Ban a member
 
@@ -2335,6 +2352,10 @@ On the **Join Channel** node's **On Error** pin, open `Error` with **Break Crowd
 </TabItem>
 </Tabs>
 
+## Handle a full channel
+
+A join, a request to join, an add or a create fails with the error code `LimitReached` (**Limit Reached** on the Blueprint enum) when the channel is full, or when the player is already in as many channels as the app allows. Teams report the same code for their caps. Retrying does not help until someone leaves, so tell the player instead. Branch on it the way [Handle a ban on join](#handle-a-ban-on-join) does for `Banned`. Both caps are set in Crowdy Studio, and the Game API names the code `GROUP_LIMIT_REACHED`.
+
 ## Publish and receive
 
 `PublishChannelMessage(ChannelId, Payload)` sends raw bytes to every active member except the sender. The caller must already be a member holding `send_messages`; an open channel's default member role grants it. The server caps a channel message payload at 1024 bytes. `PublishChannelMessageAs(ChannelId, SenderUuid, Payload)` sends under a sender id you choose, as the Game Kit's chat does, since the session's own id is empty until the player's entity resolves; a receiver sees that id, which proves nothing. `CanPublishChannelMessage()` is true once the game session exists and the realtime connection is routing.
@@ -2422,7 +2443,7 @@ The server does not sign the delivery, and any member with `send_messages` could
 
 ## The full surface
 
-Cache and queries, on `UCrowdyChannels`: `HasCachedChannels` (has `GetMyChannels` ever completed), `GetCachedMyChannels` (the memberships, no round trip), `IsPlayerInChannel`, `GetMyChannelById`, `IsInAnyChannel`, `HasPermissionInChannel` (an `ECrowdyChannelPermission`: `SendMessages`, `ManageChannel`, `ManageMembers`, `ManageRoles`, `InviteMembers`), `GetMyChannels`, `GetChannel`, `GetChannels`, `GetChannelMembers`, `GetChannelRoles`, `GetChannelPolicy`, `GetPendingJoinRequests`. `OnMyChannelsCacheChanged` fires when the cached membership list changes.
+Cache and queries, on `UCrowdyChannels`: `HasCachedChannels` (has `GetMyChannels` ever completed), `GetCachedMyChannels` (the memberships, no round trip), `IsPlayerInChannel`, `GetMyChannelById`, `IsInAnyChannel`, `HasPermissionInChannel` (an `ECrowdyChannelPermission`: `SendMessages`, `ManageChannel`, `ManageMembers`, `ManageRoles`, `InviteMembers`, `SendVoice`), `GetMyChannels`, `GetChannel`, `GetChannels`, `GetChannelMembers`, `GetChannelRoles`, `GetChannelPolicy`, `GetPendingJoinRequests`. `OnMyChannelsCacheChanged` fires when the cached membership list changes.
 
 Mutations: `CreateChannel`, `UpdateChannel`, `DeleteChannel`, `JoinChannel`, `RequestToJoinChannel`, `LeaveChannel`, `AddChannelMember`, `RemoveChannelMember`, `BanChannelMember`, `UnbanChannelMember`, `CreateChannelRole`, `UpdateChannelRole`, `DeleteChannelRole`, `SetChannelMemberRoles`, `SetChannelPolicy`.
 
@@ -2438,9 +2459,9 @@ The types:
 | `FCrowdyChannelMember` | `ChannelMemberId`, `ChannelId`, `UserId`, `Status` (`active`; `pending` while a request waits; `banned` in the answer to a ban), `Roles` sorted by rank, `CreatedAt`. |
 | `FCrowdyChannelMembership` | Your own membership of one channel: `Channel`, `Roles`, the effective `Permissions` across them, `JoinedAt`. |
 | `FCrowdyChannelRole` | `ChannelRoleId`, `ChannelId`, `RoleName`, `Rank`, `bIsSystem`, `Permissions`, `CreatedAt`. Every channel has a non-deletable `leader` role. |
-| `FCrowdyChannelPermissions` | The five flags: `bSendMessages`, `bManageChannel`, `bManageMembers`, `bManageRoles`, `bInviteMembers`. |
+| `FCrowdyChannelPermissions` | The six flags: `bSendMessages`, `bManageChannel`, `bManageMembers`, `bManageRoles`, `bInviteMembers`, `bSendVoice`. |
 | `FCrowdyChannelPolicy` | `AppId`, `CreationPolicy`, `DefaultMembershipPolicy`, `MaxMembers`, `MaxChannelsPerUser`. |
-| `FCrowdyChannelError` | An `ECrowdyChannelErrorCode` (`Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`) and the `Message` to show. All but `Banned` are a best-effort classification of the message text; `Banned` comes from the server's own error code. |
+| `FCrowdyChannelError` | An `ECrowdyChannelErrorCode` (`Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`, `LimitReached`) and the `Message` to show. All but `Banned` and `LimitReached` are a best-effort classification of the message text; those two come from the server's own error code. |
 
 Every id is an `int64`; the server's ids are 64-bit.
 
@@ -2482,7 +2503,7 @@ When a map needs settings the shipped default does not have: a Backend Config of
 
 ## Create the asset
 
-In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**. The Details panel groups the settings by what they decide: **Events**, **Remote Entities**, **Movement** and **Crowdy State**. Tuning settings that most maps never change sit under the **Remote Entities** group's **Advanced** row.
+In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**. The Details panel groups the settings by what they decide: **Events**, **Remote Entities**, **Movement**, **Crowdy State**, **Voice** and **Emotes**. Tuning settings that most maps never change sit under the **Remote Entities** group's **Advanced** row.
 
 ![The shipped default map profile asset in the Details panel](/img/unreal-sdk/map-profile-asset.png)
 
@@ -2493,13 +2514,28 @@ The screenshot is the SDK's own shipped default profile. **Backend Config** is e
 | `bEnableNetworking` (**Handle Events and Spawns**) | on | Spawn and destroy events, Crowdy Events and Crowdy State arriving over the realtime connection. Off does not stop movement, drawing or sending: those have their own switches below. |
 | `ActorManagement` (the **Remote Entities** group) | see [Entities and spawning](./entities-and-spawning.md#the-actor-tracker) | **Draw Remote Entities**, the **Backend Class** and **Backend Config** that draw them, the **Interpolation Delay**, and the tracker's tuning under **Advanced**. Pick **Crowdy Mass Rendering Backend** as the **Backend Class** to draw a crowd; see [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md). |
 | `bUseAutoReplicator` (**Send Movement**) | on | The continuous channel: each entity's movement, or its executor's state. See [Continuous state](./continuous-state.md). |
+| `MovementDistance` (**Movement Distance**, Movement) | Eight Chunks | How far each entity's movement and its spawn event travel, in chunks around it (`ECrowdyReplicationDistance`): other players see it only within this range. At the default chunk size of 1600 units, eight chunks is 128 m in each direction. Keep it at least as large as **Voice Distance** and **Relevance Distance**, or players hear someone they cannot see, and a Crowdy State change arrives for a player who has no copy. |
+| `MovementDecay` (**Movement Decay**, Movement) | No Decay | Thins movement updates with distance, so far players get fewer of them. It uses the decay rates events use: **No Decay**; **Exponential Decay**, where each ring of chunks gets half the updates of the ring before; **Linear 50 Decay**, **Linear 25 Decay**, **Linear 10 Decay** and **Linear 5 Decay**, where the farthest ring gets that percentage, in one block of a 20-update cycle. The spawn announce is never thinned. Read [Thinning movement with distance](#thinning-movement-with-distance) before turning it on. |
+| `SnapDistance` (**Snap Distance**, Movement) | 1000 cm (10 m), minimum 0 | Other players' copies jump straight to an update that lands farther than this from the one before it, as a teleport does, instead of gliding there. Keep it above the farthest anything on the map moves between two updates a player receives (its top speed divided by **Send Rate**, and farther where **Movement Decay** thins far updates); something faster snaps on every update. 0 never snaps. See [Teleporting a player](./continuous-state.md#teleporting-a-player). |
 | `ReplicationIntervalHz` (**Send Rate**) | 10 Hz (1 to 10) | How many times a second movement and Crowdy State are sent. Editable while either is on. |
 | `bSendActorStateOnlyOnChange` (**Send Only On Change**) | on | An unchanged entity sends the keyframes and heartbeats below instead of restating its state every interval. |
 | `ActorKeyframeIntervalSeconds` (**Keyframe Interval**, Movement) | 3 s | Full re-send of an unchanged entity's state. It is the only thing other players receive from an entity standing still, so it is what keeps it on their screens and lets a late observer catch up. 0 turns keyframes off. |
 | `ActorHeartbeatIntervalSeconds` (**Heartbeat Interval**) | 1 s | A cheap "still here" for an unchanged entity: the spatial header and no state. It keeps the entity's presence on the server, which goes stale after about 5 s; other players never receive it. 0 turns heartbeats off. |
 | `bUseStateReplicator` (**Replicate Crowdy State**) | on | Crowdy State property replication. See [Crowdy State](./crowdy-state.md). |
-| `StateRelevanceDistance` (**Relevance Distance**) | Four Chunks | How far a Crowdy State change travels, as a chunk count (`ECrowdyReplicationDistance`). |
+| `StateRelevanceDistance` (**Relevance Distance**) | Eight Chunks | How far a Crowdy State change travels, as a chunk count (`ECrowdyReplicationDistance`). |
 | `StateKeyframeIntervalSeconds` (**Keyframe Interval**, Crowdy State) | 2 s | Full re-send of every property marked `CrowdyHeartbeat`. 0 turns the keyframe off map-wide; changes still send. |
+| `VoiceDistance` (**Voice Distance**, Voice) | One Chunk | How far a player's voice reaches on this map, in chunks, unless the game calls **Set Voice Chat Distance**. See [How far your voice reaches](../services/voice-chat.md#how-far-your-voice-reaches). |
+| `EmoteDistance` (**Emote Distance**, Emotes) | Two Chunks | How far an emote travels from the player who sends it. |
+
+## Thinning movement with distance
+
+**Movement Decay** trades update rate for reach. A copy that is not updated is removed after the **Actor Timeout** (12 s on the **Remote Entities** group's **Advanced** row), and an entity that stands still sends only keyframes, one every **Keyframe Interval** (3 s by default). A steep decay at long range can therefore starve a far copy until it times out.
+
+With **Exponential Decay** at the default eight chunks, the outermost ring gets 1 update in 128. A player in it sees a player standing still update once every 384 s, so the copy is gone long before the next one.
+
+The **Linear** decays do not spread updates out evenly: the server delivers each ring in one block of a 20-update cycle and skips it for the rest. The farthest ring under **Linear 50 Decay** gets 10 updates in a row and then misses 10, so with a 3 s **Keyframe Interval** a player standing still there goes 33 s between updates. At the defaults, every Linear decay times far copies out, at any distance beyond the sender's own chunk: the outermost ring gets the same share however far it is. Only a longer **Actor Timeout** helps, or a **Keyframe Interval** under the timeout divided by 11, 16, 19 or 20 for **Linear 50**, **25**, **10** or **5 Decay** (about 1.09, 0.75, 0.63 or 0.6 s at the default 12 s).
+
+The SDK logs a warning when a map starts if the expected gap at the edge reaches the **Actor Timeout**. Fix it with a gentler decay, a shorter **Keyframe Interval**, a longer **Actor Timeout**, or, for **Exponential Decay**, a shorter **Movement Distance**.
 
 ## Checks when you save
 
@@ -2653,7 +2689,7 @@ The policy is what moves a remote player's proxy. Continuous state is how pawns,
 
 #### The sample ring
 
-Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most 0.2 seconds beyond the newest; after that it holds the value extrapolated to 0.2 seconds. The step is measured over at least the average gap of the last four samples (50 ms when only two are held), so two updates that arrive almost together after a sender hitch extrapolate at the sender's normal pace instead of throwing the proxy far ahead for a frame. A render time older than the oldest sample holds the oldest sample; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
+Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most one update interval beyond the newest (100 ms at the default 10 Hz) and never more than 0.2 seconds; after that it holds the value extrapolated to that point, so a player who stops is drawn no more than one step past where they stopped. The step is measured over at least the average gap of the last four samples (50 ms when only two are held), so two updates that arrive almost together after a sender hitch extrapolate at the sender's normal pace instead of throwing the proxy far ahead for a frame. A render time older than the oldest sample holds the oldest sample; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `Newest()` is the newest sample, meaningful only while one is held. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
 
 The reason a proxy built on it does not jitter is the render time itself: the actor manager renders at the estimated server time minus the interpolation delay (**Interpolation Delay** in the [map profile](./map-profile.md)'s Remote Entities group, 100 ms by default), so the proxy is always drawn a little behind the newest sample, between two samples it already holds, and never snaps to the latest one as it lands. Extrapolation only runs when an update is late, and its cap keeps a lost stream from sliding a proxy across the map.
 
@@ -2781,7 +2817,7 @@ Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`),
 
 ## Writing a backend
 
-Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and six optional:
+Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and seven optional:
 
 | Override | Required | Contract |
 |---|---|---|
@@ -2794,6 +2830,7 @@ Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendCo
 | `IsInstanceActive(SlotId)` | no | Whether `SlotId` holds something drawn. Return false when `ActivateInstance` could not acquire a resource (a full pool), and the actor manager calls `ActivateInstance` again once capacity may have freed or the entity registers. The default, true, never retries. |
 | `TakeSpawnData(UUID, InitialState)` | no | Only on a backend whose `DrawsEntitiesAsCrowdRows()` is true: the spawn event of an entity that replicates movement, with no actor spawned for it. Land the data on its representation. |
 | `ReleaseDestroyedInstance(SlotId, UUID)` | no | A destroy event named the entity. Return true when you stopped drawing it; the default returns false. |
+| `TryGetDrawnLocation(SlotId, OutLocation)` | no | Where the slot's entity is drawn now. `UCrowdyActorManager::TryGetRemoteLocation(UUID, OutLocation)` answers from it, and voice chat plays and ranks speakers by it. The default returns false, so on your backend spatial voice plays from the centre of the speaker's chunk and every speaker ranks as farthest. |
 | `GetBackendConfigClass()` | no | The config class your backend reads, so saving a map profile that pairs your backend with another config reports it. Read off the class default object; the default, null, skips the check. |
 
 `DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. The Crowdy Mass Rendering Backend that ships in the SDK is the one backend that returns true; choose it as the map profile's **Backend Class** and see [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md).
@@ -4025,7 +4062,7 @@ void ALanternGuestbook::BeginPlay()
 	Super::BeginPlay();
 	UCrowdyModScripts* Scripts = GetWorld()->GetSubsystem<UCrowdyModScripts>();
 	Scripts->SetHost(TScriptInterface<ICrowdyModScriptHost>(this));
-	Scripts->OnModScriptPrompt.AddDynamic(this, &ALanternGuestbook::OnModScriptPrompt);
+	Scripts->OnModScriptPrompt.AddDynamic(this, &ALanternGuestbook::AnswerPlotPrompt);
 	OnActorBeginOverlap.AddDynamic(this, &ALanternGuestbook::EnterPlot);
 	OnActorEndOverlap.AddDynamic(this, &ALanternGuestbook::LeavePlot);
 }
@@ -4140,10 +4177,10 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lantern")
 bool bRunPlotScripts = true;
 
 UFUNCTION()
-void OnModScriptPrompt(const FCrowdyModScriptPrompt& Prompt);
+void AnswerPlotPrompt(const FCrowdyModScriptPrompt& Prompt);
 
 // LanternGuestbook.cpp
-void ALanternGuestbook::OnModScriptPrompt(const FCrowdyModScriptPrompt& Prompt)
+void ALanternGuestbook::AnswerPlotPrompt(const FCrowdyModScriptPrompt& Prompt)
 {
 	Sign->SetText(FText::Format(INVTEXT("Run {0} scripts by this plot's owner?"), Prompt.Scripts.Num()));
 	GetWorld()->GetSubsystem<UCrowdyModScripts>()->AnswerPrompt(Prompt.PromptId, bRunPlotScripts);

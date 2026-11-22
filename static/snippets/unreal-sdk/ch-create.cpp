@@ -22,7 +22,7 @@ void ULanternGameInstance::CreateVillageChannel()
 	FOnChannelSuccess Created;
 	Created.BindDynamic(this, &ULanternGameInstance::HandleVillageChannelCreated);
 	Channels->CreateChannel(TEXT("village"), TEXT("Lantern lit notices"),
-		ECrowdyChannelMembershipPolicy::Open, true, Created, FOnChannelError());
+		ECrowdyChannelMembershipPolicy::Open, true, false, Created, FOnChannelError());
 }
 
 void ULanternGameInstance::HandleVillageChannelCreated(FCrowdyChannel Channel)
