@@ -202,6 +202,15 @@ you. To check capture by playing back what came round, call
 (0.90.0; `Config::ownMediaEcho` is the starting value). Each change is
 advertised to the server at once.
 
+By default a player receives the audio and video of every actor in range. From
+replication server v0.49.0, `Connection::setSpeakers(voice, video)` names whose
+it receives (0.91.0): `SpeakerList::only(actors)` for only those (none when
+empty), `SpeakerList::everyone()` for everyone again, `SpeakerList::keep()` to
+leave a kind as it is. Streams a list leaves out are not sent or billed. A list
+names at most the app's `gameClientBootstrap.maxVoiceSpeakers` /
+`maxVideoSpeakers` (`InvalidArgument` over 32); the connection sends the lists
+again with each capabilities advertisement.
+
 Audio payloads are yours to define. `crowdy::media` (`voice_frames.hpp`,
 CrowdyCPP 0.60.0) offers an optional convention shared with CrowdyJS: a
 10-byte voice header inside the payload (`encodeVoicePacket`,

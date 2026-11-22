@@ -190,6 +190,30 @@ What each client sees: [the release on the wire](/replication-api/wire-formats#s
 (native clients), [`IDLE_TIMEOUT`](/game-api/graphql-udp-proxy-api#realtime-connection-events) on the
 GraphQL UDP proxy, and the `inactive` realtime status in [CrowdyJS](/crowdyjs/readme).
 
+### c.5 Cap the speakers each player receives
+
+A player receives spatial voice and webcam video from every actor in range, and the bill counts
+every stream delivered. Your game can instead name, for each player, whose voice and whose camera
+it receives (`udp.setSpeakers` in CrowdyJS, `Connection::setSpeakers` in CrowdyCPP,
+`client.udp.set_speakers` in CrowdyPy); the realtime servers send nothing else of that kind, so a
+stream a list leaves out is not billed. A player whose game names no list receives everyone in
+range, as before.
+
+The app sets the most speakers a list may name: `maxVoiceSpeakers` and `maxVideoSpeakers`, 1 to 32
+each, or `null` for 32. A longer list is refused, and lowering a number narrows lists already sent.
+Game clients read the app's numbers from `gameClientBootstrap`.
+
+```graphql
+mutation {
+  updateApp(appId: "42", input: { maxVoiceSpeakers: 8, maxVideoSpeakers: 9 }) {
+    effectiveMaxVoiceSpeakers
+    effectiveMaxVideoSpeakers
+  }
+}
+```
+
+The message on the wire: [speaker lists](/replication-api/wire-formats#speaker-lists-client_media_speakers-47).
+
 ### d. Choose where the app runs
 
 Your app needs a **Game API** to serve runtime traffic, and there is one way to get it: the **shared platform**. Publish with `publishAppToShared` and the app is immediately served by that tier's shared Game API fleet, scoped by your `appId`, in the datacenter you chose when you created it. You do not provision VMs or wait for a stack.

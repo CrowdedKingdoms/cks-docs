@@ -39,6 +39,22 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-22 (choose whose voice and video each player receives)
+
+Replication API v0.49.0 and Game API v2.83.0. The message is in
+[Wire formats](/replication-api/wire-formats#speaker-lists-client_media_speakers-47).
+
+- **A game can name, for each player, whose spatial voice and whose webcam video it receives.** The realtime servers
+  send nothing else of that kind, so a stream a list leaves out is not billed. A player whose game names no list
+  receives everyone in range, as before. **What you do:** nothing, unless you want to cap what a player receives:
+  `game.udp.setSpeakers({ voice, video })` in CrowdyJS 18.38.0, `Connection::setSpeakers` in CrowdyCPP 0.91.0,
+  `client.udp.set_speakers` in CrowdyPy 0.38.0. A list of actor UUIDs receives only those, an empty list no one, and
+  `null` (or `everyone()`, `None`) everyone in range again.
+- **The app sets the most speakers a list may name:** `maxVoiceSpeakers` and `maxVideoSpeakers` on `updateApp`, 1 to
+  32 each (`null` for 32), read back as `effectiveMaxVoiceSpeakers` and `effectiveMaxVideoSpeakers` and by game
+  clients from `gameClientBootstrap`. A longer list is refused with `INVALID_REQUEST`; lowering a number narrows
+  lists already sent. See [game setup](/management-api/game-setup#c5-cap-the-speakers-each-player-receives).
+
 ## 2026-11-21 (your own voice and video stop coming back; keep-alives count as data in)
 
 Replication API v0.48.0. The capabilities flags are in
