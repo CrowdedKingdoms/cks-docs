@@ -212,6 +212,10 @@ Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, a
 
 You need **Play Voice Chat** for this too, since echo is played like anyone else's voice.
 
+:::note[Realtime servers from v0.48.0 send your own voice back only when the plugin asks.]
+The servers no longer return a speaker's own voice by default, which saves the data out that copy cost. The plugin needs a release that asks while owner echo is on; until you have one, **Toggle Owner Echo** plays nothing on those servers. The [changelog](/releases/intro) says which release asks.
+:::
+
 :::caution[Turn owner echo back off once capture is confirmed.]
 Leaving it on means the player hears their own microphone continuously, not just during the check. The setting carries across map changes, so it stays on until you turn it off.
 :::

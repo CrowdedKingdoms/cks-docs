@@ -196,6 +196,12 @@ has either. Sending goes through the connection: `sendAudio`, and
 `sendVideoFrame(chunk, uuid, frame, frameId, codec)`, which needs
 `use_video_chat` on the sender's tier and the grid under the chunk.
 
+From replication server v0.48.0 your own audio and video do not come back to
+you. To check capture by playing back what came round, call
+`Connection::setOwnMediaEcho(true)` for the check and `false` after it
+(0.90.0; `Config::ownMediaEcho` is the starting value). Each change is
+advertised to the server at once.
+
 Audio payloads are yours to define. `crowdy::media` (`voice_frames.hpp`,
 CrowdyCPP 0.60.0) offers an optional convention shared with CrowdyJS: a
 10-byte voice header inside the payload (`encodeVoicePacket`,

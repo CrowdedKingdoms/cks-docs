@@ -30,6 +30,11 @@ number, and each `*_and_wait` variant resolves with the server's echo or raises
 on timeout. Sends are bundled into
 `MESSAGE_BUNDLE` datagrams; `flush_sends()` sends the pending bundle now.
 
+From replication server v0.48.0 your own audio and video packets do not come back
+to you. To check capture by playing back what came round, call
+`client.udp.set_own_media_echo(True)` for the check and `False` after it (0.37.0;
+`own_media_echo=True` on `connect` starts with it on).
+
 ## Channel messages limited by distance
 
 `send_ranged_channel_message` (0.6.0) publishes to a channel but delivers only to the
