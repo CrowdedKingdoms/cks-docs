@@ -45,6 +45,7 @@ CHANNEL_AUDIO_NOTIFICATION = 36;   // server -> client: deliver channel audio; s
 COMMAND_RECONNECT_BOUND = 44;      // server -> client: COMMAND_RECONNECT bound to this assignment's nonce; server v0.45.0+
 COMMAND_SESSION_RELEASED_BOUND = 45; // server -> client: COMMAND_SESSION_RELEASED bound to the nonce; server v0.45.0+
 CONTROL_BOUND_ACK = 46;            // server -> client: this assignment's control frames come only in the bound forms; server v0.46.0+
+CLIENT_MEDIA_SPEAKERS = 47;        // client -> server: the speakers whose spatial voice and video this client receives (see "Speaker lists"); server v0.49.0+
 // other values in 19–127 are unused / reserved or internal server-to-server
 ```
 
@@ -297,6 +298,43 @@ Reason 5 arrives from replication server v0.44.0. Treat a reason you do not know
 `STALE`. Browser clients never see this message: the GraphQL UDP proxy reconnects for
 them, or for reason 5 emits the connection event `IDLE_TIMEOUT` and ends the stream, and
 the binary relay closes its WebSocket with code 4410.
+
+## Speaker lists (`CLIENT_MEDIA_SPEAKERS`, 47)
+
+From replication server v0.49.0 a client can name, per kind, the actors whose spatial voice
+(`CLIENT_AUDIO_PACKET_2`) and webcam video (`CLIENT_VIDEO_PACKET_2`) it receives. Streams a list
+leaves out are not sent to the client, so they are not billed. A client that sends no list, or
+drops it, receives every stream of that kind in range.
+
+The message uses the long-form spatial layout below (so the session and HMAC checks apply), with
+chunk `(0,0,0)`, distance 0 and no actor UUID, like `CLIENT_CAPABILITIES`. The app payload is:
+
+```
+[u8 voiceMode][u8 voiceCount][u8 videoMode][u8 videoCount]
+[voiceCount x 32B actor UUID][videoCount x 32B actor UUID]
+```
+
+| Mode | Meaning | Its count |
+|---|---|---|
+| `0` keep | this kind's list stays as it is | 0 |
+| `1` only | receive this kind only from the actors that follow (from no one when there are none) | the names |
+| `2` everyone | drop this kind's list: receive it from everyone in range again | 0 |
+
+- **Names** are the 32-byte actor UUIDs the spatial messages carry. 32 names of one kind fill a
+  datagram, so set a full voice list and a full video list in two messages (mode `0` for the other
+  kind).
+- **The app's numbers.** Each count may be at most the app's `maxVoiceSpeakers` or
+  `maxVideoSpeakers` (1 to 32; 32 when the app sets none), which `gameClientBootstrap` returns. A
+  message with a longer list, a length that does not match its counts, names on a kind that is not
+  mode `1`, or an unknown mode is answered `GENERIC_ERROR` `INVALID_REQUEST` (15) and changes
+  nothing. When an app lowers a number, a list already sent counts only its first names under the
+  new one.
+- **Lifetime.** The server keeps the lists with the session and forgets them with it, so a client
+  sends them again after every assignment, reassignment and token refresh, and every ~15 s with its
+  capabilities (the SDKs do). An accepted list is not answered and counts as data in.
+- **Scope.** Only spatial voice and webcam video. Channel audio, text and every other message are
+  unchanged; a speaker's own copy stays governed by `OWN_MEDIA_ECHO`; blocks and communication
+  scopes still apply first.
 
 ## Message Bundle per Datagram
 

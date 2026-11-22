@@ -56,6 +56,10 @@ type App {
   effectiveMinPlayerAge: Int!
   idleTimeoutSeconds: Int
   effectiveIdleTimeoutSeconds: Int!
+  maxVoiceSpeakers: Int
+  effectiveMaxVoiceSpeakers: Int!
+  maxVideoSpeakers: Int
+  effectiveMaxVideoSpeakers: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
   org: Organization
@@ -215,6 +219,22 @@ The app's own gameplay idle timeout in seconds, when it sets one: 0 turns the ti
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>effectiveIdleTimeoutSeconds</b></code>](#effective-idle-timeout-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-idle-timeout-seconds */} 
 Seconds a realtime session may go without gameplay input (movement, messages, edits, voice; keep-alives and keyframes that repeat an unchanged state do not count) before the replication server releases it with reason idle. 900 (15 minutes) unless the app sets its own; 0 means never. A released player is not reconnected automatically: the SDKs report the session inactive and the game reconnects on the next player input.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>maxVoiceSpeakers</b></code>](#max-voice-speakers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-voice-speakers */} 
+The most speakers whose spatial voice one player's game may name in its speaker list, when the app sets a number: 1 to 32. null uses 32 (effectiveMaxVoiceSpeakers). Set with updateApp (manage&#x005F;apps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>effectiveMaxVoiceSpeakers</b></code>](#effective-max-voice-speakers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-max-voice-speakers */} 
+The most speakers whose spatial voice one player's game may name in its speaker list (the realtime servers' CLIENT&#x005F;MEDIA&#x005F;SPEAKERS): the app's maxVoiceSpeakers, else 32. The servers deliver voice only from the speakers a list names, so voice the list leaves out is neither sent nor billed; a player whose game sends no list receives every speaker in range.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>maxVideoSpeakers</b></code>](#max-video-speakers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-video-speakers */} 
+The most speakers whose webcam video one player's game may name in its speaker list, when the app sets a number: 1 to 32. null uses 32 (effectiveMaxVideoSpeakers). Set with updateApp (manage&#x005F;apps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>effectiveMaxVideoSpeakers</b></code>](#effective-max-video-speakers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-max-video-speakers */} 
+The most speakers whose webcam video one player's game may name in its speaker list: the app's maxVideoSpeakers, else 32. Video the list leaves out is neither sent nor billed; a player whose game sends no list receives every camera in range.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
