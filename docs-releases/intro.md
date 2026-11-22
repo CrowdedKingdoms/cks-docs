@@ -39,6 +39,21 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-22 (app tokens on the REST sign-in routes)
+
+Application API v2.85.1.
+
+- **The REST routes that change an account refuse an app token.** `POST /auth/change-password`,
+  `POST /auth/set-initial-password`, and `POST /auth/logout-all-devices` answer `SCOPE_MISSING` (HTTP 403) to an
+  app token, as their GraphQL mutations always have. Until this release, an app token reached them. An app token can
+  still call `GET /auth/me`, `POST /auth/logout` (which ends only that token), and the
+  [model endpoint](/application-api/agentic-crowdy-studio) under `/v1/model`. **What you do:** if your code calls one
+  of the three routes with an app token, send the identity session token instead.
+- **REST returns a user with the GraphQL `User` fields only.** Until this release, `GET /auth/me`, and the `user` that
+  `POST /auth/login` and `POST /auth/register` return, also carried internal columns of the account record, the
+  password hash among them. GraphQL never sent them. **What you do:** if you stored or logged these responses, delete
+  those copies.
+
 ## 2026-11-22 (the Game API is now the Application API)
 
 Application API v2.85.0, CrowdyJS 18.39.0, CrowdyCPP 0.92.0, CrowdyPy 0.39.0.
