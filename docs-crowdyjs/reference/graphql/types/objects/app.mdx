@@ -35,7 +35,8 @@ type App {
   state: String
   createdBy: BigInt!
   splitMode: Boolean!
-  gameApiUrl: String
+  applicationApiUrl: String
+  gameApiUrl: String @deprecated
   deploymentTarget: String!
   reservedEgressBytesPerSec: BigInt! @deprecated
   reservedUdpBytesPerSec: BigInt!
@@ -128,15 +129,25 @@ Numeric user id of the account that created the app.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>splitMode</b></code>](#split-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #split-mode */} 
-True when this app's runtime data lives in a dedicated per-tenant game-api database (rather than the shared game-api). Used together with gameApiUrl to route gameplay calls.
+True when this app's runtime data lives in a dedicated per-tenant Application API database (rather than the shared Application API). Used together with applicationApiUrl to route gameplay calls.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-url */} 
-Resolved game-api base URL for SDK/runtime calls: the per-tenant URL for dedicated apps, or the shared platform URL for shared apps. Null for legacy or not-yet-deployed apps.
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>applicationApiUrl</b></code>](#application-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #application-api-url */} 
+Resolved Application API base URL for SDK/runtime calls: the per-tenant URL for dedicated apps, or the shared platform URL for shared apps. Null for legacy or not-yet-deployed apps.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-url */} 
+:::warning[DEPRECATED]
+
+Use applicationApiUrl: the Game API is now the Application API. Removed on January 1, 2027.
+
+:::
+
+Resolved Application API base URL for SDK/runtime calls: the per-tenant URL for dedicated apps, or the shared platform URL for shared apps. Null for legacy or not-yet-deployed apps.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>deploymentTarget</b></code>](#deployment-target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #deployment-target */} 
-Where the app runs: "none" (draft / not deployed), "shared" (the shared game-api), or "dedicated" (a provisioned per-tenant environment).
+Where the app runs: "none" (draft / not deployed), "shared" (the shared Application API), or "dedicated" (a provisioned per-tenant environment).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedEgressBytesPerSec</b></code>](#reserved-egress-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reserved-egress-bytes-per-sec */} 
@@ -158,7 +169,7 @@ Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the pl
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeStatus</b></code>](#runtime-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #runtime-status */} 
-Shared-environment runtime gate, mirrored to the game DB and enforced by game-api + Buddy: "active", "grace", "denied", or "suspended".
+Shared-environment runtime gate, mirrored to the game DB and enforced by Application API + Buddy: "active", "grace", "denied", or "suspended".
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #runtime-denial-reason */} 

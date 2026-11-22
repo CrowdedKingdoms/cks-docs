@@ -14,10 +14,10 @@ account.
 
 :::info[What is switched on]
 
-- **Live** (Game API v2.60.0): filing (`fileSafetyReport`, and the hub node call `safety.report`),
+- **Live** (Application API v2.60.0): filing (`fileSafetyReport`, and the hub node call `safety.report`),
   moderators (`moderate_safety`), reviewing, resolving and escalating, the preserved evidence, and
   the legal hold on a reported account that is deleted.
-- **Live** (Game API v2.61.0): an app that admits players under 18 needs an appointed moderator,
+- **Live** (Application API v2.61.0): an app that admits players under 18 needs an appointed moderator,
   or its players under 18 are refused `SAFETY_MODERATOR_REQUIRED` and Studio warns its
   developers. Crowded Kingdoms receives every report with the reason `CHILD_SAFETY`, across all
   games; reports with other reasons stay with each game's moderators.
@@ -87,7 +87,7 @@ mutation Moderators($orgId: BigInt!) {
 organization's apps, and read the recorded sessions a report covers, and nothing else of the safety
 log. Every such read is audited.
 
-**An app that admits players under 18 needs an appointed moderator** (Game API v2.61.0): a member
+**An app that admits players under 18 needs an appointed moderator** (Application API v2.61.0): a member
 of its organization holding a role that grants `moderate_safety` itself. The admin role alone does
 not count, although admins can still review and decide reports; an admin who should be the
 moderator takes such a role too. The member's account must not be deleted, blocked, banned from
@@ -154,7 +154,7 @@ mutation Escalate($appId: BigInt!, $reportId: BigInt!) {
   their access, or take away a permission key.
 
 **Child safety.** Crowded Kingdoms receives every report filed with the reason `CHILD_SAFETY`, in
-any game, as soon as it is filed (Game API v2.61.0); your moderators still review and decide it.
+any game, as soon as it is filed (Application API v2.61.0); your moderators still review and decide it.
 Crowded Kingdoms reports apparent child sexual exploitation to NCMEC and keeps what the law
 requires for that report; its [Safety](https://crowdedkingdoms.com/safety.html) page tells players
 and parents where to go, `abuse@crowdedkingdoms.com` included.

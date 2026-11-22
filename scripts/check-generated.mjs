@@ -92,6 +92,8 @@ const siblingRoot = resolve(valueOf('--sibling-root', resolve(repo, '..')));
 // file in that sibling repo. generate-sdl.mjs is the code that makes it true and
 // --self-test is what proves it still does.
 const COPIES = [
+  { published: 'static/schema/application-api.graphql', repo: 'cks-game-api', source: 'schema.gql' },
+  // The same SDL under its old name, served until January 1, 2027.
   { published: 'static/schema/game-api.graphql', repo: 'cks-game-api', source: 'schema.gql' },
   { published: 'static/schema/crowdyjs.graphql', repo: 'CrowdyJS', source: 'schema.gql' },
 ];

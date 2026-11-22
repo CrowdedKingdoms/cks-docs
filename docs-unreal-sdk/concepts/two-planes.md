@@ -16,7 +16,7 @@ Every piece of networked state in the SDK lives on one of two planes. The view p
 **Plane B, the truth plane (your server code).** Gameplay state the game must be able to trust: hit points, stats, inventory, currency, anything a client could benefit from lying about. The server owns it: your app's code on [ck-exec](/exec/intro) holds it, and a client asks that code for a change, which it decides and confirms. This is the only place a rule is enforced.
 
 :::caution[The SDK reaches ck-exec through Server Objects.]
-The SDK once had its own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions), built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it and the SDK has removed it. Its replacement is [Server Objects](../exec/overview.md), from Blueprint or C++. See [Move from Game Models](../exec/move-from-game-models.md).
+The SDK once had its own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions), built on the Application API's legacy game-model engine, which ck-exec replaced. The Application API no longer serves it and the SDK has removed it. Its replacement is [Server Objects](../exec/overview.md), from Blueprint or C++. See [Move from Game Models](../exec/move-from-game-models.md).
 :::
 
 :::note[The Leader is a convention, not an enforcement point.]
@@ -33,7 +33,7 @@ Each of these follows from the split above. The page that owns the detail is lin
 
 1. **If a cheater would want to change it, it belongs on the truth plane.** Hit points, currency, inventory, scores, cooldowns, anything a win depends on. Crowdy State is for what players see: position, animation, a light that is on or off. The low latency of Crowdy State is not a reason to put a trusted value there.
 2. **Never decide gameplay from another client's Crowdy State.** Every client writes its own view state and nothing checks it, so a remote client's health bar, hit flag or score in Crowdy State is a claim, not a fact. Read the trusted value from the server instead. See [Crowdy State](../runtime/crowdy-state.md).
-3. **Change a trusted value by asking, not by writing.** The server's code decides and confirms; there is no client-side write to a trusted value. See [Game API best practices](/game-api/best-practices).
+3. **Change a trusted value by asking, not by writing.** The server's code decides and confirms; there is no client-side write to a trusted value. See [Application API best practices](/application-api/best-practices).
 4. **Expect the confirmed value to arrive a moment later.** Predict locally if you must, and let the confirmed value overwrite the prediction.
 5. **Do not build authority on "I am the Leader".** The Leader is a client that coordinates view-plane work; it can leave, change, or lie. Anything that must be true for everyone goes through the server's code. See [A Coordinator Is a Convention](./host-is-a-convention.md).
 6. **Every server id is 64-bit.** Store app, user and team ids as `int64` (Blueprint `Integer64`), never as a 32-bit integer or a parsed number; the app id travels as a string.

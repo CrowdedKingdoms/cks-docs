@@ -35,7 +35,7 @@ Only `createActor` (below) creates an actor record. The realtime layer never
 creates, moves or deletes one: from the actor updates a client sends it keeps
 **live presence** (which actors are where right now), which host election and the
 nearby-actor queries read, and that presence expires a few seconds after the
-actor goes quiet. See [GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api).
+actor goes quiet. See [GraphQL UDP Proxy API](/application-api/graphql-udp-proxy-api).
 
 An actor uuid is unique within an app. `createActor` with a uuid the app already
 has is refused with `ACTOR_EXISTS` (HTTP 409), whose `extensions.ownedByCaller`
@@ -126,7 +126,7 @@ The `publicState` / `privateState` on the actor record are **persisted** state
 you set with the mutations above. A player's fast-changing live transform
 (position within the chunk, rotation, animation) flows over the realtime channel
 via `sendActorUpdate` and is broadcast to nearby players — see
-[GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api). Sending actor updates is
+[GraphQL UDP Proxy API](/application-api/graphql-udp-proxy-api). Sending actor updates is
 also what makes a player a [host](host-discovery) candidate.
 
 Use persisted actor state for things that should survive and be queryable
@@ -141,5 +141,5 @@ for voice. See [Permissions overview](permissions).
 
 ## Reference
 
-See the [Game API GraphQL reference](/game-api/reference/graphql/graphql-overview)
+See the [Application API GraphQL reference](/application-api/reference/graphql/graphql-overview)
 for the exact inputs and return types.

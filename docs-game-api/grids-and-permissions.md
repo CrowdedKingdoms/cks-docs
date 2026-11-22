@@ -14,7 +14,7 @@ in a specific 3D region of the world?).
 | Layer | API | What it answers |
 | ----- | --- | ---------------- |
 | Tier / app access | [Management API](/management-api/intro) | Does this player have access to the app? Does their tier allow `update_voxel_data`? |
-| Grid permissions | **Game API** (this service) | In this 3D region, what is this player allowed to do? |
+| Grid permissions | **Application API** (this service) | In this 3D region, what is this player allowed to do? |
 
 Grids do **not** replace tiers — they add a **spatial gate** on top of tier
 access. Both gates are **always enforced**: to act in a chunk a player needs the
@@ -236,7 +236,7 @@ This holds for every voxel write: `updateVoxel`, `sendVoxelUpdate`, `updateChunk
 voxel update, which the replication servers refuse with `UNAUTHORIZED`.
 
 **Knowing before you send.** To grey out a build tool, or draw claim borders, before an edit is
-refused, read the area's grids with `gameApps.nearbyGrids`: from Game API v2.67.0 each grid
+refused, read the area's grids with `gameApps.nearbyGrids`: from Application API v2.67.0 each grid
 carries `permissionKeys`, your own unexpired keys on it (another player's are
 `nearbyPermissions`, an app admin's read). For a chunk, take the covering grid with the smallest
 box (the lower `gridId` on a tie): the edit goes through when that grid's `permissionKeys` include
@@ -246,7 +246,7 @@ building works this way. `access`, `teleport`, `use_voice_chat` and
 `use_video_chat` are still granted by **any** covering grid where the player holds
 them, so a player keeps moving and talking inside a plot they cannot build on.
 
-A grant or revoke reaches every Game API server's voxel checks at once, and the
+A grant or revoke reaches every Application API server's voxel checks at once, and the
 replication servers' within 15 seconds.
 
 ### Voxel positions and types are yours to define
@@ -311,7 +311,7 @@ mutation {
 }
 ```
 
-While it is closed, the Game API refuses **every** voxel and chunk write to a
+While it is closed, the Application API refuses **every** voxel and chunk write to a
 wilderness chunk made for a player: `updateVoxel`, `sendVoxelUpdate`, `updateChunk`
 (org admins included) and a player's [mod](/exec/mods). Each is answered `FORBIDDEN`
 ("This app has closed its wilderness…"). A client's own realtime voxel update there
@@ -321,7 +321,7 @@ can run the world while players may not build in it. A chunk that any other grid
 covers (a claimed plot, a zone you created) is unaffected: its most specific grid
 decides. `App.wildernessWritesOpen` reports the setting to the app's org admins, a
 game client reads it in `gameClientBootstrap.wildernessWritesOpen`, and a hub with
-`grids.read` in `ctx.grids().settings()`. Every Game API server applies a change at
+`grids.read` in `ctx.grids().settings()`. Every Application API server applies a change at
 once; the replication servers within 15 seconds.
 
 ## Writing whole chunks
@@ -336,7 +336,7 @@ chunks that player may build in; the store sends a refused write-back once, drop
 it and reports it (`onWriteBackFailed`).
 
 A whole-chunk write supersedes every voxel edit recorded for the chunk at or
-before it (Game API v2.70.0), so the chunk reads back exactly as written, and
+before it (Application API v2.70.0), so the chunk reads back exactly as written, and
 `Chunk.voxelsUpdatedAt` records when. A grid read earlier and written back
 therefore erases the edits other players made since that read. Read the chunk
 again (or let the store merge) before writing it whole.
@@ -364,5 +364,5 @@ keys.
 
 ## Reference
 
-See the [Game API GraphQL reference](/game-api/reference/graphql/graphql-overview)
+See the [Application API GraphQL reference](/application-api/reference/graphql/graphql-overview)
 for the exact inputs and return types of each operation.

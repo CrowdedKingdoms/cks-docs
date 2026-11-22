@@ -18,11 +18,11 @@ which controls who may **publish** messages to the channel, and `send_voice`, wh
 controls who may send [audio](#voice-on-a-channel) to it. Receiving is available to
 every active member.
 
-All channel management runs over the Game API GraphQL endpoint; publishing and
+All channel management runs over the Application API GraphQL endpoint; publishing and
 receiving messages run over the realtime UDP path (the same `udpNotifications`
 subscription used for spatial traffic). Every operation requires an **app-scoped
 token** for this app (send `Authorization: Bearer <token>`; mint one with
-`mintAppToken` — see **[Authentication](/game-api/authentication)**).
+`mintAppToken` — see **[Authentication](/application-api/authentication)**).
 
 ## Deciding who can create and join channels
 
@@ -50,7 +50,7 @@ mutation {
 ```
 
 `maxMembers` and `maxGroupsPerUser` are optional limits; omit them (or pass
-`null`) for no cap. From Game API v2.77.0 they are enforced: a join, an add (including approving a
+`null`) for no cap. From Application API v2.77.0 they are enforced: a join, an add (including approving a
 request) or a creation past either fails with
 [`GROUP_LIMIT_REACHED`](/overview/error-codes), and `extensions.limit` says which. Only
 active members count, so a waiting request counts once a manager approves it.
@@ -311,6 +311,6 @@ second, as egress. Keep voice channels small, or use spatial voice
 
 ## Reference
 
-See the [Game API GraphQL reference](/game-api/reference/graphql/graphql-overview)
+See the [Application API GraphQL reference](/application-api/reference/graphql/graphql-overview)
 for the exact inputs and return types, and [Permissions overview](permissions)
 for how channel roles fit with app tiers and grid permissions.

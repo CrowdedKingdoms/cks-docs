@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 # Player Safety
 
-Player safety is a player's own controls in your app: who hears and sees them, their contacts, who they have blocked, a parent's consent to voice or video, and reports to the app's moderators. The realtime servers enforce all of it, so nothing here relies on your client behaving, and a change reaches the player's live sessions within a second. What the platform does with these settings is on [Voice, video, contacts and blocks](/game-api/communication).
+Player safety is a player's own controls in your app: who hears and sees them, their contacts, who they have blocked, a parent's consent to voice or video, and reports to the app's moderators. The realtime servers enforce all of it, so nothing here relies on your client behaving, and a change reaches the player's live sessions within a second. What the platform does with these settings is on [Voice, video, contacts and blocks](/application-api/communication).
 
 ## When you touch this
 
@@ -104,7 +104,7 @@ A block stops voice, video, text, direct messages, channel messages and a player
 
 ## Reporting a player
 
-Filing a report keeps both players' recordings from 15 minutes before **Occurred At**, so pass when it happened, in UTC. A report filed from a menu some time later would otherwise miss the incident: left at its default, or in the future, **Occurred At** is now. Pass the reported player's actor id as **Reported Actor Uuid** when you have it. What moderators see is on [Safety reports and moderation](/game-api/safety-reports).
+Filing a report keeps both players' recordings from 15 minutes before **Occurred At**, so pass when it happened, in UTC. A report filed from a menu some time later would otherwise miss the incident: left at its default, or in the future, **Occurred At** is now. Pass the reported player's actor id as **Reported Actor Uuid** when you have it. What moderators see is on [Safety reports and moderation](/application-api/safety-reports).
 
 ## Find out who a player is
 
@@ -131,7 +131,7 @@ A record the server reports as existing without saying it is the player's is use
 | **Failed** | The platform could not be asked. Ask again later. |
 
 :::warning[Confirmed says whose record holds the id, not who sent a message under it.]
-**Confirmed** says whose record holds the id; it does not prove that player sent a given message. Use it to offer **Block** and **Report** to the player; do not use it to decide who may do something. Anything that must be trusted belongs in a Server Object. See [Actor state](/game-api/actor-state).
+**Confirmed** says whose record holds the id; it does not prove that player sent a given message. Use it to offer **Block** and **Report** to the player; do not use it to decide who may do something. Anything that must be trusted belongs in a Server Object. See [Actor state](/application-api/actor-state).
 :::
 
 An **Unknown** answer is remembered for 10 seconds, at most 1,024 of them. A **Confirmed** answer is kept until the player signs out. A **Failed** answer is not kept. Asks made in one tick are batched, 50 ids per request, and an id already being asked is not asked twice.

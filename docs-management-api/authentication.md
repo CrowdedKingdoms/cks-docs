@@ -53,7 +53,7 @@ accounts at all: your organization can sign them in itself (preview) — see
 The session token is a **management-plane** credential. It is **not valid for
 gameplay**: to play, mint a short-lived **app-scoped token** from it — see
 [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) and
-[Game API → Authentication](/game-api/authentication).
+[Application API → Authentication](/application-api/authentication).
 
 :::note[SDK clients]
 CrowdyJS wraps every flow below behind `client.auth` for first-party pages and
@@ -210,7 +210,7 @@ Two behaviours to code against, because both are easy to meet by accident:
   it, but no gameplay token is issued until it is recorded with `recordPlayerConsents`. See
   [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
 - **`register` takes the player's birth date and country** (`birthDate`, `country`, and
-  `parentalConfirmation` under 18; Game API v2.60.0). Every sign-up is refused
+  `parentalConfirmation` under 18; Application API v2.60.0). Every sign-up is refused
   `TERRITORY_NOT_SUPPORTED` from a place Crowded Kingdoms does not serve, and one whose birth
   date is too young `AGE_REQUIREMENT_NOT_MET`, before any account exists. That refusal names no
   age, and the same device or client is then locked out for a while. A browser sign-up must give
@@ -220,7 +220,7 @@ Two behaviours to code against, because both are easy to meet by accident:
 ## A new account confirms its email
 
 `register` creates an unconfirmed account, emails it a confirmation link, and returns a
-session token that works at once for everything but gameplay. **Since 2026-11-11 (Game API
+session token that works at once for everything but gameplay. **Since 2026-11-11 (Application API
 v2.65.0) a password account made from that date gets no gameplay token until it confirms its
 address**: `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` answer
 `EMAIL_CONFIRMATION_REQUIRED` (403), the last of the

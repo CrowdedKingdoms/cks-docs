@@ -72,7 +72,7 @@ The server half starts from the platform's starter, and the client half from its
 
 ## Run a project
 
-**Run Project** builds one revision of a project and puts it on one of the player's grids. Pass the revision your panel showed the player as **Expected Revision**. It, **Get Project Status** and the two pieces below need Game API v2.73.0; an older one refuses them with `GRAPHQL_VALIDATION_FAILED`.
+**Run Project** builds one revision of a project and puts it on one of the player's grids. Pass the revision your panel showed the player as **Expected Revision**. It, **Get Project Status** and the two pieces below need Application API v2.73.0; an older one refuses them with `GRAPHQL_VALIDATION_FAILED`.
 
 | Blueprint | C++ | Does |
 |---|---|---|

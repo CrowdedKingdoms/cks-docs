@@ -10,8 +10,8 @@ editor. The agent is the [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 running **entirely in the player's browser**: the stock harness web UI in a
 same-origin iframe, its plugin tree in a Web Worker, and a filesystem whose
 files are the open Studio project (the bound GitHub repository when the
-project has one). It reaches a model through the Game API's
-[metered model endpoint](/game-api/agentic-crowdy-studio) with the player's
+project has one). It reaches a model through the Application API's
+[metered model endpoint](/application-api/agentic-crowdy-studio) with the player's
 own app token, so usage is priced per request at the app's rate card and
 billed to the player's wallet by default (or the app's org wallet when its
 billing admin chose that).
@@ -48,7 +48,7 @@ Everything the model asks for runs on the page with the player's browser
 authority, through the same controller methods the human buttons use.
 
 GitHub is optional and changes nothing the agent can see. When the project is
-[bound to a repository](/game-api/crowdy-studio-github) (CrowdyJS 17), the
+[bound to a repository](/application-api/crowdy-studio-github) (CrowdyJS 17), the
 agent's writes are commits on the bound branch, each carrying the project's
 current commit SHA as `expectedCommitSha`, exactly as the editor's saves are;
 a stale commit is refused and the worker re-reads before writing again. Monaco
@@ -87,7 +87,7 @@ Sign-in & redirect URIs**; see [Host your game](/build-a-game/host-your-game).
 - **One commit, when asked.** `commit_game_files` asks for approval in the
   pane, then the page shows the files and the message and the player confirms.
   The draft lands as one commit through
-  [`crowdyStudioGitHubCommitFiles`](/game-api/crowdy-studio-github#a-construct-game-the-whole-repository).
+  [`crowdyStudioGitHubCommitFiles`](/application-api/crowdy-studio-github#a-construct-game-the-whole-repository).
   If the branch moved meanwhile, every edit that does not collide is rebased
   and the rest are listed for the player to settle (keep mine, or take
   GitHub's).
@@ -255,4 +255,4 @@ The GraphQL companions are
 [`crowdyStudioSetProviderConsent`](reference/graphql/operations/mutations/crowdy-studio-set-provider-consent.mdx)
 and [`crowdyStudioModelUsage`](reference/graphql/operations/queries/crowdy-studio-model-usage.mdx);
 the REST endpoint is described with the
-[Game API](/game-api/agentic-crowdy-studio).
+[Application API](/application-api/agentic-crowdy-studio).

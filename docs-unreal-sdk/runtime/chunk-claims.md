@@ -66,7 +66,7 @@ Nothing pushes a claim to other players. Search again when your player arrives s
 
 ## Checking whether a player can build
 
-An edit in a chunk is allowed when the player holds `update_voxel_data` on the grid that decides that chunk. **Can Edit Chunk** answers whether they do, so a build tool can switch itself off before the platform refuses an edit. **Get Grid Permissions** answers with the detail: every grid over the chunk and the player's own permission keys on each. Both need Game API v2.67.0, which every tier has.
+An edit in a chunk is allowed when the player holds `update_voxel_data` on the grid that decides that chunk. **Can Edit Chunk** answers whether they do, so a build tool can switch itself off before the platform refuses an edit. **Get Grid Permissions** answers with the detail: every grid over the chunk and the player's own permission keys on each. Both need Application API v2.67.0, which every tier has.
 
 - The deciding grid is the smallest grid covering the chunk, the lower grid id when two are the same size. **Grid Id** names it, and **Can Edit** is true when the player holds `update_voxel_data` there.
 - A chunk no grid covers answers **Success** with **Can Edit** false and **Grid Id** 0: the platform refuses every edit there.

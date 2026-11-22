@@ -118,7 +118,7 @@ const outcome = await titanCall<{ success?: boolean; health?: number; killed?: b
 
 On test on 2026-09-23, one player of Titan Assault was refused about half of their
 `computeInvoke` calls. The module answered every call that reached it, in about 40 ms, but the
-calls waited for a database connection in the game API first. On dev the same pattern through
+calls waited for a database connection in the Application API first. On dev the same pattern through
 the hub was answered in full:
 
 | Replay | Calls | Refused | p99 |

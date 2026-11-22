@@ -5,7 +5,7 @@ title: Shared environment & billing
 
 # Shared environment & billing
 
-The **shared environment** is the primary way to ship a game on Crowded Kingdoms: create your app on the **shared platform** and your players connect to a single, managed Game API scoped by your `appId`. You do not provision or run any infrastructure.
+The **shared environment** is the primary way to ship a game on Crowded Kingdoms: create your app on the **shared platform** and your players connect to a single, managed Application API scoped by your `appId`. You do not provision or run any infrastructure.
 
 :::tip[Sandbox and production]
 The shared platform is **generally available**. Create an app through **[Get started](/management-ui/create-your-first-app)** or `createApp` with shared deployment — it is **immediately active** after create. Sandbox and production follow the same model.
@@ -13,7 +13,7 @@ The shared platform is **generally available**. Create an app through **[Get sta
 
 There are two deployment models in the platform:
 
-- **Shared environment** (customer default) — your app runs on the shared Game API, scoped by your
+- **Shared environment** (customer default) — your app runs on the shared Application API, scoped by your
   `appId`. Free to start; you pay only for metered usage above a free
   allowance.
 - **Dedicated environment** — self-serve dedicated and sandbox stacks were **retired**; private
@@ -252,7 +252,7 @@ query {
 
 ## Creating an app (shared by default)
 
-New apps created through the Management UI **Get started** wizard or `createApp` go live on the shared Game API immediately. `datacenter` is required: a `code` that `placeableDatacenters` lists as `placeable`.
+New apps created through the Management UI **Get started** wizard or `createApp` go live on the shared Application API immediately. `datacenter` is required: a `code` that `placeableDatacenters` lists as `placeable`.
 
 ```graphql
 mutation {
@@ -265,7 +265,7 @@ mutation {
     appId
     deploymentTarget
     runtimeStatus
-    gameApiUrl
+    applicationApiUrl
   }
 }
 ```
@@ -274,7 +274,7 @@ When create succeeds, expect:
 
 - `deploymentTarget` = **`shared`**
 - `runtimeStatus` = **`active`**
-- `gameApiUrl` = the tier's shared endpoint (discover via `platformConfig` if unset in the response)
+- `applicationApiUrl` = the tier's shared endpoint (discover via `platformConfig` if unset in the response)
 
 No separate provisioning step or `publishAppToShared` call is required for new shared apps.
 
@@ -439,21 +439,21 @@ fund the wallet, raise the cap, or renew.
 
 ## Connecting clients
 
-Clients discover the shared Game API URL programmatically — never hard-code tier-specific hosts in production.
+Clients discover the shared Application API URL programmatically — never hard-code tier-specific hosts in production.
 
 The public `platformConfig` query (no auth) returns the shared endpoints:
 
 ```graphql
 query {
   platformConfig {
-    sharedGameApiUrl
-    sharedGameApiWsUrl
+    sharedApplicationApiUrl
+    sharedApplicationApiWsUrl
     freeAppsPerOrg
   }
 }
 ```
 
-Query the app directly for routing fields — `gameApiUrl` is set for shared apps after create:
+Query the app directly for routing fields — `applicationApiUrl` is set for shared apps after create:
 
 ```graphql
 query {
@@ -461,14 +461,14 @@ query {
     appId
     deploymentTarget   # "shared"
     runtimeStatus
-    gameApiUrl         # shared endpoint for this tier
+    applicationApiUrl         # shared endpoint for this tier
   }
 }
 ```
 
-**`mintAppToken`** returns `gameApiUrl` / `gameApiWsUrl` alongside the app-scoped gameplay token — the most convenient path when wiring clients after sign-in.
+**`mintAppToken`** returns `applicationApiUrl` / `applicationApiWsUrl` alongside the app-scoped gameplay token — the most convenient path when wiring clients after sign-in.
 
-Point your client (or a second `CrowdyClient`) at that `gameApiUrl`, and pass the
+Point your client (or a second `CrowdyClient`) at that `applicationApiUrl`, and pass the
 same `appId` when you open the realtime subscription — the session is app-scoped.
 For the SDK walkthrough see
-[Loading an app's Game API](/crowdyjs/shared-environment-routing).
+[Loading an app's Application API](/crowdyjs/shared-environment-routing).

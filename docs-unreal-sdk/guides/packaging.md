@@ -58,7 +58,7 @@ The relevant fields live under the `[/Script/CrowdyReplication.CrowdySDKDevelope
 
 - AppID
 - OrgId
-- The game API URLs
+- The Application API URLs
 
 To sync them, open Crowdy Studio, go to the Project page, and run **Config Sync**. It shows a before-and-after diff and writes the selected app's values into the project settings when you click **Sync to project** on the Project page's Configuration tab.
 

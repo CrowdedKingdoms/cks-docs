@@ -21,7 +21,7 @@ Once per project for the sign-in itself, which the [Quickstart](../quickstart.md
 | Token | Plane | Who holds it | Lifetime |
 |---|---|---|---|
 | Identity **session** token | Management: the account, Studio, linked identities | The SDK persists it so a later launch can restore the session | Until sign-out |
-| **App-scoped** token | Gameplay: the Game API and the realtime connection, confined to one app | The SDK keeps it in memory only | About 30 minutes; refreshed for you before expiry, and again on a realtime `TOKEN_EXPIRED` |
+| **App-scoped** token | Gameplay: the Application API and the realtime connection, confined to one app | The SDK keeps it in memory only | About 30 minutes; refreshed for you before expiry, and again on a realtime `TOKEN_EXPIRED` |
 
 The session token is rejected for gameplay and the app token cannot manage the account, so neither can stand in for the other. You never handle either: the SDK stores, mints, refreshes, and installs them. The mint itself is described on [Portals and app-scoped tokens](/management-api/portals-and-app-tokens#minting-an-app-token); the sign-in calls underneath are on [Sign in](/management-api/authentication).
 
