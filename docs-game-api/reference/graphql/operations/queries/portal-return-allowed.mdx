@@ -1,0 +1,44 @@
+---
+id: portal-return-allowed
+title: portalReturnAllowed
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether redirectUri is a return address this app registered: its origin matches a redirect URI or the launch URL, and on the games host the path must match too. Studio's hosted sign-in Cancel calls this so a decline can send the player back without the allow-list being readable. Any signed-in session. An unknown app or an unregistered address is false. Requires a SESSION token.
+
+
+```graphql
+portalReturnAllowed(
+  appId: BigInt!
+  redirectUri: String!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>portalReturnAllowed.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+Numeric id of the app the decline would return from (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>portalReturnAllowed.<b>redirectUri</b></code>](#redirect-uri)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #redirect-uri */} 
+The authorize request's redirect&#x005F;uri. Checked by origin (and by path on the games host) against the app's redirect URIs and launch URL. The list itself is not returned.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.
