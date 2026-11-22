@@ -2117,7 +2117,7 @@ type AppBudget {
   """App this budget applies to (BigInt as a decimal string)."""
   appId: BigInt!
   """
-  Monthly spend cap in minor currency units (cents) as a BigInt decimal string; null means no cap is configured (unlimited).
+  Monthly spend cap in minor currency units (cents) as a BigInt decimal string; null means no cap is configured (unlimited). Enforced: once currentMonthUsageCents reaches it the app is refused with spend_cap until the month ends or the cap is raised. setAppBudget with 0 removes it (null).
   """
   monthlyLimitCents: BigInt
   """
@@ -2338,6 +2338,12 @@ type AppRuntimeState {
   Per-app daily spend cap in cents (set via setAppSpendCaps). Null = no cap.
   """
   dailyLimitCents: BigInt
+  """Spend so far in the current calendar month (UTC), in cents."""
+  currentMonthUsageCents: BigInt!
+  """
+  Per-app monthly budget in cents (set via setAppBudget). Null = no budget. The app is refused with spend_cap once this month's spend reaches it.
+  """
+  monthlyLimitCents: BigInt
 }
 
 """
@@ -10070,7 +10076,7 @@ type Mutation {
     input: GrantAppAccessInput!
   ): AppUserAccess! @requiresPermission(scope: "app", permission: "manage_access_tiers", scopeArg: "input.appId")
   """
-  Revoke a user's access to an app by setting their app_user_access status to 'revoked'. Their gameplay tokens for the app are deleted and their realtime sessions ended at once, and a new token is refused with ACCESS_REVOKED. Requires the 'manage_access_tiers' permission on the app; super admins bypass. The row is retained for audit (not deleted); REVERSIBLE via grantAppAccess. For a ban that lifts by itself use suspendAppAccess.
+  Revoke a user's access to an app by setting their app_user_access status to 'revoked'. Their gameplay tokens for the app are deleted and their realtime sessions ended at once, and a new token is refused with ACCESS_REVOKED. A user with no access record for the app is NOT_FOUND. Requires the 'manage_access_tiers' permission on the app; super admins bypass. The row is retained for audit (not deleted); REVERSIBLE via grantAppAccess. For a ban that lifts by itself use suspendAppAccess.
   """
   revokeAppAccess(
     """Numeric id of the app to revoke access on."""
@@ -10263,7 +10269,7 @@ type Mutation {
     identityId: String!
   ): Boolean!
   """
-  Ends the current session by deleting the game_token that authenticated this request; other devices stay logged in. An identity session logout also cascades to (revokes) every app token it minted. Returns false if no token was resolved.
+  Ends the current session by deleting the game_token that authenticated this request; other devices stay logged in. An identity session logout also cascades to (revokes) every app token it minted. An app token logs only itself out: it is deleted, and the realtime and compute-module sessions it opened end at once; the identity session that minted it is untouched. Returns false if no token was resolved.
   """
   logout: Boolean!
   """
@@ -10776,7 +10782,7 @@ type Mutation {
     takenDown: Boolean = true
   ): HostedGame!
   """
-  Creates or updates an app's monthly spend cap (idempotent upsert keyed by org + app) and returns the resulting budget. This only records the cap used to monitor/limit overspend; it does not move money, charge a card, or alter the wallet balance. Requires the 'manage_billing' app permission.
+  Creates or updates an app's monthly spend cap (idempotent upsert keyed by org + app) and returns the resulting budget. Once the app's spend this calendar month (UTC) reaches the cap, the platform refuses the app's traffic with spend_cap until the month ends or the cap is raised, as it does for the hourly and daily caps (setAppSpendCaps); 0 removes the budget. It does not move money, charge a card, or alter the wallet balance. Requires the 'manage_billing' app permission.
   """
   setAppBudget(
     """Organization id (BigInt as a decimal string) that owns the app."""
@@ -10784,7 +10790,7 @@ type Mutation {
     """App id (BigInt as a decimal string) whose budget to set."""
     appId: BigInt!
     """
-    Monthly spend cap in minor currency units (cents) of the wallet currency, as a BigInt decimal string. The cap resets each calendar month.
+    Monthly spend cap in minor currency units (cents) of the wallet currency, as a BigInt decimal string: 0 or more (0 removes the budget). The cap resets each calendar month.
     """
     monthlyLimitCents: BigInt!
     """

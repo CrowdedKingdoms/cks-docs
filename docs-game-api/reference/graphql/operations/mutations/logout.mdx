@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Ends the current session by deleting the game&#x005F;token that authenticated this request; other devices stay logged in. An identity session logout also cascades to (revokes) every app token it minted. Returns false if no token was resolved.
+Ends the current session by deleting the game&#x005F;token that authenticated this request; other devices stay logged in. An identity session logout also cascades to (revokes) every app token it minted. An app token logs only itself out: it is deleted, and the realtime and compute-module sessions it opened end at once; the identity session that minted it is untouched. Returns false if no token was resolved.
 
 
 ```graphql
