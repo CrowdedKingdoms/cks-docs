@@ -28,16 +28,16 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 
 ### Game surface
 - The same GraphQL API, for world data and realtime
-- Call it at the app's own endpoint — `mintAppToken` and `gameClientBootstrap` return `gameApiUrl` / `gameApiWsUrl`, and `platformConfig` / `app.gameApiUrl` also carry it
+- Call it at the app's own endpoint — `mintAppToken` and `gameClientBootstrap` return `applicationApiUrl` / `applicationApiWsUrl`, and `platformConfig` / `app.applicationApiUrl` also carry it
 - Used to get assigned a replication server
 - Authenticated with an **app-scoped token** (minted per app from your identity session token — see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)), not the login session token
 - Provides functionality to manage game state, permissions, settings, teams, channels, chunks, and more
 
 ### Replication  
 - Our UDP replication servers are nicknamed "Buddy"
-- Buddy servers run alongside the Game API on the shared platform
-- Use the game API to get assigned one or more Buddies
-- You communicate directly to the IP address given by the game API via unencrypted UDP
+- Buddy servers run alongside the Application API on the shared platform
+- Use the Application API to get assigned one or more Buddies
+- You communicate directly to the IP address given by the Application API via unencrypted UDP
 - You'll use Buddy to send spatially routed messages from one client to some or all nearby clients
 - What makes one shared world possible at this density is that Buddy servers work together to route messages spatially, so each client receives what is near it. In the September 20–21, 2026 load test, 7,500 clients in one dense space ran on 44 servers and 100,000 spread-out clients on 61, with zero dropped frames; the dense test stopped at a cloud quota, not at the cluster.
 
@@ -78,7 +78,7 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 - **[Connecting game clients](/management-ui/client-integration)** — production hosts, tokens and a smoke checklist for your first client.
 - **[Create your first app](/management-ui/create-your-first-app)** — register on the shared platform.
 - **Management API** — authenticate, manage orgs, apps, billing, and shared environment.
-- **Game API** — chunks, voxels, actors, avatars, studio grids, and the GraphQL UDP proxy.
+- **Application API** — chunks, voxels, actors, avatars, studio grids, and the GraphQL UDP proxy.
 - **Replication API** — wire protocol for native UDP clients.
 - **[ck-exec](/exec/intro)** — your game's server code, and players' mods.
 - **CrowdyJS** — install, configure endpoints, and run a game loop.

@@ -20,9 +20,9 @@ There are two kinds of avatar state:
   game-specific data.
 
 In both cases the rule is the same: **only the owner can write; everyone can read
-the public parts.** All operations run on the Game API and require an **app-scoped
+the public parts.** All operations run on the Application API and require an **app-scoped
 token** for the app (`Authorization: Bearer <token>`; mint one with
-`mintAppToken` — see **[Authentication](/game-api/authentication)**).
+`mintAppToken` — see **[Authentication](/application-api/authentication)**).
 
 State values are base64-encoded binary, so you can store whatever your client
 encodes.
@@ -84,5 +84,5 @@ query {
 
 ## Reference
 
-See the [Game API GraphQL reference](/game-api/reference/graphql/graphql-overview)
+See the [Application API GraphQL reference](/application-api/reference/graphql/graphql-overview)
 for the exact inputs and return types.

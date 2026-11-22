@@ -518,6 +518,6 @@ In the browser, CrowdyJS's broker also bounds each CLIENT half:
 | CrowdyJS `marketplace.gridClientMods`, `consentGridClientMod`, `trustGridAuthor`, `clientArtifact(Bytes)` | `client.exec.gridClientMods`, `consentClientMod`, `trustAuthor`, `modClientArtifact(Bytes)`, and `ExecClientHalves` to run them |
 | `PlayerCodeBroker` for a legacy module | `PlayerCodeBroker({ engine: 'ck-exec', … })` |
 
-The game API no longer serves the legacy calls: they went with the legacy engines.
+The Application API no longer serves the legacy calls: they went with the legacy engines.
 
 Next: [port a compute module](port-a-compute-module).

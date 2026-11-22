@@ -154,13 +154,16 @@ mkdirSync(outDir, { recursive: true });
 if (!existsSync(surfaceFile)) die(`management surface allowlist missing: ${surfaceFile}`);
 const surface = JSON.parse(readFileSync(surfaceFile, 'utf8'));
 
-const gameSdl = readSource('Game API', gameSchema);
+const gameSdl = readSource('Application API', gameSchema);
 const crowdyJsSdl = readSource('CrowdyJS', crowdyJsSchema);
 
 const { sdl: managementSdl, rootCount } = deriveManagementSdl(gameSdl, surface);
 
 const published = [
   ['management-api.graphql', managementSdl, `derived from ${gameSchema} (${rootCount} root fields)`],
+  ['application-api.graphql', gameSdl, gameSchema],
+  // The Application API's schema under its old name, still read by older SDK checkouts'
+  // schema syncs; served until January 1, 2027 (OI-2027-01-01-001).
   ['game-api.graphql', gameSdl, gameSchema],
   ['crowdyjs.graphql', crowdyJsSdl, crowdyJsSchema],
 ];

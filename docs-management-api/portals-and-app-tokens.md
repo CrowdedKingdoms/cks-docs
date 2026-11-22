@@ -14,11 +14,11 @@ confined to that one app.
 - **Identity session token** — returned by a **sign-in**: email + password, a
   magic link, or social/OIDC — see [Sign in](/management-api/authentication).
   It is a *management-plane* credential (account, studio admin) and the **only**
-  thing that can mint app tokens. It is **not valid for gameplay**: the Game API
+  thing that can mint app tokens. It is **not valid for gameplay**: the Application API
   and the realtime/UDP surface reject it. Keep it on your trusted identity origin;
   never send it to a game stack.
 - **App-scoped gameplay token** — short-lived (default ~30 min), confined to one
-  app. Used as the Bearer against that app's Game API + realtime surface. A
+  app. Used as the Bearer against that app's Application API + realtime surface. A
   compromised or third-party game only ever sees a token for its own app.
 
 > **Your studio runs its own accounts?** Your organization can sign its players in itself and
@@ -45,10 +45,10 @@ session token on your identity origin and mint app tokens from it as below.
 
 No gameplay token is issued to a player Crowded Kingdoms may not admit. Every mint, refresh
 and hosted sign-in checks the player's country, then their age, then the documents they have
-accepted (Game API v2.60.0): see [Age, country and who may play](/management-api/age-and-territory)
+accepted (Application API v2.60.0): see [Age, country and who may play](/management-api/age-and-territory)
 for the first two, which answer `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED` and
 `AGE_REQUIREMENT_NOT_MET`, and [Legal documents](/management-api/legal-documents) for the third,
-including documents of your app's own. Since Game API v2.65.0 a fourth check follows: a password
+including documents of your app's own. Since Application API v2.65.0 a fourth check follows: a password
 account made since 2026-11-11 confirms its email first (`EMAIL_CONFIRMATION_REQUIRED`; see
 [Authentication](/management-api/authentication#a-new-account-confirms-its-email)).
 
@@ -94,7 +94,7 @@ A client that already holds the session token can mint directly:
 ```graphql
 mutation Enter($appId: BigInt!) {
   mintAppToken(input: { appId: $appId }) {
-    token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
+    token gameTokenId appId expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl launchUrl
     runtimeGate { status reason }
   }
 }
@@ -102,8 +102,8 @@ mutation Enter($appId: BigInt!) {
 
 Send `Authorization: Bearer <session token>`. Free/open apps auto-grant access on
 first mint; an app with no free tier needs a grant first (else
-`ACCESS_NOT_GRANTED`). Use the returned `token` against `gameApiUrl` /
-`gameApiWsUrl`.
+`ACCESS_NOT_GRANTED`). Use the returned `token` against `applicationApiUrl` /
+`applicationApiWsUrl`.
 
 **Check `runtimeGate`.** A paused app (its organization has no funds, reached a
 spend cap, or its subscription lapsed) still mints, so your client can tell the
@@ -112,13 +112,13 @@ until the owner fixes it, and `reason` says which. Show "this world is paused"
 rather than an empty world. `refreshAppToken` and `exchangePortalCode` report it
 too.
 
-**Keep `discoveryUrl`, and do not confuse it with `gameApiUrl`.** `gameApiUrl` is the ONE
+**Keep `discoveryUrl`, and do not confuse it with `applicationApiUrl`.** `applicationApiUrl` is the ONE
 datacenter holding this app's data, which is where gameplay must go. `discoveryUrl` is the
 shared origin, resolving to every datacenter — it is the only address that survives losing
 one, and therefore the only way back when the endpoint you were given stops answering.
 That matters most for exactly this flow: a client holding only an app token **cannot
 re-mint**, because minting needs the session token it does not have. See
-[Datacenters and endpoint routing](/game-api/datacenter-routing).
+[Datacenters and endpoint routing](/application-api/datacenter-routing).
 
 For native clients (Unreal/Unity, desktop, console, mobile, custom launchers), see
 **[Native & non-browser clients](/management-api/native-clients)** for the full
@@ -164,7 +164,7 @@ The verifier never leaves the game origin and the session never leaves Studio:
    ```graphql
    mutation Exchange($input: ExchangePortalCodeInput!) {
      exchangePortalCode(input: $input) {
-       token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
+       token gameTokenId appId expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl launchUrl
      }
    }
    ```
@@ -278,7 +278,7 @@ do this; browser clients on the UDP proxy re-place on every refresh by design.
 
 ## What an app token may do
 
-An app token is accepted on the Game API + realtime surface **only for its own
+An app token is accepted on the Application API + realtime surface **only for its own
 app**, plus read-only `me` and `refreshAppToken` on the Management API. Every
 other management operation (billing, orgs, minting tokens for other apps)
 requires the identity session token and returns `SCOPE_MISSING` for an app token.
@@ -292,13 +292,13 @@ requires the identity session token and returns `SCOPE_MISSING` for an app token
   on `exchangePortalCode` — Crowded Kingdoms is not available where the player is, their age is
   not known, or they are younger than the app allows there. See
   [Age, country and who may play](/management-api/age-and-territory).
-- `EMAIL_CONFIRMATION_REQUIRED` on the same three (Game API v2.65.0) — a password account made
+- `EMAIL_CONFIRMATION_REQUIRED` on the same three (Application API v2.65.0) — a password account made
   since 2026-11-11 has not confirmed its email; `resendConfirmationEmail` sends the link again.
   See [Authentication](/management-api/authentication#a-new-account-confirms-its-email).
 - `SAFETY_LOG_REQUIRED` — a player under 18, in an app whose safety log is off. See
   [the safety log](/replication-api/input-logging#the-safety-log).
 - `SAFETY_MODERATOR_REQUIRED` — a player under 18, in an app whose organization has no appointed
-  moderator. See [Moderators](/game-api/safety-reports#moderators).
+  moderator. See [Moderators](/application-api/safety-reports#moderators).
 - `ACCESS_NOT_GRANTED`, `ACCESS_REVOKED`, `ACCESS_SUSPENDED` (with
   `extensions.suspendedUntil`) on `mintAppToken`, `refreshAppToken` or
   `exchangePortalCode` — the player has no access, the app revoked it, or the app

@@ -38,4 +38,4 @@ view.setUint8(16, pushFlags);
 return btoa(String.fromCharCode(...new Uint8Array(buf)));
 ```
 
-See [ActorUpdateRequestInput](/game-api/reference/graphql/types/inputs/actor-update-request-input) and [sendActorUpdate](/game-api/reference/graphql/operations/mutations/send-actor-update).
+See [ActorUpdateRequestInput](/application-api/reference/graphql/types/inputs/actor-update-request-input) and [sendActorUpdate](/application-api/reference/graphql/operations/mutations/send-actor-update).

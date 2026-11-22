@@ -13,7 +13,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 // its SDL is now derived from the unified cks-game-api schema by sdl:gen, filtered to
 // scripts/management-surface.json.
 const managementSchema = './static/schema/management-api.graphql';
-const gameSchema = './static/schema/game-api.graphql';
+const gameSchema = './static/schema/application-api.graphql';
 const crowdyJsSchema = './static/schema/crowdyjs.graphql';
 
 // Old Unreal SDK URLs and where they moved. The map is a plain JSON file so a page move
@@ -223,7 +223,7 @@ const config: Config = {
         docsRouteBasePath: [
           '/overview',
           '/management-api',
-          '/game-api',
+          '/application-api',
           '/replication-api',
           '/crowdyjs',
           '/crowdycpp',
@@ -266,7 +266,9 @@ const config: Config = {
       {
         id: 'game-api',
         path: 'docs-game-api',
-        routeBasePath: '/game-api',
+        // "Game API" became "Application API" on 2026-11-22 (cks-biz BIZ-039 Q5); the old
+        // paths redirect (createRedirects below).
+        routeBasePath: '/application-api',
         sidebarPath: './sidebars/gameApi.ts',
       },
     ],
@@ -386,6 +388,10 @@ const config: Config = {
           const from = unrealSdkRedirects
             .filter((r) => r.to === existingPath)
             .map((r) => r.from);
+          // Every page of the Application API's section answers on its old /game-api path too.
+          if (existingPath === '/application-api' || existingPath.startsWith('/application-api/')) {
+            from.push(existingPath.replace(/^\/application-api/, '/game-api'));
+          }
           return from.length ? from : undefined;
         },
       },
@@ -590,7 +596,7 @@ const config: Config = {
           title: 'APIs',
           items: [
             {label: 'Management API', to: '/management-api/intro'},
-            {label: 'Game API', to: '/game-api/intro'},
+            {label: 'Application API', to: '/application-api/intro'},
             {label: 'Replication API', to: '/replication-api/intro'},
           ],
         },

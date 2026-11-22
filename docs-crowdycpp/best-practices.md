@@ -9,14 +9,14 @@ CrowdyCPP mirrors CrowdyJS on GraphQL and speaks the Replication API
 natively. Use the same authority rules as every other client.
 
 - **Two tokens.** Sign in for a session token; mint an app-scoped token
-  before Game API or UDP. [Portals](/management-api/portals-and-app-tokens).
-- **Follow `gameApiUrl`.** Call `serverWithLeastClients` on the app's
+  before Application API or UDP. [Portals](/management-api/portals-and-app-tokens).
+- **Follow `applicationApiUrl`.** Call `serverWithLeastClients` on the app's
   datacenter endpoint, wait ~1.5 s, then send HMAC-signed UDP.
   [Replication best practices](/replication-api/best-practices).
 - **Hubs own gameplay state.** Call your app's [ck-exec](/exec/intro) hubs
   through `client.exec()` when you know the target; use keyed hubs and
   spokes for discovery and coordination.
-  [Game API best practices](/game-api/best-practices).
+  [Application API best practices](/application-api/best-practices).
 - **Do not treat silence as loss.** A bad HMAC or token can be dropped
   with no NAK.
 - **Load-test the public path.** Drive sign-in → mint → assign → UDP, not

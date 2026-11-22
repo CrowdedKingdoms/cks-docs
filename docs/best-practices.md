@@ -5,7 +5,7 @@ title: Best practices
 
 # API best practices
 
-These rules apply across the Management API, Game API, Replication API, and
+These rules apply across the Management API, Application API, Replication API, and
 the SDKs. Per-surface detail lives with each API.
 
 ## Authority: hubs, endpoints, and spokes
@@ -33,7 +33,7 @@ In short: the client requests a direct change when it knows the target; a hub
 validates and applies that change; spokes and calls between hubs handle the
 wider workflow when the target or process must be discovered or coordinated.
 
-See **[Game API best practices](/game-api/best-practices)** and
+See **[Application API best practices](/application-api/best-practices)** and
 **[from the legacy engines](/exec/from-the-legacy-engines)**.
 
 ## Tokens and hosts
@@ -41,7 +41,7 @@ See **[Game API best practices](/game-api/best-practices)** and
 - Sign-in returns an **identity session token**. It is not valid for gameplay.
 - Mint an **app-scoped token** (`mintAppToken` or the portal flow) for the Game
   API, realtime, and UDP.
-- Prefer URLs the API returns (`gameApiUrl`, `gameApiWsUrl`, `discoveryUrl`)
+- Prefer URLs the API returns (`applicationApiUrl`, `applicationApiWsUrl`, `discoveryUrl`)
   over a hostname you compose. An app lives in one datacenter and can move.
 - Do not embed a studio-admin or org token in a game client you ship to
   players.
@@ -51,13 +51,13 @@ See **[Game API best practices](/game-api/best-practices)** and
 - Read `extensions.code` (and `blame` / `retryable` on player-facing faults).
   See [Error codes](/overview/error-codes).
 - Pass an `idempotencyKey` on economy-sensitive and destructive mutations.
-- Handle `WRONG_DATACENTER` by reconnecting to `extensions.gameApiUrl`.
+- Handle `WRONG_DATACENTER` by reconnecting to `extensions.applicationApiUrl`.
 
 ## Per-API guides
 
 | Surface | Page |
 | --- | --- |
-| Game API, hubs and spokes | [Game API best practices](/game-api/best-practices) |
+| Application API, hubs and spokes | [Application API best practices](/application-api/best-practices) |
 | Management API, sign-in, entitlements | [Management API best practices](/management-api/best-practices) |
 | Native UDP / Buddy | [Replication API best practices](/replication-api/best-practices) |
 | Unreal | [Unreal SDK best practices](/unreal-sdk/guides/best-practices) |

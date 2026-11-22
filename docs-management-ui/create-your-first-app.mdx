@@ -8,7 +8,7 @@ title: Create your first app
 
 The **Get started** wizard is the primary path for studio owners: register your game on the **shared platform** and start connecting clients right away. Nothing is saved until you finish — closing the wizard mid-flow does not leave a half-created app in your org.
 
-Every new app runs on the managed **shared Game API** — you do not choose hosting, provision VMs, or wait for a dedicated stack. See **[Shared environment & billing](/management-api/shared-environment)** for free-tier limits and usage billing.
+Every new app runs on the managed **shared Application API** — you do not choose hosting, provision VMs, or wait for a dedicated stack. See **[Shared environment & billing](/management-api/shared-environment)** for free-tier limits and usage billing.
 
 ## Prerequisites
 
@@ -40,7 +40,7 @@ On the same step you pick the **datacenter** the app will live in. It is require
 
 The review step summarizes your app. Press **Create app**.
 
-There is **no billing step and no card**: every new app is created on the managed shared Game API (`createApp` has no hosting argument to choose), and a new organization's free app quota covers it. **No separate publish step or provisioning wait** — when create succeeds, the app is **immediately usable**. Wallet funding and auto-billing are set up afterwards from the **Wallet** tab, and only matter once metered usage exceeds the monthly allowance.
+There is **no billing step and no card**: every new app is created on the managed shared Application API (`createApp` has no hosting argument to choose), and a new organization's free app quota covers it. **No separate publish step or provisioning wait** — when create succeeds, the app is **immediately usable**. Wallet funding and auto-billing are set up afterwards from the **Wallet** tab, and only matter once metered usage exceeds the monthly allowance.
 
 ### Success
 
@@ -50,12 +50,12 @@ On the app dashboard (and in API responses):
 
 - `deploymentTarget` = **`shared`**
 - `runtimeStatus` = **`active`**
-- `gameApiUrl` points at the shared endpoint of the datacenter holding your app (on production, a `https://ck-<datacenter>.prod.crowdedkingdoms.com` host)
+- `applicationApiUrl` points at the shared endpoint of the datacenter holding your app (on production, a `https://ck-<datacenter>.prod.crowdedkingdoms.com` host)
 
 Use that URL (or values returned from `mintAppToken`) to connect game clients — see **[Connecting to your app](/management-ui/connecting)**.
 
 :::info[Cosmetic UI gaps]
-The app list may still show a DRAFT badge or a "Publish to shared environment" banner while runtime is already active. Safe to ignore for connectivity — rely on `runtimeStatus` and `gameApiUrl` from the API.
+The app list may still show a DRAFT badge or a "Publish to shared environment" banner while runtime is already active. Safe to ignore for connectivity — rely on `runtimeStatus` and `applicationApiUrl` from the API.
 :::
 
 ## Wallet and auto-billing
@@ -82,9 +82,9 @@ you need enterprise isolation.
 
 | Symptom | What to check |
 | ------- | ------------- |
-| App shows DRAFT but API says `active` | Known cosmetic gap — use `gameApiUrl` and `mintAppToken` to connect. |
+| App shows DRAFT but API says `active` | Known cosmetic gap — use `applicationApiUrl` and `mintAppToken` to connect. |
 | `runtimeStatus` not `active` | Check wallet balance, spend caps, or subscription state — see [Shared environment & billing](/management-api/shared-environment). |
-| Game API returns `APP_TOKEN_REQUIRED` | Mint an **app-scoped token** with `mintAppToken` — the identity session token cannot drive gameplay. |
+| Application API returns `APP_TOKEN_REQUIRED` | Mint an **app-scoped token** with `mintAppToken` — the identity session token cannot drive gameplay. |
 
 ## Next steps
 

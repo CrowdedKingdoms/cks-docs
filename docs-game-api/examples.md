@@ -5,11 +5,11 @@ title: Example operations
 
 # Example operations
 
-Copy-paste examples for the most common Game API flows, each with variables and a
+Copy-paste examples for the most common Application API flows, each with variables and a
 representative response. Field shapes are authoritative in the
-[GraphQL reference](/game-api/reference/graphql-overview) and the
-[Game API SDL](pathname:///schema/game-api.graphql). For the higher-level browser path see
-[GraphQL UDP-proxy API](/game-api/graphql-udp-proxy-api); for the agent overview see
+[GraphQL reference](/application-api/reference/graphql-overview) and the
+[Application API SDL](pathname:///schema/application-api.graphql). For the higher-level browser path see
+[GraphQL UDP-proxy API](/application-api/graphql-udp-proxy-api); for the agent overview see
 [For AI agents](/overview/for-ai-agents).
 
 The Studio agent is not a GraphQL operation at all: it runs in the player's
@@ -18,9 +18,9 @@ endpoint with the player's app token. Browser games mount it with CrowdyJS's
 `dsh` option rather than exposing GraphQL to a model. See
 [Agentic Crowdy Studio and the model endpoint](agentic-crowdy-studio).
 
-> Responses below are representative. The Game API accepts an **app-scoped token**
+> Responses below are representative. The Application API accepts an **app-scoped token**
 > (mint one for the app with `mintAppToken` from your identity session token — see
-> **[Authentication](/game-api/authentication)**), not the session token `login`
+> **[Authentication](/application-api/authentication)**), not the session token `login`
 > returns. Send it as `Authorization: Bearer <token>` on HTTP requests, and in the
 > `graphql-transport-ws` `connection_init` payload for the subscription.
 
@@ -136,7 +136,7 @@ a `GenericErrorResponse` with the same `sequenceNumber` (here `7`). See
 
 `getChunksByDistance` loads chunks around a center within a chunk radius (`maxDistance`
 1–8, Chebyshev), or in a box between two corner chunks (`lowChunk`, `highChunk`, inclusive,
-at most 4,913 chunks; Game API v2.67.0):
+at most 4,913 chunks; Application API v2.67.0):
 
 ```graphql
 query Chunks($input: GetChunksByDistanceInput!) {
@@ -180,7 +180,7 @@ edits by position (`limit` up to 65,536, `skip`). The edit log keeps one row per
 its latest write, so a chunk's answer is bounded by the positions ever edited in it, not by its
 history.
 
-**A whole-chunk write wins** (Game API v2.70.0). `updateChunk`, and a mod's `world.set_chunk`,
+**A whole-chunk write wins** (Application API v2.70.0). `updateChunk`, and a mod's `world.set_chunk`,
 replace the chunk as a whole: every voxel edit recorded for it at or before the write is
 superseded and removed, so the chunk reads back exactly as written. `voxelsUpdatedAt` says when
 that was. A chunk-state or LOD write moves only `updatedAt` (which `since` reads), not
@@ -189,7 +189,7 @@ edit recorded at any time still shows over its grid there, as before. Because a 
 write overwrites, a client that saves a grid it read earlier erases the edits other players made
 since that read: read the chunk again, or merge, before writing it back.
 
-Each voxel state's `updatedAt` (Game API v2.69.0) is when the server recorded that value: the
+Each voxel state's `updatedAt` (Application API v2.69.0) is when the server recorded that value: the
 edit's time for a recorded edit, and for a state stored with the chunk, its `voxelsUpdatedAt`
 (the chunk's last write when that is null). An edit's `createdAt` in
 `listVoxelUpdatesByDistance` is the same time. A client that keeps a cache can merge by it: apply

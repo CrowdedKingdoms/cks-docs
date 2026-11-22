@@ -15,13 +15,15 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Public platform discovery. Clients/SDKs read the shared game-api URL here to route apps deployed to the shared environment.
+Public platform discovery. Clients/SDKs read the shared Application API URL here to route apps deployed to the shared environment.
 
 
 ```graphql
 type PlatformConfig {
-  sharedGameApiUrl: String
-  sharedGameApiWsUrl: String
+  sharedApplicationApiUrl: String
+  sharedGameApiUrl: String @deprecated
+  sharedApplicationApiWsUrl: String
+  sharedGameApiWsUrl: String @deprecated
   freeAppsPerOrg: Int!
 }
 ```
@@ -29,12 +31,32 @@ type PlatformConfig {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>sharedGameApiUrl</b></code>](#shared-game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #shared-game-api-url */} 
-Shared game-api HTTP/GraphQL root for shared-environment apps.
+#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>sharedApplicationApiUrl</b></code>](#shared-application-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #shared-application-api-url */} 
+Shared Application API HTTP/GraphQL root for shared-environment apps.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>sharedGameApiWsUrl</b></code>](#shared-game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #shared-game-api-ws-url */} 
-Shared game-api WebSocket root (subscriptions / UDP proxy).
+#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>sharedGameApiUrl</b></code>](#shared-game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #shared-game-api-url */} 
+:::warning[DEPRECATED]
+
+Use sharedApplicationApiUrl: the Game API is now the Application API. Removed on January 1, 2027.
+
+:::
+
+Shared Application API HTTP/GraphQL root for shared-environment apps.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>sharedApplicationApiWsUrl</b></code>](#shared-application-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #shared-application-api-ws-url */} 
+Shared Application API WebSocket root (subscriptions / UDP proxy).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>sharedGameApiWsUrl</b></code>](#shared-game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #shared-game-api-ws-url */} 
+:::warning[DEPRECATED]
+
+Use sharedApplicationApiWsUrl: the Game API is now the Application API. Removed on January 1, 2027.
+
+:::
+
+Shared Application API WebSocket root (subscriptions / UDP proxy).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>freeAppsPerOrg</b></code>](#free-apps-per-org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #free-apps-per-org */} 

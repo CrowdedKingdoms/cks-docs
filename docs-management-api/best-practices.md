@@ -6,7 +6,7 @@ title: Best practices
 # Management API best practices
 
 Identity, orgs, apps, entitlements, and billing. The management surface is
-the same GraphQL endpoint as the Game API — what changes is the **token**,
+the same GraphQL endpoint as the Application API — what changes is the **token**,
 not the host.
 
 ## Sign-in and tokens
@@ -15,7 +15,7 @@ not the host.
   or a social provider. [Sign in](/management-api/authentication).
 - That session token is **rejected for gameplay**. Mint an **app-scoped
   token** with `mintAppToken` (or the [portal / PKCE flow](/management-api/portals-and-app-tokens))
-  before any Game API, realtime, or UDP call.
+  before any Application API, realtime, or UDP call.
 - A browser game on **your own domain** must use hosted Studio `/authorize`
   — do not put a Crowded Kingdoms login form on a customer origin.
 - Treat session and app tokens as secrets. Refresh the app token before
@@ -25,7 +25,7 @@ not the host.
 
 ## Hosts
 
-- Prefer `platformConfig.sharedGameApiUrl` and the URLs `mintAppToken`
+- Prefer `platformConfig.sharedApplicationApiUrl` and the URLs `mintAppToken`
   returns over a hostname you assemble.
 - Production GraphQL: `https://ck.prod.crowdedkingdoms.com/graphql`. Build and test
   there too ([Connecting game clients](/management-ui/client-integration)); Crowded
@@ -38,7 +38,7 @@ not the host.
   apps auto-entitle on first `mintAppToken`; restricted or paid apps need
   `grantAppAccess` (or a purchase). [Game setup](/management-api/game-setup).
 - Runtime permission keys on a tier (`access`, `teleport`, …) are what the
-  Game API and Buddy enforce. A token without the right key is
+  Application API and Buddy enforce. A token without the right key is
   `UNAUTHORIZED`, not a client bug.
 - Publish to the shared platform (`publishAppToShared`). Customer-provisioned
   dedicated environments are retired.
@@ -56,5 +56,5 @@ not the host.
 ## Related
 
 - [Overview best practices](/overview/best-practices)
-- [Game API best practices](/game-api/best-practices)
+- [Application API best practices](/application-api/best-practices)
 - [Error codes](/overview/error-codes)

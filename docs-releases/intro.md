@@ -39,6 +39,21 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-22 (the Game API is now the Application API)
+
+Application API v2.85.0, CrowdyJS 18.39.0, CrowdyCPP 0.92.0, CrowdyPy 0.39.0.
+
+- **"Game API" is now "Application API", field names included.** New fields carry the same values as the old ones:
+  `applicationApiUrl` and `applicationApiWsUrl` (on `mintAppToken`, `gameClientBootstrap`, `appDiscovery`,
+  `placeableDatacenters` and `App`) and `sharedApplicationApiUrl` and `sharedApplicationApiWsUrl` (on
+  `platformConfig`). A `WRONG_DATACENTER` error names `applicationApiUrl` and `applicationApiWsUrl` too.
+  **What you do:** move to the new names before **January 1, 2027**, when `gameApiUrl`, `gameApiWsUrl`,
+  `sharedGameApiUrl` and `sharedGameApiWsUrl` are removed. They are marked deprecated in the schema until then. The
+  SDK releases above use the new names and keep the old properties as deprecated aliases.
+- **This section moved to [`/application-api`](/application-api/intro).** Links to `/game-api` pages redirect. The
+  schema is published as [`/schema/application-api.graphql`](pathname:///schema/application-api.graphql), and
+  `/schema/game-api.graphql` is still served until January 1, 2027.
+
 ## 2026-11-22 (the monthly budget stops spending, and other fixes)
 
 Game API v2.84.0.
@@ -181,7 +196,7 @@ Voice reaches one chunk by default and Crowdy State eight, voice can go to a cha
   (including approving a request) or a creation past either now fails with `GROUP_LIMIT_REACHED`
   (409); `extensions.limit` names the cap and `extensions.max` its value. Only active members
   count. An app that set a cap lower than its groups already hold keeps those members, but no one
-  new joins until the group is under the cap. See [Channels](/game-api/channels) and
+  new joins until the group is under the cap. See [Channels](/application-api/channels) and
   [Error codes](/overview/error-codes).
 
 ## 2026-11-19 (an organization's apps share one free allowance)
@@ -295,7 +310,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   on a long log line.
 - **The model endpoint's errors, corrected:** an app that switched the agent off answers
   `AGENT_DISABLED`, and the model list refuses only with the policy's codes. See
-  [errors](/game-api/agentic-crowdy-studio#errors).
+  [errors](/application-api/agentic-crowdy-studio#errors).
 
 ## 2026-11-17 (data out priced by each connection's rate)
 
@@ -325,7 +340,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
 - Before this, a player on another server could be refused for several seconds after the leave, and
   could sometimes send under an actor still in use.
 - What `createActor` adds, and how a new host takes over NPCs:
-  [who may send under an actor's uuid](/game-api/actor-state#who-may-send-under-an-actors-uuid).
+  [who may send under an actor's uuid](/application-api/actor-state#who-may-send-under-an-actors-uuid).
 
 ## 2026-11-13 (a whole-chunk write wins; response limits in CrowdyCPP)
 
@@ -334,8 +349,8 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   chunk reads back exactly as written, and `Chunk.voxelsUpdatedAt` says when. A chunk-state or
   LOD write moves only `updatedAt`. A grid read earlier and written back now erases the edits made
   since that read. A chunk not written whole since v2.70.0 keeps the earlier rule until its next
-  whole write. See [reading world data](/game-api/examples#4-read-world-data) and [writing whole
-  chunks](/game-api/grids-and-permissions#writing-whole-chunks).
+  whole write. See [reading world data](/application-api/examples#4-read-world-data) and [writing whole
+  chunks](/application-api/grids-and-permissions#writing-whole-chunks).
 - **Chunk stores date a copy by that write**: a voxel with no entry in a copy is as old as the
   chunk's `voxelsUpdatedAt`, so a chunk-state or LOD write no longer drops a newer change, and
   copies are ordered by the row's `updatedAt`. CrowdyJS 18.32.0 ([stores](/crowdyjs/stores)),
@@ -352,7 +367,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   edit's time for a recorded edit and the chunk's write for a state stored with its grid, the same
   time as the edit's `createdAt` in `listVoxelUpdatesByDistance`. Realtime servers v0.46.0 record a
   realtime edit with the moment they accepted it, so a voxel notification's `epochMillis` and the
-  recorded time come from one clock. See [reading world data](/game-api/examples#4-read-world-data).
+  recorded time come from one clock. See [reading world data](/application-api/examples#4-read-world-data).
 - **The servers acknowledge bound control frames** (realtime servers v0.46.0): a client that sends
   a control nonce gets `CONTROL_BOUND_ACK` (46), and after it drops every legacy
   `COMMAND_RECONNECT` (22) and `COMMAND_SESSION_RELEASED` (28) on that assignment, which only a
@@ -381,7 +396,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   the slab it uncovers; pages are stable and answer the `limit` and `skip` applied; `since` keeps
   only chunks written since then. `listVoxels` pages (`limit` up to 65,536, `skip`) by position.
   `gameApps.nearbyGrids` returns your own `permissionKeys` on each grid, so a game can tell before
-  sending whether an edit will go through ([which grid decides](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write)).
+  sending whether an edit will go through ([which grid decides](/application-api/grids-and-permissions#which-grid-decides-a-voxel-write)).
   CrowdyJS 18.28.0, CrowdyCPP 0.80.0 (`domains::ChunkRegion`), CrowdyPy 0.28.0.
 - **Players' realtime voxel edits reach the grid's mods** as `voxels` events, and **hub and mod
   code writes in bulk**: `world.set_voxels` takes 4,096 writes at one write unit per 64 voxels,
@@ -437,7 +452,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   another server after 30 seconds without traffic from it, which in a quiet world happened every 30 seconds
   to a player standing still. They now move a session only when its server stops serving, or when the server
   has answered none of what the client sent for 30 seconds. The proxy page also said an unused session is
-  released after 30 seconds; it is 120. See [GraphQL UDP proxy](/game-api/graphql-udp-proxy-api).
+  released after 30 seconds; it is 120. See [GraphQL UDP proxy](/application-api/graphql-udp-proxy-api).
 
 ## 2026-11-10 (sign-ups are no longer limited per network address)
 
@@ -523,7 +538,7 @@ and its replacement, now that each is removed: [Removed after 2.25](/unreal-sdk/
   `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason` `provider_refused` where it was
   `not_configured`. A player under 18 still cannot turn voice or video on in production. No
   client change is needed: both reasons mean "do not retry as it is". See
-  [Parental consent for voice and video](/game-api/communication#parental-consent-for-voice-and-video).
+  [Parental consent for voice and video](/application-api/communication#parental-consent-for-voice-and-video).
 
 ## 2026-11-04 (Crowded Kingdoms admits players from 13)
 
@@ -588,7 +603,7 @@ On the dev environment: Game API v2.61.0, replication server v0.43.0, CrowdyJS 1
   channel messages, a player's events and app-defined messages); movement and world edits still
   pass. New `UNAUTHORIZED` refusals: voice or video with its send setting off, a minor's direct
   message, a send under another player's actor. Each voice and video switch of the safety log now
-  records only its medium. See [Voice, video, contacts and blocks](/game-api/communication).
+  records only its medium. See [Voice, video, contacts and blocks](/application-api/communication).
 - **Age refusals name no age** (`AGE_REQUIREMENT_NOT_MET` carries no extensions), and after one
   the same client, Minecraft account or managed player is refused for 24 hours. An account that
   declares an age under 13 is deleted and erased. See
@@ -599,7 +614,7 @@ On the dev environment: Game API v2.61.0, replication server v0.43.0, CrowdyJS 1
 - **`SAFETY_MODERATOR_REQUIRED`**: a player under 18 is admitted only to an app whose organization
   has appointed a moderator, a member holding a role with `moderate_safety` (the admin role alone
   does not count); `App.hasSafetyModerator` says whether it has. See
-  [Moderators](/game-api/safety-reports#moderators).
+  [Moderators](/application-api/safety-reports#moderators).
 - **Who reads the safety log** on an app that admits players under 18: moderators, only the
   sessions a report covers; each player their own; every read audited. A minor's sessions stay
   out of `manage_apps` reads on any app. See [the safety log](/replication-api/input-logging#the-safety-log).
@@ -652,14 +667,14 @@ live in production; until then every player is 18 or older. See
   `SOCIAL_LIMIT_REACHED` and `PARENTAL_CONSENT_UNAVAILABLE`. The replication server release after
   v0.42.0, not released yet, enforces them, and checks every receiving player's permission keys
   too: a tier without `use_voice_chat` will no longer hear voice. See
-  [Voice, video, contacts and blocks](/game-api/communication).
+  [Voice, video, contacts and blocks](/application-api/communication).
 - **The safety log:** `replayLoggingRecordsVoice` and `replayLoggingRecordsVideo` (the media switch
   sets both), `App.recording` for the notice and the indicator, and `SAFETY_LOG_REQUIRED` on an app
   that admits players under 18. See [the safety log](/replication-api/input-logging#the-safety-log).
 - **Reports:** `fileSafetyReport`; the organization permission `moderate_safety`; `safetyReports`,
   `resolveSafetyReport` and `escalateSafetyReport`; each report preserves both players' recorded
   sessions, accounts and hub data; deleting a reported account sets a legal hold. See
-  [Safety reports and moderation](/game-api/safety-reports).
+  [Safety reports and moderation](/application-api/safety-reports).
 - **Account deletion** also erases the player's communication settings, contacts and blocks, and
   what the app's ck-exec hubs hold of them.
 - **ck-exec 0.20.0, `ckx-sdk` 0.13.0:** `Hub::on_player_erased` and `Hub::on_player_export`,
@@ -1442,14 +1457,14 @@ building a Minecraft integration.
   A chunk read applies up to 65,536 recorded edits (`voxelStatesTruncated` past that); a rollback
   is stamped with its own time, so readers of edits since their last sync see it; a chunk's state
   is capped at 64 KiB. **Behaviour change:** an accepted voxel edit is always delivered back to its
-  sender, once. See [voxel positions and types](/game-api/grids-and-permissions#voxel-positions-and-types-are-yours-to-define).
+  sender, once. See [voxel positions and types](/application-api/grids-and-permissions#voxel-positions-and-types-are-yours-to-define).
 - **Typed refusals.** `ACTOR_EXISTS` (with `ownedByCaller`) for a uuid the app already has;
   `ACCESS_REVOKED`, `ACCESS_SUSPENDED` (with `suspendedUntil`) and `ACCESS_NOT_GRANTED` from the
   mint paths, none of which tell the player to buy anything. See [error codes](/overview/error-codes).
 - **Other players' accounts are private.** **Behaviour change:** `user(id)` returns private fields
   only to the player themselves; game clients use `playerProfile` / `playerProfiles` for names.
 - **Voice on a channel.** `sendChannelAudio` and `ChannelAudioNotification` (opcodes 35 and 36), a
-  channel `send_voice` right and `membersCanSpeak`. See [voice on a channel](/game-api/channels#voice-on-a-channel).
+  channel `send_voice` right and `membersCanSpeak`. See [voice on a channel](/application-api/channels#voice-on-a-channel).
 - **Hub code manages grids and access** (ck-exec 0.15.0, ckx-sdk 0.8.0): `grids.write`
   (create and delete its own grids, give groups keys, open grids), `access.read` / `access.write`
   (grant, revoke, suspend players), `world.set_chunk_state`, voxel authors, the grid owner and the
@@ -1501,7 +1516,7 @@ Additive; receivers change nothing.
   `ChannelMessageNotification`, the send right is `sendChannelMessage`'s, the sender gets no
   echo, and a member with no live actor receives nothing. A replication server older than
   v0.35.0 drops the request. See
-  [Limit delivery by distance](/game-api/channels#limit-delivery-by-distance) and the
+  [Limit delivery by distance](/application-api/channels#limit-delivery-by-distance) and the
   [wire format](/replication-api/wire-formats#channel_message_ranged_request-client--server).
 - **Channel publishes are rate-limited like every other client message** (replication server
   v0.35.0). A `CHANNEL_MESSAGE_REQUEST` now counts against the session's message rate, and
@@ -1713,7 +1728,7 @@ The SDK side of the ck-exec preview's security review. On the dev environment.
   `setGridOpenPermissions` / `gridOpenPermissions`: the keys a grid grants every player with
   access. A zone everyone may build in has to grant `update_voxel_data` itself now, because the
   most specific grid over a chunk decides who builds there. See
-  [open grids](/game-api/grids-and-permissions#open-grids).
+  [open grids](/application-api/grids-and-permissions#open-grids).
 - **Where the connect token goes.** `exec.connect` dials a ck-exec gateway only when it is on the
   platform's own domain, over `wss:` whenever the game API is `https:`; any other gateway is
   refused without being dialed. See
@@ -1756,10 +1771,10 @@ CrowdyCPP 0.52.0 and 0.53.0 carry the SDK side.
   replication server v0.34.0, a client's direct UDP voxel update all apply it. A zone everyone
   should build in grants everyone itself (`setGridOpenPermissions`, at most 32 open grids per
   app), and `claimGridChunk` claims only the wilderness (`GRID_NOT_CLAIMABLE` inside another
-  grid). See [which grid decides a voxel write](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write).
+  grid). See [which grid decides a voxel write](/application-api/grids-and-permissions#which-grid-decides-a-voxel-write).
 - **The wilderness setting.** `App.wildernessWritesOpen` (default true; `updateApp` sets it)
   closes the wilderness to every voxel write when false. `updateChunk` now needs `manage_apps`
-  or the voxel permission for that chunk. See [wilderness](/game-api/grids-and-permissions#wilderness).
+  or the voxel permission for that chunk. See [wilderness](/application-api/grids-and-permissions#wilderness).
 - **Voxel writes are range-checked.** A voxel outside 0–15 on any axis of its chunk, or a type
   outside 0–255, is refused on every write path: `updateVoxel`, `sendVoxelUpdate`,
   `updateChunk`'s `voxelStates` and `world.set_voxels`.
@@ -1863,7 +1878,7 @@ to the grid. Additive, except that the crowdy-dsh bridge protocol moves to v4
 
 - **Player host parity.** `emit_channel` and `emit_event` no longer return
   `denied_v1`. A module posts into its grid's
-  [grid channels](/game-api/channels#grid-channels) and publishes on the
+  [grid channels](/application-api/channels#grid-channels) and publishes on the
   grid event bus (other modules on the grid; studio modules that add a
   `grid_event` trigger). `container_get_batch`, `edge_add` / `edge_delete`,
   `sessions_list` and `avatar_state_get` answer on a grid. Every spatial kind
@@ -1872,7 +1887,7 @@ to the grid. Additive, except that the crowdy-dsh bridge protocol moves to v4
 - **Studio `emit_spatial`**: `server_event` is opcode 139 and `client_event`
   138 for studio modules too (they were 140 / 139, which CrowdyJS never
   decoded), and both require the `[u16 eventType]` prefix.
-- **New GraphQL**: `mintGridToken` ([grid-scoped tokens](/game-api/grid-tokens)),
+- **New GraphQL**: `mintGridToken` ([grid-scoped tokens](/application-api/grid-tokens)),
   `createGridChannel`, `gridChannels`, `gameModelSessions(gridId)`,
   `CreateSessionInput.gridId`, `GmSession.gridId`, `Group.gridId`,
   `PlayerComputeDeployInput.gridEvents`, and the `channelEgress` /
@@ -2053,7 +2068,7 @@ Nothing here changes a conforming client; each item says what would.
 - **Guided "Create repository on GitHub"** (Game API v2.3.0, CrowdyJS 17.3.0):
   `githubNewRepositoryUrl` / `githubRepositorySlug`,
   `controller.createGitHubRepository()`, `status.repositorySelection`. The GitHub
-  App still cannot create a repository itself. [Crowdy Studio and GitHub](/game-api/crowdy-studio-github).
+  App still cannot create a repository itself. [Crowdy Studio and GitHub](/application-api/crowdy-studio-github).
 
 ## 2026-09-13 (Replication API v0.27.0, CrowdyCPP 0.37, CrowdyJS 17.1)
 
@@ -2124,7 +2139,7 @@ what was saved" true.
   `setAutosave`, the Push / Pull buttons and the SDK-side `crowdy.json`
   helpers are gone. Bridge protocol v3; `@crowdedkingdoms/crowdy-dsh` 0.3.x
   writes a bound project the same way.
-- See [Connect your GitHub repo to a Studio project](/game-api/crowdy-studio-github)
+- See [Connect your GitHub repo to a Studio project](/application-api/crowdy-studio-github)
   and [Player code](/exec/from-the-legacy-engines#player-code).
 
 ## 2026-09-11 (Game API, CrowdyJS 16, CrowdyCPP 0.34)
@@ -2152,7 +2167,7 @@ except through CrowdyJS 15's agent dock, which is retired with it.
   with `payerKind: PLAYER | ORG` (default `PLAYER`; `ORG` needs
   `manage_billing`); the `player_model_microusd` metric in hourly player
   billing and `AGENT_FUNDS_NEEDED` (HTTP 402). See
-  [Agentic Crowdy Studio and the model endpoint](/game-api/agentic-crowdy-studio).
+  [Agentic Crowdy Studio and the model endpoint](/application-api/agentic-crowdy-studio).
 - **CrowdyJS 16.0.0:** `dsh` mount option and `@crowdedkingdoms/crowdyjs/crowdy-dsh`
   replace the `agent` option, `client.crowdyStudioAgent`, `/crowdy-agent`,
   `PlayerControlGate`, `AgentControlBanner` and the lease manager. Games ship
@@ -2744,7 +2759,7 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   grid/trust/commerce and PvP actions remain unadvertised.
 - Public guides now cover the
   [player/SDK flow](/crowdyjs/agentic-crowdy-studio),
-  [game-host boundary](/game-api/agentic-crowdy-studio), and
+  [game-host boundary](/application-api/agentic-crowdy-studio), and
   [Management app policy](/management-api/agentic-crowdy-studio-policy).
 
 **CrowdyJS 11.1 + Blocks with Friends: resizable Crowdy Studio**
@@ -3164,7 +3179,7 @@ WebAssembly and runs it server-side, sandboxed and fuel-metered:
   `computeModuleVersions`, `computeModuleTriggers`, `computeModulePolicy`,
   `computeModuleRuns`, `computeModuleStats`, `computeModuleLogs`,
   `computeAppDiagnostics`. Full signatures in the
-  [GraphQL reference](/game-api/reference/graphql-overview).
+  [GraphQL reference](/application-api/reference/graphql-overview).
 - **Triggers:** fixed-rate ticks, model/compute event subscriptions, and
   client-callable invoke exports (synchronous RPC via `computeInvoke`, gated by
   the same authority-policy trees as model functions).
@@ -3245,7 +3260,7 @@ behavior change) plus a small CrowdyJS Game Kit patch:
   game server retired their dedicated opcodes; an applied update arrives as
   your own `*Notification` self-echo and failures arrive as
   `GenericErrorResponse`. Their type descriptions, the union description,
-  and the [UDP proxy guide](/game-api/graphql-udp-proxy-api) now say so
+  and the [UDP proxy guide](/application-api/graphql-udp-proxy-api) now say so
   explicitly, and the guide's example subscription no longer selects them.
   They remain in the union for backward compatibility and will be removed in
   a future major version.
@@ -3552,7 +3567,7 @@ see [that entry](#2026-09-01) and [Presence](/exec/from-the-legacy-engines#timer
 - New `deleteGrid(input: { appId, gridId })` mutation removes a studio-created peer grid
   (e.g. to unblock `GRID_OVERLAPS_EXISTING`). Hybrid result like `createGrid`; refuses the
   default world grid and grids with nested children; requires `manage_apps`. See
-  [Grids and permissions](/game-api/grids-and-permissions#deleting-a-grid).
+  [Grids and permissions](/application-api/grids-and-permissions#deleting-a-grid).
 
 **Management API additions (additive)**
 
@@ -3644,7 +3659,7 @@ unchanged by design.
 - Every public GraphQL query, mutation, subscription, argument, field, and enum value now
   carries a description across the Management API and Game API — including the required
   permission and side effects on each operation. These flow into the
-  [GraphQL reference](/game-api/reference/graphql-overview) and the downloadable SDL.
+  [GraphQL reference](/application-api/reference/graphql-overview) and the downloadable SDL.
 - Published downloadable SDL at stable URLs:
   [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql),
   [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql),
