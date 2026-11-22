@@ -320,6 +320,20 @@ mutation {
 
 Pass `null` for a limit to clear it.
 
+An app can also have a **monthly budget**. Once the app's spend this calendar month
+(UTC) reaches it, the app is denied until the month ends or you raise the budget.
+Reserved throughput fees count toward the budget, but not toward the hourly and
+daily caps. `0` removes the budget:
+
+```graphql
+mutation {
+  setAppBudget(orgId: "123", appId: "456", monthlyLimitCents: "5000") {
+    monthlyLimitCents
+    currentMonthUsageCents
+  }
+}
+```
+
 ### Auto-billing
 
 Instead of (or in addition to) manual top-ups, an org owner can enable
@@ -386,8 +400,8 @@ other than `active` and a `runtimeDenialReason`:
   example). (An app still inside its allowances is not denied at all, so this
   reason covers both "out of allowance" and "out of money" — they are the same
   situation.)
-- `spend_cap` — an hourly/daily spend cap was reached. Raise the cap or wait for
-  the window to reset.
+- `spend_cap` — an hourly or daily spend cap, or the app's monthly budget, was
+  reached. Raise it or wait for the hour, day or month to end.
 - `subscription_lapsed` — retired with the paid app slot; no current app can carry
   this reason. Listed because the enum still names it.
 

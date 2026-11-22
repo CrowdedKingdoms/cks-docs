@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Creates or updates an app's monthly spend cap (idempotent upsert keyed by org + app) and returns the resulting budget. This only records the cap used to monitor/limit overspend; it does not move money, charge a card, or alter the wallet balance. Requires the 'manage&#x005F;billing' app permission.
+Creates or updates an app's monthly spend cap (idempotent upsert keyed by org + app) and returns the resulting budget. Once the app's spend this calendar month (UTC) reaches the cap, the platform refuses the app's traffic with spend&#x005F;cap until the month ends or the cap is raised, as it does for the hourly and daily caps (setAppSpendCaps); 0 removes the budget. It does not move money, charge a card, or alter the wallet balance. Requires the 'manage&#x005F;billing' app permission.
 
 
 ```graphql
@@ -39,7 +39,7 @@ App id (BigInt as a decimal string) whose budget to set.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setAppBudget.<b>monthlyLimitCents</b></code>](#monthly-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #monthly-limit-cents */} 
-Monthly spend cap in minor currency units (cents) of the wallet currency, as a BigInt decimal string. The cap resets each calendar month.
+Monthly spend cap in minor currency units (cents) of the wallet currency, as a BigInt decimal string: 0 or more (0 removes the budget). The cap resets each calendar month.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setAppBudget.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #idempotency-key */} 

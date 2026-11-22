@@ -29,6 +29,8 @@ type AppRuntimeState {
   currentDayUsageCents: BigInt!
   hourlyLimitCents: BigInt
   dailyLimitCents: BigInt
+  currentMonthUsageCents: BigInt!
+  monthlyLimitCents: BigInt
 }
 ```
 
@@ -69,6 +71,14 @@ Per-app hourly spend cap in cents (set via setAppSpendCaps). Null = no cap.
 
 #### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>dailyLimitCents</b></code>](#daily-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #daily-limit-cents */} 
 Per-app daily spend cap in cents (set via setAppSpendCaps). Null = no cap.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>currentMonthUsageCents</b></code>](#current-month-usage-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #current-month-usage-cents */} 
+Spend so far in the current calendar month (UTC), in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>monthlyLimitCents</b></code>](#monthly-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #monthly-limit-cents */} 
+Per-app monthly budget in cents (set via setAppBudget). Null = no budget. The app is refused with spend&#x005F;cap once this month's spend reaches it.
 
 
 
