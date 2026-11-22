@@ -331,7 +331,11 @@ long-form spatial layout below (so the usual session and HMAC checks apply), chu
 app payload; bit 0 (`BUNDLE_SIGNED = 1`) means "I parse `MESSAGE_BUNDLE_SIGNED`". Bit 1
 (`BOUND_CONTROL = 2`, server v0.45.0+) means "send me 44 and 45 instead of 22 and 28", and the
 8-byte control nonce follows the flags (a 12-byte payload); a server reads the nonce only with
-the bit set, and an older one reads only the flags. The
+the bit set, and an older one reads only the flags. Bit 2 (`OWN_MEDIA_ECHO = 4`, server
+v0.48.0+) means "send me my own spatial voice and video": from v0.48.0 a server does not send a
+client the `CLIENT_AUDIO_PACKET_2` and `CLIENT_VIDEO_PACKET_2` it sent itself unless the bit is
+set. Send the message again to turn the bit on or off; an older server ignores it and always
+sends the copy. The
 server binds the flags to the worker that serves this client's flow and forgets them
 when the session goes, so a client sends the message **after every assignment,
 reassignment and token refresh, and again every ~15 s** (the SDKs do). Until it lands
@@ -468,6 +472,7 @@ When the player is actively moving you already send `ACTOR_UPDATE_REQUEST`s, whi
 - It **reuses the long-spatial layout above** (same fields, same HMAC scheme), just with `messageType = 26`. Set the actor's current `chunk` + `uuid`; `distance`/`decay rate` are ignored (send `0`).
 - The server validates it like any spatial message (session + HMAC), then refreshes **only the sender's own actor presence and session** — there is **no fan-out** (other players are not notified) and no permission gate. It is purely a keep-alive.
 - It carries no game state, so it is much cheaper than a full actor update for an idle actor.
+- From server v0.48.0 it counts as the app's data in, like every other message the server accepts (about 151 bytes on the wire), except while the app is paused for funds. So does `CLIENT_CAPABILITIES`.
 
 **Cross-server presence is automatic.** You only ever talk to your own server; you never address other servers. **Presence** is the registration that your actor is alive in a chunk. The server keeps that registration current on other servers and other worker cores. An `ACTOR_UPDATE_REQUEST` while the actor is moving, or a `CLIENT_ACTOR_HEARTBEAT` while it is idle, is what keeps the registration from going stale. A heartbeat still does not fan out: other players are not notified by it.
 

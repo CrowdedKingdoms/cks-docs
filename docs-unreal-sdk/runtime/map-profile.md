@@ -18,7 +18,7 @@ When a map needs settings the shipped default does not have: a Backend Config of
 
 ## Create the asset
 
-In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**. The Details panel groups the settings by what they decide: **Events**, **Remote Entities**, **Movement** and **Crowdy State**. Tuning settings that most maps never change sit under the **Remote Entities** group's **Advanced** row.
+In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**. The Details panel groups the settings by what they decide: **Events**, **Remote Entities**, **Movement**, **Crowdy State**, **Voice** and **Emotes**. Tuning settings that most maps never change sit under the **Remote Entities** group's **Advanced** row.
 
 ![The shipped default map profile asset in the Details panel](/img/unreal-sdk/map-profile-asset.png)
 
@@ -29,13 +29,28 @@ The screenshot is the SDK's own shipped default profile. **Backend Config** is e
 | `bEnableNetworking` (**Handle Events and Spawns**) | on | Spawn and destroy events, Crowdy Events and Crowdy State arriving over the realtime connection. Off does not stop movement, drawing or sending: those have their own switches below. |
 | `ActorManagement` (the **Remote Entities** group) | see [Entities and spawning](./entities-and-spawning.md#the-actor-tracker) | **Draw Remote Entities**, the **Backend Class** and **Backend Config** that draw them, the **Interpolation Delay**, and the tracker's tuning under **Advanced**. Pick **Crowdy Mass Rendering Backend** as the **Backend Class** to draw a crowd; see [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md). |
 | `bUseAutoReplicator` (**Send Movement**) | on | The continuous channel: each entity's movement, or its executor's state. See [Continuous state](./continuous-state.md). |
+| `MovementDistance` (**Movement Distance**, Movement) | Eight Chunks | How far each entity's movement and its spawn event travel, in chunks around it (`ECrowdyReplicationDistance`): other players see it only within this range. At the default chunk size of 1600 units, eight chunks is 128 m in each direction. Keep it at least as large as **Voice Distance** and **Relevance Distance**, or players hear someone they cannot see, and a Crowdy State change arrives for a player who has no copy. |
+| `MovementDecay` (**Movement Decay**, Movement) | No Decay | Thins movement updates with distance, so far players get fewer of them. It uses the decay rates events use: **No Decay**; **Exponential Decay**, where each ring of chunks gets half the updates of the ring before; **Linear 50 Decay**, **Linear 25 Decay**, **Linear 10 Decay** and **Linear 5 Decay**, where the farthest ring gets that percentage, in one block of a 20-update cycle. The spawn announce is never thinned. Read [Thinning movement with distance](#thinning-movement-with-distance) before turning it on. |
+| `SnapDistance` (**Snap Distance**, Movement) | 1000 cm (10 m), minimum 0 | Other players' copies jump straight to an update that lands farther than this from the one before it, as a teleport does, instead of gliding there. Keep it above the farthest anything on the map moves between two updates a player receives (its top speed divided by **Send Rate**, and farther where **Movement Decay** thins far updates); something faster snaps on every update. 0 never snaps. See [Teleporting a player](./continuous-state.md#teleporting-a-player). |
 | `ReplicationIntervalHz` (**Send Rate**) | 10 Hz (1 to 10) | How many times a second movement and Crowdy State are sent. Editable while either is on. |
 | `bSendActorStateOnlyOnChange` (**Send Only On Change**) | on | An unchanged entity sends the keyframes and heartbeats below instead of restating its state every interval. |
 | `ActorKeyframeIntervalSeconds` (**Keyframe Interval**, Movement) | 3 s | Full re-send of an unchanged entity's state. It is the only thing other players receive from an entity standing still, so it is what keeps it on their screens and lets a late observer catch up. 0 turns keyframes off. |
 | `ActorHeartbeatIntervalSeconds` (**Heartbeat Interval**) | 1 s | A cheap "still here" for an unchanged entity: the spatial header and no state. It keeps the entity's presence on the server, which goes stale after about 5 s; other players never receive it. 0 turns heartbeats off. |
 | `bUseStateReplicator` (**Replicate Crowdy State**) | on | Crowdy State property replication. See [Crowdy State](./crowdy-state.md). |
-| `StateRelevanceDistance` (**Relevance Distance**) | Four Chunks | How far a Crowdy State change travels, as a chunk count (`ECrowdyReplicationDistance`). |
+| `StateRelevanceDistance` (**Relevance Distance**) | Eight Chunks | How far a Crowdy State change travels, as a chunk count (`ECrowdyReplicationDistance`). |
 | `StateKeyframeIntervalSeconds` (**Keyframe Interval**, Crowdy State) | 2 s | Full re-send of every property marked `CrowdyHeartbeat`. 0 turns the keyframe off map-wide; changes still send. |
+| `VoiceDistance` (**Voice Distance**, Voice) | One Chunk | How far a player's voice reaches on this map, in chunks, unless the game calls **Set Voice Chat Distance**. See [How far your voice reaches](../services/voice-chat.md#how-far-your-voice-reaches). |
+| `EmoteDistance` (**Emote Distance**, Emotes) | Two Chunks | How far an emote travels from the player who sends it. |
+
+## Thinning movement with distance
+
+**Movement Decay** trades update rate for reach. A copy that is not updated is removed after the **Actor Timeout** (12 s on the **Remote Entities** group's **Advanced** row), and an entity that stands still sends only keyframes, one every **Keyframe Interval** (3 s by default). A steep decay at long range can therefore starve a far copy until it times out.
+
+With **Exponential Decay** at the default eight chunks, the outermost ring gets 1 update in 128. A player in it sees a player standing still update once every 384 s, so the copy is gone long before the next one.
+
+The **Linear** decays do not spread updates out evenly: the server delivers each ring in one block of a 20-update cycle and skips it for the rest. The farthest ring under **Linear 50 Decay** gets 10 updates in a row and then misses 10, so with a 3 s **Keyframe Interval** a player standing still there goes 33 s between updates. At the defaults, every Linear decay times far copies out, at any distance beyond the sender's own chunk: the outermost ring gets the same share however far it is. Only a longer **Actor Timeout** helps, or a **Keyframe Interval** under the timeout divided by 11, 16, 19 or 20 for **Linear 50**, **25**, **10** or **5 Decay** (about 1.09, 0.75, 0.63 or 0.6 s at the default 12 s).
+
+The SDK logs a warning when a map starts if the expected gap at the edge reaches the **Actor Timeout**. Fix it with a gentler decay, a shorter **Keyframe Interval**, a longer **Actor Timeout**, or, for **Exponential Decay**, a shorter **Movement Distance**.
 
 ## Checks when you save
 
