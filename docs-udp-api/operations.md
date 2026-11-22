@@ -47,7 +47,7 @@ grid that decides is the **most specific** one covering the chunk, so a plot or 
 safe zone nested in the world grid decides its own chunks, the world grid decides
 only the wilderness, and a chunk no grid covers is refused. While the app has closed
 its wilderness to building, every voxel update there is refused too. See
-**[Which grid decides a voxel write](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write)**.
+**[Which grid decides a voxel write](/application-api/grids-and-permissions#which-grid-decides-a-voxel-write)**.
 
 New apps are **open by default** — they ship with a default tier granting the
 baseline permissions (`access`, `teleport`, `update_voxel_data`, `use_voice_chat`;
@@ -55,9 +55,9 @@ baseline permissions (`access`, `teleport`, `update_voxel_data`, `use_voice_chat
 every receiver pays the egress) and a world-spanning default grid, and granting a player app access
 automatically grants them all of its permissions — so out of the box any entitled
 player can move, talk and build anywhere no narrower grid covers. App owners opt
-into restrictions (safe zones, plot ownership) via the Game API. See
-**[Game API → Permissions overview](/game-api/permissions)** and
-**[Grids and permissions](/game-api/grids-and-permissions)**.
+into restrictions (safe zones, plot ownership) via the Application API. See
+**[Application API → Permissions overview](/application-api/permissions)** and
+**[Grids and permissions](/application-api/grids-and-permissions)**.
 
 > The first message to a brand-new chunk region may briefly return `UNAUTHORIZED`
 > while the server loads that region's grid permissions; retry and it succeeds.
@@ -94,7 +94,7 @@ refused with `ACCESS_REVOKED` or `ACCESS_SUSPENDED` until it is lifted.
 
 If Buddy restarts, evicts your session, or you need a different host:
 
-1. Call `serverWithLeastClients` on the Game API again (`refreshAppToken` first if
+1. Call `serverWithLeastClients` on the Application API again (`refreshAppToken` first if
    the app token is near `expiresAt`).
 2. Wait **~1.5 s** for the session to be ready.
 3. Resume UDP with the same app-scoped token on the new host and `clientPort`.
@@ -102,7 +102,7 @@ If Buddy restarts, evicts your session, or you need a different host:
 ## Load shedding — `COMMAND_RECONNECT` (type 22)
 
 A server protects itself when it runs hot. If a CPU core or system memory stays
-high for several seconds, the server reports `NearCapacity` (so the Game API
+high for several seconds, the server reports `NearCapacity` (so the Application API
 stops sending it **new** clients) and, if pressure continues, `Full` — at which
 point it sheds some existing clients to recover. A shed client receives a small
 server→client datagram:
@@ -128,4 +128,4 @@ sequence number to echo, and no reason field; it is a one-shot directive.
 
 ## Browser clients
 
-Use the **[GraphQL UDP proxy](/game-api/graphql-udp-proxy-api)** instead of raw UDP.
+Use the **[GraphQL UDP proxy](/application-api/graphql-udp-proxy-api)** instead of raw UDP.

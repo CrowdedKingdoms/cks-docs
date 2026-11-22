@@ -13,7 +13,7 @@ stay off.
 
 :::info[What is switched on]
 
-- **Live** (Game API v2.60.0 to v2.61.1 and replication server v0.43.0): the settings, contacts,
+- **Live** (Application API v2.60.0 to v2.61.1 and replication server v0.43.0): the settings, contacts,
   blocks and parental consent fields on this page, and the realtime servers that enforce them on
   both sides. Players under 18, and so the minors' defaults, since 2026-11-04.
 - **Not yet in production: parental consent.** Kids Web Services is connected in production but
@@ -68,7 +68,7 @@ still pass, so both players go on seeing the same world. Either player's block i
 blocked player is not told, and gets no error when something they send is dropped. Blocking also
 removes every contact and request between the two, and unblocking does not bring them back.
 
-What your app's own code sends (a hub's realtime events and channel messages, the Game API's
+What your app's own code sends (a hub's realtime events and channel messages, the Application API's
 notices) has no sending player and is not filtered by blocks. A hub that carries one player's
 words to another checks the block first: see [`players.blocked`](/exec/players-and-safety#blocks).
 Muting a player stays on the device.
@@ -113,7 +113,7 @@ From replication server v0.43.0:
 ## The API
 
 All of these take the player's app-scoped token for the app, sent to the app's own datacenter
-(`gameApiUrl`).
+(`applicationApiUrl`).
 
 ```graphql
 query Settings($appId: BigInt!) {
@@ -170,7 +170,7 @@ mutation AskParent($appId: BigInt!, $email: String!) {
   whether it is given. When a parent withdraws it, through Kids Web Services or by writing to
   Crowded Kingdoms, the medium turns off again within a second.
 - `PARENTAL_CONSENT_UNAVAILABLE` (503) when consent cannot be asked; voice and video then stay off
-  for the player, and nothing was sent. `extensions.reason` says why (Game API v2.61.1):
+  for the player, and nothing was sent. `extensions.reason` says why (Application API v2.61.1):
   `not_configured`, the deployment has no consent service: do not retry; `provider_refused`, the
   service refused the request (an address it does not accept; in production, every request until
   Kids Web Services is live there): elsewhere a parent's other address may work;

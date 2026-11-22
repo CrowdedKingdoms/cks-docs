@@ -81,7 +81,7 @@ and video that the two players' settings do not admit; and a direct message to a
 If one receiver gets nothing while others do, check that player's tier keys and
 `myCommSettings`. Voice or video sent with its send setting off, a minor's direct message and a
 send under another player's actor are refused instead, with `UNAUTHORIZED` (7). See
-[Voice, video, contacts and blocks](/game-api/communication#what-the-realtime-servers-do).
+[Voice, video, contacts and blocks](/application-api/communication#what-the-realtime-servers-do).
 
 ### 7. If everything above checks out — it's server-side
 
@@ -116,4 +116,4 @@ resolves it on the management API. See
 ## Browser clients
 
 If you cannot open raw UDP sockets, none of the above applies — use the
-**[GraphQL UDP proxy](/game-api/graphql-udp-proxy-api)** instead.
+**[GraphQL UDP proxy](/application-api/graphql-udp-proxy-api)** instead.

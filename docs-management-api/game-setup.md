@@ -11,7 +11,7 @@ Bringing a game online involves two roles:
 - **The admin** (an org owner / studio) sets the game up: an organization, an app, and one or more **access tiers**.
 - **Players** then get access to that app — either automatically (open‑by‑default) or by an explicit grant.
 
-**Entitlements** — who may play, at which tier, and which runtime permission keys that tier carries — are defined here on the **Management API**. The **[Game API](/game-api/intro)** enforces them at runtime: on a player's first connect it mirrors the entitlement and provisions the matching world‑grid permissions, and **Buddy** (the UDP server) checks both app‑ and grid‑level permissions on every spatial message.
+**Entitlements** — who may play, at which tier, and which runtime permission keys that tier carries — are defined here on the **Management API**. The **[Application API](/application-api/intro)** enforces them at runtime: on a player's first connect it mirrors the entitlement and provisions the matching world‑grid permissions, and **Buddy** (the UDP server) checks both app‑ and grid‑level permissions on every spatial message.
 
 All operations below are available in the **[Management UI](/management-ui/intro)** and via GraphQL with a user session token or an **org API token**. Exact field names per version are in the **[schema reference](/management-api/reference/graphql-overview)**.
 
@@ -51,7 +51,7 @@ mutation { updateApp(appId: "APP_ID", input: { description: "Now with voxels", v
 mutation { archiveApp(appId: "APP_ID") { appId status } }
 ```
 
-Read an app's current state any time with the `app(appId)` query — including the routing fields (`gameApiUrl`, `splitMode`, `deploymentTarget`) covered in step **d**.
+Read an app's current state any time with the `app(appId)` query — including the routing fields (`applicationApiUrl`, `splitMode`, `deploymentTarget`) covered in step **d**.
 
 ### c. (Optional) Define additional access tiers
 
@@ -116,7 +116,7 @@ override.
 marketplace listing (`subjectKind: CODE`) or by its owner
 (`subjectKind: AUTHOR`); until then, switching it on is refused. For a hostile
 listing, switch off every install of it at once with `execModSetSwitch` and
-the listing's id (Game API, `manage_compute`).
+the listing's id (Application API, `manage_compute`).
 
 ### c.1a (Optional) Choose how claims confer grid ownership (P4a)
 
@@ -187,7 +187,7 @@ mutation {
 ```
 
 What each client sees: [the release on the wire](/replication-api/wire-formats#session-released--command_session_released-28)
-(native clients), [`IDLE_TIMEOUT`](/game-api/graphql-udp-proxy-api#realtime-connection-events) on the
+(native clients), [`IDLE_TIMEOUT`](/application-api/graphql-udp-proxy-api#realtime-connection-events) on the
 GraphQL UDP proxy, and the `inactive` realtime status in [CrowdyJS](/crowdyjs/readme).
 
 ### c.5 Cap the speakers each player receives
@@ -216,11 +216,11 @@ The message on the wire: [speaker lists](/replication-api/wire-formats#speaker-l
 
 ### d. Choose where the app runs
 
-Your app needs a **Game API** to serve runtime traffic, and there is one way to get it: the **shared platform**. Publish with `publishAppToShared` and the app is immediately served by that tier's shared Game API fleet, scoped by your `appId`, in the datacenter you chose when you created it. You do not provision VMs or wait for a stack.
+Your app needs a **Application API** to serve runtime traffic, and there is one way to get it: the **shared platform**. Publish with `publishAppToShared` and the app is immediately served by that tier's shared Application API fleet, scoped by your `appId`, in the datacenter you chose when you created it. You do not provision VMs or wait for a stack.
 
 > **Availability:** **shared platform hosting** is the only hosting model. Self-serve customer environments — the developer sandbox (`environmentClass: "dev_single"`) and multi‑VM dedicated stacks — were **retired**, and their mutations are no longer in the published SDL; private environments exist only by Enterprise Agreement. If you are following an older guide that starts with `createEnvironment`, stop: see **[Shared environment & billing](/management-api/shared-environment)** instead.
 
-Whichever hosting you use, query the app's routing fields (`gameApiUrl`, `splitMode`, `deploymentTarget`) before a player joins so the client connects to the right **Game API**. See **[Shared environment & billing](/management-api/shared-environment)** for the shared model and routing fields, and **[Loading an app's Game API](/crowdyjs/shared-environment-routing)** for the client walkthrough.
+Whichever hosting you use, query the app's routing fields (`applicationApiUrl`, `splitMode`, `deploymentTarget`) before a player joins so the client connects to the right **Application API**. See **[Shared environment & billing](/management-api/shared-environment)** for the shared model and routing fields, and **[Loading an app's Application API](/crowdyjs/shared-environment-routing)** for the client walkthrough.
 
 ---
 
@@ -230,7 +230,7 @@ There are two paths — most public games use the first.
 
 ### Open‑by‑default (zero‑friction)
 
-If the app has a **free + default** tier (the one `createApp` made for you), then **any player is automatically granted that tier the first time they connect** — no per‑player admin action. The Game API resolves the entitlement on connect, mirrors it into the per‑tenant game database, and grants the player the app's default **world‑grid permissions**. From that point Buddy authorizes their spatial traffic.
+If the app has a **free + default** tier (the one `createApp` made for you), then **any player is automatically granted that tier the first time they connect** — no per‑player admin action. The Application API resolves the entitlement on connect, mirrors it into the per‑tenant game database, and grants the player the app's default **world‑grid permissions**. From that point Buddy authorizes their spatial traffic.
 
 ### Explicit grant (admin‑controlled)
 
@@ -242,7 +242,7 @@ mutation { grantAppAccess(input: { appId: "APP_ID", userId: "PLAYER_USER_ID", ti
 
 When you change what a tier grants, `resyncTierGridPermissions(appId)` re-applies each player's tier keys on the app's default world grid. It only adds keys: a key the tier no longer carries stays until you revoke it.
 
-The grant propagates to the Game API automatically (the matching grid permissions are provisioned server‑side via replica‑sync), so the player is authorized end to end — again with no direct database access.
+The grant propagates to the Application API automatically (the matching grid permissions are provisioned server‑side via replica‑sync), so the player is authorized end to end — again with no direct database access.
 
 ### Revoking, suspending and banning
 
@@ -272,16 +272,16 @@ Crowded Kingdoms can also block an account across the whole platform, on every a
 ## 3. The player's flow
 
 1. **Sign in.** A browser game sends the player to Studio's hosted sign-in (`client.portal.signIn`) and gets the app-scoped token back, so it skips step 2; see the **[Build a game](/build-a-game/intro)** tutorial. A native client registers or logs in through the Management API (`register` / `login`) and holds the **identity session token**.
-2. **Mint an app token** for this app with `mintAppToken` (native or first-party). This is the **app-scoped token** used for gameplay; the session token is rejected by the Game API. The first token a player gets auto-grants access on free tiers. See **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**.
-3. **Connect** with [CrowdyJS](/crowdyjs/intro), the [Unreal SDK](/unreal-sdk/intro), or a raw UDP client, pointed at the app's `gameApiUrl` (returned by the mint), sending the app-scoped token as the Bearer.
-4. **Play** — send actor, voxel, text, audio, and client‑event updates. The Game API and Buddy authorize each message against the player's tier and grid permissions. Refresh the app token (`refreshAppToken`) before it expires.
+2. **Mint an app token** for this app with `mintAppToken` (native or first-party). This is the **app-scoped token** used for gameplay; the session token is rejected by the Application API. The first token a player gets auto-grants access on free tiers. See **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**.
+3. **Connect** with [CrowdyJS](/crowdyjs/intro), the [Unreal SDK](/unreal-sdk/intro), or a raw UDP client, pointed at the app's `applicationApiUrl` (returned by the mint), sending the app-scoped token as the Bearer.
+4. **Play** — send actor, voxel, text, audio, and client‑event updates. The Application API and Buddy authorize each message against the player's tier and grid permissions. Refresh the app token (`refreshAppToken`) before it expires.
 
 ---
 
 ## What happens under the hood
 
 ```
-Management API                         Game API (per app `gameApiUrl`)            Buddy (UDP)
+Management API                         Application API (per app `applicationApiUrl`)            Buddy (UDP)
 ──────────────                         ──────────────────────────────            ───────────
 app + access tier (free, default)
         │  open-by-default on 1st connect (or explicit grantAppAccess)
@@ -338,7 +338,7 @@ mutation {
 
 Two things about that call, both of which return a clear error rather than failing silently:
 
-- It is **app-resident** — send it to the app's own `gameApiUrl` (from `mintAppToken`), not the shared entry name. The shared name answers from whichever datacenter you land in and will tell you to reconnect.
+- It is **app-resident** — send it to the app's own `applicationApiUrl` (from `mintAppToken`), not the shared entry name. The shared name answers from whichever datacenter you land in and will tell you to reconnect.
 - It needs an **app-scoped token**, not an identity session token.
 
 ## What a new app developer should check first

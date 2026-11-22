@@ -60,7 +60,7 @@ A member 3 chunks east and 4 north of the origin (exactly 5) receives it; one 4 
 and 4 north (about 5.66) does not. The origin's app is the connection's app,
 `max_distance` is 0 to `crowdypy.wire.CHANNEL_RANGED_MAX_DISTANCE` (2147483647), it
 takes the same right as `send_channel_message`, and the sender receives no echo. See
-[the channels guide](/game-api/channels#limit-delivery-by-distance).
+[the channels guide](/application-api/channels#limit-delivery-by-distance).
 
 ## Voice on a channel
 
@@ -70,7 +70,7 @@ wherever they are. The sender needs the channel's `send_voice` right (`members_c
 on `channels.create` gives it to every member) and `use_voice_chat`; a refusal is
 `UNAUTHORIZED` for the returned sequence. The payload is at most 1,024 bytes, and the
 `crowdypy.media` voice helpers below are an optional format for it. See
-[voice on a channel](/game-api/channels#voice-on-a-channel).
+[voice on a channel](/application-api/channels#voice-on-a-channel).
 
 ```python
 packetizer = VoicePacketizer(VoiceCodec.OPUS, 20)

@@ -29,7 +29,7 @@ preset, and a **resale policy**:
 | `resale_free` | Player resales allowed; no studio cut |
 | `resale_with_studio_cut` | Player resales allowed; the studio takes `studioCutBps` |
 
-The catalog replicates to the game store (`gridListings` on the Game API)
+The catalog replicates to the game store (`gridListings` on the Application API)
 for in-game browse.
 
 ## Buying

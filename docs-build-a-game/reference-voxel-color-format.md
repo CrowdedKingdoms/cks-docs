@@ -51,4 +51,4 @@ function voxelStateToRgba(voxelState: string): { r: number; g: number; b: number
 | 4 | Yellow `#f1c40f` |
 | 5 | Purple `#9b59b6` |
 
-See [VoxelUpdateRequestInput](/game-api/reference/graphql/types/inputs/voxel-update-request-input) and [sendVoxelUpdate](/game-api/reference/graphql/operations/mutations/send-voxel-update).
+See [VoxelUpdateRequestInput](/application-api/reference/graphql/types/inputs/voxel-update-request-input) and [sendVoxelUpdate](/application-api/reference/graphql/operations/mutations/send-voxel-update).

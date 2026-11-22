@@ -11,7 +11,7 @@ surface over **UDP** (User Datagram Protocol). Game clients that can open raw UD
 sockets authenticate via the **[Management API](/management-api/intro)**, mint an
 **app-scoped token** for the app they are entering (`mintAppToken` — see
 **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**), call
-**`serverWithLeastClients`** on the **[Game API](/game-api/intro)** for Buddy
+**`serverWithLeastClients`** on the **[Application API](/application-api/intro)** for Buddy
 assignment, then exchange replication messages directly with a **Buddy** server.
 Buddy authenticates **only** app-scoped tokens; the identity session token that
 `login` returns is rejected for gameplay.
@@ -29,8 +29,8 @@ natively in portable C++.
 :::note[Browsers and the GraphQL UDP proxy]
 
 Clients that **cannot** open raw UDP sockets (typical browsers) route spatial
-traffic through the Game API's GraphQL mutations and WebSocket subscriptions
-instead—see the **[GraphQL UDP proxy guide](/game-api/graphql-udp-proxy-api)**.
+traffic through the Application API's GraphQL mutations and WebSocket subscriptions
+instead—see the **[GraphQL UDP proxy guide](/application-api/graphql-udp-proxy-api)**.
 
 Both paths share the same Management API identity (`register` / `login`) and the
 same **app-scoped token** minted from it (`mintAppToken` or the browser portal

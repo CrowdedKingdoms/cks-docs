@@ -5,7 +5,7 @@ title: Host discovery
 
 # Host discovery
 
-The Game API elects a single **host user** per app (game). Every connected client that asks with the same `appId` gets the same answer at the same moment, so clients can agree on which user is currently the "host."
+The Application API elects a single **host user** per app (game). Every connected client that asks with the same `appId` gets the same answer at the same moment, so clients can agree on which user is currently the "host."
 
 Two read paths exist:
 
@@ -24,9 +24,9 @@ players subscribe to; see [presence](/exec/timers-and-presence#presence).
 :::
 
 :::important[UI convenience vs authoritative gating]
-`gameHost` / `amIGameHost` (and CrowdyJS `client.host.*`) are **informational**. The Game API does not gate other operations on host status from these queries, and Buddy does not validate UDP messages against the host UUID.
+`gameHost` / `amIGameHost` (and CrowdyJS `client.host.*`) are **informational**. The Application API does not gate other operations on host status from these queries, and Buddy does not validate UDP messages against the host UUID.
 
-For **authoritative** host-only game logic, decide it in a [ck-exec](/exec/intro) hub, which checks its caller itself (`call.player()`); the `session` [starter pack](/exec/builds#starter-packs) keeps a host of its own. See **[Game API best practices](/game-api/best-practices#clients-request-they-do-not-decide)**.
+For **authoritative** host-only game logic, decide it in a [ck-exec](/exec/intro) hub, which checks its caller itself (`call.player()`); the `session` [starter pack](/exec/builds#starter-packs) keeps a host of its own. See **[Application API best practices](/application-api/best-practices#clients-request-they-do-not-decide)**.
 :::
 
 ## When to use it
@@ -75,7 +75,7 @@ Variables:
 { "appId": "42" }
 ```
 
-Send `Authorization: Bearer <app-token>` on the request — the **app-scoped token** for this app (from `mintAppToken` / the portal flow), not the identity session token that sign-in returns. See **[Authentication](/game-api/authentication)**.
+Send `Authorization: Bearer <app-token>` on the request — the **app-scoped token** for this app (from `mintAppToken` / the portal flow), not the identity session token that sign-in returns. See **[Authentication](/application-api/authentication)**.
 
 A typical response:
 
@@ -115,7 +115,7 @@ query AmIGameHost($appId: BigInt!) {
 
 Returns **`true`** only when the authenticated caller is the currently elected host for that app. Returns **`false`** when someone else is host, or when no host is elected (`gameHost` would be `null`). Same auth and app-scope rules as `gameHost`.
 
-Full type definitions: see `GameHost`, `gameHost`, and `amIGameHost` in the **[GraphQL schema reference](/game-api/reference/graphql-overview)**.
+Full type definitions: see `GameHost`, `gameHost`, and `amIGameHost` in the **[GraphQL schema reference](/application-api/reference/graphql-overview)**.
 
 ## Actor UUID vs user id
 
@@ -128,7 +128,7 @@ Host election is at the **user** level (`hostUserId`), not per actor wire-id.
 
 The host is **the user whose longest-running actor in the app has been participating the longest**. If two users tie on that, the tiebreaker is fully deterministic — every caller gets the same answer.
 
-The election is a pure function of who is currently participating in the app, so **every Game API server returns the same answer** for the same `appId` at the same moment. You do not need to pin clients to a particular server or worry about cache divergence between replicas.
+The election is a pure function of who is currently participating in the app, so **every Application API server returns the same answer** for the same `appId` at the same moment. You do not need to pin clients to a particular server or worry about cache divergence between replicas.
 
 Reassignment is automatic: as soon as the current host stops participating (their last actor goes idle), the next call to `gameHost` / `amIGameHost` reflects the next-oldest user as the new host. There is no manual transfer step.
 
@@ -158,10 +158,10 @@ Why this exists: the election reads live presence, the entry the replication lay
 ## Important behaviors and limits
 
 - **Up to ~5 s lag on disconnect.** A client that drops without warning continues to count as the host for up to about 5 seconds after their last actor update. Plan your client logic to tolerate the previous host appearing to linger briefly before the new host shows up.
-- **"Participating" means "has sent at least one actor update".** Just authenticating does not make a client a host candidate — the client must have sent at least one `sendActorUpdate` mutation (GraphQL UDP proxy) or `ACTOR_UPDATE_REQUEST_2` packet (native UDP) since connecting. See **[GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api)** or the **[Replication API](/replication-api/intro)**.
-- **No push notifications in v1.** There is no `hostChanged` subscription. Clients poll `gameHost` / `amIGameHost` on whatever cadence makes sense for the game (typically every few seconds when host-aware logic is active). There **is** a push for the underlying fact, though: when the server stops considering an actor present — the same ~5 s window — its neighbours receive an `ActorLeftNotification` (native opcode 145) on the realtime subscription, so a client that sees the current host leave can poll immediately instead of waiting for its next tick. See **[UDP proxy → Actor left](/game-api/graphql-udp-proxy-api#actor-left)**.
-- **Granularity is per `app_id`.** Exactly one host per app, period. There is no sub-app key (room, match, lobby, etc.) in the Game API today; if your game needs finer-grained host election than one-per-app, you have to layer that on top yourself.
-- **Token scope is enforced.** Gameplay tokens are always app-scoped: a token for one app cannot query `gameHost` / `amIGameHost` (or any Game API field) for a different app — the call returns `APP_SCOPE_MISMATCH` / `INVALID_APP_ID`. The identity session token is rejected entirely on the Game API.
+- **"Participating" means "has sent at least one actor update".** Just authenticating does not make a client a host candidate — the client must have sent at least one `sendActorUpdate` mutation (GraphQL UDP proxy) or `ACTOR_UPDATE_REQUEST_2` packet (native UDP) since connecting. See **[GraphQL UDP Proxy API](/application-api/graphql-udp-proxy-api)** or the **[Replication API](/replication-api/intro)**.
+- **No push notifications in v1.** There is no `hostChanged` subscription. Clients poll `gameHost` / `amIGameHost` on whatever cadence makes sense for the game (typically every few seconds when host-aware logic is active). There **is** a push for the underlying fact, though: when the server stops considering an actor present — the same ~5 s window — its neighbours receive an `ActorLeftNotification` (native opcode 145) on the realtime subscription, so a client that sees the current host leave can poll immediately instead of waiting for its next tick. See **[UDP proxy → Actor left](/application-api/graphql-udp-proxy-api#actor-left)**.
+- **Granularity is per `app_id`.** Exactly one host per app, period. There is no sub-app key (room, match, lobby, etc.) in the Application API today; if your game needs finer-grained host election than one-per-app, you have to layer that on top yourself.
+- **Token scope is enforced.** Gameplay tokens are always app-scoped: a token for one app cannot query `gameHost` / `amIGameHost` (or any Application API field) for a different app — the call returns `APP_SCOPE_MISMATCH` / `INVALID_APP_ID`. The identity session token is rejected entirely on the Application API.
 
 ## Common patterns
 
@@ -255,9 +255,9 @@ You do not need to implement reassignment yourself. When the current host stops 
 
 ## See also
 
-- **[GraphQL schema reference](/game-api/reference/graphql-overview)** — auto-generated reference for every Game API operation, including `gameHost`, `amIGameHost`, and the `GameHost` type.
+- **[GraphQL schema reference](/application-api/reference/graphql-overview)** — auto-generated reference for every Application API operation, including `gameHost`, `amIGameHost`, and the `GameHost` type.
 - **[ck-exec](/exec/intro)** — where authoritative host-only rules run.
 - **[Actor state](actor-state)** — `actor(uuid)` / ownership (`userId`) when you start from a wire-id.
-- **[GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api)** — how a browser/JS client registers an actor so it becomes a host candidate.
+- **[GraphQL UDP Proxy API](/application-api/graphql-udp-proxy-api)** — how a browser/JS client registers an actor so it becomes a host candidate.
 - **[Replication API](/replication-api/intro)** — the native UDP path; sending `ACTOR_UPDATE_REQUEST_2` is what registers a client as participating in the world, making them a host candidate.
-- **[Authentication](/game-api/authentication)** — bearer token requirements and token scope.
+- **[Authentication](/application-api/authentication)** — bearer token requirements and token scope.

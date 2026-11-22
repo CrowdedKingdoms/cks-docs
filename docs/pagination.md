@@ -33,7 +33,7 @@ query Users($after: String) {
 
 Connections exist for the largest collections — Management API: `usersConnection`,
 `appsConnection`, `myCheckoutsConnection`, `checkoutsConnection`, `paymentEventsConnection`,
-`walletTransactionsConnection`, `appUserAccessConnection`; Game API:
+`walletTransactionsConnection`, `appUserAccessConnection`; Application API:
 `voxelUpdateHistoryConnection`, `actorsConnection`. More are added over time; the SDL is
 authoritative.
 
@@ -74,9 +74,9 @@ Some list fields return a plain array and take `limit`/`offset` without a `total
 query Txns { walletTransactions(orgId: "10", limit: 50, offset: 0) { transactionId amountMicrousd } }
 ```
 
-## Game API `limit`/`skip`
+## Application API `limit`/`skip`
 
-Some Game API world queries use `skip` instead of `offset` and echo the window back in the
+Some Application API world queries use `skip` instead of `offset` and echo the window back in the
 response (e.g. `getChunksByDistance`, `listVoxelUpdatesByDistance`). `voxelUpdateHistory`
 takes `limit`/`offset` with a per-field default and maximum documented in the SDL.
 

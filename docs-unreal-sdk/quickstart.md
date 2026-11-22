@@ -25,7 +25,7 @@ One fact shapes the order of the steps. The server knows a client by the actor u
 
 ![The Project page's Configuration tab, with the diff and the Sync to project button](/img/unreal-sdk/qs-config-sync.png)
 
-:::caution[If you skip the sync, the SDK has no app id or Game API URLs to connect with, and nothing replicates.]
+:::caution[If you skip the sync, the SDK has no app id or Application API URLs to connect with, and nothing replicates.]
 :::
 
 :::note[A map with no profile of its own runs on the SDK's shipped default.]

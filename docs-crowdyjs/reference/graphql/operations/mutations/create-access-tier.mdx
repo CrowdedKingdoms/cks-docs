@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Create a new access tier (a free/paid bundle of runtime permissions) for an app. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app (input.appId); super admins bypass. SIDE EFFECTS: validates the tier's permission keys against runtimePermissions and notifies the game API so Buddy sees the new tier. Does NOT grant the tier to any user.
+Create a new access tier (a free/paid bundle of runtime permissions) for an app. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app (input.appId); super admins bypass. SIDE EFFECTS: validates the tier's permission keys against runtimePermissions and notifies the Application API so Buddy sees the new tier. Does NOT grant the tier to any user.
 
 
 ```graphql

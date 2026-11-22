@@ -111,7 +111,7 @@ On the **Join Channel** node's **On Error** pin, open `Error` with **Break Crowd
 
 ## Handle a full channel
 
-A join, a request to join, an add or a create fails with the error code `LimitReached` (**Limit Reached** on the Blueprint enum) when the channel is full, or when the player is already in as many channels as the app allows. Teams report the same code for their caps. Retrying does not help until someone leaves, so tell the player instead. Branch on it the way [Handle a ban on join](#handle-a-ban-on-join) does for `Banned`. Both caps are set in Crowdy Studio, and the Game API names the code `GROUP_LIMIT_REACHED`.
+A join, a request to join, an add or a create fails with the error code `LimitReached` (**Limit Reached** on the Blueprint enum) when the channel is full, or when the player is already in as many channels as the app allows. Teams report the same code for their caps. Retrying does not help until someone leaves, so tell the player instead. Branch on it the way [Handle a ban on join](#handle-a-ban-on-join) does for `Banned`. Both caps are set in Crowdy Studio, and the Application API names the code `GROUP_LIMIT_REACHED`.
 
 ## Publish and receive
 
@@ -195,7 +195,7 @@ A `Multicast` CrowdyEvent is encoded into a channel payload and published over t
 - A named channel is join-only from the SDK's side. Create it in Crowdy Studio or at runtime, then `RegisterReliableRpcChannel` if you created it after connecting.
 - `send_messages` gates publishing, not membership. An announce-only channel is a channel whose joiners lack it.
 - The sender never receives an echo of its own message.
-- Channel management is a Game API call and needs the app-scoped token the sign-in gives you; see [Authentication](../services/authentication.md). The wire protocol and the GraphQL calls are on the [Game API channels page](/game-api/channels).
+- Channel management is an Application API call and needs the app-scoped token the sign-in gives you; see [Authentication](../services/authentication.md). The wire protocol and the GraphQL calls are on the [Application API channels page](/application-api/channels).
 
 ## Related
 

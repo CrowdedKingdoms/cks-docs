@@ -9,7 +9,7 @@ title: Introduction
 :::info[There is one Crowded Kingdoms API, and this is part of it]
 The separate management server has been retired. Identity, organizations, apps,
 billing, marketplace and studio policy are served by the **same GraphQL endpoint as
-the [Game API](/game-api/intro)** — one server, one schema, one bearer token. Every
+the [Application API](/application-api/intro)** — one server, one schema, one bearer token. Every
 operation in this section still exists with the same name and shape; **there is no
 second URL to configure.**
 
@@ -30,7 +30,7 @@ connects:
 
 **Entitlements** (who has access at which tier, runtime permission keys on tiers) are
 defined here. **Spatial grid configuration** (virtual-estate regions and per-user grid
-grants) is documented with the [Game API](/game-api/intro).
+grants) is documented with the [Application API](/application-api/intro).
 
 Use [Crowdy Studio](/management-ui/intro) for the same operations in a browser, or call
 the API directly with a user session token or **org API token**.
@@ -39,7 +39,7 @@ the API directly with a user session token or **org API token**.
 The **[GraphQL schema reference](/management-api/reference/graphql-overview)** lists
 every type, query and mutation on this surface. The published SDL at
 [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql) is the
-unified schema filtered to it; [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql)
+unified schema filtered to it; [`/schema/application-api.graphql`](pathname:///schema/application-api.graphql)
 is the whole thing.
 
 Customer-provisioned environments were retired; every app uses the shared

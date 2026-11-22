@@ -11,13 +11,13 @@ title: Compatibility and parity
 CrowdyCPP targets the current platform APIs and degrades gracefully on older
 deployments:
 
-- **`userAppState` round-trip.** Older Game API builds stored the base64
+- **`userAppState` round-trip.** Older Application API builds stored the base64
   `state` input verbatim and re-encoded on read, so reads returned
   base64(base64(bytes)); newer builds round-trip symmetrically. Decode
   defensively if you must read rows written through an old server.
-- **The input log** (`inputLog()`, 0.59.0) needs Game API v2.39.0 or later: every
-  app read selects `replayLoggingEnabled`, which an older Game API refuses. **From
-  0.62.0 the sessions read selects `missingRecords`, so it needs the Game API release
+- **The input log** (`inputLog()`, 0.59.0) needs Application API v2.39.0 or later: every
+  app read selects `replayLoggingEnabled`, which an older Application API refuses. **From
+  0.62.0 the sessions read selects `missingRecords`, so it needs the Application API release
   after v2.40.2**, which also brings the retryable `INPUT_LOG_TEMPORARILY_UNAVAILABLE` /
   `INPUT_LOG_RATE_LIMITED` (`graphql::inputLogReadRetryable`) and the `logging_off`,
   `shutdown`, `paused` and `unrecorded` end reasons. Each read takes a
@@ -26,7 +26,7 @@ deployments:
   `crowdy::core::base64Decode` (`crowdy/core/base64.hpp`) gives the bytes. See
   [Input logging](/replication-api/input-logging).
 - **Org-managed players** (`admin().managedPlayers()`, `portal().adoptAppToken`,
-  `portal().exchangeManagedPlayerAssertion`, 0.68.0) need Game API v2.53.0 or later on any
+  `portal().exchangeManagedPlayerAssertion`, 0.68.0) need Application API v2.53.0 or later on any
   environment (v2.52.x served them on dev only), and the organization's acceptance of the
   Org-Managed Players Addendum. The addendum fields on `managedPlayers().settings()` and
   `graphql::orgLegalAcceptanceRequiredOf` are 0.69.0. See
@@ -41,7 +41,7 @@ and the SDK repository verifies that claim mechanically with a generated
 The guarantees:
 
 - **Full GraphQL root-field coverage for clients.** Every non-deprecated
-  Management API and Game API root field that a player, a developer or an org
+  Management API and Application API root field that a player, a developer or an org
   admin can call is covered by a typed method. Fields only a super-admin or a
   platform operator can call are deliberately not wrapped (since 0.51.0): the
   SDK is for normal clients. The other waived family is the **udp-proxy
@@ -85,4 +85,4 @@ environment your game runs on. The CMake
 package config enforces `SameMajorVersion` compatibility for
 `find_package(CrowdyCPP)` consumers. Consumer-facing platform changes land in
 the [changelog](/releases/intro); the committed schema snapshot ties each SDK
-release to a known Management + Game API surface.
+release to a known Management + Application API surface.

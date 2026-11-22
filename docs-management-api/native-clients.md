@@ -19,7 +19,7 @@ The model is unchanged:
   gameplay**. Keep it in the OS secure store; never hand it to a game stack you
   don't control.
 - **App-scoped token** — short-lived (~30 min), confined to one app. The Bearer
-  for that app's Game API + realtime surface, and the HMAC key for its UDP
+  for that app's Application API + realtime surface, and the HMAC key for its UDP
   traffic. This is what a native game actually plays with.
 
 ```text
@@ -29,7 +29,7 @@ sign in                 ->  identity SESSION token
         |                   mint an APP-SCOPED token  (mintAppToken / portal code)
         v                         |
   OS secure store                 v
-                          Game API (Bearer) + UDP (HMAC)  ->  play
+                          Application API (Bearer) + UDP (HMAC)  ->  play
 ```
 
 ## Step 1 — Sign in
@@ -92,7 +92,7 @@ token. Mint a token for **its own** app and play with it.
 ```graphql
 mutation Enter($appId: BigInt!) {
   mintAppToken(input: { appId: $appId }) {
-    token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
+    token gameTokenId appId expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl launchUrl
   }
 }
 ```
@@ -107,7 +107,7 @@ describes, and record them with `recordPlayerAge`. It answers `LEGAL_ACCEPTANCE_
 player has agreed to the current required documents: show your own checkboxes and call
 `recordPlayerConsents` with the session token; `playerLegalAcceptance` says whether that is still
 needed. See [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
-Last, since Game API v2.65.0, it answers `EMAIL_CONFIRMATION_REQUIRED` for a password account made
+Last, since Application API v2.65.0, it answers `EMAIL_CONFIRMATION_REQUIRED` for a password account made
 since 2026-11-11 that has not confirmed its email: tell the player to open the link `register`
 emailed, offer `resendConfirmationEmail(email)`, and mint again when they say they have
 ([Authentication](/management-api/authentication#a-new-account-confirms-its-email)).
@@ -158,7 +158,7 @@ the hub.
    ```graphql
    mutation Exchange($input: ExchangePortalCodeInput!) {
      exchangePortalCode(input: $input) {
-       token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
+       token gameTokenId appId expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl launchUrl
      }
    }
    # { "input": { "code": "<one-time>", "codeVerifier": "<verifier>" } }
@@ -179,10 +179,10 @@ trusted app skips it. Pattern A and B mints (`mintAppToken`) never ask for conse
 ## Step 3 — Use the app token
 
 The returned `token` is the credential for the app's stack — use the
-`gameApiUrl`/`gameApiWsUrl` it came with:
+`applicationApiUrl`/`applicationApiWsUrl` it came with:
 
-- **Game API** — `Authorization: Bearer <app token>` on HTTP, and in the realtime
-  `connection_init` payload. See [Game API → Authentication](/game-api/authentication).
+- **Application API** — `Authorization: Bearer <app token>` on HTTP, and in the realtime
+  `connection_init` payload. See [Application API → Authentication](/application-api/authentication).
 - **UDP** — the app token is the **HMAC key** (the 64 characters **as-is**, do not
   hex-decode) and `serverWithLeastClients` installs your Buddy session;
   `gameTokenId` goes in the spatial message tail. Full steps in
@@ -191,7 +191,7 @@ The returned `token` is the credential for the app's stack — use the
 
 A session token (or a token for a different app) is rejected for gameplay:
 `APP_TOKEN_REQUIRED` / `APP_SCOPE_MISMATCH` on realtime, `INVALID_APP_ID` on UDP,
-`SCOPE_MISSING` on the Game API.
+`SCOPE_MISSING` on the Application API.
 
 ## Step 4 — Refresh and expiry
 
@@ -219,7 +219,7 @@ tell the player, naming no age. See
   pattern **C** (PKCE) for third-party native games so the session stays in the hub.
 - Use the **system browser** for social sign-in, never an embedded webview.
 - Register your native `redirectUri`s (custom scheme / loopback) on the app.
-- HTTPS only for Management/Game API calls.
+- HTTPS only for Management/Application API calls.
 
 ## SDKs
 

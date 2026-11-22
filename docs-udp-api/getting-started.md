@@ -15,7 +15,7 @@ authentication and Buddy assignment; all replication traffic is UDP to Buddy.
 |------|-------------|
 | Management API URL | `register` / `login` → identity **session token**; then `mintAppToken` → **app-scoped token** (hex) + `gameTokenId` |
 | App ID | Numeric app identifier for your world (passed to `mintAppToken`; also used in spatial message headers) |
-| Game API URL | `serverWithLeastClients` — returns Buddy address and registers your session (use the app token; `mintAppToken` returns the app's `gameApiUrl`) |
+| Application API URL | `serverWithLeastClients` — returns Buddy address and registers your session (use the app token; `mintAppToken` returns the app's `applicationApiUrl`) |
 | UDP capability | Outbound UDP to Buddy `clientPort` (typically `9091`) |
 
 You do **not** need any server-side secrets on the client. The platform registers
@@ -27,10 +27,10 @@ this app — the identity session token is rejected (see
 ## Integration flow
 
 ```text
-Management API          Game API                    Buddy (UDP)
+Management API          Application API                    Buddy (UDP)
 ──────────────          ────────                    ─────────────
 register / login  ──▶   (identity session token)
-mintAppToken      ──▶   (app-scoped token + gameApiUrl)
+mintAppToken      ──▶   (app-scoped token + applicationApiUrl)
                         serverWithLeastClients ──▶  (session registration)
                         ◀── ip4, ip6, clientPort
 (wait ~1.5 s)
@@ -42,12 +42,12 @@ ACTOR_UPDATE_REQUEST_2 ───────────────────
 ## Related guides
 
 - **[Authenticate and assign](/replication-api/authenticate-and-assign)** — mutations and query shapes
-- **[GraphQL UDP proxy](/game-api/graphql-udp-proxy-api)** — browser / JS path (no raw UDP)
-- **[Game API intro](/game-api/intro)** — world GraphQL (`chunks`, `actors`, …)
+- **[GraphQL UDP proxy](/application-api/graphql-udp-proxy-api)** — browser / JS path (no raw UDP)
+- **[Application API intro](/application-api/intro)** — world GraphQL (`chunks`, `actors`, …)
 
 :::caution[Do not call assignment on Management API]
 
-`serverWithLeastClients` lives on the **Game API** only. The Management API handles
+`serverWithLeastClients` lives on the **Application API** only. The Management API handles
 identity, orgs, marketplace, and billing—not Buddy assignment.
 
 :::

@@ -8,7 +8,7 @@ title: Introduction
 
 The **Management UI** is the web portal at [https://studio.crowdedkingdoms.com](https://studio.crowdedkingdoms.com) (also served as `studio.prod.crowdedkingdoms.com`). Sign in and register there (`/login`, `/register`). The `studio.dev` and `studio.test` hosts are Crowded Kingdoms' internal environments and refuse outside accounts. `crowdedkingdoms.com` on its own is the marketing site, not the portal.
 
-Studios and players use the portal to manage accounts, organizations, marketplace access, billing, and **apps on the shared platform** — the managed Game API where your games run, scoped by `appId`.
+Studios and players use the portal to manage accounts, organizations, marketplace access, billing, and **apps on the shared platform** — the managed Application API where your games run, scoped by `appId`.
 
 ## Who uses it
 
@@ -24,7 +24,7 @@ Org permissions control which tabs a member sees (for example, only owners can i
 1. **Register and sign in** — create your account at `/register` with email and a password, a magic link, or a social provider.
 2. **Join or create an organization** — share your **User ID** with an org owner to get invited, or create a new studio from **My Orgs** (`/orgs`).
 3. **Get started** — app-first wizard: name your game, complete billing setup if required, create on the **shared platform**.
-4. **Connect clients** — mint an app-scoped token and point your game at the shared Game API URL.
+4. **Connect clients** — mint an app-scoped token and point your game at the shared Application API URL.
 
 You are not dropped into the marketplace by default when you have no org — the portal guides you toward studio setup.
 
@@ -34,7 +34,7 @@ You are not dropped into the marketplace by default when you have no org — the
 - **Marketplace** (`/marketplace`) — discover apps and buy access (Stripe or PayPal).
 - **Organizations** (`/orgs/:orgSlug`) — studio operations: apps, members, tokens, wallet, budgets, quotas, settings, and **Get started** (`/orgs/:orgSlug/get-started`).
 
-Game runtime (chunks, voxels, actors, UDP) is **not** configured in this portal; clients connect to the [Game API](/game-api/intro) and [Replication API](/replication-api/intro) using an **app-scoped token** minted from a login session (org-issued credentials are management-plane only and cannot drive gameplay) — see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
+Game runtime (chunks, voxels, actors, UDP) is **not** configured in this portal; clients connect to the [Application API](/application-api/intro) and [Replication API](/replication-api/intro) using an **app-scoped token** minted from a login session (org-issued credentials are management-plane only and cannot drive gameplay) — see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
 
 ## Next steps
 
@@ -44,4 +44,4 @@ Game runtime (chunks, voxels, actors, UDP) is **not** configured in this portal;
 - **[Apps on the shared platform](/management-ui/environments)** — routing, free tier, and app dashboard.
 - **[Shared environment & billing](/management-api/shared-environment)** — wallet, usage, and runtime status.
 - **[Management API](/management-api/intro)** — programmatic access to the same org, billing, and app operations.
-- **[CrowdyJS](/crowdyjs/intro)** — browser SDK for game clients talking to the Game API.
+- **[CrowdyJS](/crowdyjs/intro)** — browser SDK for game clients talking to the Application API.

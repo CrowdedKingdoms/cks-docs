@@ -5,9 +5,9 @@ title: Grids
 
 # Grids (world ownership)
 
-`client.gameApps` wraps the Game API **grid** administration surface — the
+`client.gameApps` wraps the Application API **grid** administration surface — the
 spatial permission layer that decides *what a player may do in a given 3D region*
-of your world. It is a **studio-admin** surface that runs on the Game API, so
+of your world. It is a **studio-admin** surface that runs on the Application API, so
 every call needs an **app-scoped token** for the target app (mint one with
 `identity.portal.mintAppToken(appId)`; there is still no separate "admin token"
 type — it is the same app/gameplay token) **and** a logged-in user who holds the
@@ -25,11 +25,11 @@ For an app whose policy is `self_claim`, use
 `client.marketplace.releaseClaimedGrid({ appId, gridId })`. Those operations
 authorize the current player, create/release only self-claimed one-chunk grids,
 and apply ownership plus effective ACLs atomically. See
-[Marketplace → Claim a player-owned chunk grid](/game-api/player-marketplace#claim-a-player-owned-chunk-grid).
+[Marketplace → Claim a player-owned chunk grid](/application-api/player-marketplace#claim-a-player-owned-chunk-grid).
 
 For the underlying concepts (how grids layer on top of app access, the
 open-by-default world grid, nesting vs. straddling, and effective-permission
-math) see **[Game API → Grids and permissions](/game-api/grids-and-permissions)**.
+math) see **[Application API → Grids and permissions](/application-api/grids-and-permissions)**.
 
 ## Create and delete grids
 
@@ -105,7 +105,7 @@ await client.gameApps.setOpenPermissions({ appId: '1', gridId: '10', permissionK
 
 It is refused with `BAD_REQUEST` for the app's world grid (open already), any of the
 four player-code keys, a key that is not an active grid key, and a 33rd open grid in
-one app. See [open grids](/game-api/grids-and-permissions#open-grids).
+one app. See [open grids](/application-api/grids-and-permissions#open-grids).
 
 ## Revoke and inspect
 
@@ -125,7 +125,7 @@ await client.gameApps.nearbyPermissions({                // grids overlapping a 
 
 ## Methods
 
-| Method | Game API field |
+| Method | Application API field |
 | ------ | -------------- |
 | `createGrid(input)` | `createGrid` |
 | `deleteGrid(input)` | `deleteGrid` |
@@ -139,4 +139,4 @@ await client.gameApps.nearbyPermissions({                // grids overlapping a 
 | `groupGrants(appId, gridId, groupId)` | `gridGroupGrants` |
 
 All take/return the generated GraphQL input/output types. A grant or revoke reaches
-the Game API's voxel checks within 15 seconds.
+the Application API's voxel checks within 15 seconds.

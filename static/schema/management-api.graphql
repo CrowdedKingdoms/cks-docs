@@ -144,7 +144,7 @@ enum ServerState {
 }
 
 """
-A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
+A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the Application API UDP proxy.
 """
 type GraphQLServer {
   """Unique id of this GraphQL server registration."""
@@ -174,7 +174,7 @@ type GraphQLServer {
   """TCP port the GraphQL/HTTP API listens on (default 4000)."""
   apiPort: Int!
   """
-  Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-or-1.prod.crowdedkingdoms.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
+  Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-or-1.prod.crowdedkingdoms.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `applicationApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
   """
   publicHostname: String
   """
@@ -631,7 +631,7 @@ type OrgToken {
   """
   environmentId: String @deprecated(reason: "Environment-bound service tokens were retired with dedicated environments; always null.")
   """
-  'user_minted' (human-created) or 'service' (minted by the control plane for per-tenant game-apis).
+  'user_minted' (human-created) or 'service' (minted by the control plane for per-tenant Application API environments).
   """
   kind: String! @deprecated(reason: "Service tokens were retired; every org token is 'user_minted'. Read `scopes` for what a token may do.")
   """False once revoked; inactive tokens cannot authenticate."""
@@ -791,15 +791,19 @@ type App {
   """Numeric user id of the account that created the app."""
   createdBy: BigInt!
   """
-  True when this app's runtime data lives in a dedicated per-tenant game-api database (rather than the shared game-api). Used together with gameApiUrl to route gameplay calls.
+  True when this app's runtime data lives in a dedicated per-tenant Application API database (rather than the shared Application API). Used together with applicationApiUrl to route gameplay calls.
   """
   splitMode: Boolean!
   """
-  Resolved game-api base URL for SDK/runtime calls: the per-tenant URL for dedicated apps, or the shared platform URL for shared apps. Null for legacy or not-yet-deployed apps.
+  Resolved Application API base URL for SDK/runtime calls: the per-tenant URL for dedicated apps, or the shared platform URL for shared apps. Null for legacy or not-yet-deployed apps.
   """
-  gameApiUrl: String
+  applicationApiUrl: String
   """
-  Where the app runs: "none" (draft / not deployed), "shared" (the shared game-api), or "dedicated" (a provisioned per-tenant environment).
+  Resolved Application API base URL for SDK/runtime calls: the per-tenant URL for dedicated apps, or the shared platform URL for shared apps. Null for legacy or not-yet-deployed apps.
+  """
+  gameApiUrl: String @deprecated(reason: "Use applicationApiUrl: the Game API is now the Application API. Removed on January 1, 2027.")
+  """
+  Where the app runs: "none" (draft / not deployed), "shared" (the shared Application API), or "dedicated" (a provisioned per-tenant environment).
   """
   deploymentTarget: String!
   """
@@ -815,7 +819,7 @@ type App {
   """
   reservedGraphqlOpsPerSec: BigInt!
   """
-  Shared-environment runtime gate, mirrored to the game DB and enforced by game-api + Buddy: "active", "grace", "denied", or "suspended".
+  Shared-environment runtime gate, mirrored to the game DB and enforced by Application API + Buddy: "active", "grace", "denied", or "suspended".
   """
   runtimeStatus: String!
   """
@@ -1040,7 +1044,7 @@ type AppRuntimeGate {
 }
 
 """
-The per-app runtime gate game-api + Buddy enforce. See runtimeDenialReason when not active.
+The per-app runtime gate Application API + Buddy enforce. See runtimeDenialReason when not active.
 """
 enum AppRuntimeStatus {
   """Allowed to run; clients may connect."""
@@ -1058,11 +1062,11 @@ enum AppRuntimeStatus {
 }
 
 """
-A short-lived, app-scoped gameplay token (portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
+A short-lived, app-scoped gameplay token (portal). Confined to a single app: usable only against that app's Application API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
 """
 type AppTokenResponse {
   """
-  Opaque app-scoped gameplay token. Send to the target app's Game API as `Authorization: Bearer <token>` (and in the realtime `connectionParams`). Do NOT send it to the Management API for anything other than `me`/`refreshAppToken`.
+  Opaque app-scoped gameplay token. Send to the target app's Application API as `Authorization: Bearer <token>` (and in the realtime `connectionParams`). Do NOT send it to the Management API for anything other than `me`/`refreshAppToken`.
   """
   token: String!
   """Identifier of the underlying game_token row, as a String."""
@@ -1074,15 +1078,23 @@ type AppTokenResponse {
   """
   expiresAt: String!
   """
-  Base HTTPS URL of the Game API that serves this app — its OWN datacenter's endpoint when a placement exists, because that is where the app's shards are. Null if the app has no dedicated/shared game-api route yet. Use this for gameplay; use `discoveryUrl` to recover if it stops answering.
+  Base HTTPS URL of the Application API that serves this app — its OWN datacenter's endpoint when a placement exists, because that is where the app's shards are. Null if the app has no dedicated/shared Application API route yet. Use this for gameplay; use `discoveryUrl` to recover if it stops answering.
   """
-  gameApiUrl: String
+  applicationApiUrl: String
   """
-  WebSocket URL of the Game API that serves this app (wss://), for realtime subscriptions.
+  Base HTTPS URL of the Application API that serves this app — its OWN datacenter's endpoint when a placement exists, because that is where the app's shards are. Null if the app has no dedicated/shared Application API route yet. Use this for gameplay; use `discoveryUrl` to recover if it stops answering.
   """
-  gameApiWsUrl: String
+  gameApiUrl: String @deprecated(reason: "Use applicationApiUrl: the Game API is now the Application API. Removed on January 1, 2027.")
   """
-  Stable entry origin, resolving to every datacenter, that always reaches SOME healthy instance. Use it to re-discover endpoints when `gameApiUrl` stops answering: a token-holding client cannot re-mint, because that needs the identity session it does not have. Never a per-datacenter or per-instance address.
+  WebSocket URL of the Application API that serves this app (wss://), for realtime subscriptions.
+  """
+  applicationApiWsUrl: String
+  """
+  WebSocket URL of the Application API that serves this app (wss://), for realtime subscriptions.
+  """
+  gameApiWsUrl: String @deprecated(reason: "Use applicationApiWsUrl: the Game API is now the Application API. Removed on January 1, 2027.")
+  """
+  Stable entry origin, resolving to every datacenter, that always reaches SOME healthy instance. Use it to re-discover endpoints when `applicationApiUrl` stops answering: a token-holding client cannot re-mint, because that needs the identity session it does not have. Never a per-datacenter or per-instance address.
   """
   discoveryUrl: String
   """
@@ -1512,13 +1524,17 @@ enum CheckoutStatus {
 }
 
 """
-Public platform discovery. Clients/SDKs read the shared game-api URL here to route apps deployed to the shared environment.
+Public platform discovery. Clients/SDKs read the shared Application API URL here to route apps deployed to the shared environment.
 """
 type PlatformConfig {
-  """Shared game-api HTTP/GraphQL root for shared-environment apps."""
-  sharedGameApiUrl: String
-  """Shared game-api WebSocket root (subscriptions / UDP proxy)."""
-  sharedGameApiWsUrl: String
+  """Shared Application API HTTP/GraphQL root for shared-environment apps."""
+  sharedApplicationApiUrl: String
+  """Shared Application API HTTP/GraphQL root for shared-environment apps."""
+  sharedGameApiUrl: String @deprecated(reason: "Use sharedApplicationApiUrl: the Game API is now the Application API. Removed on January 1, 2027.")
+  """Shared Application API WebSocket root (subscriptions / UDP proxy)."""
+  sharedApplicationApiWsUrl: String
+  """Shared Application API WebSocket root (subscriptions / UDP proxy)."""
+  sharedGameApiWsUrl: String @deprecated(reason: "Use sharedApplicationApiWsUrl: the Game API is now the Application API. Removed on January 1, 2027.")
   """Free shared app slots an org gets before usage is wallet-billed."""
   freeAppsPerOrg: Int!
 }
@@ -1599,12 +1615,12 @@ type AppRuntimeState {
 }
 
 """
-Where an app runs: none (draft), shared (the shared game-api), or dedicated (a provisioned environment).
+Where an app runs: none (draft), shared (the shared Application API), or dedicated (a provisioned environment).
 """
 enum AppDeploymentTarget {
   """Draft / unpublished: the app is not deployed to any runtime."""
   NONE
-  """Runs on the multi-tenant shared game-api (publishAppToShared)."""
+  """Runs on the multi-tenant shared Application API (publishAppToShared)."""
   SHARED
   """Runs on a dedicated, org-provisioned environment."""
   DEDICATED
@@ -2646,7 +2662,7 @@ enum CrowdyStudioAgentMode {
 """Trusted boundary that executes a typed tool."""
 enum CrowdyStudioAgentToolExecutor {
   """
-  Game API invokes an owner-scoped domain service; never shell or arbitrary GraphQL.
+  The Application API invokes an owner-scoped domain service; never shell or arbitrary GraphQL.
   """
   SERVER
   """
@@ -2818,7 +2834,7 @@ type CrowdyStudioAgentCapabilityGap {
 }
 
 """
-Management's Agentic Crowdy Studio policy publication. EFFECTIVE values are the fail-closed platform/app intersection; an app can never widen platform models, tools, modes, risks, budgets, retention, or privacy. Game API runtime enforcement still requires a fresh validated replica.
+Management's Agentic Crowdy Studio policy publication. EFFECTIVE values are the fail-closed platform/app intersection; an app can never widen platform models, tools, modes, risks, budgets, retention, or privacy. Application API runtime enforcement still requires a fresh validated replica.
 """
 type CrowdyStudioAgentPolicy {
   """PLATFORM, APP, or EFFECTIVE projection."""
@@ -2826,7 +2842,7 @@ type CrowdyStudioAgentPolicy {
   """App id for APP/EFFECTIVE policy; null for platform policy."""
   appId: BigInt
   """
-  Whether this Management policy layer/publication is enabled. EFFECTIVE is true only when all required layers are enabled and no kill applies; it does not attest that Game API has synchronized.
+  Whether this Management policy layer/publication is enabled. EFFECTIVE is true only when all required layers are enabled and no kill applies; it does not attest that Application API has synchronized.
   """
   enabled: Boolean!
   """
@@ -2884,7 +2900,7 @@ type CrowdyStudioAgentPolicy {
   """
   appRevision: BigInt!
   """
-  Composite Management revision, formatted p<platform revision>:a<app revision>. Game API pins it only after a successful fresh replica pull.
+  Composite Management revision, formatted p<platform revision>:a<app revision>. Application API pins it only after a successful fresh replica pull.
   """
   effectiveRevision: String!
   """Policy row creation time or projection time."""
@@ -2927,7 +2943,7 @@ enum CrowdyStudioAgentRiskClass {
 One sanitized, platform-funded provider usage record. It contains exact OpenRouter token/cost dimensions but no key, prompt, headers, request/response body, private reasoning, or wallet debit.
 """
 type CrowdyStudioAgentUsageRecord {
-  """Game API-issued immutable usage UUID."""
+  """Application API-issued immutable usage UUID."""
   usageId: String!
   """App whose agent run consumed usage."""
   appId: BigInt!
@@ -3966,7 +3982,7 @@ type Query {
     orgId: BigInt!
   ): OrgProjectProfile! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
   """
-  Public platform discovery. Returns the shared game-api URL clients use for shared-environment apps (served by the platform shared environment). No auth required.
+  Public platform discovery. Returns the shared Application API URL clients use for shared-environment apps (served by the platform shared environment). No auth required.
   """
   platformConfig: PlatformConfig!
   """
@@ -4234,7 +4250,7 @@ type Query {
     appId: BigInt!
   ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
   """
-  Read Management's fail-closed Agentic Crowdy Studio publication: platform enable/kill, per-app operator kill, app enable/kill, the resolved model/tool/mode/risk lists (models and modes are the platform/app intersection; a tool or risk list the app left empty is inherited from the platform whole, because empty at a layer that can only narrow means no narrowing), minimum budgets/retention, locked privacy, and platform-funded billing seam. Requires 'view_compute_diagnostics'. This is the source publication, not proof of current runtime enforcement: Game API must hold a fresh crowdy.studio-agent-policy/1 replica and independently enforce it; missing/stale/malformed replica or an empty model/mode intersection must disable the agent.
+  Read Management's fail-closed Agentic Crowdy Studio publication: platform enable/kill, per-app operator kill, app enable/kill, the resolved model/tool/mode/risk lists (models and modes are the platform/app intersection; a tool or risk list the app left empty is inherited from the platform whole, because empty at a layer that can only narrow means no narrowing), minimum budgets/retention, locked privacy, and platform-funded billing seam. Requires 'view_compute_diagnostics'. This is the source publication, not proof of current runtime enforcement: Application API must hold a fresh crowdy.studio-agent-policy/1 replica and independently enforce it; missing/stale/malformed replica or an empty model/mode intersection must disable the agent.
   """
   crowdyStudioAgentEffectivePolicy(
     """App whose effective policy intersection to read."""
@@ -4430,14 +4446,14 @@ type Mutation {
   """
   deleteMyAccount: Boolean!
   """
-  Create a new access tier (a free/paid bundle of runtime permissions) for an app. Requires the 'manage_access_tiers' permission on the app (input.appId); super admins bypass. SIDE EFFECTS: validates the tier's permission keys against runtimePermissions and notifies the game API so Buddy sees the new tier. Does NOT grant the tier to any user.
+  Create a new access tier (a free/paid bundle of runtime permissions) for an app. Requires the 'manage_access_tiers' permission on the app (input.appId); super admins bypass. SIDE EFFECTS: validates the tier's permission keys against runtimePermissions and notifies the Application API so Buddy sees the new tier. Does NOT grant the tier to any user.
   """
   createAccessTier(
     """Definition of the access tier to create."""
     input: CreateAccessTierInput!
   ): AppAccessTier! @requiresPermission(scope: "app", permission: "manage_access_tiers", scopeArg: "input.appId")
   """
-  Update an existing access tier (name, ordering, pricing, permissions, etc.); only fields present in the input are changed. Requires the 'manage_access_tiers' permission on the app that owns the tier (resolved from tierId); super admins bypass. SIDE EFFECTS: re-syncs the tier's permissions to the game API. Throws if the tier is not found or the caller lacks permission.
+  Update an existing access tier (name, ordering, pricing, permissions, etc.); only fields present in the input are changed. Requires the 'manage_access_tiers' permission on the app that owns the tier (resolved from tierId); super admins bypass. SIDE EFFECTS: re-syncs the tier's permissions to the Application API. Throws if the tier is not found or the caller lacks permission.
   """
   updateAccessTier(
     """Numeric id of the access tier to update."""
@@ -4446,7 +4462,7 @@ type Mutation {
     input: UpdateAccessTierInput!
   ): AppAccessTier!
   """
-  Soft-delete an access tier by setting its status to 'archived' (the row is retained, NOT hard-deleted) and notifies the game API. Requires the 'manage_access_tiers' permission on the app that owns the tier; super admins bypass. Existing user grants on this tier are NOT automatically revoked. Throws if the tier is not found.
+  Soft-delete an access tier by setting its status to 'archived' (the row is retained, NOT hard-deleted) and notifies the Application API. Requires the 'manage_access_tiers' permission on the app that owns the tier; super admins bypass. Existing user grants on this tier are NOT automatically revoked. Throws if the tier is not found.
   """
   archiveAccessTier(
     """Numeric id of the access tier to archive (soft delete)."""
@@ -4457,7 +4473,7 @@ type Mutation {
     idempotencyKey: String
   ): AppAccessTier!
   """
-  Grant (or re-activate) a user's access to an app, optionally on a specific tier. Requires the 'manage_access_tiers' permission on the app (input.appId); super admins bypass. ENTITLEMENT CHANGE: upserts an active app_user_access row and notifies the game API, so the target user immediately gains that tier's runtime permissions in Buddy. Idempotent per (app,user): re-granting updates the tier and sets status back to active.
+  Grant (or re-activate) a user's access to an app, optionally on a specific tier. Requires the 'manage_access_tiers' permission on the app (input.appId); super admins bypass. ENTITLEMENT CHANGE: upserts an active app_user_access row and notifies the Application API, so the target user immediately gains that tier's runtime permissions in Buddy. Idempotent per (app,user): re-granting updates the tier and sets status back to active.
   """
   grantAppAccess(
     """Who to grant access to, and on which tier."""
@@ -4510,14 +4526,14 @@ type Mutation {
     appId: BigInt!
   ): Boolean! @requiresPermission(scope: "app", permission: "manage_access_tiers", scopeArg: "appId")
   """
-  Self-service: the authenticated caller claims access to an app via its free, open-by-default tier. Requires authentication only (no org membership needed). ENTITLEMENT CHANGE: grants the free default tier as a 'system' grant and notifies the game API. Idempotent: returns the existing row if already granted, and never overrides a prior revoke. Errors if the app has no free default tier or is archived.
+  Self-service: the authenticated caller claims access to an app via its free, open-by-default tier. Requires authentication only (no org membership needed). ENTITLEMENT CHANGE: grants the free default tier as a 'system' grant and notifies the Application API. Idempotent: returns the existing row if already granted, and never overrides a prior revoke. Errors if the app has no free default tier or is archived.
   """
   claimFreeAppAccess(
     """Numeric id of the app to claim free access to."""
     appId: BigInt!
   ): AppUserAccess!
   """
-  Org dashboard shortcut: the authenticated caller grants themselves access to an app using its default active tier. Requires that the caller is an active member of the app's owning org OR holds the 'manage_access_tiers' permission on the app. ENTITLEMENT CHANGE: upserts an active grant and notifies the game API. Errors if the app has no active tier, or the caller is neither a member nor a manager.
+  Org dashboard shortcut: the authenticated caller grants themselves access to an app using its default active tier. Requires that the caller is an active member of the app's owning org OR holds the 'manage_access_tiers' permission on the app. ENTITLEMENT CHANGE: upserts an active grant and notifies the Application API. Errors if the app has no active tier, or the caller is neither a member nor a manager.
   """
   grantMyAppAccess(
     """Numeric id of the app to grant the caller access to."""
@@ -4759,7 +4775,7 @@ type Mutation {
     idempotencyKey: String
   ): Boolean!
   """
-  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=UNLISTED and status=LIVE unless overridden in the input: an app reaches the marketplace only once it is set PUBLIC (updateApp). Neither setting decides who may play; the access tiers do. An organization without a funded wallet or auto-billing may have at most 10 apps that are not archived; one more is refused with APP_LIMIT_REACHED (orgAppLimit says where an organization stands).
+  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the Application API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=UNLISTED and status=LIVE unless overridden in the input: an app reaches the marketplace only once it is set PUBLIC (updateApp). Neither setting decides who may play; the access tiers do. An organization without a funded wallet or auto-billing may have at most 10 apps that are not archived; one more is refused with APP_LIMIT_REACHED (orgAppLimit says where an organization stands).
   """
   createApp(
     """Details for the app to create."""
@@ -4795,7 +4811,7 @@ type Mutation {
     visibility: AppVisibility!
   ): App! @requiresPermission(scope: "super_admin", permission: "is_super_admin")
   """
-  Set an app's player-code censorship mode. Requires 'manage_compute'. SIDE EFFECTS: writes an immutable audit row and replica-syncs the mode to game-api. Switching to ALLOW_LIST is strict: unadmitted code (including self-authored code) drains at the runtime activation gate; deploy/compile remain allowed.
+  Set an app's player-code censorship mode. Requires 'manage_compute'. SIDE EFFECTS: writes an immutable audit row and replica-syncs the mode to Application API. Switching to ALLOW_LIST is strict: unadmitted code (including self-authored code) drains at the runtime activation gate; deploy/compile remain allowed.
   """
   setAppCodeAdmissionMode(
     """Numeric app id whose admission mode to change."""
@@ -4811,7 +4827,7 @@ type Mutation {
     input: AdmitAppCodeInput!
   ): AppCodeAdmission! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "input.appId")
   """
-  Revoke an active player-code admission. Requires 'manage_compute'. SIDE EFFECTS: audit row + replica sync; game-api drains affected server modules and blocks client artifact fetches on the next admission refresh.
+  Revoke an active player-code admission. Requires 'manage_compute'. SIDE EFFECTS: audit row + replica sync; Application API drains affected server modules and blocks client artifact fetches on the next admission refresh.
   """
   revokeAppCodeAdmission(
     """Numeric app id that owns the admission."""
@@ -4983,7 +4999,7 @@ type Mutation {
     domain: String
   ): OrgFreeTier! @requiresPermission(scope: "org", permission: "manage_billing", scopeArg: "orgId")
   """
-  Publishes an app to the shared game-api environment. Free under the org's app-slot quota (result.free = true); beyond the quota, publish still succeeds and metered usage is charged to the org wallet. Requires the 'manage_apps' permission on the app's org. Blocked when SHARED_GAME_API_URL is not configured.
+  Publishes an app to the shared Application API environment. Free under the org's app-slot quota (result.free = true); beyond the quota, publish still succeeds and metered usage is charged to the org wallet. Requires the 'manage_apps' permission on the app's org. Blocked when SHARED_GAME_API_URL is not configured.
   """
   publishAppToShared(
     """App id (BigInt) to publish to the shared environment."""
@@ -5169,7 +5185,7 @@ type Mutation {
     markupBps: Int!
   ): Int! @requiresPermission(scope: "app", permission: "manage_billing", scopeArg: "appId")
   """
-  Transfer a listing between personal and org ownership (DN-9). The caller must be the current owner (user-owned) or hold manage_compute in the owning org; transfers to an org require manage_compute in the receiving org. SIDE EFFECTS: append-only ownership audit row + replica sync to game-api. Ownership moves listing control and source-access rights; from P4b it also moves proceeds.
+  Transfer a listing between personal and org ownership (DN-9). The caller must be the current owner (user-owned) or hold manage_compute in the owning org; transfers to an org require manage_compute in the receiving org. SIDE EFFECTS: append-only ownership audit row + replica sync to Application API. Ownership moves listing control and source-access rights; from P4b it also moves proceeds.
   """
   transferPlayerCodeListing(
     """Listing, app, and the new owner (user or org)."""
@@ -5200,14 +5216,14 @@ type Mutation {
     approverUserIds: [BigInt!] = []
   ): GridClaimPolicy! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
   """
-  Create or patch an app's Agentic Crowdy Studio policy. Requires 'manage_compute'. Omitted values stay unchanged; first creation starts disabled, killed, and deny-all. A model/tool/mode/risk list naming anything outside the platform allowlist is REFUSED with AGENT_POLICY_INVALID quoting the platform's current list, rather than silently reduced; a list you do send is stored exactly as sent and can only narrow, and omitting it entirely means 'no narrowing', which inherits the platform's list live on every read. Numeric and retention values are still clamped down to platform limits. Locked ZDR/collection/body-retention rules and the operator app kill cannot be changed. SIDE EFFECTS: increments Management's publication revision and appends a sanitized audit event. NOTHING IS PUSHED TO GAME API: its runtime pulls crowdy.studio-agent-policy/1, obtaining a replica the first time a permitted caller asks about an app that has none, and re-pulling an existing replica once it passes refreshAfter (two thirds of its 60s validity). A change therefore reaches enforcement within about a minute for an app already in use, and not at all until someone asks for one that is not. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  Create or patch an app's Agentic Crowdy Studio policy. Requires 'manage_compute'. Omitted values stay unchanged; first creation starts disabled, killed, and deny-all. A model/tool/mode/risk list naming anything outside the platform allowlist is REFUSED with AGENT_POLICY_INVALID quoting the platform's current list, rather than silently reduced; a list you do send is stored exactly as sent and can only narrow, and omitting it entirely means 'no narrowing', which inherits the platform's list live on every read. Numeric and retention values are still clamped down to platform limits. Locked ZDR/collection/body-retention rules and the operator app kill cannot be changed. SIDE EFFECTS: increments Management's publication revision and appends a sanitized audit event. NOTHING IS PUSHED TO THE APPLICATION API: its runtime pulls crowdy.studio-agent-policy/1, obtaining a replica the first time a permitted caller asks about an app that has none, and re-pulling an existing replica once it passes refreshAfter (two thirds of its 60s validity). A change therefore reaches enforcement within about a minute for an app already in use, and not at all until someone asks for one that is not. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
   """
   setCrowdyStudioAgentPolicy(
     """App policy patch, expected revision, and required idempotency key."""
     input: SetCrowdyStudioAgentAppPolicyInput!
   ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "input.appId")
   """
-  Operator only (is_operator or is_super_admin). Patch Management platform Agentic Studio policy and global emergency kill. SIDE EFFECTS: the published kill takes precedence over every app setting, the revision increments, and a sanitized append-only audit event is written. NOTHING IS FANNED OUT TO APPS: Game API pulls crowdy.studio-agent-policy/1 per app, so a platform change reaches an app that already holds a replica within about a minute (refreshAfter is two thirds of a 60s validity) and reaches an app with no replica only when a permitted caller next asks about it. Game API must fail closed if the envelope is missing, malformed, or stale. Narrowing the platform lists narrows every app immediately on its next read, including apps that expressed no narrowing of their own. Hard ZDR/collection/body-retention rules and platform-funded/no-wallet pilot funding cannot be loosened. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  Operator only (is_operator or is_super_admin). Patch Management platform Agentic Studio policy and global emergency kill. SIDE EFFECTS: the published kill takes precedence over every app setting, the revision increments, and a sanitized append-only audit event is written. NOTHING IS FANNED OUT TO APPS: Application API pulls crowdy.studio-agent-policy/1 per app, so a platform change reaches an app that already holds a replica within about a minute (refreshAfter is two thirds of a 60s validity) and reaches an app with no replica only when a permitted caller next asks about it. Application API must fail closed if the envelope is missing, malformed, or stale. Narrowing the platform lists narrows every app immediately on its next read, including apps that expressed no narrowing of their own. Hard ZDR/collection/body-retention rules and platform-funded/no-wallet pilot funding cannot be loosened. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
   """
   cpSetCrowdyStudioAgentPlatformPolicy(
     """
@@ -5216,7 +5232,7 @@ type Mutation {
     input: SetCrowdyStudioAgentPlatformPolicyInput!
   ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "operator", permission: "is_operator")
   """
-  Operator only (is_operator or is_super_admin). Publish or release an emergency kill for one app. This state is separate from the app's own kill and always takes precedence in Management's effective envelope; app users cannot clear it. SIDE EFFECTS: revision increment and a sanitized audit event. NOTHING IS PUSHED TO GAME API: preemption takes effect when its runtime next pulls this app's crowdy.studio-agent-policy/1 replica, which is within about a minute for an app already holding one and not at all for an app that does not until a permitted caller asks. Releasing the operator kill does not enable the app or clear its own kill. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  Operator only (is_operator or is_super_admin). Publish or release an emergency kill for one app. This state is separate from the app's own kill and always takes precedence in Management's effective envelope; app users cannot clear it. SIDE EFFECTS: revision increment and a sanitized audit event. NOTHING IS PUSHED TO THE APPLICATION API: preemption takes effect when its runtime next pulls this app's crowdy.studio-agent-policy/1 replica, which is within about a minute for an app already holding one and not at all for an app that does not until a permitted caller asks. Releasing the operator kill does not enable the app or clear its own kill. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
   """
   cpSetCrowdyStudioAgentAppKill(
     """
@@ -5573,7 +5589,7 @@ input UpdateAppInput {
   """
   metadata: String
   """
-  Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each game API replica, and each realtime server for a client's direct voxel updates, acts on the change within about 15 seconds. Omit to leave unchanged.
+  Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each Application API replica, and each realtime server for a client's direct voxel updates, acts on the change within about 15 seconds. Omit to leave unchanged.
   """
   wildernessWritesOpen: Boolean
   """

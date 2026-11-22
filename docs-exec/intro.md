@@ -9,7 +9,7 @@ title: ck-exec overview
 ck-exec runs your game's server code. You write it in Rust against the `ckx-sdk` crate, build
 it to WebAssembly, and deploy it with the app. Players connect to an **execution host** and
 call your code over a WebSocket; the platform places, persists, moves and stops the running
-pieces for you. It replaced the game API's legacy engines: [from the legacy
+pieces for you. It replaced the Application API's legacy engines: [from the legacy
 engines](from-the-legacy-engines) maps what you used to what you use now.
 
 ## Hubs and spokes
@@ -259,7 +259,7 @@ What a status says about whether your handler ran, for a player's call and an in
 The platform resends a call answered `Moved`, or answered `Unavailable` by the host it was
 relayed to, at most twice before you hear anything; a one-way `send` is never resent. Only the
 message tells the two kinds of `Unavailable` apart. When your code calls the platform's node API
-and the Game API is too busy to start the work (`PLATFORM_BUSY`), the call fails `Unavailable`:
+and the Application API is too busy to start the work (`PLATFORM_BUSY`), the call fails `Unavailable`:
 it did not run, and a retry after a second is safe.
 
 Next: [timers, subscriptions and presence](timers-and-presence).

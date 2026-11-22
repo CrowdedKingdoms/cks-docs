@@ -50,10 +50,10 @@ const sections: CardSection[] = [
     title: 'Build',
     cards: [
       {
-        title: 'Game API',
+        title: 'Application API',
         description:
           'Create and manage worlds, actors, avatars, chunks, and real-time state.',
-        to: '/game-api/intro',
+        to: '/application-api/intro',
       },
       {
         title: 'CrowdyJS SDK',
