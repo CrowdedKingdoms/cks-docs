@@ -29,11 +29,11 @@ If you were given a different host for a preview environment, use that host —
 do not invent one by pattern.
 
 **Prefer the URL the API hands you over any host in that table.** `mintAppToken` and
-`gameClientBootstrap` return `gameApiUrl` and `gameApiWsUrl` for the app you asked
+`gameClientBootstrap` return `applicationApiUrl` and `applicationApiWsUrl` for the app you asked
 about; use those for gameplay and keep the origin you started from as `discoveryUrl`.
 An app lives in one datacenter and can be moved, which is why the API answers with
 an endpoint rather than expecting you to build one. See
-[Datacenters and endpoint routing](/game-api/datacenter-routing).
+[Datacenters and endpoint routing](/application-api/datacenter-routing).
 
 ## 2. The default origin is baked into the SDK build
 

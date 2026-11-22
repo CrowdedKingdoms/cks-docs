@@ -83,8 +83,8 @@ UUIDs are client generated 32 byte UTF8 strings. The null termination byte (33rd
 Channels are app-wide message groups: a channel message is delivered to every
 member of the channel regardless of location (not chunk-routed), unless it is
 sent as a [distance-limited channel message](#channel_message_ranged_request-client--server).
-Membership and the `send_messages` permission are managed over the Game API
-GraphQL surface (see the Game API [Channels](/game-api/channels) guide). These are
+Membership and the `send_messages` permission are managed over the Application API
+GraphQL surface (see the Application API [Channels](/application-api/channels) guide). These are
 **non-spatial** types, so they do not use the long spatial header.
 
 ### `CHANNEL_MESSAGE_REQUEST` (client → server)
@@ -209,7 +209,7 @@ byte is reliably `22`.
 The HMAC lets you authenticate the command as server-originated (only you and the
 server hold the token). **Verify it before acting and ignore the datagram if it
 does not match.** There is no reason field — you don't need to know why. On a
-verified command, re-query `serverWithLeastClients` on the Game API (it will not
+verified command, re-query `serverWithLeastClients` on the Application API (it will not
 return the overloaded server) and reconnect with the same game token to the new
 host and `clientPort`. The losing server keeps serving you for a short grace
 period (≈5 s) and then deletes the session and ignores further packets. See
@@ -292,7 +292,7 @@ reason is inside the signed prefix, so it cannot be rewritten in flight.
 | 2      | `TOKEN_EXPIRED` | The game token expired, and every server would refuse it. Refresh the app token, then re-query `serverWithLeastClients`.                                                                                                                                                                         |
 | 3      | `OVERLOAD`      | The server is shedding load. Re-query `serverWithLeastClients` and reconnect, as for `COMMAND_RECONNECT`.                                                                                                                                                                                        |
 | 4      | `REBALANCE`     | The server is evening out load across the fleet. Re-query `serverWithLeastClients` and reconnect.                                                                                                                                                                                                |
-| 5      | `IDLE`          | The player sent no gameplay input for the app's idle timeout (`App.effectiveIdleTimeoutSeconds` on the Game API: 15 minutes unless the app sets its own). **Final:** do not reconnect until the player acts again. Heartbeats and keyframes that repeat an unchanged state do not count as input. |
+| 5      | `IDLE`          | The player sent no gameplay input for the app's idle timeout (`App.effectiveIdleTimeoutSeconds` on the Application API: 15 minutes unless the app sets its own). **Final:** do not reconnect until the player acts again. Heartbeats and keyframes that repeat an unchanged state do not count as input. |
 
 Reason 5 arrives from replication server v0.44.0. Treat a reason you do not know like
 `STALE`. Browser clients never see this message: the GraphQL UDP proxy reconnects for
@@ -717,7 +717,7 @@ Semantics, stated as contract:
 ### Chunk changed (`CHUNK_CHANGED_NOTIFICATION`)
 
 **146** is server → client only (replication server v0.45.0). It tells the players near a chunk
-that the chunk was **replaced as a whole** (a hub's or mod's `world.set_chunk`, Game API
+that the chunk was **replaced as a whole** (a hub's or mod's `world.set_chunk`, Application API
 v2.68.1), so they read it again instead of receiving a voxel update per voxel. It uses the long
 form shell, signed like every other server → client spatial notification: `chunk` is the chunk,
 `uuid` is empty, `distance` is the radius of the fan-out (8) and `decay` is `0`. It passes block
@@ -730,7 +730,7 @@ lists like voxel edits do. The `payload` region is:
 
 Read the chunk again (`getChunk`, or a region read with `since`). A copy you hold whose
 `updatedAt` is that new or newer already has the change. Older clients ignore 146 (an unknown
-type) and see the change only on their next read. The Game API's GraphQL proxy delivers it as the
+type) and see the change only on their next read. The Application API's GraphQL proxy delivers it as the
 `ChunkChangedNotification` member of `udpNotifications`, and the binary relay passes it through.
 
 ## Distance Field

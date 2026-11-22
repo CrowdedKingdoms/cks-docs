@@ -7,7 +7,7 @@ description: Picking an organization and app on the Project page, creating a new
 
 # Projects and Apps
 
-An **app** is one Crowded Kingdoms backend application: it has an id, an organization, a datacenter, a status, a visibility, and Game API endpoints. Your **project** is this Unreal project. The Project page points the project at exactly one app, then [Config Sync](./config-sync.md) writes that app's ids and endpoints into it.
+An **app** is one Crowded Kingdoms backend application: it has an id, an organization, a datacenter, a status, a visibility, and Application API endpoints. Your **project** is this Unreal project. The Project page points the project at exactly one app, then [Config Sync](./config-sync.md) writes that app's ids and endpoints into it.
 
 :::note[Since 2.14]
 The Project page is a single split view: the app list on the left, the selected app's details and its Configuration and Connection tabs on the right.
@@ -36,7 +36,7 @@ Select an app and the right pane shows its details.
 
 The header card shows the app's name, a status pill (Draft or Live), a visibility pill (Private, Unlisted, or Public), a copyable app id, a copyable URL identifier, the organization, and creation and update dates.
 
-Below it, a fact grid: **Datacenter**, **Runtime** (the app's current runtime status), **Deployment**, **Game API URL**, **Game API WS URL**, **Org ID**, **Reserved UDP** (bytes per second), and **Reserved GraphQL** (operations per second).
+Below it, a fact grid: **Datacenter**, **Runtime** (the app's current runtime status), **Deployment**, **Application API URL**, **Application API WS URL**, **Org ID**, **Reserved UDP** (bytes per second), and **Reserved GraphQL** (operations per second).
 
 The action row:
 
@@ -60,7 +60,7 @@ Press **Create app** in the page header. It needs an organization to create in: 
 
 **Step 1, Name your app.** Type a name; the URL identifier (lowercase letters, digits, hyphens) is derived from it, and **Advanced options** lets you override it and add a description. Pick a datacenter card. The first available datacenter is preselected.
 
-**Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots, which are retired: its apps share one free allowance. Press **Create app**. The Game API connection is available immediately; there is no provisioning wait.
+**Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots, which are retired: its apps share one free allowance. Press **Create app**. The Application API connection is available immediately; there is no provisioning wait.
 
 :::note[The datacenter is chosen once, at creation, and cannot be changed later.]
 Everything the app stores lives in that one datacenter. Pick the one closest to your players. Status and visibility are not asked at creation; the server defaults them and the details pane changes them afterwards.

@@ -183,7 +183,7 @@ The client-side source of truth for chunks and voxels:
 
 - `ensureAround(center, radius)` reads **only the chunks it does not hold yet**,
   as boxes (`getChunksByDistance` with `lowChunk`/`highChunk`, CrowdyJS 18.30.0
-  and Game API v2.67.0): a step along one axis at range 8 reads the 289 chunks it
+  and Application API v2.67.0): a step along one axis at range 8 reads the 289 chunks it
   uncovers rather than 4,913. Each box is read in pages of the size the server
   says it applied; a chunk two pages return is applied once
   (`duplicatePageChunks`). It is in-flight deduped, then **hydrates each newly loaded chunk** with
@@ -208,7 +208,7 @@ The client-side source of truth for chunks and voxels:
   the chunks rewritten since then and the edits recorded since then, across every
   chunk it tracks, in boxes of at most 17³ (CrowdyJS 18.31.0; 18.30.0 read the
   last area). `catchUp(since, boxes)` reads the boxes you pass instead.
-- **Merging by the server's time** (CrowdyJS 18.31.0, Game API v2.69.0). Each
+- **Merging by the server's time** (CrowdyJS 18.31.0, Application API v2.69.0). Each
   voxel keeps the value the server confirmed last and when: a stored row's
   `updatedAt`, a voxel state's `updatedAt`, a notification's `epochMillis`, a
   recorded edit's `createdAt` (`confirmedAt(coord, x, y, z)`). A change older
@@ -247,7 +247,7 @@ The client-side source of truth for chunks and voxels:
   `writeBackIntervalMs`, default 700 ms) — the proven shared-worldgen
   pattern. The write-back is `updateChunk` as the player, so it persists only
   chunks the player may build in (see
-  [Writing whole chunks](/game-api/grids-and-permissions#writing-whole-chunks));
+  [Writing whole chunks](/application-api/grids-and-permissions#writing-whole-chunks));
   a refusal the server will not change (`FORBIDDEN`, `BAD_REQUEST`,
   `retryable: false`, HTTP 400/403/404/413/422) is sent once and dropped, and
   any other failure is retried after 0.7, 1.4, 2.8 and 5.6 s and then dropped.
@@ -330,4 +330,4 @@ notification bus, the shared ticker, and send tracking, and every store's
   align (typed state, host authority, heartbeat keyframes) but the wire
   mechanics differ.
 - For the underlying transport semantics see the
-  [GraphQL UDP proxy](/game-api/graphql-udp-proxy-api) guide.
+  [GraphQL UDP proxy](/application-api/graphql-udp-proxy-api) guide.

@@ -8,7 +8,7 @@ import DocImage from '@site/src/components/DocImage';
 
 # Apps on the shared platform
 
-Every customer app runs on the **shared Game API** — a managed, multi-tenant endpoint scoped by your **`appId`**. You do not provision VMs, pick datacenters, or wait for a dedicated stack.
+Every customer app runs on the **shared Application API** — a managed, multi-tenant endpoint scoped by your **`appId`**. You do not provision VMs, pick datacenters, or wait for a dedicated stack.
 
 :::tip[Primary path for new studios]
 If you are standing up your **first game**, start with **[Create your first app](/management-ui/create-your-first-app)**. That wizard registers the app on the shared platform and it is **immediately usable** after create.
@@ -20,17 +20,17 @@ After create, use **[Connecting to your app](/management-ui/connecting)** for en
 
 | Concept | Detail |
 | ------- | ------ |
-| **Shared endpoint** | One Game API fleet (`https://ck.prod.crowdedkingdoms.com`), with a host per datacenter. |
+| **Shared endpoint** | One Application API fleet (`https://ck.prod.crowdedkingdoms.com`), with a host per datacenter. |
 | **App scoping** | Traffic is isolated by `appId` — your players only see your app's world data. |
-| **Discovery** | Read `gameApiUrl` from the app record or `mintAppToken`; or call public `platformConfig` for tier defaults. |
+| **Discovery** | Read `applicationApiUrl` from the app record or `mintAppToken`; or call public `platformConfig` for tier defaults. |
 
 Programmatic discovery (no auth):
 
 ```graphql
 query {
   platformConfig {
-    sharedGameApiUrl
-    sharedGameApiWsUrl
+    sharedApplicationApiUrl
+    sharedApplicationApiWsUrl
     freeAppsPerOrg
   }
 }
@@ -44,7 +44,7 @@ query {
     appId
     deploymentTarget   # "shared"
     runtimeStatus      # "active" — immediately usable
-    gameApiUrl
+    applicationApiUrl
   }
 }
 ```
@@ -53,7 +53,7 @@ query {
 
 Open **`/orgs/:orgSlug/apps/:appSlug`** for studio operations on a single game:
 
-- **Connection info** — `gameApiUrl` and WebSocket URL for clients (same shared host for all apps on the tier).
+- **Connection info** — `applicationApiUrl` and WebSocket URL for clients (same shared host for all apps on the tier).
 - **Access tiers** — marketplace and entitlement settings.
 - **Granted users** — who can play or manage the app.
 - **Runtime status** — `active`, or a denial reason when wallet, caps, or subscription block traffic.
@@ -82,18 +82,18 @@ Keep org tokens secret: whoever holds one can sign in and manage your organizati
 
 ## Dedicated environments (not self-service)
 
-Self-serve **dedicated** and **developer sandbox** stacks (an isolated Game API, database and realtime servers per org) were retired; private environments exist only by Enterprise Agreement. There is no per-tenant stack to provision yourself and no API for one. Contact Crowded Kingdoms if you need one.
+Self-serve **dedicated** and **developer sandbox** stacks (an isolated Application API, database and realtime servers per org) were retired; private environments exist only by Enterprise Agreement. There is no per-tenant stack to provision yourself and no API for one. Contact Crowded Kingdoms if you need one.
 
-- Customer integration docs: **[Shared environment & billing](/management-api/shared-environment)** and **[CrowdyJS → Loading an app's Game API](/crowdyjs/shared-environment-routing)**.
+- Customer integration docs: **[Shared environment & billing](/management-api/shared-environment)** and **[CrowdyJS → Loading an app's Application API](/crowdyjs/shared-environment-routing)**.
 - Every app uses the shared platform (`publishAppToShared`); customer-provisioned environments were retired.
 
 ## Troubleshooting
 
 | Symptom | What to check |
 | ------- | --------------- |
-| Cannot connect to Game API | Mint an **app-scoped token** (`mintAppToken`); identity session tokens are rejected for gameplay. |
+| Cannot connect to Application API | Mint an **app-scoped token** (`mintAppToken`); identity session tokens are rejected for gameplay. |
 | `runtimeStatus` denied | Wallet empty, spend cap hit, or subscription lapsed — see [Shared environment & billing](/management-api/shared-environment). |
-| Wrong Game API URL | Use `app.gameApiUrl` or `platformConfig.sharedGameApiUrl`. Do not compose a hostname. |
+| Wrong Application API URL | Use `app.applicationApiUrl` or `platformConfig.sharedApplicationApiUrl`. Do not compose a hostname. |
 | Token expired | Call `refreshAppToken` on the Management API before retrying gameplay. |
 
 ## Next steps

@@ -11,10 +11,10 @@ Crowdy Studio editor: the harness web UI in a same-origin iframe, its plugin
 tree in a Web Worker, and a filesystem whose files are the open Studio project
 (the bound GitHub repository when the project has one). The agent edits files,
 runs draft tests, takes screenshots and observes the game through the page; it
-reaches a model through the Game API's **metered model endpoint**, an
+reaches a model through the Application API's **metered model endpoint**, an
 OpenAI-compatible REST proxy in front of the platform's provider key.
 
-The Game API's part is therefore small and entirely server-side: policy, the
+The Application API's part is therefore small and entirely server-side: policy, the
 model allowlist and rate card, the player's provider-data consent, per-request
 reservation and settlement, and who pays. The GraphQL orchestrator that used to
 own sessions, runs, events, tool calls, approvals and leases is gone; the 21
@@ -37,7 +37,7 @@ effect the model asks for runs on the page with the player's own authority
 through the same Studio controller methods the human buttons use, and a
 **live deploy waits for the player to confirm on the page**.
 
-The Game API remains the final authority on everything: project ownership and
+The Application API remains the final authority on everything: project ownership and
 `write_*`/`run_*` permissions, compile and runtime quotas, code admission, and
 the spend gates below.
 

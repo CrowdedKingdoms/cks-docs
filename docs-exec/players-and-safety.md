@@ -83,7 +83,7 @@ about the player as JSON, or `Value::Null` when it holds nothing.
 - Every hub that holds state is asked, as for erasure. Not implemented, the hub is recorded as
   such and the export goes on without it.
 - It answers a player's request for their data, and it is part of what a
-  [safety report](/game-api/safety-reports#what-a-report-preserves) preserves, for the reporter and
+  [safety report](/application-api/safety-reports#what-a-report-preserves) preserves, for the reporter and
   for the reported player.
 
 ### Testing them
@@ -116,7 +116,7 @@ fn send_mail(&mut self, ctx: &Ctx, from: u64, to: u64, text: String) -> Result<(
 ```
 
 `ctx.players().blocked(player, other)` is true when either player has blocked the other in this
-app ([blocks](/game-api/communication#blocks)). It needs `players.read`, and answers `NotFound`
+app ([blocks](/application-api/communication#blocks)). It needs `players.read`, and answers `NotFound`
 unless both are players of the app.
 
 **Check it before your code carries one player's words, voice or media to another**: mail,
@@ -144,7 +144,7 @@ let filed = ctx.safety().report(&SafetyReport {
 // filed.report_id is what moderators know it by
 ```
 
-`ctx.safety().report` files a [safety report](/game-api/safety-reports) for `reporter` about
+`ctx.safety().report` files a [safety report](/application-api/safety-reports) for `reporter` about
 `reported`, as the reporter would from your game: an in-game report command, say. It needs the new
 scope `safety.write`. Both players must be the app's. `reason` is one of `ChildSafety`,
 `Harassment`, `SexualContent`, `Hate`, `SelfHarm`, `Cheating` and `Other`. The app's moderators
@@ -156,7 +156,7 @@ review it like any report, with what the safety log recorded around `occurred_at
 `From13To15`, `From16To17`, `Adult` or `Unknown`, never their age. `AgeBracket::is_minor()` is true
 for the two brackets from 13 to 17, the players the platform holds to minors' defaults: voice and
 video off until a parent consents and then contacts only, no direct messages. `None` comes from a
-Game API older than v2.60.0, and a bracket this SDK does not know reads as `Unknown`.
+Application API older than v2.60.0, and a bracket this SDK does not know reads as `Unknown`.
 
 Treat a minor the way the platform does in what your code adds: no private messages or mail
 between a minor and players who are not their contacts, and nothing meant for adults.

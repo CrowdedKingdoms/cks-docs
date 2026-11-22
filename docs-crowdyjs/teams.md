@@ -9,12 +9,12 @@ The SDK exposes player **teams** via `client.teams`. A team is an app-scoped
 group with members, roles, and per-role permissions you use to delegate
 management (and, via grids, to give a team ownership of a region of the world).
 Unlike channels, teams have **no realtime messaging path** — it's pure GraphQL
-CRUD. See the Game API [Teams](/game-api/teams) guide for the full permission
+CRUD. See the Application API [Teams](/application-api/teams) guide for the full permission
 model.
 
 ## Manage teams
 
-Teams are a **Game API** surface, so they need an **app-scoped token**: log in on
+Teams are a **Application API** surface, so they need an **app-scoped token**: log in on
 an identity client, mint a token for the app, and drive teams from a per-game
 client (see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)).
 
@@ -33,8 +33,8 @@ await identity.auth.login({ email: 'player@example.com', password }); // see /cr
 const APP_ID = '<your-app-id>';
 const appToken = await identity.portal.mintAppToken(APP_ID);
 const game = createCrowdyClient({
-  httpUrl: appToken.gameApiUrl ?? 'https://ck.prod.crowdedkingdoms.com/graphql',
-  wsUrl: appToken.gameApiWsUrl ?? 'wss://ck.prod.crowdedkingdoms.com/graphql',
+  httpUrl: appToken.applicationApiUrl ?? 'https://ck.prod.crowdedkingdoms.com/graphql',
+  wsUrl: appToken.applicationApiWsUrl ?? 'wss://ck.prod.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(`crowdyjs:app:${APP_ID}`),
 });
 game.setToken(appToken.token);
@@ -79,10 +79,10 @@ The full method set mirrors the GraphQL surface:
   being added with `GROUP_MEMBER_BANNED` (`groupMemberBannedOf(err)`) until `unban`;
   leaving or being removed does not lift it. A join, an add or a creation past the
   team policy's `maxMembers` or `maxGroupsPerUser` fails with `GROUP_LIMIT_REACHED`
-  (`groupLimitReachedOf(err)` returns `{ limit, max }`; Game API v2.77.0, CrowdyJS 18.34.0).
+  (`groupLimitReachedOf(err)` returns `{ limit, max }`; Application API v2.77.0, CrowdyJS 18.34.0).
 - **Roles:** `createRole`, `updateRole`, `deleteRole`.
 
 Setting the per-app team policy (`setPolicy`) requires the `manage_apps`
 permission; membership and role management are gated by the team's own role
 permissions. To give a team build rights in the world, assign it to a grid — see
-[Grids and permissions](/game-api/grids-and-permissions).
+[Grids and permissions](/application-api/grids-and-permissions).

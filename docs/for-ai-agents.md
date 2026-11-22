@@ -12,7 +12,7 @@ global conventions, and walks the three most common end-to-end workflows.
 This page is for external API clients and coding agents. The in-product
 **Agentic Crowdy Studio** model runtime is a separate, allowlisted development
 contract: use its [player/SDK guide](/crowdyjs/agentic-crowdy-studio) and
-[game-host guide](/game-api/agentic-crowdy-studio). It never gives a model
+[game-host guide](/application-api/agentic-crowdy-studio). It never gives a model
 the raw GraphQL access described below.
 
 Gameplay authority: [Best practices](/overview/best-practices).
@@ -28,7 +28,7 @@ pass `httpUrl` / `wsUrl` explicitly if you are not on production.
 |-----|----------|------------|
 | **Management surface** | GraphQL (HTTP) | Identity, organizations, the apps marketplace, access tiers, billing, payments, quotas. Studio-backend operations. Dedicated customer environments were retired. |
 | **Game surface** | GraphQL (HTTP + WebSocket) | Runtime world data (chunks, voxels, actors, avatars) and the realtime **UDP-proxy** subscription/spatial-send surface. Authenticated with an **app-scoped token** (not the identity session token). |
-| **Replication API** | Binary UDP | Lowest-latency native spatial replication. Most clients use the Game API UDP-proxy instead and never touch raw UDP. Buddy (the replication server) authenticates only app-scoped tokens. |
+| **Replication API** | Binary UDP | Lowest-latency native spatial replication. Most clients use the Application API UDP-proxy instead and never touch raw UDP. Buddy (the replication server) authenticates only app-scoped tokens. |
 | **ck-exec gateway** | WebSocket (binary frames, MessagePack payloads) | Calls to your app's server code (hubs and spokes) and pushes from its topics. `execConnect`, with the app-scoped token, returns the gateway and a 60-second connect token. See [ck-exec](/exec/intro). |
 | **CrowdyJS** | TypeScript SDK | Browser clients — wraps sign-in (`auth.login` / `auth.register`, magic link, social), `client.portal` (app-scoped tokens / PKCE / consent), and the unified GraphQL API including the UDP proxy and ck-exec (`client.exec`). Use one identity client plus a per-game client. Prefer it for web. |
 | **CrowdyCPP**, **CrowdyPy** | C++ and Python SDKs | Native games and tools: the same surface as CrowdyJS, with native UDP replication. See [CrowdyCPP](/crowdycpp/intro) and [CrowdyPy](/crowdypy/intro). |
@@ -36,7 +36,7 @@ pass `httpUrl` / `wsUrl` explicitly if you are not on production.
 ## Get the schema
 
 - Management API SDL: [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql)
-- Game API SDL: [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql)
+- Application API SDL: [`/schema/application-api.graphql`](pathname:///schema/application-api.graphql)
 - CrowdyJS SDL: [`/schema/crowdyjs.graphql`](pathname:///schema/crowdyjs.graphql)
 - Production serves no GraphiQL and does not answer introspection: read the SDL above.
 - Unreal SDK: [For AI agents (Unreal SDK)](/unreal-sdk/for-ai-agents) and the drop-in [`/helpers/unreal-sdk/AGENTS.md`](pathname:///helpers/unreal-sdk/AGENTS.md).
@@ -54,16 +54,16 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   since 2026-11-11 confirms its email (one link) before it can mint an app token
   (`EMAIL_CONFIRMATION_REQUIRED`); its session token works for management calls before that.
   That session token is a **management-plane** credential and is **rejected for
-  gameplay**; the Game API + realtime/UDP surface require an **app-scoped token**
+  gameplay**; the Application API + realtime/UDP surface require an **app-scoped token**
   confined to one app. Mint one from the session token with
   `mintAppToken(input:{ appId })` (or the PKCE portal flow across origins, which adds
   a consent gate for untrusted apps), then send `Authorization: Bearer <token>` — the
-  **session token** on Management API requests, the **app-scoped token** on Game API
+  **session token** on Management API requests, the **app-scoped token** on Application API
   HTTP requests and in the `graphql-transport-ws` `connection_init` payload. App
   tokens expire (~30 min) — `refreshAppToken` before then. See
   [Sign in](/management-api/authentication),
   [Portals & app-scoped tokens](/management-api/portals-and-app-tokens), and
-  [Game API → Authentication](/game-api/authentication).
+  [Application API → Authentication](/application-api/authentication).
 - **Players of an organization that runs its own accounts (org-managed players):** do not
   ask them for a Crowded Kingdoms password inside the game. The organization signs them in
   itself, by one of two routes:
@@ -78,7 +78,7 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   the [Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html)
   in Studio. Until then those calls answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`, which neither the
   player nor a retry can fix. See [Org-managed players](/management-api/org-managed-players).
-- **Who may play (Game API v2.60.0):** every sign-up, mint and refresh checks the player's
+- **Who may play (Application API v2.60.0):** every sign-up, mint and refresh checks the player's
   country, then their age, then their documents: `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED`,
   `AGE_REQUIREMENT_NOT_MET`, and `LEGAL_ACCEPTANCE_REQUIRED` with `extensions.missingDocuments`;
   for a player under 18, also `SAFETY_LOG_REQUIRED` and `SAFETY_MODERATOR_REQUIRED` (v2.61.0);
@@ -140,17 +140,17 @@ mutation Register {
 }
 
 # 2) Mint an app-scoped token (Management API, session token as the Bearer). Use THIS
-#    token for every Game API HTTP request and the realtime connection_init. (Browser
+#    token for every Application API HTTP request and the realtime connection_init. (Browser
 #    games at a different origin use the PKCE portal flow instead — see CrowdyJS.)
 #    A password account made since 2026-11-11 confirms its email first, or this answers
 #    EMAIL_CONFIRMATION_REQUIRED.
 mutation Enter {
   mintAppToken(input: { appId: "1" }) {
-    token expiresAt gameApiUrl gameApiWsUrl discoveryUrl
+    token expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl
   }
 }
 
-# 3) Per-app client bootstrap (Game API, app-token Bearer): version requirements, UDP state, spatial limits.
+# 3) Per-app client bootstrap (Application API, app-token Bearer): version requirements, UDP state, spatial limits.
 query Bootstrap {
   gameClientBootstrap(appId: "1") {
     sequenceNumberModulo
@@ -197,7 +197,7 @@ session; call `disconnectUdpProxy` to close it. Browser clients should use
 
 For native clients that bypass the GraphQL proxy: sign in for the identity
 session token, **mint an app-scoped token** for the app (`mintAppToken`), discover a server with the
-Game API `serverWithLeastClients` (app-token Bearer), then send the binary long-spatial
+Application API `serverWithLeastClients` (app-token Bearer), then send the binary long-spatial
 message to the server's client port `9091` with an HMAC computed from your 64-octet
 **app-scoped** token. Refresh before `expiresAt` (`refreshAppToken`) or Buddy drops the
 session with `TOKEN_EXPIRED`. Full protocol: [Replication API](/replication-api/intro),
@@ -253,7 +253,7 @@ complete a checkout; wallet credit reconciles via webhook, not the redirect.
   or wrong-scope token gets `FORBIDDEN` (with `extensions.requiredPermission`) or
   `SCOPE_MISSING`.
 - **Game vs management surface.** Identity/billing operations only work on the Management
-  API; calling them on the Game API returns `FORBIDDEN`/not-found. Route accordingly.
+  API; calling them on the Application API returns `FORBIDDEN`/not-found. Route accordingly.
 - **Consent gate on the portal handoff.** Minting a browser portal code for an **untrusted**
   app fails with a `FORBIDDEN` error whose message is prefixed `CONSENT_REQUIRED` until the
   user authorizes it. Check `portalConsent(appId)` and call `authorizeApp` first; trusted

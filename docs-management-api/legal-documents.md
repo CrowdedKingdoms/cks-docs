@@ -12,7 +12,7 @@ refusal lists what is missing.
 
 :::info[What is switched on]
 
-- **Live** (Game API v2.60.0): your app's own documents (`setAppRequiredDocuments`), the public
+- **Live** (Application API v2.60.0): your app's own documents (`setAppRequiredDocuments`), the public
   lists (`playerLegalDocuments`, `appRequiredDocuments`), the missing documents on the refusal,
   and acceptances recorded with the app and how they were given.
 - **Since 2026-11-04**, when Crowded Kingdoms opened to players 13 and over: the platform's

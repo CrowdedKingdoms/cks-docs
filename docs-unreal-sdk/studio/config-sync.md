@@ -9,7 +9,7 @@ description: What Config Sync writes into your project, which settings it owns v
 
 Config Sync writes the selected app's ids and endpoints into your project's settings, so connecting a game to an app is one button instead of copying ids and URLs by hand. It lives on the Project page's **Configuration** tab.
 
-:::caution[If you never run it, the SDK has no app id or Game API URLs to connect with, and nothing replicates.]
+:::caution[If you never run it, the SDK has no app id or Application API URLs to connect with, and nothing replicates.]
 :::
 
 ## Run a sync
@@ -21,7 +21,7 @@ Config Sync writes the selected app's ids and endpoints into your project's sett
 
 ![The Configuration tab with a pending change: gold values, the N TO CHANGE badge, and the Sync to project button](/img/unreal-sdk/studio-config-sync.png)
 
-The rows are **App ID**, **Org ID**, **Game API HTTP URL**, **Game API WS URL**, and a read-only **Shared origin**, which comes from the backend selector on the Sign In page rather than from the app.
+The rows are **App ID**, **Org ID**, **Application API HTTP URL**, **Application API WS URL**, and a read-only **Shared origin**, which comes from the backend selector on the Sign In page rather than from the app.
 
 :::tip[A running Play in Editor session picks the change up without a restart.]
 Sync pushes the new values into any running PIE or standalone session; a fresh Play always reads them. The **Connection** tab works differently: its UDP knobs and its Server Object timeouts are written the moment you change them, with no Sync button. The UDP knobs reach a running session at once; the Server Object timeouts apply from the next Play.
@@ -149,7 +149,7 @@ They are read-only in Project Settings on purpose, so that Crowdy Studio is the 
 
 ### The runtime setters
 
-The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. The API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session without a reload call.
+The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Application API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. The API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session without a reload call.
 
 `RequestVersionInfo` asks the server for its version before or after sign-in and answers on `OnVersionInfo` (`FOnVersionInfo`, two `FGameVersion` parameters: the server's version and, in `ClientVersion`, the minimum client version it still accepts). Both arrive as zeroes when the query fails.
 

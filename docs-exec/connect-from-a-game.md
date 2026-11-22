@@ -11,7 +11,7 @@ and CrowdyPy 0.5.0 or later: they check a gateway before they send it a connect 
 ([below](#where-the-connect-token-goes)).
 :::
 
-The SDKs wrap the same steps. First they ask the game API for a host (`execConnect`). Then
+The SDKs wrap the same steps. First they ask the Application API for a host (`execConnect`). Then
 they open a WebSocket to that host's gateway, speak the [wire protocol](intro#the-wire-protocol),
 and encode payloads as MessagePack. The player's session must be the **app-scoped token** of the
 app you connect to, which is what hosted sign-in gives a game. See
@@ -108,7 +108,7 @@ exec->close();
   per-call `timeoutMs` too, since CrowdyCPP 0.64.0), `openTimeoutMs`, `reconnect`, and the
   reconnect backoff (`initialReconnectDelayMs`, `maxReconnectDelayMs`).
 - A connection you build over your own `ExecDial` dials only the gateways
-  `execGatewayRefusal` passes once you call `pinGateway(gameApiUrl)`, as `connect` does
+  `execGatewayRefusal` passes once you call `pinGateway(applicationApiUrl)`, as `connect` does
   (CrowdyCPP 0.64.0).
 - The domain works without C++ exceptions, so builds with `CROWDY_NO_EXCEPTIONS` get it too.
 - The WebSocket is the transport you give the client. The bundled one needs libcurl 8.13 or
@@ -190,18 +190,18 @@ about 15. A game can see it:
 | `TYPE_DISABLED` | The `nodeType` named on `execConnect` is switched off. HTTP 403 | It stays refused until its developer turns that type on |
 | `BAD_REQUEST` | `nodeType` is not 1–64 letters, digits, `-` or `_`, or `key` is longer than 256 characters | Fix the arguments |
 | `NOT_FOUND` | With `nodeType`: the app has no deployed version, or its active version has no node type of that name | Deploy it, or fix the name |
-| `CONFLICT` | The app lives in another datacenter than this game API's | Call the endpoint `mintAppToken` and `gameClientBootstrap` return for the app |
+| `CONFLICT` | The app lives in another datacenter than this Application API's | Call the endpoint `mintAppToken` and `gameClientBootstrap` return for the app |
 | `INTERNAL_SERVER_ERROR`, `httpStatus` 503 | ck-exec is not available on this environment, no host is live, or no manager answered within 15 seconds ("no execution manager leader reachable"); or the app already runs as many instances as its limit allows, or the player's own calls already hold 64 of them (ck-exec 0.17), and the call would start another ([instances](operations#call-limits)) | Retry with backoff. At the instance ceiling, wait for idle instances to stop |
 
 ## Where the connect token goes
 
 The connect token rides in the gateway URL that `execConnect` names, so the SDKs check that URL
 before they dial it (CrowdyJS 18.1.0, CrowdyCPP 0.55.0, CrowdyPy 0.5.0). They dial a gateway only when it is a
-`ws:` or `wss:` URL with no credentials in it, `wss:` whenever the game API is `https:`, and on
-the platform's own domain: the game API's, or the one the SDK release was published for. A game
+`ws:` or `wss:` URL with no credentials in it, `wss:` whenever the Application API is `https:`, and on
+the platform's own domain: the Application API's, or the one the SDK release was published for. A game
 API on `localhost` may also name a gateway on `localhost`, as a local development cluster does.
 Any other gateway is never dialed: the attempt fails `Unavailable` ("refusing the gateway …"),
-and the next reconnect asks `execConnect` again. `execGatewayRefusal(gameApiUrl, gatewayUrl)`
+and the next reconnect asks `execConnect` again. `execGatewayRefusal(applicationApiUrl, gatewayUrl)`
 (CrowdyJS), `crowdy::domains::execGatewayRefusal` (CrowdyCPP) and
 `crowdypy.domains.exec.exec_gateway_refusal` (CrowdyPy) say why, for a tool that dials an endpoint
 itself; `ExecConnection.open(gatewayUrl, token)` dials the URL it is given.

@@ -11,9 +11,9 @@ Teams are player groups inside one of your games (apps). A team has **members**,
 permissions over [grids](grids-and-permissions#group-grants-per-team-or-group),
 so a team can own and build in a region of the world.
 
-All team operations run on the Game API and require an **app-scoped token** for
+All team operations run on the Application API and require an **app-scoped token** for
 the app (send `Authorization: Bearer <token>`; mint one with `mintAppToken` — see
-**[Authentication](/game-api/authentication)**), not the identity session token.
+**[Authentication](/application-api/authentication)**), not the identity session token.
 
 ## Deciding who can create and join teams
 
@@ -40,7 +40,7 @@ mutation {
 ```
 
 `maxMembers` and `maxGroupsPerUser` are optional limits; omit them (or pass
-`null`) for no cap. Read the current policy with `teamPolicy(appId)`. From Game API v2.77.0 they are enforced: a join, an add (including approving a
+`null`) for no cap. Read the current policy with `teamPolicy(appId)`. From Application API v2.77.0 they are enforced: a join, an add (including approving a
 request) or a creation past either fails with
 [`GROUP_LIMIT_REACHED`](/overview/error-codes), and `extensions.limit` says which. Only
 active members count, so a waiting request counts once a manager approves it.
@@ -130,5 +130,5 @@ You can grant to the whole team or just to members holding a specific role
 
 ## Reference
 
-See the [Game API GraphQL reference](/game-api/reference/graphql/graphql-overview)
+See the [Application API GraphQL reference](/application-api/reference/graphql/graphql-overview)
 for the exact inputs and return types.

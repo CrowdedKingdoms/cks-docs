@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Soft-delete an access tier by setting its status to 'archived' (the row is retained, NOT hard-deleted) and notifies the game API. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app that owns the tier; super admins bypass. Existing user grants on this tier are NOT automatically revoked. Throws if the tier is not found.
+Soft-delete an access tier by setting its status to 'archived' (the row is retained, NOT hard-deleted) and notifies the Application API. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app that owns the tier; super admins bypass. Existing user grants on this tier are NOT automatically revoked. Throws if the tier is not found.
 
 
 ```graphql

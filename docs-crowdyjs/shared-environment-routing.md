@@ -1,11 +1,11 @@
 ---
 sidebar_position: 40
-title: Loading an app's Game API
+title: Loading an app's Application API
 ---
 
-# Loading an app's Game API
+# Loading an app's Application API
 
-Every customer app runs on the managed **shared Game API**, scoped by `appId`.
+Every customer app runs on the managed **shared Application API**, scoped by `appId`.
 Clients discover that URL programmatically; avoid hard-coding tier-specific hosts.
 
 ## The routing fields
@@ -14,12 +14,12 @@ After login, ask the management API where an app runs.
 `client.apps.routeFor(appId)` returns three fields (a thin read over the
 `app(appId)` query):
 
-- **`gameApiUrl`** — the Game API base URL to connect to. **This is the field
-  that matters**: when it is set, build a Game API client against it.
+- **`applicationApiUrl`** — the Application API base URL to connect to. **This is the field
+  that matters**: when it is set, build an Application API client against it.
 - **`splitMode`** — `false` for shared-platform apps (single managed endpoint).
 - **`deploymentTarget`** — `"shared"` for apps on the shared platform.
 
-In short: **if `gameApiUrl` is set, use it.** Before create completes, or when
+In short: **if `applicationApiUrl` is set, use it.** Before create completes, or when
 reading tier defaults, use the platform's shared endpoint from `platformConfig`
 (public, no auth):
 
@@ -36,7 +36,7 @@ const base = createCrowdyClient({
 });
 
 const cfg = await base.platform.config();
-// cfg.sharedGameApiUrl, cfg.sharedGameApiWsUrl, cfg.freeAppsPerOrg
+// cfg.sharedApplicationApiUrl, cfg.sharedApplicationApiWsUrl, cfg.freeAppsPerOrg
 ```
 
 ## Build the gameplay client
@@ -44,22 +44,22 @@ const cfg = await base.platform.config();
 Sign in on the identity client (`auth.login` / `auth.register`, magic link, or
 social), then **mint an app-scoped token**
 for the app you are entering — gameplay rejects the identity session token. Build
-the gameplay client against the app's `gameApiUrl` with its **own** token store and
+the gameplay client against the app's `applicationApiUrl` with its **own** token store and
 seed it with the app token:
 
 ```ts
 await base.auth.login({ email: 'player@example.com', password });
 
 const route = await base.apps.routeFor(appId);
-const gameApiUrl = route.gameApiUrl ?? cfg.sharedGameApiUrl;
+const applicationApiUrl = route.applicationApiUrl ?? cfg.sharedApplicationApiUrl;
 
 // Same-origin/native mint with the session token. A game on a DIFFERENT origin
 // uses the PKCE portal flow instead — see Portals & app-scoped tokens.
 const appToken = await base.portal.mintAppToken(appId);
 
 const game = createCrowdyClient({
-  httpUrl: gameApiUrl,
-  wsUrl: gameApiUrl.replace(/^http/, 'ws'),
+  httpUrl: applicationApiUrl,
+  wsUrl: applicationApiUrl.replace(/^http/, 'ws'),
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:' + appId),
 });
 game.setToken(appToken.token);
@@ -68,7 +68,7 @@ game.setToken(appToken.token);
 
 The two clients never share a token store: `base` keeps the identity session
 token, while `game` holds the app-scoped token for one app, and `game` points at
-the app's own datacenter endpoint. `mintAppToken` also returns `gameApiUrl` / `gameApiWsUrl`, so
+the app's own datacenter endpoint. `mintAppToken` also returns `applicationApiUrl` / `applicationApiWsUrl`, so
 you can route from its response instead of `routeFor` for an already-provisioned
 app. Rotate the app token with `game.portal.refresh()` before it expires;
 switching apps mints a fresh per-app token. See
@@ -77,7 +77,7 @@ switching apps mints a fresh per-app token. See
 ## Open the realtime subscription
 
 When you open the realtime subscription through that client, pass the **same
-`appId`** — the Game API scopes each session to one app (subscribing without it
+`appId`** — the Application API scopes each session to one app (subscribing without it
 fails with `RealtimeConnectionEvent` `code: 'APP_ID_REQUIRED'`):
 
 ```ts
@@ -92,11 +92,11 @@ when a player is in multiple apps at once.
 ## Handling "access denied"
 
 If an app has exceeded its free allowance, run out of wallet funds, hit a spend
-cap, or has a lapsed paid subscription, the Game API refuses new connections for
+cap, or has a lapsed paid subscription, the Application API refuses new connections for
 that app with a reason-bearing error. Surface it to the studio so they can fund
 the wallet, raise the cap, or renew. See
 [Shared environment & billing](/management-api/shared-environment) for the full
 list of states and how to recover.
 
-If `mintAppToken` or `app.gameApiUrl` names a host, **use that host**. Do
+If `mintAppToken` or `app.applicationApiUrl` names a host, **use that host**. Do
 not assume a shared default when the API returned a more specific URL.
