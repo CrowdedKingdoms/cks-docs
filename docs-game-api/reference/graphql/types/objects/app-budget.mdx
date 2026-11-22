@@ -47,7 +47,7 @@ App this budget applies to (BigInt as a decimal string).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppBudget.<b>monthlyLimitCents</b></code>](#monthly-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #monthly-limit-cents */} 
-Monthly spend cap in minor currency units (cents) as a BigInt decimal string; null means no cap is configured (unlimited).
+Monthly spend cap in minor currency units (cents) as a BigInt decimal string; null means no cap is configured (unlimited). Enforced: once currentMonthUsageCents reaches it the app is refused with spend&#x005F;cap until the month ends or the cap is raised. setAppBudget with 0 removes it (null).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppBudget.<b>currentMonthUsageCents</b></code>](#current-month-usage-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #current-month-usage-cents */} 
