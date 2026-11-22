@@ -353,6 +353,9 @@ query Mine { myIdentities { identityId provider subject email emailVerified last
   replication servers, so a native client's realtime session ends within seconds
   rather than when its app token would have expired. The same is true of
   `logoutAllDevices`, `changePassword`, `resetPassword` and `revokeAppAuthorization`.
+- `logout` with an **app token** signs that game out: it deletes the app token and
+  ends the realtime and compute-module sessions it opened. The identity session
+  that minted it stays signed in.
 - `logoutAllDevices` ends every active session for the user.
 
 ## Security notes
