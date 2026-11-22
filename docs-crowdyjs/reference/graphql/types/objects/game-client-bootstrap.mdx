@@ -37,6 +37,8 @@ type GameClientBootstrap {
   gameApiWsUrl: String
   runtimeGate: AppRuntimeGate!
   wildernessWritesOpen: Boolean!
+  maxVoiceSpeakers: Int!
+  maxVideoSpeakers: Int!
 }
 ```
 
@@ -109,6 +111,14 @@ The app's runtime gate. Bootstrap answers for a paused app too, so a client can 
 
 #### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>wildernessWritesOpen</b></code>](#wilderness-writes-open)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #wilderness-writes-open */} 
 Whether the app's wilderness (land no grid but the world grid covers) is open to players' voxel edits (App.wildernessWritesOpen). When false, edits there are refused, so a client can stop a player before sending one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>maxVoiceSpeakers</b></code>](#max-voice-speakers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-voice-speakers */} 
+The most speakers whose spatial voice this player's speaker list may name (App.effectiveMaxVoiceSpeakers, 1 to 32): the realtime servers refuse a longer list (CLIENT&#x005F;MEDIA&#x005F;SPEAKERS, opcode 47). A player whose game sends no list receives every speaker in range.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>maxVideoSpeakers</b></code>](#max-video-speakers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-video-speakers */} 
+The most speakers whose webcam video this player's speaker list may name (App.effectiveMaxVideoSpeakers, 1 to 32): the realtime servers refuse a longer list. A player whose game sends no list receives every camera in range.
 
 
 

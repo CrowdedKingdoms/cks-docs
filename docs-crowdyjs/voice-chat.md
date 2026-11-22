@@ -59,6 +59,27 @@ send; a refusal arrives as a correlated `GenericErrorResponse`. Enable `realtime
 when `gameClientBootstrap.binaryRelayEnabled` is true so voice (and video)
 does not ride one GraphQL mutation per frame.
 
+## Choosing whom each player hears
+
+By default a player receives the voice of every actor in range, and each
+stream delivered is billed. From replication server v0.49.0 your game can name
+whom it hears; the servers send nothing else, so the voice a list leaves out is
+not billed:
+
+```ts
+// The conversation only; video is left as it is.
+game.udp.setSpeakers({ voice: conversation.map((p) => p.actorUuid) });
+// No one's voice; then everyone in range again.
+game.udp.setSpeakers({ voice: [] });
+game.udp.setSpeakers({ voice: null });
+```
+
+A list names at most the app's `gameClientBootstrap.maxVoiceSpeakers` (32
+unless the app sets fewer with `updateApp`); the server refuses a longer one
+with a `GenericErrorResponse` and keeps the list it had. CrowdyJS 18.38.0
+sends the lists again after every reconnect and every 15 s, so they outlive a
+token refresh. Binary relay only.
+
 ## Receiving: `handlers.audio`
 
 ```ts

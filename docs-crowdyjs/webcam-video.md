@@ -71,6 +71,13 @@ fragments do not come back from replication server v0.48.0 unless you ask with
 target chunk, so an echo is not an acknowledgment; a refusal arrives as a
 correlated error.
 
+Each player receives the camera of every actor in range unless your game names
+whose it receives: `game.udp.setSpeakers({ video: presenterAndRow })` (CrowdyJS
+18.38.0, replication server v0.49.0), `video: []` for none, `video: null` for
+everyone again. A list names at most the app's
+`gameClientBootstrap.maxVideoSpeakers`, and video it leaves out is not sent or
+billed. See [choosing whom each player hears](/crowdyjs/voice-chat#choosing-whom-each-player-hears).
+
 ## Receiving: `handlers.video` + `VideoFrameAssembler`
 
 Every notification is one fragment. Decode the base64, feed it to one
