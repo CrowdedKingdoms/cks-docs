@@ -39,6 +39,20 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-22 (the monthly budget stops spending, and other fixes)
+
+Game API v2.84.0.
+
+- **An app's monthly budget is enforced.** `setAppBudget` used to record the cap only. Now, once the app's spend this
+  calendar month (UTC) reaches it, the app is denied with `spend_cap`, as it is at an hourly or daily cap, until the
+  month ends or you raise the budget. `0` removes the budget. **What you do:** check any budget you set; an app at its
+  budget pauses. See [spend caps](/management-api/shared-environment#spend-caps).
+- **Reserved throughput fees no longer trip the hourly and daily caps.** They still count toward the monthly budget.
+- **`logout` with an app token signs only that game out.** It deletes the app token and ends the realtime and
+  compute-module sessions it opened; the identity session stays signed in. See
+  [sessions and sign-out](/management-api/authentication#sessions-and-sign-out).
+- **`revokeAppAccess` answers `NOT_FOUND`** for a player with no access record in the app.
+
 ## 2026-11-22 (choose whose voice and video each player receives)
 
 Replication API v0.49.0 and Game API v2.83.0. The message is in
