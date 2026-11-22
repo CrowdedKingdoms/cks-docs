@@ -283,6 +283,12 @@ app**, plus read-only `me` and `refreshAppToken` on the Management API. Every
 other management operation (billing, orgs, minting tokens for other apps)
 requires the identity session token and returns `SCOPE_MISSING` for an app token.
 
+The REST routes follow the same rule (Application API v2.85.1). An app token may call
+`GET /auth/me`, `POST /auth/logout` (which ends only that token), and the
+[model endpoint](/application-api/agentic-crowdy-studio) under `/v1/model`. Every other
+authenticated REST route, `POST /auth/change-password` among them, answers `SCOPE_MISSING`
+(HTTP 403).
+
 ## Errors
 
 - `LEGAL_ACCEPTANCE_REQUIRED` on `mintAppToken`, `createPortalAuthorizationCode` or
