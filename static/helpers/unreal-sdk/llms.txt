@@ -6,7 +6,7 @@
 
 The introduction, installation, quickstart and the page for AI agents.
 
-- [Start here as one file (67 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-start.txt)
+- [Start here as one file (66 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-start.txt)
 - [Crowdy Unreal SDK](https://docs.crowdedkingdoms.com/unreal-sdk/intro): What the Crowdy Unreal SDK is, the two planes of state it is built on, and how to read the rest of this guide.
 - [Installation](https://docs.crowdedkingdoms.com/unreal-sdk/installation): Add the CrowdySDK plugin to a UE 5.8 C++ project, add its module dependencies, and connect it to your app with Crowdy Studio.
 - [Quickstart](https://docs.crowdedkingdoms.com/unreal-sdk/quickstart): Sign in and sync your app, sign the player in at runtime, make your player pawn an entity the server can see, watch your own reflection, then build one lantern that shows an entity, an RPC event, and a replicated property.
@@ -39,7 +39,7 @@ Connect your app to your project and author teams, channels, grids, and more fro
 
 The view plane in game, in the order you learn it: signing the player in and the connection, entities and the entity component, RPC events and their routing, Crowdy State and continuous state, the Leader and ownership transfer, replicated subsystems, channels, map profiles and rendering backends, then the voxel world (chunks, claims, mods) and video frames.
 
-- [Runtime SDK as one file (341 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-runtime.txt)
+- [Runtime SDK as one file (349 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-runtime.txt)
 - [Player Sign-in](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/player-sign-in): The smallest sign-in that gets a player onto the wire: one call from the Game Instance in C++, or one small widget in Blueprint. Everything else about accounts and tokens is on the Authentication page.
 - [Connection and Reconnect](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/connection-and-reconnect): How the realtime connection comes up, what it reports while it is up, how it reconnects on its own when it drops, what happens when a player goes idle, the events a game reacts to, bundled sends, and the per-frame receive budget.
 - [Entities and Spawning](https://docs.crowdedkingdoms.com/unreal-sdk/runtime/entities-and-spawning): Spawn an entity at runtime so every client sees the same actor, destroy it everywhere, and understand how a remote client rebuilds an entity it has never met.
@@ -158,13 +158,13 @@ This section is split into 4 files, each readable whole.
 
 Sign-in and account settings, player names, teams, playing together with parties, chat, emotes and spectating, avatars, player safety, voice and the optional UI hooks.
 
-- [Player Services as one file (172 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-services.txt)
+- [Player Services as one file (187 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-services.txt)
 - [Authentication](https://docs.crowdedkingdoms.com/unreal-sdk/services/authentication): Sign a player in with a password, a magic link, or a social provider, what the SDK hands back, the two tokens it holds for you and why you never see the one that talks to the game, session persistence, sign-out, account settings (password, email, delete, sign out everywhere), linked identities, the player's own access and claiming free access, and what to show when the app is paused, the player's access ends or the account is blocked.
 - [Player Names](https://docs.crowdedkingdoms.com/unreal-sdk/services/player-names): Read a player's public name by User ID for a nametag, read up to 100 at once for a roster, and let the signed-in player choose their own, with the Name Taken refusal, in C++ and Blueprint.
 - [Teams](https://docs.crowdedkingdoms.com/unreal-sdk/services/teams): Persistent, server-owned player groups with membership, roles, and permissions: the cache for instant UI, the per-call and async-action surfaces, and why runtime code and Crowdy Studio edit the same rows.
 - [Play together with parties, chat, emotes and spectating](https://docs.crowdedkingdoms.com/unreal-sdk/services/play-together): The Game Kit's social conventions in Unreal: parties and guilds as a team and its chat channel with Create Party, Invite To Party, Create Guild and Accept Into Guild, chat rooms with Find Or Create Chat Room, text chat with Send Chat and On Chat Message, a guild's grid with Claim Guild Territory, emotes between nearby players with Send Emote and On Emote, and watching a match without an avatar with the Crowdy Spectator component, all named and sent the way CrowdyCPP and CrowdyJS players do.
 - [Avatars](https://docs.crowdedkingdoms.com/unreal-sdk/services/avatars): A player's stored profile: the record fields, who may write them, per-app state keyed by AppId, the cache-only reads versus the network refresh, and the struct serialization helpers, in C++ and Blueprint.
-- [Voice Chat](https://docs.crowdedkingdoms.com/unreal-sdk/services/voice-chat): Turn on the built-in voice channel: open your microphone, hear other players, set how far your voice reaches, see who is talking and what the microphone is doing, test with owner echo, send audio that is not the microphone, what changes across maps, devices and platforms, and why every player needs the same SDK version.
+- [Voice Chat](https://docs.crowdedkingdoms.com/unreal-sdk/services/voice-chat): Turn on the built-in voice channel: open your microphone, hear other players, set how far your voice reaches, play it flat or spatial, talk to a channel's members, mute or turn down one player, see who is talking and what the microphone is doing, test with owner echo, send audio that is not the microphone, what changes across maps, devices and platforms, and why every player needs the same SDK version.
 - [Nearby Text Chat](https://docs.crowdedkingdoms.com/unreal-sdk/services/nearby-text-chat): Send a line of text to the players near you and hear theirs: how far a line reaches, who sent it, what Sent means, refusals, limits, and how it differs from channel chat.
 - [Player Safety](https://docs.crowdedkingdoms.com/unreal-sdk/services/player-safety): A player's own controls in your app: who hears and sees them, contacts, blocks, a parent's consent, and reports to the app's moderators.
 - [UI Interfaces](https://docs.crowdedkingdoms.com/unreal-sdk/services/ui-interfaces): Optional hooks for plugging your own HUD, player, and minigame classes into the SDK, the Blueprint reception layer that forwards events and actor updates to delegates, and the entity and session utility library.
@@ -173,7 +173,7 @@ Sign-in and account settings, player names, teams, playing together with parties
 
 Where state goes, how to test locally, how to package, what to do when it breaks, the sample project, and what changed since the July docs.
 
-- [Guides as one file (295 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-guides.txt)
+- [Guides as one file (306 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-guides.txt)
 - [Best Practices](https://docs.crowdedkingdoms.com/unreal-sdk/guides/best-practices): Where a piece of state belongs, who decides an outcome, what a per-entity loop costs, and what the Leader is for. The rules every other page assumes you already know, stated once in the abstract.
 - [Testing Locally](https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally): How to exercise RPC and Crowdy State replication with a single Play in Editor client using the loopback console variables, how to set up a genuine two-client PIE session and its account caveats, the per-area trace console variables worth reaching for first, and a short debugging loop.
 - [Packaging and Shipping](https://docs.crowdedkingdoms.com/unreal-sdk/guides/packaging): A pre-cook checklist for setup mistakes that pass in the editor and only break in a packaged build: the baked registry, map profiles, project settings, what Shipping strips, and the plugin's own CoreRedirects.

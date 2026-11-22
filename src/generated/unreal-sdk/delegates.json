@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-18T18:14:04Z",
-  "sdk_version": "2.26.0",
+  "generated_from": "2026-11-21T00:19:32Z",
+  "sdk_version": "2.27.0",
   "table": "delegates",
   "columns": [
     {
@@ -153,6 +153,17 @@
       "category": "Crowdy SDK|Authentication",
       "module": "CrowdySDK",
       "page": "studio/config-sync",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKSubsystem::OnVoiceChannelSpeakerTalking",
+      "owner": "UCrowdySDKSubsystem",
+      "name": "OnVoiceChannelSpeakerTalking",
+      "type": "FOnVoiceChannelSpeakerTalking",
+      "category": "Crowdy SDK|Voice|Channels",
+      "module": "CrowdySDK",
+      "page": "services/voice-chat",
       "editor": false,
       "allowlist": ""
     },

@@ -6,10 +6,10 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lantern")
 bool bRunPlotScripts = true;
 
 UFUNCTION()
-void OnModScriptPrompt(const FCrowdyModScriptPrompt& Prompt);
+void AnswerPlotPrompt(const FCrowdyModScriptPrompt& Prompt);
 
 // LanternGuestbook.cpp
-void ALanternGuestbook::OnModScriptPrompt(const FCrowdyModScriptPrompt& Prompt)
+void ALanternGuestbook::AnswerPlotPrompt(const FCrowdyModScriptPrompt& Prompt)
 {
 	Sign->SetText(FText::Format(INVTEXT("Run {0} scripts by this plot's owner?"), Prompt.Scripts.Num()));
 	GetWorld()->GetSubsystem<UCrowdyModScripts>()->AnswerPrompt(Prompt.PromptId, bRunPlotScripts);
