@@ -70,7 +70,7 @@ happens when the player presses **Cancel** on the consent card: the page comes b
 `?error=access_denied`, and the button shows again.
 
 The token response carries `token`, `appId`, `expiresAt`, and the app's own endpoint in
-`gameApiUrl` and `gameApiWsUrl`; [Loading an app's Game API](/crowdyjs/shared-environment-routing)
+`applicationApiUrl` and `applicationApiWsUrl`; [Loading an app's Application API](/crowdyjs/shared-environment-routing)
 covers routing to it. The token is already app-scoped: there is no `mintAppToken` step in a
 browser game.
 

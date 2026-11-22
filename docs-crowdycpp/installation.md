@@ -55,7 +55,7 @@ network access, a running API, or any sibling repository to build. (Only SDK
 maintainers run the schema-sync and codegen scripts, which refresh the
 snapshot from the published SDLs at
 [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql)
-and [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql).)
+and [`/schema/application-api.graphql`](pathname:///schema/application-api.graphql).)
 
 ### Build options
 

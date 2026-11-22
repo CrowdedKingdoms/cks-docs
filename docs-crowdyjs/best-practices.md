@@ -16,8 +16,8 @@ await identity.auth.login({ email, password });
 const appToken = await identity.portal.mintAppToken(appId);
 
 const game = createCrowdyClient({
-  httpUrl: appToken.gameApiUrl ?? httpUrl,
-  wsUrl: appToken.gameApiWsUrl ?? wsUrl,
+  httpUrl: appToken.applicationApiUrl ?? httpUrl,
+  wsUrl: appToken.applicationApiWsUrl ?? wsUrl,
   tokenStore: appStore,
 });
 game.setToken(appToken.token);
@@ -30,11 +30,11 @@ A game on **your own domain** uses hosted Studio sign-in
 
 ## Follow the app's endpoint
 
-Use `gameApiUrl` / `gameApiWsUrl` from `mintAppToken` or
+Use `applicationApiUrl` / `applicationApiWsUrl` from `mintAppToken` or
 `game.serverStatus.gameClientBootstrap(appId)`. Keep the shared origin as
 `discoveryUrl` for recovery. See
 [Shared environment routing](/crowdyjs/shared-environment-routing) and
-[Datacenter routing](/game-api/datacenter-routing).
+[Datacenter routing](/application-api/datacenter-routing).
 
 Pass `httpUrl` and `wsUrl` explicitly so an SDK default never silently
 points a sandbox build at production.
@@ -48,7 +48,7 @@ refused throws a `CrowdyExecError` whose `status` names why (`AppError`,
 `Denied`, …); `retryable` is true for the statuses worth trying again with
 backoff.
 
-See [Game API best practices](/game-api/best-practices) and
+See [Application API best practices](/application-api/best-practices) and
 [connect from a game](/exec/connect-from-a-game).
 
 ## Credentials

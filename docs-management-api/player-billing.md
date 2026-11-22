@@ -16,7 +16,7 @@ A mod is metered per **owner**, never per caller or author: its compute counts
 as the owner's player compute, and what its realtime streams send as their
 egress. The app's organization is never billed for its players' mods. A mod's
 [CLIENT half](/exec/client-halves) runs on each visitor's own hardware and is
-not billed. The [Studio agent's](/game-api/agentic-crowdy-studio#who-pays)
+not billed. The [Studio agent's](/application-api/agentic-crowdy-studio#who-pays)
 requests are player usage too when the app bills the player.
 
 ## The wallet
@@ -114,4 +114,4 @@ Studio-facing controls (org permissions in parentheses):
 | `playerRateMarkup` / `setPlayerRateMarkup` (`view_billing` / `manage_billing`) | Markup in basis points on the platform base price — the studio's usage-revenue stream, always shown to players as a separate component |
 | `appPlayerUsage` (`view_compute_diagnostics`) | Per-player usage aggregate: top spenders, quota utilization, cents charged. Its `automationUnits` and `compileCount` belong to the removed legacy engines and are always 0 |
 | `appPlayerMarkupAccrued` (`view_billing`) | Total markup income earned. Each charge's markup is **credited to the organization wallet in the same transaction as the player's debit**, and appears in the org ledger as `markup_payout` — so this total and the money in the wallet cannot drift apart |
-| `execModSetSwitch` / `execModSwitches` (Game API, `manage_compute`) | The kill ladder for players' [mods](/exec/mods#for-the-apps-developers): one mod, a player's, a grid's, a listing's installs, or every mod in the app |
+| `execModSetSwitch` / `execModSwitches` (Application API, `manage_compute`) | The kill ladder for players' [mods](/exec/mods#for-the-apps-developers): one mod, a player's, a grid's, a listing's installs, or every mod in the app |

@@ -8,12 +8,12 @@ title: Channels
 The SDK exposes app-wide message channels via `client.channels` (CRUD and
 membership) and `client.udp` (publishing and receiving messages). A channel
 message reaches every member of the channel regardless of where they are in the
-world. See the Game API [Channels](/game-api/channels) guide for the full
+world. See the Application API [Channels](/application-api/channels) guide for the full
 permission model.
 
 ## Manage channels
 
-Channels are a **Game API** surface, so they need an **app-scoped token**: log in
+Channels are a **Application API** surface, so they need an **app-scoped token**: log in
 on an identity client, mint a token for the app, and drive channels from a
 per-game client (see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)).
 
@@ -32,8 +32,8 @@ await identity.auth.login({ email: 'player@example.com', password }); // see /cr
 const APP_ID = '<your-app-id>';
 const appToken = await identity.portal.mintAppToken(APP_ID);
 const game = createCrowdyClient({
-  httpUrl: appToken.gameApiUrl ?? 'https://ck.prod.crowdedkingdoms.com/graphql',
-  wsUrl: appToken.gameApiWsUrl ?? 'wss://ck.prod.crowdedkingdoms.com/graphql',
+  httpUrl: appToken.applicationApiUrl ?? 'https://ck.prod.crowdedkingdoms.com/graphql',
+  wsUrl: appToken.applicationApiWsUrl ?? 'wss://ck.prod.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(`crowdyjs:app:${APP_ID}`),
 });
 game.setToken(appToken.token);
@@ -62,7 +62,7 @@ Other methods mirror the GraphQL surface: `list`, `get`, `roles`, `policy`,
 A ban keeps someone out of the channel until it is lifted: they are removed, the channel's
 messages stop reaching them and theirs stop reaching it, and joining, requesting to join or
 being added fails with `GROUP_MEMBER_BANNED`. Leaving or being removed does not lift it. It
-takes the channel's `manage_members` permission (CrowdyJS 18.10.0, and the Game API release
+takes the channel's `manage_members` permission (CrowdyJS 18.10.0, and the Application API release
 after v2.43.1).
 
 ```ts
@@ -80,7 +80,7 @@ try {
 
 A full channel refuses the same way: past the channel policy's `maxMembers` (or a player's
 `maxGroupsPerUser`), joining fails with `GROUP_LIMIT_REACHED`, and `groupLimitReachedOf(err)`
-returns which cap (`limit`) and its value (`max`) (Game API v2.77.0, CrowdyJS 18.34.0).
+returns which cap (`limit`) and its value (`max`) (Application API v2.77.0, CrowdyJS 18.34.0).
 
 A player whose access to the app is revoked or suspended loses every channel at once; see
 [revoking, suspending and banning](/management-api/game-setup#revoking-suspending-and-banning).
@@ -181,4 +181,4 @@ is refused with a `CrowdyGraphQLError` and reaches nobody. It takes the same rig
 sender receives no echo, and a member with no live actor receives nothing. On the
 binary relay it is sent as the `CHANNEL_MESSAGE_RANGED_REQUEST` datagram
 (`serializeRangedChannelMessage`); see the
-[Game API channels guide](/game-api/channels#limit-delivery-by-distance).
+[Application API channels guide](/application-api/channels#limit-delivery-by-distance).

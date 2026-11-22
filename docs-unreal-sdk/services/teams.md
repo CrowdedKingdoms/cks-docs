@@ -35,10 +35,10 @@ Team API `UCrowdyTeams` wraps one call at a time. Joining a team does not put a 
 
 The server owns team, role, and permission storage and every authorization check; a disallowed call comes
 back through the error delegate rather than being refused on the client. The exact GraphQL shape behind
-each call is on [Teams](/game-api/teams) and in the
-[operations reference](/game-api/reference/graphql/operations/mutations/create-team); a team can also be
+each call is on [Teams](/application-api/teams) and in the
+[operations reference](/application-api/reference/graphql/operations/mutations/create-team); a team can also be
 granted permissions over a grid region, covered on
-[Grids and permissions](/game-api/grids-and-permissions#group-grants-per-team-or-group).
+[Grids and permissions](/application-api/grids-and-permissions#group-grants-per-team-or-group).
 
 Every call below is asynchronous and answers through exactly one of the two delegates it is given, even
 when the request never reaches the server.

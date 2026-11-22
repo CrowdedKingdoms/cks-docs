@@ -9,7 +9,7 @@ title: Introduction
 **CrowdyCPP** is the official portable C++ SDK for Crowded Kingdoms:
 [github.com/CrowdedKingdoms/CrowdyCPP](https://github.com/CrowdedKingdoms/CrowdyCPP).
 It gives native games typed clients for authentication, the
-[Management API](/management-api/intro) and [Game API](/game-api/intro)
+[Management API](/management-api/intro) and [Application API](/application-api/intro)
 GraphQL surfaces, and — unlike the browser-first
 [CrowdyJS](/crowdyjs/intro) SDK — a **native UDP replication client** that
 speaks the [Replication API](/replication-api/intro) wire protocol directly
@@ -21,8 +21,8 @@ The single most important thing to understand about CrowdyCPP:
 
 > **Replication is always native UDP, direct to the replication server.**
 
-CrowdyJS routes realtime traffic through the Game API's
-[GraphQL UDP proxy](/game-api/graphql-udp-proxy-api) because browsers cannot
+CrowdyJS routes realtime traffic through the Application API's
+[GraphQL UDP proxy](/application-api/graphql-udp-proxy-api) because browsers cannot
 open raw UDP sockets. CrowdyCPP has no such constraint: it opens a UDP socket
 and implements the [wire formats](/replication-api/wire-formats) and
 [HMAC scheme](/replication-api/hmac) natively, with zero-copy binary framing

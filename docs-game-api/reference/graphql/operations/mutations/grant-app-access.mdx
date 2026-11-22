@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Grant (or re-activate) a user's access to an app, optionally on a specific tier. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app (input.appId); super admins bypass. ENTITLEMENT CHANGE: upserts an active app&#x005F;user&#x005F;access row and notifies the game API, so the target user immediately gains that tier's runtime permissions in Buddy. Idempotent per (app,user): re-granting updates the tier and sets status back to active.
+Grant (or re-activate) a user's access to an app, optionally on a specific tier. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app (input.appId); super admins bypass. ENTITLEMENT CHANGE: upserts an active app&#x005F;user&#x005F;access row and notifies the Application API, so the target user immediately gains that tier's runtime permissions in Buddy. Idempotent per (app,user): re-granting updates the tier and sets status back to active.
 
 
 ```graphql

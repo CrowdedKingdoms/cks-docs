@@ -57,7 +57,7 @@ await hostGridProgram({
 ```
 
 The program's `fetch` and `WebSocket` are relays over the port. The host
-attaches a [grid-scoped token](/game-api/grid-tokens) the program never sees
+attaches a [grid-scoped token](/application-api/grid-tokens) the program never sees
 (it holds a placeholder) and refuses obviously wrong traffic: one query or
 mutation per request, no subscriptions over HTTP, size and rate caps. So
 whatever the program's code does, it reaches exactly as far as a grid token.

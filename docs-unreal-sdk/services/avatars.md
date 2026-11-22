@@ -32,7 +32,7 @@ When you build a profile or loadout screen, when a player changes a cosmetic or 
 Per-app data is a separate record, `FCrowdyAppAvatarState`, keyed by `AppId` and `AvatarId`: `RawState` (base64, empty string means not set), `CreatedAt`, `UpdatedAt`. This is the slot for cosmetics, settings, or any small struct your game defines; the avatar record's own fields do not hold arbitrary game data.
 
 :::warning[Only the owner may write an avatar, and the SDK does not check locally.]
-Every write, `UpdateAvatar`, `UpdateAvatarState`, `UpdatePublicAvatarState`, `UpdatePrivateAvatarState`, `UpdateAvatarAppState`, `DeleteAvatar`, is owner-only, enforced by the Game API against the caller's app-scoped token. `UCrowdyAvatars` performs no local ownership check: a write for an avatar the signed-in player does not own is sent over the wire and refused server-side, surfaced through `OnError` and usually classified `Forbidden`.
+Every write, `UpdateAvatar`, `UpdateAvatarState`, `UpdatePublicAvatarState`, `UpdatePrivateAvatarState`, `UpdateAvatarAppState`, `DeleteAvatar`, is owner-only, enforced by the Application API against the caller's app-scoped token. `UCrowdyAvatars` performs no local ownership check: a write for an avatar the signed-in player does not own is sent over the wire and refused server-side, surfaced through `OnError` and usually classified `Forbidden`.
 :::
 
 ## Reading avatars: cache versus network

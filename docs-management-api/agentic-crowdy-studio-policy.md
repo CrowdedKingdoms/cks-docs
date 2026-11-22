@@ -7,7 +7,7 @@ title: Agentic Crowdy Studio policy
 
 The Management API owns Agentic Crowdy Studio enablement, model/tool/mode/risk
 allowlists, hard budget ceilings, privacy and retention policy, app and
-Crowded Kingdoms kills, and sanitized provider usage. The Game API owns execution and must
+Crowded Kingdoms kills, and sanitized provider usage. The Application API owns execution and must
 enforce only a fresh Management policy replica.
 
 :::warning[Allowlisted development — not GA]
@@ -46,7 +46,7 @@ Effective disable/kill precedence is:
 | Operation | Permission | Purpose |
 |---|---|---|
 | `crowdyStudioAgentPolicy(appId)` | app `view_compute_diagnostics` | Stored app row or deny-all projection. |
-| `crowdyStudioAgentEffectivePolicy(appId)` | app `view_compute_diagnostics` | Effective clamp and kill state. This does not attest Game API freshness. |
+| `crowdyStudioAgentEffectivePolicy(appId)` | app `view_compute_diagnostics` | Effective clamp and kill state. This does not attest Application API freshness. |
 | `crowdyStudioAgentUsage(appId, since, until, limit)` | app `view_compute_diagnostics` | Sanitized exact records plus a full-window aggregate. |
 | `setCrowdyStudioAgentPolicy(input)` | app `manage_compute` | Create/patch the app layer and publish a replica notification. |
 
@@ -79,7 +79,7 @@ New apps do not receive `use_studio_agent` in their default tier.
 
 1. Confirm platform ceilings and exact model/tool/mode/risk allowlists are
    in place for your app.
-2. Confirm the Game API you call supports
+2. Confirm the Application API you call supports
    `crowdy.studio-agent-policy/1` and fails closed on stale data.
 3. Read `crowdyStudioAgentEffectivePolicy`; do not infer effective state from
    the app row alone.
@@ -87,7 +87,7 @@ New apps do not receive `use_studio_agent` in their default tier.
    model, finite turn/session/player-day caps, and private source disabled.
 5. Clear the app kill only after reviewing the returned clamped policy.
 6. Grant `use_studio_agent` only to a dedicated pilot tier/user set.
-7. Verify the Game API has pulled the new platform/app revisions before testing.
+7. Verify the Application API has pulled the new platform/app revisions before testing.
 8. Expand to Build or Play only after their project/host security gates pass.
 
 Releasing a Crowded Kingdoms kill does not clear the app kill, enable either layer,
@@ -105,7 +105,7 @@ OpenRouter tool endpoint supports the required Zero Data Retention policy.
 Model choice and request/token/cost caps remain the strict platform/app
 intersection and are platform-funded.
 
-App policy should list only implemented tools needed by the pilot. Game API
+App policy should list only implemented tools needed by the pilot. Application API
 intersects policy again with the current mode and host capabilities, so a
 policy entry does not promise that a descriptor will be advertised.
 
@@ -129,7 +129,7 @@ Policy has hard limits at three scopes:
   app-wide concurrent runs.
 
 The effective value is the minimum of platform and app policy, with ordinary
-compile/runtime/API quotas still applied separately. Game API reserves the
+compile/runtime/API quotas still applied separately. Application API reserves the
 worst-case provider cost before contact and reconciles terminal usage. If
 terminal provider accounting is unavailable, the reservation remains consumed.
 
@@ -139,7 +139,7 @@ wallet. These fields are a future billing seam, not permission to charge.
 
 ## Privacy and retention
 
-OpenRouter is the development provider gateway. Game API uses its stable
+OpenRouter is the development provider gateway. Application API uses its stable
 streaming `/api/v1/chat/completions` endpoint, not the Responses beta, and may
 route a request to the selected allowlisted model provider. Policy locks:
 
@@ -150,7 +150,7 @@ route a request to the selected allowlisted model provider. Policy locks:
 - provider request/response bodies not persisted; and
 - first-use disclosure/consent required before selected private source is sent.
 
-Parallel/multi-tool provider rounds do not widen policy: Game API rejects or
+Parallel/multi-tool provider rounds do not widen policy: Application API rejects or
 serializes them locally and validates every tool name/input/output against the
 pinned descriptor.
 
@@ -173,8 +173,8 @@ contract; a policy patch cannot do it.
 
 ## Replica freshness
 
-Policy writes, audit events, and Game API wakeups share the Management
-transaction. Notifications are at-least-once and carry revisions; the Game API
+Policy writes, audit events, and Application API wakeups share the Management
+transaction. Notifications are at-least-once and carry revisions; the Application API
 pull is authoritative and idempotent.
 
 The `crowdy.studio-agent-policy/1` publication includes `generatedAt`,
@@ -182,7 +182,7 @@ The `crowdy.studio-agent-policy/1` publication includes `generatedAt`,
 effective policy. The pilot stale boundary is 60 seconds. Missing, malformed,
 killed, disabled, revision-regressed, or expired policy must disable the agent,
 preempt active work, and revoke leases/approvals. A Management effective-policy
-query alone is not proof that a Game API replica is fresh.
+query alone is not proof that an Application API replica is fresh.
 
 ## Usage visibility
 

@@ -20,7 +20,7 @@ There are two ways to vouch for a player, and both end in the same place:
 
 Either way, the result is an ordinary app-scoped gameplay token for one of your apps (see
 [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)). The player's device
-plays with it exactly as with any other: the Game API, realtime and replication do not treat it
+plays with it exactly as with any other: the Application API, realtime and replication do not treat it
 differently.
 
 ## What a managed player is
@@ -61,7 +61,7 @@ it with an admin's session; a version that is not the current one answers `CONFL
 do not wrap the acceptance. If the addendum is revised in a way you must accept again, its
 version changes, `termsAccepted` turns false, and new sign-ins stop until an admin accepts the new
 version. Players already signed in keep playing: their tokens refresh until their sign-in's length
-runs out (Addendum section 1.5; Game API since 2026-11-10).
+runs out (Addendum section 1.5; Application API since 2026-11-10).
 
 ## Option 1: an org token from your server
 
@@ -86,7 +86,7 @@ const res = await fetch('https://ck.prod.crowdedkingdoms.com/graphql', {
   body: JSON.stringify({
     query: `mutation ($i: MintManagedPlayerTokenInput!) {
       mintManagedPlayerToken(input: $i) {
-        token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
+        token gameTokenId appId expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl launchUrl
       }
     }`,
     variables: {
@@ -110,7 +110,7 @@ const { data, errors } = await res.json();
 import { createCrowdyClient } from '@crowdedkingdoms/crowdyjs';
 
 const access = await fetch('/api/crowded-kingdoms/token').then((r) => r.json());
-const game = createCrowdyClient({ httpUrl: access.gameApiUrl, wsUrl: access.gameApiWsUrl });
+const game = createCrowdyClient({ httpUrl: access.applicationApiUrl, wsUrl: access.applicationApiWsUrl });
 game.portal.adoptAppToken(access);
 ```
 
@@ -165,7 +165,7 @@ mutation {
 | `gamertag` | optional; used when the player is created |
 | `ageYears` | the player's age in whole years ([below](#age-country-and-minors)); required |
 | `country` | where the player lives, ISO 3166-1 alpha-2; required |
-| `region` | the player's region, ISO 3166-2, in a country Crowded Kingdoms checks by region; required there (Game API v2.61.0) |
+| `region` | the player's region, ISO 3166-2, in a country Crowded Kingdoms checks by region; required there (Application API v2.61.0) |
 
 ```ts
 // Your sign-in service (Node), with an Ed25519 key
@@ -259,7 +259,7 @@ you allow it: an org admin with `manage_billing` switches it on per app (Studio:
   affected; they pay for their own mods.
 
 The player also needs the keys on its access tier: the code keys for mods and
-`use_studio_agent` for the agent (see [Permissions](/game-api/permissions)).
+`use_studio_agent` for the agent (see [Permissions](/application-api/permissions)).
 
 ## Recorded inputs
 
@@ -286,9 +286,9 @@ more; until then new sign-ins answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`
 ([above](#before-the-first-sign-in-accept-the-addendum)).
 
 At every sign-in, send the player's age and country: `ageYears` and `country` on
-`mintManagedPlayerToken`, or as claims of the assertion (Game API v2.60.0). In a country Crowded
+`mintManagedPlayerToken`, or as claims of the assertion (Application API v2.60.0). In a country Crowded
 Kingdoms checks by region (`territoryPolicies` lists its regions), send `region` too, ISO 3166-2
-(Game API v2.61.0); it is checked at each sign-in and not stored.
+(Application API v2.61.0); it is checked at each sign-in and not stored.
 
 - Crowded Kingdoms keeps the age as a bracket (`under_13`, `13_15`, `16_17` or `18_plus`), never
   the age itself, and the country on the player, and checks them against its own rules. A place
@@ -311,11 +311,11 @@ For a player under 18, Crowded Kingdoms applies the minors' defaults itself, wha
 grants:
 
 - voice and video off in both directions until a parent consents through Kids Web Services, then
-  contacts only ([Voice, video, contacts and blocks](/game-api/communication));
+  contacts only ([Voice, video, contacts and blocks](/application-api/communication));
 - no direct messages;
 - the app keeps its [safety log](/replication-api/input-logging#the-safety-log) on, or the player
   is refused `SAFETY_LOG_REQUIRED`;
-- your organization has appointed a [moderator](/game-api/safety-reports#moderators), or the
+- your organization has appointed a [moderator](/application-api/safety-reports#moderators), or the
   player is refused `SAFETY_MODERATOR_REQUIRED`.
 
 To limit what any player may do, give it an access tier (`grantAppAccess` with a tier) that leaves
@@ -324,7 +324,7 @@ out what it may not use. The realtime servers check `use_voice_chat` (voice), `u
 (messages to one player) on every send, and from replication server v0.43.0
 on every receiving player too. A tier that grants `access` has the last two unless you leave them
 out: pass `applyCommunicationDefaults: false` with the tier's `permissionKeys`. See
-[Permissions](/game-api/permissions).
+[Permissions](/application-api/permissions).
 
 ## The Construct
 
@@ -382,7 +382,7 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 | `MANAGED_PLAYER_LIMIT` | Your organization is at its player cap. |
 | `MANAGED_PLAYER_NOT_ALLOWED` | A managed player asked for a wallet, or for mods where your organization has not switched them on. |
 | `ACCOUNT_BLOCKED` | The player is disabled. |
-| `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. An open or escalated [safety report](/game-api/safety-reports) about the player sets one. |
+| `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. An open or escalated [safety report](/application-api/safety-reports) about the player sets one. |
 | `TERRITORY_NOT_SUPPORTED` | The country or region you sent (`extensions.country`, `extensions.region`) is one Crowded Kingdoms does not serve, or the country is checked by region and you sent no `region`. |
 | `AGE_REQUIREMENT_NOT_MET` | The player is under 13, or under the app's or the country's minimum age, or was refused so in the last 24 hours. Tell the player, without a reason or an age; do not retry with another age. |
 | `AGE_REQUIRED` | The sign-in carried no `ageYears`. |

@@ -2354,7 +2354,7 @@ On the **Join Channel** node's **On Error** pin, open `Error` with **Break Crowd
 
 ## Handle a full channel
 
-A join, a request to join, an add or a create fails with the error code `LimitReached` (**Limit Reached** on the Blueprint enum) when the channel is full, or when the player is already in as many channels as the app allows. Teams report the same code for their caps. Retrying does not help until someone leaves, so tell the player instead. Branch on it the way [Handle a ban on join](#handle-a-ban-on-join) does for `Banned`. Both caps are set in Crowdy Studio, and the Game API names the code `GROUP_LIMIT_REACHED`.
+A join, a request to join, an add or a create fails with the error code `LimitReached` (**Limit Reached** on the Blueprint enum) when the channel is full, or when the player is already in as many channels as the app allows. Teams report the same code for their caps. Retrying does not help until someone leaves, so tell the player instead. Branch on it the way [Handle a ban on join](#handle-a-ban-on-join) does for `Banned`. Both caps are set in Crowdy Studio, and the Application API names the code `GROUP_LIMIT_REACHED`.
 
 ## Publish and receive
 
@@ -2479,7 +2479,7 @@ A `Multicast` CrowdyEvent is encoded into a channel payload and published over t
 - A named channel is join-only from the SDK's side. Create it in Crowdy Studio or at runtime, then `RegisterReliableRpcChannel` if you created it after connecting.
 - `send_messages` gates publishing, not membership. An announce-only channel is a channel whose joiners lack it.
 - The sender never receives an echo of its own message.
-- Channel management is a Game API call and needs the app-scoped token the sign-in gives you; see [Authentication](../services/authentication.md). The wire protocol and the GraphQL calls are on the [Game API channels page](/game-api/channels).
+- Channel management is an Application API call and needs the app-scoped token the sign-in gives you; see [Authentication](../services/authentication.md). The wire protocol and the GraphQL calls are on the [Application API channels page](/application-api/channels).
 
 ## Related
 
@@ -2865,7 +2865,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/runtime/voxel-chunks
 
 # Voxel Chunks
 
-The platform stores a voxel world for every app: chunks of 16 by 16 by 16 cells. Mods, Server Objects, the Game API and other SDKs write them. **Fetch Chunks Around** and **Fetch Chunk** bring chunks into Unreal, decoded and ready to place, so your game can draw them, collide with them, count them or read the data a block carries.
+The platform stores a voxel world for every app: chunks of 16 by 16 by 16 cells. Mods, Server Objects, the Application API and other SDKs write them. **Fetch Chunks Around** and **Fetch Chunk** bring chunks into Unreal, decoded and ready to place, so your game can draw them, collide with them, count them or read the data a block carries.
 
 ## When you touch this
 
@@ -2878,7 +2878,7 @@ The fetches live on the **Crowdy Voxels** subsystem (`UCrowdyVoxels`, a Game Ins
 | Blueprint | C++ | Does |
 |---|---|---|
 | **Fetch Chunks Around** | `UCrowdyVoxels::FetchChunksAround(int64 ChunkX, int64 ChunkY, int64 ChunkZ, int32 Range, TFunction<void(const FCrowdyChunkFetch&)> OnDone)` | Every chunk the platform stores within Range of a chunk. Latent: **On Fetched** or **On Failed** fires once. |
-| **Fetch Chunk** | `UCrowdyVoxels::FetchChunk(int64 ChunkX, int64 ChunkY, int64 ChunkZ, TFunction<void(const FCrowdyChunkFetch&)> OnDone)` | One chunk, whether or not the platform stores it. Latent, like the one above. Needs Game API v2.70.0; an older one refuses it with `GRAPHQL_VALIDATION_FAILED`. |
+| **Fetch Chunk** | `UCrowdyVoxels::FetchChunk(int64 ChunkX, int64 ChunkY, int64 ChunkZ, TFunction<void(const FCrowdyChunkFetch&)> OnDone)` | One chunk, whether or not the platform stores it. Latent, like the one above. Needs Application API v2.70.0; an older one refuses it with `GRAPHQL_VALIDATION_FAILED`. |
 | **Get Voxel** | `UCrowdyVoxelLibrary::GetVoxel(const FCrowdyVoxelChunk& Chunk, FIntVector Position)` | The voxel at one position, with its type and state. |
 | **Get Filled Voxels** | `UCrowdyVoxelLibrary::GetFilledVoxels(const FCrowdyVoxelChunk& Chunk)` | Every voxel of a chunk whose type is not 0, with its position, type and state. |
 | **Get Chunk Origin** | `UCrowdyVoxelLibrary::GetChunkOrigin(WorldContextObject, ChunkX, ChunkY, ChunkZ)` | The chunk's minimum corner in your level. |
@@ -3416,7 +3416,7 @@ Nothing pushes a claim to other players. Search again when your player arrives s
 
 ## Checking whether a player can build
 
-An edit in a chunk is allowed when the player holds `update_voxel_data` on the grid that decides that chunk. **Can Edit Chunk** answers whether they do, so a build tool can switch itself off before the platform refuses an edit. **Get Grid Permissions** answers with the detail: every grid over the chunk and the player's own permission keys on each. Both need Game API v2.67.0, which every tier has.
+An edit in a chunk is allowed when the player holds `update_voxel_data` on the grid that decides that chunk. **Can Edit Chunk** answers whether they do, so a build tool can switch itself off before the platform refuses an edit. **Get Grid Permissions** answers with the detail: every grid over the chunk and the player's own permission keys on each. Both need Application API v2.67.0, which every tier has.
 
 - The deciding grid is the smallest grid covering the chunk, the lower grid id when two are the same size. **Grid Id** names it, and **Can Edit** is true when the player holds `update_voxel_data` there.
 - A chunk no grid covers answers **Success** with **Can Edit** false and **Grid Id** 0: the platform refuses every edit there.
@@ -3553,7 +3553,7 @@ They live on the **Crowdy Mods** subsystem (`UCrowdyMods`, a Game Instance subsy
 | **Build Client Mod**, **Deploy Client Mod** | `UCrowdyMods::BuildClientMod(...)`, `UCrowdyMods::DeployClientMod(...)` | The same two steps for a mod's CLIENT half. No run lock, no pinned revision and no Allow Live Modding check. |
 | **Run Project**, **Get Project Status** | `UCrowdyMods::RunProject(...)`, `UCrowdyMods::GetProjectStatus(...)` | Build and deploy one revision of a Studio project, and read where each half is. See [Studio Dock](./studio-dock.md#run-a-project). |
 
-The player must be signed in to the app. Grid ids are 64-bit: keep them as Integer64 in Blueprint and `int64` in C++. Every build, deploy and read (**Build Mod**, **Deploy Mod**, **Set Mod Enabled**, **List Mods**, **List My Mods** and the Studio calls) needs Game API v2.73.0; an older one refuses it with `GRAPHQL_VALIDATION_FAILED`.
+The player must be signed in to the app. Grid ids are 64-bit: keep them as Integer64 in Blueprint and `int64` in C++. Every build, deploy and read (**Build Mod**, **Deploy Mod**, **Set Mod Enabled**, **List Mods**, **List My Mods** and the Studio calls) needs Application API v2.73.0; an older one refuses it with `GRAPHQL_VALIDATION_FAILED`.
 
 ## Example: a guestbook on a plot
 
@@ -3582,7 +3582,7 @@ A crate that does not compile is not an error. **Build Mod** ends with **Result*
 
 **Deploy Mod** takes the **Build Id** from a successful build. The mod's name is 1 to 48 lowercase letters, digits, `-` or `_`; a grid holds at most 8 mods and a player at most 64. Deploying a new version of a running mod restarts it.
 
-**Set Mod Enabled** with **Enabled** true switches it on. Since Game API v2.66.0 a switched-on mod starts when a player is in its grid, so nothing needs to start it. A call starts it too, which covers the couple of minutes after a platform update in which a player's arrival may not.
+**Set Mod Enabled** with **Enabled** true switches it on. Since Application API v2.66.0 a switched-on mod starts when a player is in its grid, so nothing needs to start it. A call starts it too, which covers the couple of minutes after a platform update in which a player's arrival may not.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -4413,7 +4413,7 @@ The server half starts from the platform's starter, and the client half from its
 
 ## Run a project
 
-**Run Project** builds one revision of a project and puts it on one of the player's grids. Pass the revision your panel showed the player as **Expected Revision**. It, **Get Project Status** and the two pieces below need Game API v2.73.0; an older one refuses them with `GRAPHQL_VALIDATION_FAILED`.
+**Run Project** builds one revision of a project and puts it on one of the player's grids. Pass the revision your panel showed the player as **Expected Revision**. It, **Get Project Status** and the two pieces below need Application API v2.73.0; an older one refuses them with `GRAPHQL_VALIDATION_FAILED`.
 
 | Blueprint | C++ | Does |
 |---|---|---|

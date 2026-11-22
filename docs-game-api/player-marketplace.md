@@ -83,7 +83,7 @@ implicit mode (`implicit_allow`) admits every mod.
 
 ## Switching installs off
 
-`execModSetSwitch` (Game API, `manage_compute`) is the kill ladder: switch off
+`execModSetSwitch` (Application API, `manage_compute`) is the kill ladder: switch off
 one mod, a player's mods, a grid's, **every install of a listing** (its id),
 or every mod in the app. Off stops what runs at once and refuses calls, with
 your reason, and the mods' CLIENT halves are no longer served;

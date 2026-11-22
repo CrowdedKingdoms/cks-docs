@@ -2,37 +2,37 @@
 
 :::note[Choosing an integration path]
 
-**This is one of two client integration paths.** Use this proxy only if your client **cannot** open raw UDP sockets (browsers, generic JS/TS apps). UDP-capable clients (Unreal Engine, native desktop/mobile games) should authenticate on the Management API, **mint an app-scoped token** (`mintAppToken`), call **`serverWithLeastClients` on the Game API**, then speak raw UDP to Buddy. See the **[Replication API](/replication-api/intro)** for the native UDP path.
+**This is one of two client integration paths.** Use this proxy only if your client **cannot** open raw UDP sockets (browsers, generic JS/TS apps). UDP-capable clients (Unreal Engine, native desktop/mobile games) should authenticate on the Management API, **mint an app-scoped token** (`mintAppToken`), call **`serverWithLeastClients` on the Application API**, then speak raw UDP to Buddy. See the **[Replication API](/replication-api/intro)** for the native UDP path.
 
 Both paths share the same Management API identity and the same **app-scoped token** minted from it (see **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**); only the transport differs (GraphQL mutations through this proxy vs. raw **UDP** to a **Buddy** server).
 
 :::
 
-The Game API acts as a UDP proxy between GraphQL clients and Buddy.
+The Application API acts as a UDP proxy between GraphQL clients and Buddy.
 Clients on this path interact entirely through GraphQL (HTTP mutations +
 WebSocket subscriptions); the API handles UDP connectivity, session registration
 with Buddy, HMAC authentication, and binary serialization on the client's behalf.
 
 ## Authentication
 
-Every Game API request uses an **app-scoped token** — a token confined to the one
+Every Application API request uses an **app-scoped token** — a token confined to the one
 app you are playing. The identity session token that `login` / `register` return
-is a management-plane credential and is **rejected** on the Game API and realtime
+is a management-plane credential and is **rejected** on the Application API and realtime
 surface. Mint an app token from the session token (first-party or non-browser
 code), or obtain one through **hosted sign-in** (a browser game on its own
 domain: `client.portal.signIn` → Studio → `client.portal.handleSignInCallback`;
 direct `login` / `register` are refused from a non-first-party browser origin
 since ck-api v1.88.0 -- see [Sign in](/management-api/authentication)). Then pass
 it as `Authorization: Bearer <token>` on both HTTP requests and WebSocket
-connections to the **Game API**:
+connections to the **Application API**:
 
 ```graphql
 # On the Management API, with the identity session token as the Bearer:
 mutation Enter($appId: BigInt!) {
   mintAppToken(input: { appId: $appId }) {
-    token          # 64-char app-scoped token -- use this for all Game API requests
+    token          # 64-char app-scoped token -- use this for all Application API requests
     gameTokenId    # numeric ID (informational)
-    appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl
+    appId expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl
   }
 }
 ```
@@ -43,7 +43,7 @@ from the page that holds the session use the OAuth2 Authorization-Code + PKCE fl
 (`createPortalAuthorizationCode` → `exchangePortalCode`) instead of a direct mint.
 CrowdyJS wraps both in `client.portal`. See
 **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)** and
-**[Authentication](/game-api/authentication)**.
+**[Authentication](/application-api/authentication)**.
 
 ## Connection lifecycle
 
@@ -55,7 +55,7 @@ accepted: the handshake selects no subprotocol for it, so the client fails the
 connection, and a socket that opens without `graphql-transport-ws` is closed
 with code 4406) and send
 `connection_init` with your **app-scoped token** **and the `appId` you are
-playing**. The realtime session is app-scoped: the Game API only delivers that
+playing**. The realtime session is app-scoped: the Application API only delivers that
 app's spatial notifications, **rejects** a subscription that arrives without an
 `appId`, and **rejects** an identity session token or a token scoped to a
 different app (see [Realtime connection events](#realtime-connection-events)).
@@ -102,7 +102,7 @@ All spatial types include the full header fields (`appId`, `chunkX/Y/Z`,
 >
 > `ChannelMessageNotification` and `ChannelAudioNotification` are delivered on this
 > same subscription but are **not** spatial (they have no chunk header) — see
-> [Channels](/game-api/channels).
+> [Channels](/application-api/channels).
 
 Subscribing automatically opens a UDP proxy session to the game server if one
 does not already exist.  The server picks the game server with the fewest
@@ -396,9 +396,9 @@ who left — see [presence](/exec/timers-and-presence#presence).
 | `sendTextPacket` | Send chat text |
 | `sendClientEvent` | Send a custom event |
 | `sendSingleActorMessage` | Send a direct message to one actor by UUID (not broadcast) |
-| `sendChannelMessage` | Publish to a channel; delivered to members as `ChannelMessageNotification` (see [Channels](/game-api/channels)) |
-| `sendChannelAudio` | Send an audio packet to a channel; delivered to every other member as `ChannelAudioNotification`. Needs the channel's `send_voice` and `use_voice_chat` (see [Voice on a channel](/game-api/channels#voice-on-a-channel)) |
-| `sendRangedChannelMessage` | Publish to a channel, delivered only to members with a live actor within `maxDistance` chunks (straight-line) of an origin chunk; members receive the ordinary `ChannelMessageNotification` (see [Limit delivery by distance](/game-api/channels#limit-delivery-by-distance)) |
+| `sendChannelMessage` | Publish to a channel; delivered to members as `ChannelMessageNotification` (see [Channels](/application-api/channels)) |
+| `sendChannelAudio` | Send an audio packet to a channel; delivered to every other member as `ChannelAudioNotification`. Needs the channel's `send_voice` and `use_voice_chat` (see [Voice on a channel](/application-api/channels#voice-on-a-channel)) |
+| `sendRangedChannelMessage` | Publish to a channel, delivered only to members with a live actor within `maxDistance` chunks (straight-line) of an origin chunk; members receive the ordinary `ChannelMessageNotification` (see [Limit delivery by distance](/application-api/channels#limit-delivery-by-distance)) |
 | `connectUdpProxy` | Explicitly open a UDP session (optional -- mutations and subscription auto-open) |
 | `disconnectUdpProxy` | Release the UDP session |
 

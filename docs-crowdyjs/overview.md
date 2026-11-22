@@ -7,7 +7,7 @@ slug: readme
 # CrowdyJS SDK
 
 Browser-first SDK for Crowded Kingdoms game clients. CrowdyJS wraps the
-Management API identity surface and the Game API world / GraphQL UDP-proxy
+Management API identity surface and the Application API world / GraphQL UDP-proxy
 surface behind typed clients. As of **v15**, `client.auth` signs in with
 **`login` / `register`** (email + password), magic link, or social/OIDC — and as
 of **v15.1** it also manages passwords ([reset, change, and adding a first
@@ -21,7 +21,7 @@ uses the [Replication API](/replication-api/intro) directly, not CrowdyJS.
 CrowdyJS **16** docks the [Agentic Crowdy Studio](agentic-crowdy-studio)
 agent beside the Studio editor: the DeepSeek Harness runs in the player's
 browser, edits the project, runs draft tests and takes screenshots through the
-page, and spends model tokens through the Game API's metered endpoint with
+page, and spends model tokens through the Application API's metered endpoint with
 the player's own app token. Access remains allowlisted per app. Verify the published SDK with
 `npm view @crowdedkingdoms/crowdyjs dist-tags`.
 
@@ -43,14 +43,14 @@ realtime). What separates the surfaces is the token, not the host:
 | Sub-client | Token | Use |
 |---|---|---|
 | `client.auth`, `client.users`, `client.apps`, `client.platform` | identity session | Identity (`login`/`register`, `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `availableLoginProviders`, `myIdentities`/`linkIdentity`/`unlinkIdentity`, `logout`, `me`, `updateGamertag`), app routing reads (`apps.routeFor`), and public platform config (`platform.config`). |
-| `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.udp`, `client.inputLog` | app-scoped | World data, avatars, channels & teams, the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/game-api/host-discovery). `client.inputLog` reads the inputs recorded for an app with replay logging on (18.6.0) — see [Input logging](/replication-api/input-logging). |
+| `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.udp`, `client.inputLog` | app-scoped | World data, avatars, channels & teams, the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/application-api/host-discovery). `client.inputLog` reads the inputs recorded for an app with replay logging on (18.6.0) — see [Input logging](/replication-api/input-logging). |
 
 Each client has one `AuthState`, so you still build **two clients**: an identity client
 holding the session token, and a per-game client holding that app's app-scoped token —
 see [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens).
 
 The two clients need not share a URL. An app lives in one datacenter, so `mintAppToken`
-returns the `gameApiUrl` / `gameApiWsUrl` for that app, and the per-game client should
+returns the `applicationApiUrl` / `applicationApiWsUrl` for that app, and the per-game client should
 use them.
 
 :::note[Upgrading from v13 or earlier]
@@ -88,8 +88,8 @@ platform tooling calls them directly.
 The studio-admin surfaces have exactly one extra gate: the caller must be a
 logged-in user who holds `manage_apps` on the org. The management-surface
 operations use the **identity session token** sign-in returns — there is no separate "admin
-token" type. (The one Game API studio-admin surface, `gameApps` ([grids](grids)),
-runs on the Game API and so needs an **app-scoped token** for the target app — a
+token" type. (The one Application API studio-admin surface, `gameApps` ([grids](grids)),
+runs on the Application API and so needs an **app-scoped token** for the target app — a
 studio admin can `mintAppToken` for their own app even without player
 entitlement.) So you **can** drive them from a browser — for example your studio's
 own admin tool, where an admin signs in — which is exactly how the Crowded
@@ -127,9 +127,9 @@ token** (see [Portals & app-scoped tokens](/management-api/portals-and-app-token
   `register`, `completeLoginLink`, or `socialLoginComplete`) and stored on the
   client automatically. A management-plane credential (account, studio admin) and
   the **only** thing that can mint app tokens. It is **rejected for gameplay** (the
-  Game API and the realtime/UDP surface reject it).
+  Application API and the realtime/UDP surface reject it).
 - **App-scoped gameplay token** — short-lived (~30 min), confined to one app, and
-  the Bearer for that app's Game API + realtime surface. Refresh or re-portal
+  the Bearer for that app's Application API + realtime surface. Refresh or re-portal
   before it expires.
 
 **Which sign-in you use depends on where your code runs** (ck-api v1.88.0,
@@ -181,8 +181,8 @@ The gate's other refusals read with `territoryNotSupportedOf`, `ageRequiredOf`,
   address bar (safe to call on every boot). Your `redirectUri`'s origin must be
   one of the app's registered redirect URIs, which is also what admits it to CORS.
 - `portal.mintAppToken(appId)` — first-party / non-browser: mint directly from a
-  session token. Returns an `AppTokenResponse` (`token`, `gameApiUrl`,
-  `gameApiWsUrl`, `expiresAt`, …); it is **not** stored on the calling client.
+  session token. Returns an `AppTokenResponse` (`token`, `applicationApiUrl`,
+  `applicationApiWsUrl`, `expiresAt`, …); it is **not** stored on the calling client.
 - `portal.beginEntry(...)` → `portal.handleAuthorizeRequest()` →
   `portal.completeEntry()` — the same PKCE steps without the defaults;
   `handleAuthorizeRequest` is what Studio's `/authorize` page runs. For an
@@ -230,8 +230,8 @@ await identity.auth.login({ email: 'player@example.com', password });
 // Native / same-origin: mint an app token, then build the per-game client.
 const appToken = await identity.portal.mintAppToken(appId);
 const game = createCrowdyClient({
-  httpUrl: appToken.gameApiUrl!,
-  wsUrl: appToken.gameApiWsUrl!,
+  httpUrl: appToken.applicationApiUrl!,
+  wsUrl: appToken.applicationApiWsUrl!,
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:' + appId),
 });
 game.setToken(appToken.token);
@@ -239,8 +239,8 @@ game.setToken(appToken.token);
 ```
 
 See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) for the
-full mint / PKCE / refresh narrative and [Game API →
-Authentication](/game-api/authentication).
+full mint / PKCE / refresh narrative and [Application API →
+Authentication](/application-api/authentication).
 
 ### Sign-in with `client.auth`
 
@@ -387,8 +387,8 @@ if (!identity.session.getToken()) {
 const appToken = await identity.portal.mintAppToken(appId);
 
 const game = createCrowdyClient({
-  httpUrl: appToken.gameApiUrl!,
-  wsUrl: appToken.gameApiWsUrl!,
+  httpUrl: appToken.applicationApiUrl!,
+  wsUrl: appToken.applicationApiWsUrl!,
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:' + appId),
   realtime: {
     retryAttempts: 8,
@@ -413,7 +413,7 @@ Note that the per-game client uses the URLs the mint returned, not `apiUrl`: tho
 
 1. On the identity client, sign in with `identity.auth.login()` / `register()` / `completeLoginLink()` / `socialLoginComplete()`, or `identity.session.restore()`.
 2. Mint an app-scoped token for the target app — `identity.portal.mintAppToken(appId)` (same-origin/native) or the PKCE portal flow for a different origin — and build a per-game client that holds it (`game.setToken(appToken.token)`). See [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens).
-3. Subscribe to UDP proxy notifications with `game.udp.subscribe(handlers, appId)` (or `game.world(appId).subscribe(handlers)`). The `appId` is **required** — the Game API scopes each realtime session to one app.
+3. Subscribe to UDP proxy notifications with `game.udp.subscribe(handlers, appId)` (or `game.world(appId).subscribe(handlers)`). The `appId` is **required** — the Application API scopes each realtime session to one app.
 4. Join a chunk by sending an initial actor update.
 5. Send actor, voxel, text, audio (`game.udp.sendAudioPacket`, [Voice chat](voice-chat)), video (`game.udp.sendVideoFrame`, needs `use_video_chat`; see [Webcam video](webcam-video)), and client-event updates through `game.udp` or `game.world(appId)` helpers.
 6. Call `game.udp.disconnect()` when leaving the world, then `game.close()` when disposing the client. Rotate the app token with `game.portal.refresh()` before it expires.
@@ -423,7 +423,7 @@ Note that the per-game client uses the URLs the mint returned, not `apiUrl`: tho
 `subscribe` takes the handlers **and a required `appId`**, and the session must be
 opened with that app's **app-scoped token**: an identity session token is rejected
 with `APP_TOKEN_REQUIRED`, and a token minted for a different app with
-`APP_SCOPE_MISMATCH`. The Game API also fences `udpNotifications` by app and
+`APP_SCOPE_MISMATCH`. The Application API also fences `udpNotifications` by app and
 rejects an app-agnostic subscription with a `RealtimeConnectionEvent`
 (`code: 'APP_ID_REQUIRED'`); the SDK sends the app in the WebSocket
 `connection_init` payload. Run one per-game client per app (each holding that
@@ -532,11 +532,11 @@ chunk is inside a **grid** where they hold the right key (`access`,
 `update_voxel_data`, `use_voice_chat`). Building is decided by the **most
 specific** grid covering the chunk: a plot or safe zone decides its own chunks, the
 world grid decides only the wilderness, and the app can close the wilderness to
-building ([which grid decides a voxel write](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write)).
+building ([which grid decides a voxel write](/application-api/grids-and-permissions#which-grid-decides-a-voxel-write)).
 New apps are **open by default** — a default tier and a world-spanning grant are
 created automatically, and giving a player app access grants them every key on
 the world grid — so basic play and building work with no extra setup. Owners add
-restrictions (safe zones, plot ownership) via the Game API.
+restrictions (safe zones, plot ownership) via the Application API.
 
 When a player lacks permission, the server replies with a `GenericErrorResponse`
 (an `UNAUTHORIZED` error code) rather than delivering the action; your
@@ -555,7 +555,7 @@ client.udp.subscribe(
 );
 ```
 
-See **[Game API → Permissions overview](/game-api/permissions)** for tiers,
+See **[Application API → Permissions overview](/application-api/permissions)** for tiers,
 grids, and how to grant or restrict access.
 
 ## Player safety
@@ -571,8 +571,8 @@ CrowdyJS 18.24.0 wraps the teen safety program (ck-api v2.60.0), and 18.25.0 its
 records, for the notice and the indicator your game shows. Moderators use `client.moderation`
 (`reports`, `resolveReport`, `escalateReport`) with their identity session. The realtime servers
 enforce the settings, contacts and blocks (replication server v0.43.0); your game shows the
-controls. See [Voice, video, contacts and blocks](/game-api/communication),
-[Safety reports and moderation](/game-api/safety-reports) and
+controls. See [Voice, video, contacts and blocks](/application-api/communication),
+[Safety reports and moderation](/application-api/safety-reports) and
 [Players under 18 and player safety](/overview/player-safety).
 
 ## World helpers
@@ -623,7 +623,7 @@ the organization's code.
 An `ExecConnection` whose player's access or session ends is closed for good with
 `EXEC_CLOSE_ACCESS_ENDED` (4403); `onAccessEnded(listener)` hears the reason.
 
-Driving the Game API or realtime surface with an identity session token instead of an app-scoped token fails with the realtime `RealtimeConnectionEvent` codes `APP_TOKEN_REQUIRED` / `APP_SCOPE_MISMATCH`; an app token whose TTL elapsed mid-session yields the `UdpErrorCode` `TOKEN_EXPIRED`. Minting a portal code for an untrusted app without consent surfaces as `PortalConsentRequiredError` (or a `FORBIDDEN`/`CONSENT_REQUIRED` GraphQL error when calling the API directly). See [Error codes](/overview/error-codes).
+Driving the Application API or realtime surface with an identity session token instead of an app-scoped token fails with the realtime `RealtimeConnectionEvent` codes `APP_TOKEN_REQUIRED` / `APP_SCOPE_MISMATCH`; an app token whose TTL elapsed mid-session yields the `UdpErrorCode` `TOKEN_EXPIRED`. Minting a portal code for an untrusted app without consent surfaces as `PortalConsentRequiredError` (or a `FORBIDDEN`/`CONSENT_REQUIRED` GraphQL error when calling the API directly). See [Error codes](/overview/error-codes).
 
 ## Low-level GraphQL access
 
@@ -642,4 +642,4 @@ for the underlying operations.
 
 ## Schema reference
 
-Generated operation types ship with the npm package. Platform GraphQL shapes are documented under **[CrowdyJS GraphQL reference](/crowdyjs/reference/graphql-overview)** and the Management / Game API schema tabs.
+Generated operation types ship with the npm package. Platform GraphQL shapes are documented under **[CrowdyJS GraphQL reference](/crowdyjs/reference/graphql-overview)** and the Management / Application API schema tabs.

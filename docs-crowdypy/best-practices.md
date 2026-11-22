@@ -13,7 +13,7 @@ title: Best practices
 - **Keep columns as views.** Batch columns and actor snapshots are numpy views
   of native memory. Index and filter them in numpy, and copy only what you
   keep.
-- **One game client per app.** Point it at the minted `game_api_url` with
+- **One game client per app.** Point it at the minted `application_api_url` with
   `discovery_url` set, and let `refresh_gameplay_token()` keep its token
   current. The UDP connection keeps its server across a refresh.
 - **No warm-up send.** The replication server (v0.42.0 and later) holds your

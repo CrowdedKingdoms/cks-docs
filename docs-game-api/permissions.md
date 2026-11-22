@@ -23,9 +23,9 @@ A player's effective abilities come from three layers that stack:
 | Layer | Where you set it | Scope | Answers |
 | ----- | ---------------- | ----- | ------- |
 | **App access + tier** | [Management API](/management-api/intro) | Whole app | Can this player play, and what does their tier allow everywhere? |
-| **Grid permissions** | Game API — [Grids and permissions](grids-and-permissions) | A 3D region | What may this player do in this specific area? |
-| **Team roles** | Game API — [Teams](teams) | A team | Who may manage this team, and what does the team grant in the world? |
-| **Channel roles** | Game API — [Channels](channels) | A channel | Who may manage this channel, and who may publish to it (`send_messages`)? |
+| **Grid permissions** | Application API — [Grids and permissions](grids-and-permissions) | A 3D region | What may this player do in this specific area? |
+| **Team roles** | Application API — [Teams](teams) | A team | Who may manage this team, and what does the team grant in the world? |
+| **Channel roles** | Application API — [Channels](channels) | A channel | Who may manage this channel, and who may publish to it (`send_messages`)? |
 
 Tiers set the baseline for the whole app. Grids add **spatial** rules on top —
 either expanding control in an area (e.g. a player owns their plot) or

@@ -21,10 +21,10 @@ Docker runs.
 ## How it works
 
 ```text
-Management API           Game API                     UDP
+Management API           Application API                     UDP
 ──────────────           ────────                     ─────────────
 login / register   ──▶   (per derived account)
-mintAppToken       ──▶   app token + gameApiUrl
+mintAppToken       ──▶   app token + applicationApiUrl
                          serverWithLeastClients ──▶   session registered
                          ◀── ip4, clientPort
 (wait ~1.5 s)
@@ -98,7 +98,7 @@ docker build -t cks-loadtest .
 Configure with CLI flags, `LT_*` environment variables, or a `KEY=VALUE`
 file (precedence: CLI > env > file). Point `--management-api-url` at the
 origin you use for your game — prefer
-`platformConfig.sharedGameApiUrl` or the URL `mintAppToken` returned, not
+`platformConfig.sharedApplicationApiUrl` or the URL `mintAppToken` returned, not
 a host copied from an old page.
 
 A minimal run:

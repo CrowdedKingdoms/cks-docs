@@ -87,8 +87,8 @@ every callback runs on the thread that calls `tick()`.
 - **Loads**: `ensureAroundAsync(center, distance)` asks for the stored chunks in
   range that the store does not hold, as boxes (a step along one axis at range 8
   asks for the 289 it uncovers), and returns at once; `tick()` applies what
-  arrived within `Options::adoptBudgetUs` (2 ms). The Game API's source reads each
-  box in pages of the size the server applied (Game API v2.67.0); a chunk two
+  arrived within `Options::adoptBudgetUs` (2 ms). The Application API's source reads each
+  box in pages of the size the server applied (Application API v2.67.0); a chunk two
   pages return is applied once (`duplicatePageChunks()`). `ensureAround()` does the
   same and waits. Each chunk's `voxelStates` go over its stored grid: since ck-api
   v2.33.0 they carry every voxel edit recorded for the chunk (a hub's or mod's
@@ -98,7 +98,7 @@ every callback runs on the thread that calls `tick()`.
   is newer, and this client's unanswered edits show over it; a chunk holding a
   seeded grid not yet written back is never overwritten. `voxelStatesTruncated`
   reaches `ChunkData`, with the chunk's `voxelsUpdatedAt` (its last whole-chunk
-  write, Game API v2.70.0) as `storedAtMs` and the row's `updatedAt` as
+  write, Application API v2.70.0) as `storedAtMs` and the row's `updatedAt` as
   `rowAtMs` (CrowdyCPP 0.85.0). An `IChunkSource` of your own reports
   `voxelStates` with each entry's `updatedAtMs`, sets
   `StoredChunk::voxelsUpdatedAtMs` when it knows the voxels write (left unset,
@@ -107,7 +107,7 @@ every callback runs on the thread that calls `tick()`.
   `Options::readLimits` before it is decoded: a grid must be 4,096 bytes, at most
   65,536 voxel states a chunk and 262,144 a reply, and a state over 64 KiB is
   dropped with its type kept.
-- **Merging by the server's time** (CrowdyCPP 0.84.0, Game API v2.69.0): each
+- **Merging by the server's time** (CrowdyCPP 0.84.0, Application API v2.69.0): each
   voxel keeps the value the server confirmed last and when (`confirmedAtMs()`):
   the chunk's whole-chunk write (`voxelsUpdatedAt`; the row's write before
   0.85.0), a voxel state's `updatedAt`, a notification's time, a recorded edit's
@@ -144,7 +144,7 @@ every callback runs on the thread that calls `tick()`.
   outcomes (for shutdown).
 - **Refused write-backs**: the write-back is `updateChunk` as the player, so it
   persists only chunks the player may build in (see
-  [Writing whole chunks](/game-api/grids-and-permissions#writing-whole-chunks)).
+  [Writing whole chunks](/application-api/grids-and-permissions#writing-whole-chunks)).
   A refusal the server will not change (`FORBIDDEN`, `SCOPE_MISSING`, a
   validation error, `NOT_FOUND`, `extensions.retryable: false`, HTTP 400, 403,
   404, 413 or 422) is sent once and dropped. Any other failure (`PLATFORM_BUSY`,
@@ -172,7 +172,7 @@ every callback runs on the thread that calls `tick()`.
   16×16×16 chunk. An edit it cannot hold (a type outside 0-255, a position
   outside 0-15) goes to the chunk's overlay, and `voxelTypeAt` returns it.
 
-Measured on our builder (0.84.0, each edit dated as Game API v2.69.0 does): 125
+Measured on our builder (0.84.0, each edit dated as Application API v2.69.0 does): 125
 chunks with 256 edits each (64-byte states) parse in about 30 ms on the store's
 thread and hold 3.5 MB, and the longest tick applying them takes about 1.6 ms on
 the default 2 ms budget (0.6 ms on a 500 µs one); range 8 (4,913 chunks, most of

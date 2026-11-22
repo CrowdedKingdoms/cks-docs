@@ -51,7 +51,7 @@ They live on the **Crowdy Mods** subsystem (`UCrowdyMods`, a Game Instance subsy
 | **Build Client Mod**, **Deploy Client Mod** | `UCrowdyMods::BuildClientMod(...)`, `UCrowdyMods::DeployClientMod(...)` | The same two steps for a mod's CLIENT half. No run lock, no pinned revision and no Allow Live Modding check. |
 | **Run Project**, **Get Project Status** | `UCrowdyMods::RunProject(...)`, `UCrowdyMods::GetProjectStatus(...)` | Build and deploy one revision of a Studio project, and read where each half is. See [Studio Dock](./studio-dock.md#run-a-project). |
 
-The player must be signed in to the app. Grid ids are 64-bit: keep them as Integer64 in Blueprint and `int64` in C++. Every build, deploy and read (**Build Mod**, **Deploy Mod**, **Set Mod Enabled**, **List Mods**, **List My Mods** and the Studio calls) needs Game API v2.73.0; an older one refuses it with `GRAPHQL_VALIDATION_FAILED`.
+The player must be signed in to the app. Grid ids are 64-bit: keep them as Integer64 in Blueprint and `int64` in C++. Every build, deploy and read (**Build Mod**, **Deploy Mod**, **Set Mod Enabled**, **List Mods**, **List My Mods** and the Studio calls) needs Application API v2.73.0; an older one refuses it with `GRAPHQL_VALIDATION_FAILED`.
 
 ## Example: a guestbook on a plot
 
@@ -80,7 +80,7 @@ A crate that does not compile is not an error. **Build Mod** ends with **Result*
 
 **Deploy Mod** takes the **Build Id** from a successful build. The mod's name is 1 to 48 lowercase letters, digits, `-` or `_`; a grid holds at most 8 mods and a player at most 64. Deploying a new version of a running mod restarts it.
 
-**Set Mod Enabled** with **Enabled** true switches it on. Since Game API v2.66.0 a switched-on mod starts when a player is in its grid, so nothing needs to start it. A call starts it too, which covers the couple of minutes after a platform update in which a player's arrival may not.
+**Set Mod Enabled** with **Enabled** true switches it on. Since Application API v2.66.0 a switched-on mod starts when a player is in its grid, so nothing needs to start it. A call starts it too, which covers the couple of minutes after a platform update in which a player's arrival may not.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">

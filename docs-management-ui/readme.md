@@ -67,7 +67,7 @@ You see the tab with the organization's `manage_compute` or `view_compute_diagno
 
 ## Integrating with APIs
 
-The portal uses the **Management API**. Game clients and dedicated servers use the **Game API** and **Replication API** with **app-scoped tokens** after authenticating; see [CrowdyJS](/crowdyjs/intro) for browser games and [Connecting game clients](/management-ui/client-integration) for the production hosts.
+The portal uses the **Management API**. Game clients and dedicated servers use the **Application API** and **Replication API** with **app-scoped tokens** after authenticating; see [CrowdyJS](/crowdyjs/intro) for browser games and [Connecting game clients](/management-ui/client-integration) for the production hosts.
 
 For custom studio backends, sign in with an account your studio holds and use the [Management API GraphQL reference](/management-api/reference/graphql-overview) alongside [Shared environment & billing](/management-api/shared-environment). Org tokens (your organization's **API Credentials** tab) are for one thing today: signing in and managing your [org-managed players](/management-api/org-managed-players) from your server.
 

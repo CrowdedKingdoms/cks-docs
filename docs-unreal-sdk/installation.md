@@ -84,7 +84,7 @@ Enabling `CrowdySDK` brings in all twelve modules in this table, including the t
 | `CrowdySDKEditor` | Editor | Turns event and state markers into Blueprint authoring surfaces and bakes them for cooked builds. |
 | `CrowdyStudio` | Editor | Crowdy Studio, the management console: sign-in, apps, Config Sync, authoring pages. |
 
-The SDK has no Game Model API: the game API no longer serves game models, and the SDK dropped
+The SDK has no Game Model API: the Application API no longer serves game models, and the SDK dropped
 its side of them in v2.19.0. Keep the state your game must trust in
 your server code on [ck-exec](/exec/intro); see
 [Move from Game Models](./exec/move-from-game-models.md) and [the two planes](./concepts/two-planes.md).

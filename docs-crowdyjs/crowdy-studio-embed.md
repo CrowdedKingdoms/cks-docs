@@ -313,7 +313,7 @@ third-party game must never read one. A host that *does* hold an identity
 session passes its own transport through the `github` option of
 `createCrowdyStudioEmbed` / `mountCrowdyStudio`. Nothing GitHub-related is
 stored in the browser. See
-[Connect your GitHub repo to a Studio project](/game-api/crowdy-studio-github).
+[Connect your GitHub repo to a Studio project](/application-api/crowdy-studio-github).
 
 ### The game editor (18.23+)
 
