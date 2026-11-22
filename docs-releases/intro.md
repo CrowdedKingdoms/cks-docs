@@ -7,7 +7,7 @@ title: Changelog
 # API changelog
 
 Notable, consumer-facing changes to the public Crowded Kingdoms APIs (Management API,
-Application API, Replication API) and SDKs. Newest first.
+Game API, Replication API) and SDKs. Newest first.
 
 The intent is that a breaking change ships with a deprecation window — the field keeps
 working and is marked `@deprecated` in the schema (visible in the
@@ -15,14 +15,14 @@ working and is marked `@deprecated` in the schema (visible in the
 a stated removal date. **Four removals did not get one**, and each is called out in
 its own entry rather than left to be discovered: the customer-provisioned
 environment surface on [2026-07-27](#2026-07-27), the dev sign-in bypass on
-[2026-08-20](#2026-08-20), the Application API's legacy engines on
+[2026-08-20](#2026-08-20), the game API's legacy engines on
 [2026-09-28](#2026-09-28-dev-the-legacy-engines-removed) on the dev environment, which test
 followed on 2026-10-04 and production on 2026-10-06, and Crowdy Games hosting on
 [2026-10-29](#2026-10-29-crowdy-games-retired-host-your-game-yourself) on every
 environment. Treat **the published SDL as the authority** on what exists today; this page
 is the record of how it got there.
 
-Older entries describe the Application API's legacy engines (game models, automations, compute
+Older entries describe the game API's legacy engines (game models, automations, compute
 modules and player code), which ck-exec replaced. Their links lead to the matching section
 of [from the legacy engines](/exec/from-the-legacy-engines), which maps what you used to
 what you use now.
@@ -32,7 +32,7 @@ what you use now.
 Several entries below announce a `crowdy-compute` CLI. It was an internal
 convenience and **was never published**. The entries are left as written because
 this page is a historical record. The compute modules it deployed were replaced by
-ck-exec, which builds and deploys through the Application API (`execBuild`, `execDeploy`); its
+ck-exec, which builds and deploys through the game API (`execBuild`, `execDeploy`); its
 own CLI is not published either. See
 [from the legacy engines](/exec/from-the-legacy-engines#build-and-deploy). To build and test
 on your own machine, use the open [dev kit](/exec/develop-locally).
@@ -56,7 +56,7 @@ Application API v2.85.0, CrowdyJS 18.39.0, CrowdyCPP 0.92.0, CrowdyPy 0.39.0.
 
 ## 2026-11-22 (the monthly budget stops spending, and other fixes)
 
-Application API v2.84.0.
+Game API v2.84.0.
 
 - **An app's monthly budget is enforced.** `setAppBudget` used to record the cap only. Now, once the app's spend this
   calendar month (UTC) reaches it, the app is denied with `spend_cap`, as it is at an hourly or daily cap, until the
@@ -70,7 +70,7 @@ Application API v2.84.0.
 
 ## 2026-11-22 (choose whose voice and video each player receives)
 
-Replication API v0.49.0 and Application API v2.83.0. The message is in
+Replication API v0.49.0 and Game API v2.83.0. The message is in
 [Wire formats](/replication-api/wire-formats#speaker-lists-client_media_speakers-47).
 
 - **A game can name, for each player, whose spatial voice and whose webcam video it receives.** The realtime servers
@@ -139,7 +139,7 @@ Voice reaches one chunk by default and Crowdy State eight, voice can go to a cha
 
 ## 2026-11-21 (corrections from the site review)
 
-- **`setPlayerRateMarkup`'s description is corrected** (Application API v2.82.1). It said markup income
+- **`setPlayerRateMarkup`'s description is corrected** (Game API v2.82.1). It said markup income
   "is paid out via the P4b payout ledger", and no payout exists. Markup income is credited to your
   organization's wallet with each player charge, and wallet credit pays only for Crowded Kingdoms fees
   (API Terms §4.17). How markup works did not change.
@@ -152,7 +152,7 @@ Voice reaches one chunk by default and Crowdy State eight, voice can go to a cha
 
 ## 2026-11-21 (reserved memory is charged)
 
-- **The memory your compute modules reserve is charged by the GB-hour** (Application API v2.81.0 and
+- **The memory your compute modules reserve is charged by the GB-hour** (Game API v2.81.0 and
   v2.82.0, ck-exec 0.23). Each running instance reserves its `memory_mb` times its copies (a hub 64 MiB
   by default, a spoke 16 copies of that, a player's mod 32 MiB) for as long as it runs, whatever it
   uses. Your organization gets **730 GB-hours** a month free across all its apps, 1 GB held all month;
@@ -160,7 +160,7 @@ Voice reaches one chunk by default and Crowdy State eight, voice can go to a cha
   here, although their CPU bills their own wallets. An app that was already reserving memory in the
   month the rate was posted keeps it free until that month ends. See
   [Usage and budgets](/exec/operations#usage-and-budgets).
-- **The rate card says which allowance is the organization's** (Application API v2.81.0).
+- **The rate card says which allowance is the organization's** (Game API v2.81.0).
   `meteredRateCard` adds `allowancePerOrganization`, true for `wasm_memory_reserved`, whose
   `freeUnits` (byte-seconds; 3,600,000,000,000 is a GB-hour) is the organization's already. Every
   other allowance is one app's, and an organization's apps share `allowancePool.factor` times it.
@@ -168,7 +168,7 @@ Voice reaches one chunk by default and Crowdy State eight, voice can go to a cha
 
 ## 2026-11-20 (organizations without a funded wallet; the second data-out band)
 
-- **New apps are unlisted** (Application API v2.80.0). `createApp` creates an app `UNLISTED` unless
+- **New apps are unlisted** (Game API v2.80.0). `createApp` creates an app `UNLISTED` unless
   `visibility` is given; set it `PUBLIC` with `updateApp` (or in Studio, the app's settings) to list
   it in the marketplace. Apps created before keep their visibility.
 - **At most 10 apps without a funded wallet or auto-billing.** `createApp`, and restoring an archived
@@ -191,7 +191,7 @@ Voice reaches one chunk by default and Crowdy State eight, voice can go to a cha
 
 ## 2026-11-19 (channel and team caps are enforced)
 
-- **`maxMembers` and `maxGroupsPerUser` now refuse** (Application API v2.77.0). The caps an app sets with
+- **`maxMembers` and `maxGroupsPerUser` now refuse** (Game API v2.77.0). The caps an app sets with
   `setChannelPolicy` and `setTeamPolicy` were stored and returned but not checked. A join, an add
   (including approving a request) or a creation past either now fails with `GROUP_LIMIT_REACHED`
   (409); `extensions.limit` names the cap and `extensions.max` its value. Only active members
@@ -201,7 +201,7 @@ Voice reaches one chunk by default and Crowdy State eight, voice can go to a cha
 
 ## 2026-11-19 (an organization's apps share one free allowance)
 
-- **One free allowance per organization** (Application API v2.75.0): an organization's apps share one
+- **One free allowance per organization** (Game API v2.75.0): an organization's apps share one
   monthly allowance worth three apps' quotas (15 GB of egress, 15 GB of ingress, 60 CPU-hours,
   3 GB-months of stored data and 3 GB of compute-module writes), however many apps it has, and any
   app may use all of it. It applies from November 2026: an app that used a meter this month before
@@ -266,8 +266,8 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   Channels** and the last 200 log lines of a Mod Script. The Studio links come from the platform,
   and a new project's client half from the platform's client starter. See
   [Studio Dock](/unreal-sdk/runtime/studio-dock).
-- **CrowdyCPP 0.87.0, and mod calls need Application API v2.73.0.** Every mod build, deploy and read, and
-  Server Compute's builds, need Application API v2.73.0, which every tier runs; each build names the Studio
+- **CrowdyCPP 0.87.0, and mod calls need Game API v2.73.0.** Every mod build, deploy and read, and
+  Server Compute's builds, need Game API v2.73.0, which every tier runs; each build names the Studio
   project and revision it came from. **Fetch Chunk** needs v2.70.0. See
   [Mods](/unreal-sdk/runtime/mods).
 
@@ -277,7 +277,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   player's stored data with it; stored input logs $0.40 a GB-month (was $0.10); reserved throughput $4
   per MB/s a month (was $3). An app that already used one of these meters in its current month keeps that
   month's rate until the month ends. See the [Pricing page](https://crowdedkingdoms.com/pricing).
-- **The smallest top-up** (Application API v2.74.0): $10 for an organization wallet and $5 for a player wallet,
+- **The smallest top-up** (Game API v2.74.0): $10 for an organization wallet and $5 for a player wallet,
   for `createCheckout` (`ORG_WALLET_TOPUP`, `PLAYER_WALLET_TOPUP`) and for an auto-recharge amount
   (`setAutoBilling`, `setPlayerAutoBilling`). A smaller amount is refused with
   [`TOP_UP_BELOW_MINIMUM`](/overview/error-codes) (`extensions.minimumCents`, `extensions.wallet`).
@@ -287,7 +287,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
 
 ## 2026-11-18 (a Studio dock in a native game)
 
-- **A mod knows the Studio revision it runs** (Application API v2.73.0): `execModBuild` and
+- **A mod knows the Studio revision it runs** (Game API v2.73.0): `execModBuild` and
   `execModClientBuild` take an optional `studio: { projectId, revision }`, a Crowdy Studio project
   of yours at a revision it has reached, and the build, the mod version and the CLIENT half deployed
   from it report `studioProjectId` and `studioRevision`. Crowdy Studio sends them from CrowdyJS
@@ -305,7 +305,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   `CrowdyStudioModRunner`, a draft test or live deploy of one saved revision that never blocks the
   game thread and reports each target's build log, diagnostics and version. `studioOrigin()` gives
   the Studio origin and wallet page beside the game's API. See
-  [Crowdy Studio in a native game](/crowdycpp/crowdy-studio). It needs no newer Application API.
+  [Crowdy Studio in a native game](/crowdycpp/crowdy-studio). It needs no newer Game API.
 - **CrowdyCPP's build-log parser no longer uses `std::regex`**, which could overflow a small stack
   on a long log line.
 - **The model endpoint's errors, corrected:** an app that switched the agent off answers
@@ -314,7 +314,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
 
 ## 2026-11-17 (data out priced by each connection's rate)
 
-- **Egress is priced in rate bands** (Application API v2.71.0, every environment): graduated bands by the
+- **Egress is priced in rate bands** (Game API v2.71.0, every environment): graduated bands by the
   rate each client connection is served at, averaged over each UTC minute. There are two: $0.05 a GB
   for the first 22 kbps of each connection-minute (its first 165,000 bytes, about 10 MB per connected
   hour) and $0.0025 a GB above it, so a busy connection pays close to $0.0025 for every GB and serving
@@ -344,7 +344,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
 
 ## 2026-11-13 (a whole-chunk write wins; response limits in CrowdyCPP)
 
-- **A whole-chunk write supersedes older edits** (Application API v2.70.0): `updateChunk` and a mod's
+- **A whole-chunk write supersedes older edits** (Game API v2.70.0): `updateChunk` and a mod's
   `world.set_chunk` supersede every voxel edit recorded for the chunk at or before them, so the
   chunk reads back exactly as written, and `Chunk.voxelsUpdatedAt` says when. A chunk-state or
   LOD write moves only `updatedAt`. A grid read earlier and written back now erases the edits made
@@ -363,7 +363,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
 
 ## 2026-11-12 (chunk stores merge by the server's time; the servers acknowledge bound control frames; CrowdyCPP hardening)
 
-- **Each voxel state says when it was recorded** (Application API v2.69.0): `VoxelState.updatedAt` is the
+- **Each voxel state says when it was recorded** (Game API v2.69.0): `VoxelState.updatedAt` is the
   edit's time for a recorded edit and the chunk's write for a state stored with its grid, the same
   time as the edit's `createdAt` in `listVoxelUpdatesByDistance`. Realtime servers v0.46.0 record a
   realtime edit with the moment they accepted it, so a voxel notification's `epochMillis` and the
@@ -379,7 +379,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   matches by its value; a catch-up covers every chunk the store tracks (or boxes you pass);
   `evict` and `pruneIf` prune any view. CrowdyJS 18.31.1 ([stores](/crowdyjs/stores)), CrowdyCPP
   0.84.0 ([world session](/crowdycpp/world-session), also a store without a connection and an
-  asynchronous chunk source), CrowdyPy 0.32.0. They need Application API v2.69.0.
+  asynchronous chunk source), CrowdyPy 0.32.0. They need Game API v2.69.0.
 - **CrowdyCPP 0.83.0 hardening** (CrowdyPy 0.31.0): `Json::fromMsgpack()` refuses container map
   keys (a nested key blew up memory), `dump()` writes NaN as `null` in place, unchanged keyframes
   of many actors are not gameplay input, a legacy `COMMAND_RECONNECT` is paced, and
@@ -388,9 +388,9 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
 ## 2026-11-11 (mods start for players already there; region reads; realtime edits reach mods; whole-chunk writes; control frames bound to the session; a ChunkStore the game thread can rely on)
 
 - **A switched-on mod starts when a player is in its grid**: when it is switched on with a player
-  already inside, when one appears there, and when one walks in (Application API v2.66.0). A player's
+  already inside, when one appears there, and when one walks in (Game API v2.66.0). A player's
   realtime presence counts; the game needs no heartbeat call. See [mods](/exec/mods).
-- **Region reads take a box, a `since` and stable pages** (Application API v2.67.0):
+- **Region reads take a box, a `since` and stable pages** (Game API v2.67.0):
   `getChunksByDistance` and `listVoxelUpdatesByDistance` read a cube (`centerCoordinate`,
   `maxDistance`) or a box (`lowChunk`, `highChunk`, at most 4,913 chunks), so a step reads only
   the slab it uncovers; pages are stable and answer the `limit` and `skip` applied; `since` keeps
@@ -401,7 +401,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
 - **Players' realtime voxel edits reach the grid's mods** as `voxels` events, and **hub and mod
   code writes in bulk**: `world.set_voxels` takes 4,096 writes at one write unit per 64 voxels,
   and `world.set_chunk` replaces a whole chunk, telling nearby players once to read it again
-  (`CHUNK_CHANGED_NOTIFICATION`, 146) instead of once per voxel. Application API v2.68.1 with replication
+  (`CHUNK_CHANGED_NOTIFICATION`, 146) instead of once per voxel. Game API v2.68.1 with replication
   servers v0.45.0; `ckx-sdk` 0.14.1 (use it for large batches in a mod: 0.14.0 ran out of a mod's
   fuel past about 750 writes). CrowdyJS 18.29.0 (`chunkChanged`), CrowdyCPP 0.81.0
   (`Handlers::chunkChanged`), CrowdyPy 0.29.0 (`chunk_changed`). See [world and platform
@@ -425,7 +425,7 @@ A breaking release: follow the plugin's `MIGRATION.md`, and deploy your app's se
   address.** `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` answer
   `EMAIL_CONFIRMATION_REQUIRED` (403), the last of the player's checks, until the player opens the
   link `register` emailed. Accounts made before then and players an organization manages are not
-  asked. Application API v2.65.0.
+  asked. Game API v2.65.0.
 - **What to do.** A browser game using hosted sign-in does nothing: Studio tells the player and
   resends the link. A native client that signs players up tells them to open the link, offers
   `resendConfirmationEmail(email)` (public, callable without an `Origin`, always `true`), and mints
@@ -542,7 +542,7 @@ and its replacement, now that each is removed: [Removed after 2.25](/unreal-sdk/
 
 ## 2026-11-04 (Crowded Kingdoms admits players from 13)
 
-Production opened to players aged 13 to 17 on 2026-11-04: Application API v2.61.1, replication server
+Production opened to players aged 13 to 17 on 2026-11-04: Game API v2.61.1, replication server
 v0.43.0 and ck-exec 0.20.0, with CrowdyJS 18.25.0, CrowdyCPP 0.76.0 and CrowdyPy 0.24.0. See
 [Players under 18 and player safety](/overview/player-safety).
 
@@ -563,7 +563,7 @@ v0.43.0 and ck-exec 0.20.0, with CrowdyJS 18.25.0, CrowdyCPP 0.76.0 and CrowdyPy
 - **Not yet in production: parental consent.** Kids Web Services is not available there yet:
   `requestParentalConsent` answers `PARENTAL_CONSENT_UNAVAILABLE` with `extensions.reason`
   `not_configured`, so a player under 18 cannot turn voice or video on there yet.
-- **Application API v2.61.1:** `PARENTAL_CONSENT_UNAVAILABLE` carries `extensions.reason`
+- **Game API v2.61.1:** `PARENTAL_CONSENT_UNAVAILABLE` carries `extensions.reason`
   (`not_configured`, `provider_refused`, `provider_unavailable`); after an age refusal, a client
   that sends `x-ck-device-id` is locked by that device for 24 hours, and one that sends none by
   its address and browser for an hour; a player under 18 is refused `SAFETY_LOG_REQUIRED` or
@@ -593,7 +593,7 @@ nothing deprecated.
 
 ## 2026-11-02 (dev: the safety baseline completed; the realtime rules; the SDKs)
 
-On the dev environment: Application API v2.61.0, replication server v0.43.0, CrowdyJS 18.24.0, CrowdyCPP
+On the dev environment: Game API v2.61.0, replication server v0.43.0, CrowdyJS 18.24.0, CrowdyCPP
 0.75.0 and CrowdyPy 0.23.0. See [Players under 18 and player safety](/overview/player-safety).
 
 - **The realtime servers enforce players' settings, contacts and blocks** (v0.43.0), on the
@@ -623,7 +623,7 @@ On the dev environment: Application API v2.61.0, replication server v0.43.0, Cro
   the age and document calls and the refusal readers; CrowdyCPP the same, and
   `crowdy::startGameSession(token, options)` to start a session from any app token; CrowdyPy
   `client.safety` and `client.moderation`.
-- **Coming in the next Application API release:** `PARENTAL_CONSENT_UNAVAILABLE` says why in
+- **Coming in the next Game API release:** `PARENTAL_CONSENT_UNAVAILABLE` says why in
   `extensions.reason` (`not_configured`, `provider_refused`, `provider_unavailable`).
 
 ## 2026-10-31 (Unreal SDK v2.23.0: nearby text chat; how far voice reaches)
@@ -641,7 +641,7 @@ Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-31-sd
 
 ## 2026-10-30 (dev: players under 18 and player safety)
 
-On the dev environment: Application API v2.60.0, and ck-exec 0.20.0 with `ckx-sdk` 0.13.0 and the dev
+On the dev environment: Game API v2.60.0, and ck-exec 0.20.0 with `ckx-sdk` 0.13.0 and the dev
 kit 0.6.0. Crowded Kingdoms opens to players aged 13 to 17 at one moment, once this baseline is
 live in production; until then every player is 18 or older. See
 [Players under 18 and player safety](/overview/player-safety).
@@ -770,7 +770,7 @@ Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-28-sd
   [From the command line](/unreal-sdk/exec/deploy-with-server-compute#from-the-command-line).
 - **CrowdyCPP 0.74.0.**
 
-## 2026-10-26 (dev: a deploy stops the node types it drops, and takes their switches with them; ck-exec 0.19.0, Application API v2.58.0, CrowdyJS 18.22.0, CrowdyCPP 0.74.0, CrowdyPy 0.22.0)
+## 2026-10-26 (dev: a deploy stops the node types it drops, and takes their switches with them; ck-exec 0.19.0, Game API v2.58.0, CrowdyJS 18.22.0, CrowdyCPP 0.74.0, CrowdyPy 0.22.0)
 
 - **A deploy or a rollback stops the node types it drops.** When `execDeploy` or
   `execActivateVersion` makes active a version without a type, that type's running instances
@@ -786,9 +786,9 @@ Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-28-sd
   could not be cleared while the type was gone (ck-exec 0.19.0). See
   [the kill switch](/exec/operations#the-kill-switch).
 - **`ExecInstance.orphaned`** is true for an instance whose type the active version no longer
-  deploys, and null from an older manager (Application API v2.58.0). CrowdyJS 18.22.0's
+  deploys, and null from an older manager (Game API v2.58.0). CrowdyJS 18.22.0's
   `exec.instances`, CrowdyCPP 0.74.0's `exec().instances` and CrowdyPy 0.22.0's
-  `exec.instances` return it. Each needs Application API v2.58.0, which an older API refuses to select.
+  `exec.instances` return it. Each needs Game API v2.58.0, which an older API refuses to select.
   If your tooling stopped a type's instances itself before deploying it away, it no longer
   needs to.
 
@@ -820,7 +820,7 @@ to the Call Server Function action's On Success or On Failed needs a new last pa
 - **CrowdyCPP 0.73.0** on every tier, and **On Send Refused** for a realtime send the server
   refused. See [When the server refuses a send](/unreal-sdk/runtime/connection-and-reconnect#when-the-server-refuses-a-send).
 
-## 2026-10-25 (dev and test: an org token of a switched-off organization; Application API v2.57.1)
+## 2026-10-25 (dev and test: an org token of a switched-off organization; Game API v2.57.1)
 
 - **A switched-off organization is told so on dev and test.** An org token whose
   organization's managed players are switched off was refused `TIER_ACCESS_REQUIRED` there,
@@ -831,7 +831,7 @@ to the Call Server Function action's On Success or On Failed needs a new last pa
   may use the environment. Production is unchanged. See
   [Org-managed players](/management-api/org-managed-players#errors).
 
-## 2026-10-25 (dev: names other players see, and a send in flight during a move; Application API v2.57.0, CrowdyJS 18.21.0, CrowdyCPP 0.73.0, CrowdyPy 0.21.0)
+## 2026-10-25 (dev: names other players see, and a send in flight during a move; Game API v2.57.0, CrowdyJS 18.21.0, CrowdyCPP 0.73.0, CrowdyPy 0.21.0)
 
 - **Gamertags and disambiguations refuse layout-changing characters.** `updateGamertag`,
   `register`, the org-managed player inputs and a managed assertion's `gamertag` claim
@@ -868,7 +868,7 @@ to the Call Server Function action's On Success or On Failed needs a new last pa
   `client.realtime.expectSequence()` and `sessionEpoch()` are new; CrowdyCPP adds
   `Connection::sessionEpoch()`.
 
-## 2026-10-21 (every environment: org-managed players, behind the Org-Managed Players Addendum; Application API v2.53.0, CrowdyJS 18.17.0, CrowdyCPP 0.69.0, CrowdyPy 0.17.0)
+## 2026-10-21 (every environment: org-managed players, behind the Org-Managed Players Addendum; Game API v2.53.0, CrowdyJS 18.17.0, CrowdyCPP 0.69.0, CrowdyPy 0.17.0)
 
 - **Org-managed players.** An organization that runs its own player accounts signs its
   players in itself, so they never type a Crowded Kingdoms password in its game and Crowded
@@ -913,7 +913,7 @@ to the Call Server Function action's On Success or On Failed needs a new last pa
 - **Fix:** CrowdyJS `isLegalAcceptanceRequiredError` and CrowdyPy
   `is_legal_acceptance_required_error` no longer read the organization's refusal as the
   player's own clickwrap.
-- Dev had a first version earlier the same day (Application API v2.52.x, CrowdyJS 18.16.0) without
+- Dev had a first version earlier the same day (Game API v2.52.x, CrowdyJS 18.16.0) without
   the addendum; test and production got both together.
 
 ## 2026-10-20 (dev: a browser sends opcode 140, and a voxel edit that waits for the server; CrowdyJS 18.15.0, CrowdyCPP 0.67.4, CrowdyPy 0.15.0)
@@ -1032,7 +1032,7 @@ and until it is regenerated Server Compute marks them Out of date and refuses to
   sign-in nodes carry `Result` and `Message`. Existing graphs keep their links. **Breaking in C++:**
   the pin delegate types are renamed (`FChannelAsyncResult`, `FTeamAsyncResult`, `FAuthAsyncResult` and
   the rest), so a handler bound with `AddDynamic` takes the added parameters. See [Channels](/unreal-sdk/runtime/channels#the-full-surface).
-- **A Server Object gateway must be on the Application API's own domains.** A new Project Settings entry,
+- **A Server Object gateway must be on the Game API's own domains.** A new Project Settings entry,
   **Allowed Exec Gateway Domains** (`AllowedExecGatewayDomains`), lists extra domains for a server
   you host yourself; a gateway outside both is refused for good. See
   [Server Object gateway domains](/unreal-sdk/reference/project-settings#server-object-gateway-domains).
@@ -1168,7 +1168,7 @@ and until it is regenerated Server Compute marks them Out of date and refuses to
   64-bit integer now (CrowdyJS 18.11.0).
 - The open [dev kit](/exec/develop-locally) carries ckx-sdk 0.10.0 (kit 0.3.0).
 
-## 2026-10-14 (dev: a sanction reaches a player in a paused app, one player's share of an app's instances, Crowd Altar answers `ACCOUNT_BLOCKED`; replication server v0.40.1, Application API v2.45.0, ck-exec 0.17.0, CrowdyPy 0.11.0, Crowd Altar v1.10.2)
+## 2026-10-14 (dev: a sanction reaches a player in a paused app, one player's share of an app's instances, Crowd Altar answers `ACCOUNT_BLOCKED`; replication server v0.40.1, Game API v2.45.0, ck-exec 0.17.0, CrowdyPy 0.11.0, Crowd Altar v1.10.2)
 
 - **A sanction reaches a player in a paused app.** A paused app keeps its rule for players
   whose access stands: their sends are answered `APP_PAUSED` and they still receive. A player
@@ -1179,7 +1179,7 @@ and until it is regenerated Server Compute marks them Out of date and refuses to
   server looks again ten seconds later and ends any token minted since. If the sanction was
   lifted inside those ten seconds (unsuspended, granted again, unblocked), that second look now
   leaves the player alone; before, it ended the token they minted after being let back in
-  (Application API v2.45.0).
+  (Game API v2.45.0).
 - **One player's share of an app's ck-exec instances.** Hubs placed for one player's own calls
   (a call or subscription to a new key, or `execConnect` placing one beside them) count against
   that player, at most 64 at once. Past it their next new key is answered `Unavailable`
@@ -1193,7 +1193,7 @@ and until it is regenerated Server Compute marks them Out of date and refuses to
   `client.teams.ban` / `unban`; `account_blocked_of` and `group_member_banned_of` read the
   refusals; a ck-exec connection closed `4403` is final, and `on_access_ended` hears why.
 
-## 2026-10-13 (dev: suspending, revoking or blocking a player cuts every access path, and channel and team bans; replication server v0.39.0, Application API v2.44.1, ck-exec 0.16.0, CrowdyJS 18.10.0, CrowdyCPP 0.63.0)
+## 2026-10-13 (dev: suspending, revoking or blocking a player cuts every access path, and channel and team bans; replication server v0.39.0, Game API v2.44.1, ck-exec 0.16.0, CrowdyJS 18.10.0, CrowdyCPP 0.63.0)
 
 - **A suspension or a revoke now cuts everything the player does in the app.** Before, it
   ended their gameplay tokens and refused signing in, but an open ck-exec connection stayed
@@ -1232,7 +1232,7 @@ and until it is regenerated Server Compute marks them Out of date and refuses to
   0.63.0.
 - **Hub voxel writes no longer wait for the list of realtime servers.** A hub's
   `world.set_voxels` paid about 430 ms whenever it wrote more than two seconds after its last
-  write, while the Application API read the list of realtime servers it announces writes to. The list
+  write, while the Game API read the list of realtime servers it announces writes to. The list
   is now refreshed in the background: on dev a hub's 16-voxel write takes about 15 ms (p50 14 ms
   in `or` and 19 ms in `va`, against 435 and 437 before).
 - **`rollbackVoxelUpdates` respects a closed wilderness.** When the app's wilderness is closed,
@@ -1261,7 +1261,7 @@ and until it is regenerated Server Compute marks them Out of date and refuses to
 
 ## 2026-10-13 (CrowdyCPP 0.62.0, CrowdyPy 0.10.0: the input log says what it lost)
 
-Both SDKs catch up with CrowdyJS 18.9.0, and both need the Application API release after v2.40.2,
+Both SDKs catch up with CrowdyJS 18.9.0, and both need the Game API release after v2.40.2,
 because every sessions read selects `missingRecords`.
 
 - **CrowdyCPP 0.62.0.** Sessions carry `missingRecords`. `graphql::inputLogReadRetryable(errors)`
@@ -1294,7 +1294,7 @@ The release after Server Objects removes the SDK's Game Model API, which is brea
 project that still uses it. The release vendors CrowdyCPP 0.57.0 on every tier. Per-item detail:
 [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-12-sdk-v2190).
 
-- **Signing in asks the player to agree to the terms and confirm their age.** For the Application API's
+- **Signing in asks the player to agree to the terms and confirm their age.** For the Game API's
   terms and age gate, a refused sign-in, restore or token refresh is held, and a prompt in the
   Crowded Kingdoms colors opens over the game; **Accept** records the agreement and the sign-in
   completes. A game can turn the prompt off and draw its own. Crowdy Studio shows the same prompt.
@@ -1355,7 +1355,7 @@ project that still uses it. The release vendors CrowdyCPP 0.57.0 on every tier. 
   actors are near a chunk; deploying asks for the `world.read` permission. See
   [Reads World Data](/unreal-sdk/exec/access-members-and-timers#platform-data).
 
-## 2026-10-12 (dev, latest: input logging reports what it lost, ends every session and says when to retry; replication server v0.38.1, Application API v2.41.0, CrowdyJS 18.9.0)
+## 2026-10-12 (dev, latest: input logging reports what it lost, ends every session and says when to retry; replication server v0.38.1, Game API v2.41.0, CrowdyJS 18.9.0)
 
 Input logging fixes and one new requirement. See [Input logging](/replication-api/input-logging).
 
@@ -1398,7 +1398,7 @@ Input logging fixes and one new requirement. See [Input logging](/replication-ap
 - **CrowdyJS 18.9.0** selects `missingRecords` and documents the above, so it needs this Game
   API. CrowdyCPP and CrowdyPy follow it.
 
-## 2026-10-10 (dev, later: faster hub voxel writes, mods hear every Application API voxel write, builds report their SDK; Application API v2.40.2, CrowdyJS 18.8.0, CrowdyCPP 0.61.0, CrowdyPy 0.9.0)
+## 2026-10-10 (dev, later: faster hub voxel writes, mods hear every Game API voxel write, builds report their SDK; Game API v2.40.2, CrowdyJS 18.8.0, CrowdyCPP 0.61.0, CrowdyPy 0.9.0)
 
 - **Hub voxel writes are faster.** `world.set_voxels` writes its batch in one statement and
   sends it to nearby players once, instead of one write and one send per voxel. On dev a
@@ -1406,7 +1406,7 @@ Input logging fixes and one new requirement. See [Input logging](/replication-ap
   hub got `DeadlineExceeded`. The batch is still all or none, and a voxel listed twice keeps
   the later write and reaches players once. See
   [World and platform data](/exec/world-and-platform-data).
-- **Mods hear every Application API voxel write.** A mod's `on_world` `voxels` events now come from
+- **Mods hear every Game API voxel write.** A mod's `on_world` `voxels` events now come from
   `world.set_voxels` (the app's hubs and mods, the mod's own included), `updateChunk` and an
   applied rollback, as well as `updateVoxel`; before, only `updateVoxel` produced them. A
   player's realtime voxel edit still produces none. See [Mods](/exec/mods).
@@ -1415,7 +1415,7 @@ Input logging fixes and one new requirement. See [Input logging](/replication-ap
   against, or `crowdy-client-sdk`'s for a CLIENT half, and the build log's first line names the
   toolchain. The platform compiles every crate against its own copy of the SDK, whatever version
   the crate names. CrowdyJS 18.8.0, CrowdyCPP 0.61.0 and CrowdyPy 0.9.0 return it, and need
-  Application API v2.40.2: an older API refuses their build calls. See [Builds](/exec/builds#building).
+  Game API v2.40.2: an older API refuses their build calls. See [Builds](/exec/builds#building).
 
 ## 2026-10-10 (dev: the open mod dev kit; ckx-sdk 0.9.0 on crates.io, with native tests)
 
@@ -1436,7 +1436,7 @@ Additive. Modules are unchanged (guest ABI 5).
   platform's bounds. A mod's `FakeGrid` answers it as the node API does, refusals included.
   `ckx_sdk::limits` states the platform's bounds. See [test](/exec/develop-locally#test).
 
-## 2026-10-10 (dev: free hub tier, pause signals, app-defined voxels, channel voice, hub grid and access APIs; replication server v0.37.0, Application API v2.40.1, ck-exec 0.15.0, CrowdyJS 18.7.0, CrowdyCPP 0.60.0, CrowdyPy 0.8.0)
+## 2026-10-10 (dev: free hub tier, pause signals, app-defined voxels, channel voice, hub grid and access APIs; replication server v0.37.0, Game API v2.40.1, ck-exec 0.15.0, CrowdyJS 18.7.0, CrowdyCPP 0.60.0, CrowdyPy 0.8.0)
 
 Additive, apart from three behaviour changes called out below. From the asks of a studio
 building a Minecraft integration.
@@ -1471,7 +1471,7 @@ building a Minecraft integration.
   wilderness setting; an app's own hub writes skip the wilderness rule. `execRestartType` moves a
   type's running instances to the active version. Players can be suspended until a time
   (`suspendAppAccess`), tier keys re-applied (`resyncTierGridPermissions`), and claims can grant
-  keys (`claimOwnerKeys`). Permission changes reach every Application API server at once. See
+  keys (`claimOwnerKeys`). Permission changes reach every Game API server at once. See
   [world and platform data](/exec/world-and-platform-data). **Behaviour change** for module
   authors: ckx-sdk 0.8.0 makes `Player.disambiguation` optional and voxel types `i16`.
 - **Idle players on different servers meet.** A heartbeat that reached a server ahead of the
@@ -1480,9 +1480,9 @@ building a Minecraft integration.
 - **CrowdyJS 18.7.0 / CrowdyCPP 0.60.0 / CrowdyPy 0.8.0**: optional voice payload helpers (a
   10-byte header, a packetizer, a jitter buffer; CrowdyCPP optionally wraps libopus), channel
   audio, opcode 140 delivered to the app, chunk stores that keep wide edits, CrowdyCPP's
-  `onVoxel`, and wrappers for everything above. They need Application API v2.40 or later.
+  `onVoxel`, and wrappers for everything above. They need Game API v2.40 or later.
 
-## 2026-10-09 (dev: input logging; replication server v0.36.1, Application API v2.39.0, CrowdyJS 18.6.0, CrowdyCPP 0.59.0, CrowdyPy 0.7.0)
+## 2026-10-09 (dev: input logging; replication server v0.36.1, Game API v2.39.0, CrowdyJS 18.6.0, CrowdyCPP 0.59.0, CrowdyPy 0.7.0)
 
 Additive. Nothing records until an app turns it on.
 
@@ -1503,7 +1503,7 @@ Additive. Nothing records until an app turns it on.
   Parity is pinned to CrowdyJS 18.6.0.
 - **CrowdyPy 0.7.0**: `client.input_log.sessions` / `messages`.
 
-## 2026-10-09 (dev: channel messages limited by distance; replication server v0.35.0, Application API v2.38.0, CrowdyJS 18.5.0, CrowdyCPP 0.58.0, CrowdyPy 0.6.0)
+## 2026-10-09 (dev: channel messages limited by distance; replication server v0.35.0, Game API v2.38.0, CrowdyJS 18.5.0, CrowdyCPP 0.58.0, CrowdyPy 0.6.0)
 
 Additive; receivers change nothing.
 
@@ -1651,7 +1651,7 @@ Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-07-sd
   (`crowdy.replication.tracker.maxqueuedupdates`). See
   [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-07-sdk-v2180).
 
-## 2026-10-07 (the terms and age gate: Application API v2.35.0 on dev, test and prod; CrowdyJS 18.4.0 and CrowdyCPP 0.57.0 on dev)
+## 2026-10-07 (the terms and age gate: Game API v2.35.0 on dev, test and prod; CrowdyJS 18.4.0 and CrowdyCPP 0.57.0 on dev)
 
 - **Players agree to the terms and attest the age of majority before playing.** Since Game
   API v2.35.0, `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` answer
@@ -1692,7 +1692,7 @@ Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-07-sd
 ## 2026-10-03 (dev: chunk loads show recorded voxel edits; CrowdyJS 18.2.0, CrowdyCPP 0.56.0)
 
 Every voxel write except a chunk write-back lands only in the chunk's edit log: a hub's or
-mod's `world.set_voxels`, `updateVoxel`, and realtime voxel updates. Since Application API v2.33.0 on
+mod's `world.set_voxels`, `updateVoxel`, and realtime voxel updates. Since Game API v2.33.0 on
 the dev environment, `getChunk` and `getChunksByDistance` return each recorded edit as a
 `voxelStates` entry with its voxel type (`getChunksByDistance` only when `voxelStates` is
 selected). The stored `voxels` hold none of them, so a client that reads only `voxels` loses a
@@ -1730,7 +1730,7 @@ The SDK side of the ck-exec preview's security review. On the dev environment.
   most specific grid over a chunk decides who builds there. See
   [open grids](/application-api/grids-and-permissions#open-grids).
 - **Where the connect token goes.** `exec.connect` dials a ck-exec gateway only when it is on the
-  platform's own domain, over `wss:` whenever the Application API is `https:`; any other gateway is
+  platform's own domain, over `wss:` whenever the game API is `https:`; any other gateway is
   refused without being dialed. See
   [connect from a game](/exec/connect-from-a-game#where-the-connect-token-goes).
 - **A refused connect token is `Denied` again** in Node (CrowdyJS with the `ws` package) and in
@@ -1793,7 +1793,7 @@ CrowdyCPP 0.52.0 and 0.53.0 carry the SDK side.
 
 ## 2026-09-28 (dev: the legacy engines removed)
 
-**Breaking, with no deprecation window, and on the dev environment only so far.** The Application API
+**Breaking, with no deprecation window, and on the dev environment only so far.** The game API
 removed its four legacy developer-code engines: game models, automations, compute modules, and
 player code with its browser client modules and player models. That took 129 root fields, 140
 types and 11 error codes out of the schema. ck-exec replaces them, and
@@ -1870,7 +1870,7 @@ One change, additive: the Backend selector gains a Test tier. Per-item detail: [
   Production, so the public release still defaults to Production. Each tier vendors its own
   CrowdyCPP (0.42.1). See [Project settings](/unreal-sdk/reference/project-settings#the-default-backend).
 
-## 2026-09-22 (grid-scoped parity: Application API, CrowdyJS 17.7.0, CrowdyCPP 0.43.0, crowdy-dsh 0.4.0)
+## 2026-09-22 (grid-scoped parity: Game API, CrowdyJS 17.7.0, CrowdyCPP 0.43.0, crowdy-dsh 0.4.0)
 
 Player code inside a grid can now do everything app-scoped code can, confined
 to the grid. Additive, except that the crowdy-dsh bridge protocol moves to v4
@@ -1946,7 +1946,7 @@ before-and-after of each: [What's Changed](/unreal-sdk/guides/whats-changed).
   panel get its height. See
   [Game Models authoring](/exec/from-the-legacy-engines#tools).
 
-## 2026-09-21 (Replication API v0.30.0 / v0.31.0, Application API v2.8, CrowdyJS 17.6, CrowdyCPP 0.42)
+## 2026-09-21 (Replication API v0.30.0 / v0.31.0, Game API v2.8, CrowdyJS 17.6, CrowdyCPP 0.42)
 
 Everything here is additive; a client that does nothing new sees nothing new.
 
@@ -1969,7 +1969,7 @@ Everything here is additive; a client that does nothing new sees nothing new.
   peer heartbeat no longer announces every actor to every server, so a sparse world
   no longer hits a fleet-wide chunk ceiling (~8 000 populated chunks) however many
   servers run. No wire change; nothing to change in a client.
-- **CLIENT compute mods: tick rate and mouse input** (Application API v2.8.0, CrowdyJS
+- **CLIENT compute mods: tick rate and mouse input** (Game API v2.8.0, CrowdyJS
   17.6.0). A CLIENT crate may set `[package.metadata.crowdy] tick_interval_ms`
   (16–1000; default 1000) in its `Cargo.toml` — the only key admitted in that table —
   and call `api::pointer_clicks()` (CLIENT only, `input` capability group, 400/s) to
@@ -1977,11 +1977,11 @@ Everything here is additive; a client that does nothing new sees nothing new.
   [Build mods — tick rate and mouse input](/build-a-game/bwf-mod-development#tick-rate-and-mouse-input).
 - **`emit_spatial("server_event", …)` is opcode 139** (`SERVER_EVENT_NOTIFICATION`)
   with the payload framed `[u16 eventType LE][state…]`, and `client_event` is 138
-  (Application API v2.8.0). Before this a `server_event` went out as an untyped generic
+  (Game API v2.8.0). Before this a `server_event` went out as an untyped generic
   spatial blob that typed decoders (CrowdyJS's event router, a CLIENT mod's scene
   catalog) never saw. [Compute host API](/exec/from-the-legacy-engines#realtime).
 
-## 2026-09-19 (Application API v2.7.0, Replication API v0.29.x)
+## 2026-09-19 (Game API v2.7.0, Replication API v0.29.x)
 
 - **`refreshAppToken` may now answer `authorizedServer: null` while your server is
   healthy.** A native client that passes `currentServer` on refresh is told to keep
@@ -1992,12 +1992,12 @@ Everything here is additive; a client that does nothing new sees nothing new.
   occasionally. CrowdyJS `PortalAPI.refresh(currentServer)` and CrowdyCPP
   `refreshToken` already do this; browser clients on the UDP proxy re-place on every
   refresh by design. [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
-- **Placement avoids hot servers** (Application API v2.7.0) and the replication servers
+- **Placement avoids hot servers** (Game API v2.7.0) and the replication servers
   rebalance resident players below their Full line (Replication API v0.29.0–v0.29.5,
   which also bundles server-to-server traffic). Server-side only; a client sees at
   most a `COMMAND_RECONNECT` it already had to handle.
 
-## 2026-09-16 (Application API v2.6.0, CrowdyJS 17.5, CrowdyCPP 0.41)
+## 2026-09-16 (Game API v2.6.0, CrowdyJS 17.5, CrowdyCPP 0.41)
 
 - **Bulk container reads and keyed seeding.** `gameModelContainers` pages for real
   (omitted `limit` = 200, max 1 000, `BAD_REQUEST` above) and forwards `bindingKey`;
@@ -2011,7 +2011,7 @@ Everything here is additive; a client that does nothing new sees nothing new.
   0.41.0 mirrors it. [Game models](/exec/from-the-legacy-engines#running-your-logic),
   [CrowdyJS game model](/exec/from-the-legacy-engines#calling-it-from-clients).
 
-## 2026-09-15 (Replication API v0.28.0, Application API / Management API)
+## 2026-09-15 (Replication API v0.28.0, Game API / Management API)
 
 Security hardening from an internal review of authentication and authorization.
 Nothing here changes a conforming client; each item says what would.
@@ -2046,9 +2046,9 @@ Nothing here changes a conforming client; each item says what would.
 - `OrgTokenWithSecret.token`'s description now says what is true: returned once, stored
   hashed.
 
-## 2026-09-14 (Application API v2.1–v2.4, CrowdyJS 17.2–17.4, CrowdyCPP 0.38–0.40)
+## 2026-09-14 (Game API v2.1–v2.4, CrowdyJS 17.2–17.4, CrowdyCPP 0.38–0.40)
 
-- **Game-model sessions** (Application API v2.4.0, CrowdyJS 17.4.0): `leaveSession`,
+- **Game-model sessions** (Game API v2.4.0, CrowdyJS 17.4.0): `leaveSession`,
   `setSessionAdmission`, `transferSessionHost`, `endSession`, `sessionSnapshot`,
   `sessionEvents`, `sessionInspect` and the `sessionChanged` subscription; `GmSession`
   carries `admission`, `maxParticipants`, `participantCount`, `hostUserId`,
@@ -2060,12 +2060,12 @@ Nothing here changes a conforming client; each item says what would.
   `SESSION_NOT_PARTICIPANT`, `SESSION_TARGET_NOT_PARTICIPANT`,
   `SESSION_INCARNATION_STALE`, `SESSION_HOST_TERM_STALE`.
   [Roster, admission, host and presence](/exec/from-the-legacy-engines#running-your-logic).
-- **Third-party hosting on Crowdy Games** (Application API v2.1.0, CrowdyJS 17.2.0):
+- **Third-party hosting on Crowdy Games** (Game API v2.1.0, CrowdyJS 17.2.0):
   `client.hosting` (claim a slug, publish a bundle, list), the Node subpath
   `@crowdedkingdoms/crowdyjs/hosting` (`publishDirectory`), and `EmbeddedHost` for
   sign-in under the Crowdy Games shell. Hosting mutations take an identity session,
   never an app token. [Hosting](/crowdyjs/hosting).
-- **Guided "Create repository on GitHub"** (Application API v2.3.0, CrowdyJS 17.3.0):
+- **Guided "Create repository on GitHub"** (Game API v2.3.0, CrowdyJS 17.3.0):
   `githubNewRepositoryUrl` / `githubRepositorySlug`,
   `controller.createGitHubRepository()`, `status.repositorySelection`. The GitHub
   App still cannot create a repository itself. [Crowdy Studio and GitHub](/application-api/crowdy-studio-github).
@@ -2098,7 +2098,7 @@ message per datagram is unaffected.
 - **Rollout order:** deploy the replication server before shipping an SDK build
   that bundles. Against an older server, two messages sent within a window are
   dropped together; `bundleSends: false` is the escape hatch.
-## 2026-09-13 (Application API v2.0.0, CrowdyJS 17, crowdy-dsh 0.3)
+## 2026-09-13 (Game API v2.0.0, CrowdyJS 17, crowdy-dsh 0.3)
 
 **A bound GitHub repository is the project's working tree; GitHub stays
 optional.** Breaking, without a deprecation window: the GitHub surface was
@@ -2142,14 +2142,14 @@ what was saved" true.
 - See [Connect your GitHub repo to a Studio project](/application-api/crowdy-studio-github)
   and [Player code](/exec/from-the-legacy-engines#player-code).
 
-## 2026-09-11 (Application API, CrowdyJS 16, CrowdyCPP 0.34)
+## 2026-09-11 (Game API, CrowdyJS 16, CrowdyCPP 0.34)
 
 **The Crowdy Agent orchestrator is replaced by the in-browser DeepSeek Harness
 and a metered model endpoint.** Breaking, without a deprecation window: the
 orchestrator was allowlisted development that no released game depended on
 except through CrowdyJS 15's agent dock, which is retired with it.
 
-- **Removed from the Application API (21 root fields):** queries
+- **Removed from the Game API (21 root fields):** queries
   `crowdyStudioAgentSession`, `crowdyStudioAgentSessions`,
   `crowdyStudioAgentHistory`, `crowdyStudioAgentToolDescriptors`,
   `crowdyStudioAgentBudget`; mutations `crowdyStudioAgentCreateSession`,
@@ -2184,7 +2184,7 @@ except through CrowdyJS 15's agent dock, which is retired with it.
   games' pins. Schema contraction (the six tables) is a separate
   `--allow-contract` order after the ck-api deploy.
 
-## 2026-09-10 (Application API)
+## 2026-09-10 (Game API)
 
 **Cookie CSRF matches any presented `ck_csrf`.** (ck-api v1.98.0, Studio
 v1.23.0)
@@ -2197,7 +2197,7 @@ v1.23.0)
   to narrow the prod cookie Domain — public `studio.crowdedkingdoms.com`
   needs it.
 
-## 2026-09-09 (Application API)
+## 2026-09-09 (Game API)
 
 **Studio session moves to an HttpOnly cookie + CSRF.** (ck-api v1.92.1, Studio
 v1.21.0)
@@ -2230,7 +2230,7 @@ v1.91.0, CrowdyJS 15.8.0)
 - CrowdyCPP **0.31.0** adds `refreshAsync(ip4, port)` so an async gameplay
   token rotation can name the current Buddy (the sync overloads already could).
 
-## 2026-09-08 (Application API)
+## 2026-09-08 (Game API)
 
 **Invoke policies now apply to app admins. `bypassPolicy` is the explicit, audited
 override.** (ck-api v1.89.0)
@@ -2577,7 +2577,7 @@ See **[Sign in](/management-api/authentication)** and
 > integrator could still find a five-step provisioning recipe in these docs a month
 > later.
 
-- **The Management API and the Application API are two surfaces of one origin**, and one
+- **The Management API and the Game API are two surfaces of one origin**, and one
   server answers both. The separate management service was absorbed on 2026-07-27 and
   its repository archived. `management-api.graphql` is now that unified SDL — it is the
   same schema `game-api.graphql` describes, published under both names because the
@@ -2594,8 +2594,8 @@ See **[Sign in](/management-api/authentication)** and
   changelog began, so this is a surface being removed rather than a capability
   arriving: publishing is free under your org's app-slot quota
   (`platformConfig.freeAppsPerOrg`, default 3) and metered against the org wallet
-  beyond it. Read the app's `applicationApiUrl` / `deploymentTarget` before a player joins,
-  and discover the tier's origin from `platformConfig.sharedApplicationApiUrl` rather than
+  beyond it. Read the app's `gameApiUrl` / `deploymentTarget` before a player joins,
+  and discover the tier's origin from `platformConfig.sharedGameApiUrl` rather than
   hard-coding it. See **[Shared environment & billing](/management-api/shared-environment)**.
 - **This is not a deprecation window.** The fields are absent, so a call naming one
   fails to validate against the schema rather than returning a deprecation warning. If
@@ -2608,7 +2608,7 @@ See **[Sign in](/management-api/authentication)** and
 
 ## 2026-07-24
 
-**Application API v0.21.0 + CrowdyJS 12.2.0 + CrowdyCPP 0.15.0 — app-scoped active player-count events (additive)**
+**Game API v0.21.0 + CrowdyJS 12.2.0 + CrowdyCPP 0.15.0 — app-scoped active player-count events (additive)**
 
 - New `gameModelActivePlayerCount(appId)` snapshot returns the best-known
   app-wide gameplay-session count plus `status` (`FRESH` / `PARTIAL` /
@@ -2644,9 +2644,9 @@ and [Autonomous processes → Player-count changes](/exec/from-the-legacy-engine
 
 ## 2026-07-24
 
-**Application API `v0.20.0` — ensured containers and `$self_container_id`**
+**Game API `v0.20.0` — ensured containers and `$self_container_id`**
 
-Additive Application API release for game-model developers:
+Additive Game API release for game-model developers:
 
 - New **`gameModelEnsureContainer`** mutation: an atomic get-or-create for
   game model containers keyed by an opaque, caller-chosen **`bindingKey`**
@@ -2675,7 +2675,7 @@ realtime wire or Replication API impact.
 > `npm view @crowdedkingdoms/crowdyjs dist-tags`.
 
 The coordinated development stack at that time was: environment release
-**`v0.1.94`** with Application API **`v0.19.16`**, Management API
+**`v0.1.94`** with Game API **`v0.19.16`**, Management API
 **`v0.1.193-dev`**, CrowdyJS **`12.0.0`**, the matching Blocks with Friends
 bundle, and these public docs. It was a **development** rollout—not
 production or general availability—and did not authorize unattended
@@ -2712,7 +2712,7 @@ credentials, content hashes, secret values, and provider bodies.
 
 ## 2026-07-23
 
-**Development preview — Agentic Crowdy Studio (CrowdyJS 12, Application API,
+**Development preview — Agentic Crowdy Studio (CrowdyJS 12, Game API,
 Management API, Blocks with Friends)**
 
 This coordinated contract is implemented on development branches and reflected
@@ -2724,19 +2724,19 @@ real-money activity, wallet actions, or broad autonomous gameplay.
 - **CrowdyJS 12 (breaking greenfield agent contract):** adds
   `@crowdedkingdoms/crowdyjs/agent` and `/player-host`, while
   `/crowdy-studio` gains the integrated Ask/Build/Play dock.
-  `client.crowdyStudioAgent` is the typed app-token Application API transport for
+  `client.crowdyStudioAgent` is the typed app-token Game API transport for
   durable replay/ack, epochs, exact approvals, leases, heartbeat, tool results,
   and reconnect. The immutable `crowdy.agent-tools/1` registry, execute-once
   browser dispatcher, checkpoint-aware project controller, and
   `crowdy.player-host/1` contracts contain no provider key, raw GraphQL
   executor, DOM driver, shell, fetch, UDP escape hatch, or client-mod bridge.
   Existing manual Studio mounts remain unchanged when `agent` is omitted.
-- **Application API Agent GraphQL:** adds five owner/app queries, 15 idempotent control
+- **Game API Agent GraphQL:** adds five owner/app queries, 15 idempotent control
   mutations, and the ordered `crowdyStudioAgentEvents` subscription under the
   `crowdyStudioAgent*` prefix. Durable sessions/runs/events/tool calls,
   approvals, workspace/Play leases, checkpoints, budgets/usage, client epochs,
   provider orchestration, policy freshness, and stable `AGENT_*` errors live in
-  the Application API. The pilot registry advertises only implemented,
+  the Game API. The pilot registry advertises only implemented,
   policy/mode/host-filtered tools and separately requires
   `use_studio_agent`; live deploy, destructive, trust, economic, and
   irreversible work remains exact-human-approval gated.
@@ -2774,13 +2774,13 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   **Test draft** or **Deploy live** before SERVER or CLIENT changes compile and
   apply; this release adds no auto-deploy and changes no GraphQL schema.
 
-**CrowdyJS 11 + Application API: Crowdy Studio rename**
+**CrowdyJS 11 + Game API: Crowdy Studio rename**
 
-- New private Application API project storage separates autosaved SERVER/CLIENT
+- New private Game API project storage separates autosaved SERVER/CLIENT
   source from immutable compile versions. Projects use optimistic revisions;
   personal-library files stay owner-only; studio common files are immutable
   and copy into projects by value.
-- Final Application API roots are `crowdyStudioProjects`, `crowdyStudioProject`,
+- Final Game API roots are `crowdyStudioProjects`, `crowdyStudioProject`,
   `crowdyStudioProjectCreate`, atomic `crowdyStudioProjectSave`,
   `crowdyStudioProjectSaveMetadata`, `crowdyStudioProjectSaveFiles`,
   `crowdyStudioProjectSetArchived`, `crowdyStudioLibraryFiles`,
@@ -2840,9 +2840,9 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   been observed or inferred, and `1` when an attempt or outcome has been
   observed or inferred.
 
-**Machine-readable Application API permission metadata**
+**Machine-readable Game API permission metadata**
 
-- The refreshed downloadable Application API SDL now publishes
+- The refreshed downloadable Game API SDL now publishes
   `@requiresPermission` metadata on permission-gated root fields. This makes
   existing authorization requirements discoverable to tools and agents; it
   does not change runtime authorization behavior.
@@ -2902,7 +2902,7 @@ real-money activity, wallet actions, or broad autonomous gameplay.
 
 - New operator-only Management API surface: query `cpComputePlatformCeilings`
   and mutation `cpSetComputePlatformCeilings` read and patch the nine
-  platform ceilings the Application API's `computeSetPolicy` clamps per-app compute
+  platform ceilings the Game API's `computeSetPolicy` clamps per-app compute
   policies against (`maxModules`, `maxTickHz`, `fuelPerTick`,
   `fuelPerInvoke`, `maxMemoryMb`, `maxRunMs`, `maxDbOpsPerTick`,
   `maxEgressMsgsPerMin`, `maxEgressBytesPerMin`). Patch semantics: omitted =
@@ -2913,7 +2913,7 @@ real-money activity, wallet actions, or broad autonomous gameplay.
 - Ceiling edits replica-sync to every game-api and take effect in the
   `computeSetPolicy` clamp within ~30 seconds — no game-api restart. The
   `COMPUTE_PLATFORM_MAX_*` environment variables remain bootstrap defaults.
-- Application API behavior change (non-breaking): the `computeSetPolicy` ceiling
+- Game API behavior change (non-breaking): the `computeSetPolicy` ceiling
   clamp now reflects operator-set values, so the ceiling named in the
   `... exceeds the platform ceiling (N)` error can change over time.
 - SDK coverage: CrowdyJS **8.14** (`client.operator.computePlatformCeilings()`
@@ -2925,7 +2925,7 @@ real-money activity, wallet actions, or broad autonomous gameplay.
 
 **Flow-correlation query + SDK sweep (CrowdyJS 8.13 / CrowdyCPP 0.9)**
 
-- New Application API query `gameModelFlow(appId, flowId)`: stitch one flow
+- New Game API query `gameModelFlow(appId, flowId)`: stitch one flow
   correlation id into a single cross-engine timeline — the `gameModelEvents`
   rows, `gameModelAutomationRuns` and `computeModuleRuns` sharing the
   `flowId` minted at the entry edge, each array ordered by time ascending. A
@@ -3011,7 +3011,7 @@ real-money activity, wallet actions, or broad autonomous gameplay.
 
 **Docs: the "self-reported vitals" client-trust pattern**
 
-- [Choosing Application APIs](/exec/from-the-legacy-engines) now names the
+- [Choosing Game APIs](/exec/from-the-legacy-engines) now names the
   self-reported vitals pattern (client-committed survival stats under
   `owner_of_self`) with its four guardrails: clamp every write, gate
   restoration on consumed resources, never gate grants or competitive
@@ -3019,7 +3019,7 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   compute referee (the expression language deliberately has no clock
   builtin, so Model invoke policies cannot express cooldowns).
 
-**Choosing Application APIs + BWF/TMS authority dogfood**
+**Choosing Game APIs + BWF/TMS authority dogfood**
 
 - The canonical five-tier API guide now maps mechanics and genre starters to
   platform primitives, Model functions, automations, compute engines and
@@ -3166,9 +3166,9 @@ The compute developer experience grows a paved road (all additive):
   [Compute tutorial](/exec/from-the-legacy-engines#running-your-logic) — zero to a live module in
   under 30 minutes.
 
-**Application API -- Compute Modules: server-side Rust/WebAssembly logic (additive)**
+**Game API -- Compute Modules: server-side Rust/WebAssembly logic (additive)**
 
-The Application API gains **[Compute Modules](/exec/from-the-legacy-engines#running-your-logic)** — studios
+The Game API gains **[Compute Modules](/exec/from-the-legacy-engines#running-your-logic)** — studios
 write Rust, deploy the source through GraphQL, and the platform compiles it to
 WebAssembly and runs it server-side, sandboxed and fuel-metered:
 
@@ -3200,7 +3200,7 @@ WebAssembly and runs it server-side, sandboxed and fuel-metered:
 
 No existing schema fields, wire messages, or behaviors changed.
 
-**Application API v0.13.13 -- invoke policy denials return results; `userAppState` round-trip fix**
+**Game API v0.13.13 -- invoke policy denials return results; `userAppState` round-trip fix**
 
 Two consumer-facing behavior fixes in `gameModelInvoke` and the per-user app
 state store (no schema shape or wire change):
@@ -3222,7 +3222,7 @@ state store (no schema shape or wire change):
   encoding after their next write.
 
 **CrowdyJS 8.4.5 / 8.4.6 (npm)** — `kitInvoke` maps `FORBIDDEN` policy
-denials from older Application API builds onto the documented
+denials from older Game API builds onto the documented
 `{ success: false, errorMessage }` result (8.4.6 republishes 8.4.5 with the
 runtime `VERSION` constant synced).
 
@@ -3250,9 +3250,9 @@ SDK-only: no schema or wire change; servers need no changes.
 
 ## 2026-07-18
 
-**Application API v0.13.12.2 + CrowdyJS 8.4.1 -- schema hygiene + plot owner-mirror kinds (additive)**
+**Game API v0.13.12.2 + CrowdyJS 8.4.1 -- schema hygiene + plot owner-mirror kinds (additive)**
 
-A description-only hygiene pass on the Application API schema (no wire, DDL, or
+A description-only hygiene pass on the Game API schema (no wire, DDL, or
 behavior change) plus a small CrowdyJS Game Kit patch:
 
 - **`ActorUpdateResponse` / `VoxelUpdateResponse` are formally marked
@@ -3369,7 +3369,7 @@ hidden information, anti-cheat checklist). See
 
 ## 2026-07-18
 
-**Application API -- permission-read builtins + selector permission predicates (additive)**
+**Game API -- permission-read builtins + selector permission predicates (additive)**
 
 Game-model logic can now **read** the runtime grid ACL and grid layout,
 completing the read+write loop that permission effects opened:
@@ -3399,7 +3399,7 @@ chunk-permission lock authority, typed selector predicates). Requires
 
 ## 2026-07-17
 
-**Application API -- model permission effects (additive)**
+**Game API -- model permission effects (additive)**
 
 Game-model functions can now **write runtime grid permissions** as declared,
 transactional effects. A new `permissionEffects` array on
@@ -3512,7 +3512,7 @@ supported side by side with the new methods.
 > [Shared environment & billing](/management-api/shared-environment).
 
 - You can now create **multi-VM dedicated environments** (`environmentClass: "dedicated"`,
-  the default) directly — an isolated Application API fleet, database, and Buddy replication stack
+  the default) directly — an isolated Game API fleet, database, and Buddy replication stack
   for your studio. Previously only the single-VM **developer sandbox**
   (`environmentClass: "dev_single"`) was available and dedicated returned a "coming soon"
   error. `createEnvironment` / `environmentQuote` take the four per-component flavors
@@ -3522,8 +3522,8 @@ supported side by side with the new methods.
   [Shared environment & billing](/management-api/shared-environment).
 - `CksEnvironment` gains an additive **`isShared`** boolean (true only for the platform's
   shared environment; always false for your environments). No breaking changes. Clients
-  still discover an app's runtime via `app.applicationApiUrl` / `platformConfig.sharedApplicationApiUrl` —
-  the shared Application API endpoint is resolved dynamically, so never hard-code it.
+  still discover an app's runtime via `app.gameApiUrl` / `platformConfig.sharedGameApiUrl` —
+  the shared Game API endpoint is resolved dynamically, so never hard-code it.
 
 ## 2026-06-26
 
@@ -3539,7 +3539,7 @@ supported side by side with the new methods.
 
 ## 2026-06-26
 
-**Game model automations / NPCs (Application API, additive)**
+**Game model automations / NPCs (Game API, additive)**
 
 - **Server-driven automations** invoke your [game model functions](/exec/from-the-legacy-engines#running-your-logic)
   on their own — on a schedule or in reaction to model activity — so you can build NPCs,
@@ -3552,7 +3552,7 @@ see [that entry](#2026-09-01) and [Presence](/exec/from-the-legacy-engines#timer
   `gameModelAppDiagnostics`. The entry-point function opts in with `autonomousInvocable`.
   All require `manage_apps`. See [Autonomous processes (NPCs)](/exec/from-the-legacy-engines#timers-and-triggers).
 
-**Model-driven realtime notifications (Application API, additive)**
+**Model-driven realtime notifications (Game API, additive)**
 
 - A model function can now **push a realtime notification** to clients as part of its
   invocation, via a `notifications` array on `gameModelUpsertFunction` (and `gameModelSeed`).
@@ -3562,7 +3562,7 @@ see [that entry](#2026-09-01) and [Presence](/exec/from-the-legacy-engines#timer
   Player-invoked and automation-driven changes notify players identically.
   See [Model-driven notifications](/exec/from-the-legacy-engines#realtime).
 
-**`deleteGrid` (Application API, additive)**
+**`deleteGrid` (Game API, additive)**
 
 - New `deleteGrid(input: { appId, gridId })` mutation removes a studio-created peer grid
   (e.g. to unblock `GRID_OVERLAPS_EXISTING`). Hybrid result like `createGrid`; refuses the
@@ -3657,12 +3657,12 @@ unchanged by design.
 **Documentation & schema self-description**
 
 - Every public GraphQL query, mutation, subscription, argument, field, and enum value now
-  carries a description across the Management API and Application API — including the required
+  carries a description across the Management API and Game API — including the required
   permission and side effects on each operation. These flow into the
   [GraphQL reference](/application-api/reference/graphql-overview) and the downloadable SDL.
 - Published downloadable SDL at stable URLs:
   [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql),
-  [`/schema/application-api.graphql`](pathname:///schema/application-api.graphql),
+  [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql),
   [`/schema/crowdyjs.graphql`](pathname:///schema/crowdyjs.graphql).
 - Added an [`/llms.txt`](pathname:///llms.txt) index and a
   [For AI agents](/overview/for-ai-agents) quickstart, plus consolidated
