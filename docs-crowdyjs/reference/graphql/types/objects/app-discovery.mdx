@@ -22,8 +22,10 @@ Where one app lives, and therefore which origin a client should talk to before i
 type AppDiscovery {
   appId: BigInt!
   datacenterCode: String
-  gameApiUrl: String
-  gameApiWsUrl: String
+  applicationApiUrl: String
+  gameApiUrl: String @deprecated
+  applicationApiWsUrl: String
+  gameApiWsUrl: String @deprecated
 }
 ```
 
@@ -38,11 +40,31 @@ The app this entry describes, echoed back so a batched result can be matched to 
 Datacenter code the app is placed in (for example `or`, `va`), or null if the app has no placement yet.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-url */} 
+#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>applicationApiUrl</b></code>](#application-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #application-api-url */} 
 HTTPS GraphQL origin for this app's OWN datacenter. Move here BEFORE authenticating: logging in through the shared origin writes the session on whichever datacenter DNS happened to pick, and the app token then has to be minted across a WAN. Null when the app has no placement, in which case keep using the shared origin.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-ws-url */} 
+#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-url */} 
+:::warning[DEPRECATED]
+
+Use applicationApiUrl: the Game API is now the Application API. Removed on January 1, 2027.
+
+:::
+
+HTTPS GraphQL origin for this app's OWN datacenter. Move here BEFORE authenticating: logging in through the shared origin writes the session on whichever datacenter DNS happened to pick, and the app token then has to be minted across a WAN. Null when the app has no placement, in which case keep using the shared origin.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>applicationApiWsUrl</b></code>](#application-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #application-api-ws-url */} 
+The wss:// form of applicationApiUrl, for the subscription socket and the binary relay.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-ws-url */} 
+:::warning[DEPRECATED]
+
+Use applicationApiWsUrl: the Game API is now the Application API. Removed on January 1, 2027.
+
+:::
+
 The wss:// form of gameApiUrl, for the subscription socket and the binary relay.
 
 

@@ -40,5 +40,5 @@ Combine all chapters into one shippable game.
 ## Related docs
 
 - [CrowdyJS SDK guide](/crowdyjs/readme)
-- [GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api)
+- [GraphQL UDP Proxy API](/application-api/graphql-udp-proxy-api)
 - [Connecting game clients](/management-ui/client-integration)

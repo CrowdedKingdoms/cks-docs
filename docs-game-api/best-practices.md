@@ -3,9 +3,9 @@ sidebar_position: 2
 title: Best practices
 ---
 
-# Game API best practices
+# Application API best practices
 
-How to use the Game API so the server owns gameplay truth. This page is the
+How to use the Application API so the server owns gameplay truth. This page is the
 contract between a game client (Unreal, CrowdyJS, CrowdyCPP, or a custom
 engine) and the server code that decides outcomes, which runs on
 **[ck-exec](/exec/intro)**.
@@ -58,7 +58,7 @@ when the connection comes back.
 Unreal (or any client) is responsible for **requesting** a change and
 **presenting** the confirmed result. It should not independently decide
 the authoritative outcome — not from local prediction alone, not from an
-elected [host](/game-api/host-discovery), and not from a peer-supplied
+elected [host](/application-api/host-discovery), and not from a peer-supplied
 value.
 
 Prediction and animation are fine. Reconcile them to the hub's reply. If a
@@ -94,17 +94,17 @@ The client requests a direct change when it knows the target. A hub validates
 and applies that change. Spokes and calls between hubs handle the wider
 workflow when the target or process must be discovered or coordinated.
 
-## Calling the Game API
+## Calling the Application API
 
 - Send an **app-scoped token**, not the identity session token.
-  [Authentication](/game-api/authentication).
+  [Authentication](/application-api/authentication).
 - After minting, call `gameClientBootstrap` and use the returned
-  `gameApiUrl` / `gameApiWsUrl`. [Datacenter routing](/game-api/datacenter-routing).
+  `applicationApiUrl` / `applicationApiWsUrl`. [Datacenter routing](/application-api/datacenter-routing).
 - Native UDP: `serverWithLeastClients`, wait ~1.5 s, then send.
-  [Replication server assignment](/game-api/graphql-server-registration).
-- Browsers: [GraphQL UDP proxy](/game-api/graphql-udp-proxy-api).
+  [Replication server assignment](/application-api/graphql-server-registration).
+- Browsers: [GraphQL UDP proxy](/application-api/graphql-udp-proxy-api).
 - Spatial permission keys live on access tiers and grids.
-  [Permissions](/game-api/permissions).
+  [Permissions](/application-api/permissions).
 - Economy-sensitive mutations, such as the marketplace's, should send an
   `idempotencyKey`.
 

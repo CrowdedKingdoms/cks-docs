@@ -20,7 +20,7 @@ byte-level layouts, use the canonical references:
 [Authenticate and assign](/replication-api/authenticate-and-assign):
 
 1. Hold an **app-scoped token** (the 64-octet token doubles as the HMAC key).
-2. Call **`serverWithLeastClients`** on the Game API. This has a side
+2. Call **`serverWithLeastClients`** on the Application API. This has a side
    effect: it **installs your UDP session server-side** on the assigned
    replication server.
 3. Wait for **session-ready**. Session install is asynchronous on the server,
@@ -54,7 +54,7 @@ message's **sequence number**:
   (0.58.0+) — publish to a channel, delivered only to members with a live actor
   within `maxDistance` chunks of `origin` by straight-line distance, boundary
   included (`CHANNEL_MESSAGE_RANGED_REQUEST`, 32; see
-  [the channels guide](/game-api/channels#limit-delivery-by-distance)). The origin's
+  [the channels guide](/application-api/channels#limit-delivery-by-distance)). The origin's
   app is `Config::appId`; `maxDistance` is 0 to `wire::channel_ranged::kMaxDistance`
   (2147483647). Members receive an ordinary channel message
 - `sendChannelAudio(channelId, uuid, payload)` (0.60.0+) — send audio to a channel

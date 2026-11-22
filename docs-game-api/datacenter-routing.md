@@ -9,7 +9,7 @@ Your app's world lives in **one datacenter**. The published API origin resolves 
 of them**. Getting from the second fact to the first is what this page is about, and it is
 two extra lines of client code.
 
-If you take nothing else: **read `gameApiUrl` from `gameClientBootstrap` and use it for
+If you take nothing else: **read `applicationApiUrl` from `gameClientBootstrap` and use it for
 everything afterwards; keep `discoveryUrl` as the way back.**
 
 ## Why there is anything to do here
@@ -34,11 +34,11 @@ matters:
 | Field | What it is | Use it for |
 |---|---|---|
 | `discoveryUrl` | The shared origin, resolving to **every** datacenter | Finding your way back when the others stop answering |
-| `gameApiUrl` | **Your app's own datacenter.** Where its shards are | All gameplay traffic |
-| `gameApiWsUrl` | The same, for subscriptions and the realtime relay | Realtime |
+| `applicationApiUrl` | **Your app's own datacenter.** Where its shards are | All gameplay traffic |
+| `applicationApiWsUrl` | The same, for subscriptions and the realtime relay | Realtime |
 
 `discoveryUrl` is the one that is easy to get wrong. It must stay the shared origin —
-never `gameApiUrl`, and never a specific instance. A recovery address that dies together
+never `applicationApiUrl`, and never a specific instance. A recovery address that dies together
 with the thing it exists to replace is not a recovery address, and this is not theoretical:
 a client holding only an app token **cannot re-mint**, because minting needs the identity
 session it does not have. Without a working `discoveryUrl` such a client has no way to ask
@@ -63,10 +63,10 @@ let client = createCrowdyClient({
 const bootstrap = await client.serverStatus.gameClientBootstrap(appId);
 
 // 3. Move onto it, if it is not where you already are.
-if (bootstrap.gameApiUrl && bootstrap.gameApiUrl !== currentEndpoint) {
+if (bootstrap.applicationApiUrl && bootstrap.applicationApiUrl !== currentEndpoint) {
   client = createCrowdyClient({
-    httpUrl: bootstrap.gameApiUrl,
-    wsUrl: bootstrap.gameApiWsUrl,
+    httpUrl: bootstrap.applicationApiUrl,
+    wsUrl: bootstrap.applicationApiWsUrl,
       // Unchanged. This is the point.
     realtime: { discoveryUrl: 'https://ck.prod.crowdedkingdoms.com/graphql' },
   });
@@ -88,8 +88,8 @@ elsewhere is always refused.
     "message": "App 42 is served from datacenter 'or', not 'va'. Reconnect to https://ck-or.prod.crowdedkingdoms.com and retry. …",
     "extensions": {
       "code": "WRONG_DATACENTER",
-      "gameApiUrl": "https://ck-or.prod.crowdedkingdoms.com",
-      "gameApiWsUrl": "wss://ck-or.prod.crowdedkingdoms.com",
+      "applicationApiUrl": "https://ck-or.prod.crowdedkingdoms.com",
+      "applicationApiWsUrl": "wss://ck-or.prod.crowdedkingdoms.com",
       "appDatacenter": "or",
       "servedBy": "va"
     }
@@ -97,7 +97,7 @@ elsewhere is always refused.
 }
 ```
 
-Handle `WRONG_DATACENTER` by reading `extensions.gameApiUrl` and reconnecting — the
+Handle `WRONG_DATACENTER` by reading `extensions.applicationApiUrl` and reconnecting — the
 endpoint is in the extensions specifically so you do not have to parse the message. A
 retry against the same endpoint will fail identically, forever.
 
@@ -115,7 +115,7 @@ then cross a WAN and you would not notice: each write still succeeds.
 
 | Code | What happened | What to do |
 |---|---|---|
-| `WRONG_DATACENTER` | You called it on a datacenter that does not hold this app. **This is the common one** — the shared origin resolves to every datacenter, so a client that skipped step 3 lands here about half the time. | Read `extensions.gameApiUrl` and reconnect, exactly as above. CrowdyJS and CrowdyCPP do this for you. |
+| `WRONG_DATACENTER` | You called it on a datacenter that does not hold this app. **This is the common one** — the shared origin resolves to every datacenter, so a client that skipped step 3 lands here about half the time. | Read `extensions.applicationApiUrl` and reconnect, exactly as above. CrowdyJS and CrowdyCPP do this for you. |
 | `APP_UNAVAILABLE` | The app's own datacenter is not serving at all. No endpoint is named, on purpose. | Retry. Do not fall back to a cached server. |
 | `NO_LOCAL_BUDDY` | You are already **on** the app's datacenter and it has no healthy Buddy. No endpoint is named, because there is nowhere else to go. | Retry, and contact support if it persists. |
 

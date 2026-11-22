@@ -77,14 +77,14 @@ See [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-an
 ## 2. App token and per-game client
 
 Gameplay requires a short-lived **app-scoped token** per app. Mint one and
-build a second client pointed at the app's Game API endpoint (the mint result
+build a second client pointed at the app's Application API endpoint (the mint result
 tells you where that is — never hard-code it):
 
 ```cpp
 auto minted = identity.portal().mintAppToken(appId);
 
 ClientConfig gameCfg;
-gameCfg.httpUrl = minted.gameApiUrl;
+gameCfg.httpUrl = minted.applicationApiUrl;
 gameCfg.discoveryUrl = minted.discoveryUrl;  // shared origin if the instance dies
 CrowdyClient game(std::move(gameCfg));
 game.setToken(minted.token);
@@ -115,12 +115,12 @@ With the app token, `game.safety()` holds the player's own controls (voice and v
 a parent's consent, contacts, blocks and `fileReport`, each with an `Async` twin) and
 `game.admin().apps().recording(appId)` what the safety log records, for the notice and the
 indicator; a moderator's identity client uses `client.moderation()`. See
-[Voice, video, contacts and blocks](/game-api/communication) and
-[Safety reports and moderation](/game-api/safety-reports).
+[Voice, video, contacts and blocks](/application-api/communication) and
+[Safety reports and moderation](/application-api/safety-reports).
 
 ## 3. Connect the native replication client
 
-`connect` asks the Game API for a replication-server assignment (which also
+`connect` asks the Application API for a replication-server assignment (which also
 installs your UDP session server-side), opens the socket, and waits for
 session-ready:
 

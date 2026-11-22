@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Public platform discovery. Returns the shared game-api URL clients use for shared-environment apps (served by the platform shared environment). No auth required.
+Public platform discovery. Returns the shared Application API URL clients use for shared-environment apps (served by the platform shared environment). No auth required.
 
 
 ```graphql
@@ -26,4 +26,4 @@ platformConfig: PlatformConfig!
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>PlatformConfig</b></code>](/reference/graphql/types/objects/platform-config.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Public platform discovery. Clients/SDKs read the shared game-api URL here to route apps deployed to the shared environment.
+Public platform discovery. Clients/SDKs read the shared Application API URL here to route apps deployed to the shared environment.

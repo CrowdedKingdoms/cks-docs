@@ -11,7 +11,7 @@ description: What the removal of the Game Model API takes out of a project, the 
 Server Objects run on [ck-exec](/exec/intro). v2.18.0 added them and deprecated the Game Model API; [v2.19.0 removes it](../guides/whats-changed.md#2026-10-12-sdk-v2190).
 :::
 
-The SDK's Game Model API is removed in v2.19.0, the release after the one that adds Server Objects. It was built on a game API engine that ck-exec replaced, so it had no server to talk to. This page says what went, what to do in your project before you upgrade, what takes the place of each part, and how to move a system across. The replacement is [Server Objects](./overview.md), from Blueprint or C++.
+The SDK's Game Model API is removed in v2.19.0, the release after the one that adds Server Objects. It was built on an Application API engine that ck-exec replaced, so it had no server to talk to. This page says what went, what to do in your project before you upgrade, what takes the place of each part, and how to move a system across. The replacement is [Server Objects](./overview.md), from Blueprint or C++.
 
 ## What was removed
 

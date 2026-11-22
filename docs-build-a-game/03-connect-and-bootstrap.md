@@ -18,12 +18,12 @@ Initialize the game client and open the UDP proxy subscription.
 4. Call `client.udp.subscribe({ ... })` — receive realtime notifications
 
 :::note[Gameplay uses the app-scoped token]
-Everything from `gameClientBootstrap` onward is a Game API / realtime call and runs
+Everything from `gameClientBootstrap` onward is an Application API / realtime call and runs
 on the **app-scoped token** from the sign-in in [chapter 2](/build-a-game/02-sign-in),
 not the identity session token. `client.udp.connect()` assigns a Buddy via
 `serverWithLeastClients` under the hood; an identity session token is rejected
 (`APP_TOKEN_REQUIRED` on the realtime subscription, `INVALID_APP_ID` on the
-assignment). See [Game API authentication](/game-api/authentication) and
+assignment). See [Application API authentication](/application-api/authentication) and
 [Authenticate and assign](/replication-api/authenticate-and-assign).
 :::
 
@@ -36,7 +36,7 @@ Subscribe to `udpNotifications` and handle at minimum:
 - `RealtimeConnectionEvent` — connection status
 - `GenericErrorResponse` — error codes
 
-See [GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api).
+See [GraphQL UDP Proxy API](/application-api/graphql-udp-proxy-api).
 
 ## Register your actor
 

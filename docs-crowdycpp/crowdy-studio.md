@@ -5,7 +5,7 @@ title: Crowdy Studio in a native game
 
 # Crowdy Studio in a native game
 
-A native game can dock [Agentic Crowdy Studio](/game-api/agentic-crowdy-studio) beside its
+A native game can dock [Agentic Crowdy Studio](/application-api/agentic-crowdy-studio) beside its
 world: the agent edits the player's Studio project, runs draft tests and deploys mods while the
 player plays. CrowdyCPP carries the platform calls such a dock makes, on the game's app-token
 client: 0.86.0 the calls below, and 0.87.0 the project's revision on every build, the platform's
@@ -36,7 +36,7 @@ game.crowdyStudioAgent().liveModdingAsync(
 ```
 
 `liveModding(appId, action)` is the blocking form. It wraps
-[`crowdyStudioLiveModding`](/game-api/reference/graphql/operations/queries/crowdy-studio-live-modding),
+[`crowdyStudioLiveModding`](/application-api/reference/graphql/operations/queries/crowdy-studio-live-modding),
 whose actions are `draft_test` and `deploy_live`. A refusal is a GraphQL error with one of these
 codes:
 
@@ -65,7 +65,7 @@ game.crowdyStudioAgent().modelsAsync(appId, [](crowdy::domains::CrowdyStudioMode
 });
 ```
 
-This is [`GET /v1/model/models`](/game-api/agentic-crowdy-studio#get-v1modelmodels) on the
+This is [`GET /v1/model/models`](/application-api/agentic-crowdy-studio#get-v1modelmodels) on the
 client's own transports, with its app token, timeout and response limit. `models(appId)` is the
 blocking form, and both take `RequestOptions` with a `CancelToken`. The list keeps at most 1,024
 models. It refuses only with the policy's codes above (HTTP 403) and

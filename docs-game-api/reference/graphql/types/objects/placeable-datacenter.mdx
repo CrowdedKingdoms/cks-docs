@@ -21,8 +21,10 @@ One datacenter an app can be created in. The `code` is exactly what createApp ta
 ```graphql
 type PlaceableDatacenter {
   code: String!
-  gameApiUrl: String
-  gameApiWsUrl: String
+  applicationApiUrl: String
+  gameApiUrl: String @deprecated
+  applicationApiWsUrl: String
+  gameApiWsUrl: String @deprecated
   placeable: Boolean!
   appShardCount: Int!
   serving: DatacenterServingStatus!
@@ -36,11 +38,31 @@ type PlaceableDatacenter {
 Datacenter code, e.g. 'va'. Pass this verbatim as createApp's input.datacenter; it is compared lowercase.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-url */} 
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>applicationApiUrl</b></code>](#application-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #application-api-url */} 
 HTTPS GraphQL origin clients of an app in this datacenter should use. Null only where no topology has been pushed, which on a Citus deployment means the datacenter cannot yet be reached and on a single-node one means there is nothing to route. Informational for a picker: createApp does not need it, and appDiscovery is what a client reads per app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-ws-url */} 
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-url */} 
+:::warning[DEPRECATED]
+
+Use applicationApiUrl: the Game API is now the Application API. Removed on January 1, 2027.
+
+:::
+
+HTTPS GraphQL origin clients of an app in this datacenter should use. Null only where no topology has been pushed, which on a Citus deployment means the datacenter cannot yet be reached and on a single-node one means there is nothing to route. Informational for a picker: createApp does not need it, and appDiscovery is what a client reads per app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>applicationApiWsUrl</b></code>](#application-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #application-api-ws-url */} 
+The wss:// form of applicationApiUrl. Null under the same conditions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #game-api-ws-url */} 
+:::warning[DEPRECATED]
+
+Use applicationApiWsUrl: the Game API is now the Application API. Removed on January 1, 2027.
+
+:::
+
 The wss:// form of gameApiUrl. Null under the same conditions.
 
 

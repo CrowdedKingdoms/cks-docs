@@ -25,7 +25,7 @@ async def main() -> None:
 
     # The game client: one per app, at the app's own datacenter.
     async with crowdypy.AsyncCrowdyClient(
-        http_url=minted.game_api_url or API, discovery_url=minted.discovery_url
+        http_url=minted.application_api_url or API, discovery_url=minted.discovery_url
     ) as game:
         game.set_app_token(minted)
         await game.udp.connect(minted)  # assign a server, open the UDP socket
@@ -71,7 +71,7 @@ again on the player's next input.
    an account with no age gives it once with `auth.record_player_age(...)`. See
    [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
 3. Build one identity client and one client per game. The game client points
-   at the app's datacenter (`game_api_url`), and `discovery_url` lets it find
+   at the app's datacenter (`application_api_url`), and `discovery_url` lets it find
    the app again if that instance stops answering.
 
 Persist sessions with `crowdypy.FileTokenStore`:
@@ -130,5 +130,5 @@ holds their own controls in the app: `comm_settings`, `set_comm_settings`,
 `remove_contact`, `blocks`, `block`, `unblock` and `file_report`. `apps.recording(app_id)` says
 what the safety log records, for the notice and the indicator. Moderators use `client.moderation`
 (`reports`, `resolve_report`, `escalate_report`) with their identity session. See
-[Voice, video, contacts and blocks](/game-api/communication) and
-[Safety reports and moderation](/game-api/safety-reports).
+[Voice, video, contacts and blocks](/application-api/communication) and
+[Safety reports and moderation](/application-api/safety-reports).

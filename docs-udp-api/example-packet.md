@@ -70,7 +70,7 @@ with no reply** — see [Error codes](/overview/error-codes#native-udp-silent-dr
 
 ## The same thing over the GraphQL proxy
 
-Browser/JS and most server integrations send the equivalent through the Game API
+Browser/JS and most server integrations send the equivalent through the Application API
 UDP-proxy instead of building bytes — `state` is base64 and no HMAC is needed:
 
 ```graphql
@@ -84,4 +84,4 @@ mutation { sendActorUpdate(input: {
 ```
 
 See [Send and receive](/replication-api/send-and-receive) for the native flow and
-[GraphQL UDP-proxy API](/game-api/graphql-udp-proxy-api) for the proxy flow.
+[GraphQL UDP-proxy API](/application-api/graphql-udp-proxy-api) for the proxy flow.

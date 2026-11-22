@@ -25,7 +25,7 @@ Before mounting the panel, obtain an authoritative owned grid. In a
 `self_claim` app, an ordinary player can claim the unclaimed wilderness chunk
 they are standing in; a chunk inside another grid is refused
 `GRID_NOT_CLAIMABLE` ([claims are made in the
-wilderness](/game-api/grids-and-permissions#claims-are-made-in-the-wilderness)):
+wilderness](/application-api/grids-and-permissions#claims-are-made-in-the-wilderness)):
 
 ```ts
 const claim = await client.marketplace.claimGridChunk({

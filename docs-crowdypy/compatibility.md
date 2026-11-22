@@ -26,9 +26,9 @@ agent's policy.
 
 ## Server compatibility
 
-- **The input log** (`client.input_log`, 0.7.0) needs Game API v2.39.0 or later:
-  every app read selects `replayLoggingEnabled`, which an older Game API refuses. **From
-  0.10.0 the sessions read selects `missingRecords`, so it needs the Game API release
+- **The input log** (`client.input_log`, 0.7.0) needs Application API v2.39.0 or later:
+  every app read selects `replayLoggingEnabled`, which an older Application API refuses. **From
+  0.10.0 the sessions read selects `missingRecords`, so it needs the Application API release
   after v2.40.2**, which also brings the retryable `INPUT_LOG_TEMPORARILY_UNAVAILABLE` /
   `INPUT_LOG_RATE_LIMITED` (`extensions["retryable"]`) and the `logging_off`, `shutdown`,
   `paused` and `unrecorded` end reasons. Cancel a read's task to stop it: that closes the
@@ -36,10 +36,10 @@ agent's policy.
   base64: `decode_base64` gives the bytes. See
   [Input logging](/replication-api/input-logging).
 - **Bans** (`client.channels.ban` / `unban`, `client.teams.ban` / `unban`, 0.11.0) need
-  Game API v2.44.0 or later, and the final `4403` close needs ck-exec 0.16 hosts; an older
+  Application API v2.44.0 or later, and the final `4403` close needs ck-exec 0.16 hosts; an older
   host never sends it.
 - **Org-managed players** (`client.managed_players`, `portal.adopt_app_token`,
-  `portal.exchange_managed_player_assertion`, 0.16.0) need Game API v2.53.0 or later on any
+  `portal.exchange_managed_player_assertion`, 0.16.0) need Application API v2.53.0 or later on any
   environment (v2.52.x served them on dev only), and the organization's acceptance of the
   Org-Managed Players Addendum. The addendum fields on `managed_players.settings` and
   `org_legal_acceptance_required_of` are 0.17.0. See

@@ -8,12 +8,12 @@ title: Input logging
 An app can record the inputs its players' clients send. With **replay logging** on,
 every client message the replication servers accept for the app is recorded with the time
 it arrived, the player who sent it and the session it belongs to. You read the recording
-back through the Game API: a player can read the inputs they sent, and your studio can read
+back through the Application API: a player can read the inputs they sent, and your studio can read
 every input sent to the app.
 
 Only what clients send is recorded. The traffic the servers fan out to other players is
 not recorded, and neither are GraphQL queries and mutations, with one exception: the realtime
-messages a browser game sends through the Game API's realtime proxy (`sendActorUpdate` and the
+messages a browser game sends through the Application API's realtime proxy (`sendActorUpdate` and the
 other proxy sends) reach the replication server as client messages, and are recorded like any
 other.
 
@@ -71,10 +71,10 @@ mutation TextOnly($appId: BigInt!) {
 
 - `replayLoggingRecordsMedia`, the older switch, sets both, and reads `true` while either is on.
   In Crowdy Studio it is the **Record voice and video** switch under **Replay logging**. An
-  explicit voice or video switch in the same update wins for its medium. (Game API v2.60.0.)
+  explicit voice or video switch in the same update wins for its medium. (Application API v2.60.0.)
 - **From replication server v0.43.0 each switch records its own medium** (before it, either
   switch on recorded both). `App.recording` still reads a medium as recorded while either switch
-  is on (Game API v2.61.0), so it never says less than is recorded: show the notice for what it
+  is on (Application API v2.61.0), so it never says less than is recorded: show the notice for what it
   reports.
 
 A change takes effect shortly after you make it and deletes nothing already recorded. Voice and
@@ -87,16 +87,16 @@ notice, and get any consent, that the law where they live requires.
 ## The safety log
 
 On an app that admits players under 18, the input log is the **safety log**: the evidence a
-[safety report](/game-api/safety-reports) is reviewed with. An app admits players under 18 when
+[safety report](/application-api/safety-reports) is reviewed with. An app admits players under 18 when
 its [minimum age](/management-api/age-and-territory#minimum-ages) is under 18: since Crowded
 Kingdoms opened to players 13 and over on 2026-11-04, every app does unless it set `minPlayerAge`
 to 18.
 
 :::info[What is switched on]
 
-- **Live** (Game API v2.60.0): the requirement below, the separate voice and video switches,
+- **Live** (Application API v2.60.0): the requirement below, the separate voice and video switches,
   `App.recording`, moderators' reads, and the copies reports preserve.
-- **Live** (Game API v2.61.0): on an app that admits players under 18, only moderators read other
+- **Live** (Application API v2.61.0): on an app that admits players under 18, only moderators read other
   players' records, only those a report covers, and every read is audited, a player's reads of
   their own included.
 
@@ -118,7 +118,7 @@ to 18.
 
   `enabled` is the safety log itself, which always includes text; `voice` and `video` are each
   medium.
-- **Who reads it** (Game API v2.61.0). A player lists and reads their own sessions, which hold
+- **Who reads it** (Application API v2.61.0). A player lists and reads their own sessions, which hold
   only what their client sent; in Crowdy Studio that is **Account > Safety-log records**. A
   holder of `moderate_safety` (an appointed moderator, or the organization's admins) lists and
   reads only the sessions an open or escalated report covers.
@@ -129,7 +129,7 @@ to 18.
   played.
 - **How long.** The input log's [retention](#retention), 7 days. A report copies the records
   around it into a secure store until it is resolved, or for a year after a CyberTipline report
-  ([What a report preserves](/game-api/safety-reports#what-a-report-preserves)).
+  ([What a report preserves](/application-api/safety-reports#what-a-report-preserves)).
 - **Who pays.** The app's organization, as for any input log ([Billing](#billing)). Turning it on
   needs a funded wallet or a billing exemption (`INPUT_LOG_FUNDS_NEEDED`), and when the wallet can
   no longer pay, the whole app pauses, adults included (`APP_PAUSED`): nothing runs unrecorded.
@@ -182,7 +182,7 @@ resumed, reopens: `endedAt` and `endReason` return to null.
 
 Both queries are game plane. Send them with an **app-scoped token** for the app (see
 [Authenticate and assign](/replication-api/authenticate-and-assign)), to the app's own
-datacenter ([Datacenter routing](/game-api/datacenter-routing); the SDKs follow a
+datacenter ([Datacenter routing](/application-api/datacenter-routing); the SDKs follow a
 `WRONG_DATACENTER` refusal for you). An identity session token is refused.
 
 **Who sees what.** A player sees only their own sessions and inputs. On an app for adults, a

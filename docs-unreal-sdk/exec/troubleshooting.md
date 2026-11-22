@@ -40,7 +40,7 @@ A Server Object moves to **Failed**, and stays there, only when waiting cannot h
 - the deployed server code does not serve the variables players can see, or was built for another version of the SDK: generate and deploy it again;
 - the values the server sends do not match the definition's State struct: the definition and the deployed code are out of step, so generate and deploy again;
 - the server refused the SDK's request as malformed;
-- the Game API named a Server Object gateway outside its own domains, so the SDK will not connect to it: the reason reads "Could not open the connection to the server: the Game API named a gateway outside its own domains (" followed by why and "); if you host the server yourself, add its domain to Allowed Exec Gateway Domains in Project Settings". It is not retried until you acquire an object again (or call Restart). See [Server Object gateway domains](../reference/project-settings.md#server-object-gateway-domains) for the setting;
+- the Application API named a Server Object gateway outside its own domains, so the SDK will not connect to it: the reason reads "Could not open the connection to the server: the Application API named a gateway outside its own domains (" followed by why and "); if you host the server yourself, add its domain to Allowed Exec Gateway Domains in Project Settings". It is not retried until you acquire an object again (or call Restart). See [Server Object gateway domains](../reference/project-settings.md#server-object-gateway-domains) for the setting;
 - the player signed out (`The player signed out`);
 - the player's access to the game ended (`Your access ended: ` followed by the reason); see [When access ends](#when-access-ends).
 
