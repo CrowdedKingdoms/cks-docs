@@ -35,6 +35,14 @@ to you. To check capture by playing back what came round, call
 `client.udp.set_own_media_echo(True)` for the check and `False` after it (0.37.0;
 `own_media_echo=True` on `connect` starts with it on).
 
+By default a player receives the audio and video of every actor in range. From
+replication server v0.49.0, `client.udp.set_speakers(voice=[...], video=[...])`
+names whose it receives (0.38.0): a list receives only those actors (none when
+empty), `None` everyone again, and a kind you leave out stays as it is. Streams
+a list leaves out are not sent or billed. A list names at most the app's
+`gameClientBootstrap.maxVoiceSpeakers` / `maxVideoSpeakers` (32 at most); the
+connection sends the lists again with each capabilities advertisement.
+
 ## Channel messages limited by distance
 
 `send_ranged_channel_message` (0.6.0) publishes to a channel but delivers only to the
