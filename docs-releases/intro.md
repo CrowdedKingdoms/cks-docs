@@ -39,6 +39,22 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-23 (SDKs: a dropped build-status read no longer ends a Studio deploy)
+
+CrowdyJS 18.39.1, CrowdyCPP 0.93.0 and CrowdyPy 0.39.1. They work with every Application API.
+
+- **A Studio deploy survives a dropped read.** Until these releases, one build-status read that got no answer ended
+  a draft test or a live deploy. Now a read that gets no answer, an HTTP 5xx or 429 that is not the API's answer,
+  or `PLATFORM_BUSY` is a missed poll: it counts toward the poll limit, and the deploy goes on. The same holds in
+  `waitForModBuild` / `wait_for_mod_build`, up to its timeout. A refusal still ends the wait, and no build, deploy,
+  switch-on, attach, or consent call is repeated. **What you do:** nothing. See
+  [the deploy loop](/crowdyjs/player-client-mods#the-deploy-loop).
+- **CrowdyCPP's `CrowdyStudioModRunner` reports what each target holds.** Each target carries a `state` (for example
+  built but not attached, or switched on), the mod's id, and whether it is enabled, running, or blocked. A run whose
+  mod comes back blocked ends `Blocked` with the reason. A run can pin the module names the player saw, and
+  `createCrowdyStudioModRunner(appToken)` makes a runner that carries its own app token, for an engine that switches
+  one client between tokens. See [draft tests and live deploys](/crowdycpp/crowdy-studio#draft-tests-and-live-deploys).
+
 ## 2026-11-23 (Unreal SDK v2.28.0: owner echo works again, and choose whose voice and video you receive)
 
 Needs Application API v2.85.0. Per-item detail:

@@ -103,21 +103,30 @@ crowdy::studio::createCrowdyStudioStarterProjectAsync(
 `CrowdyStudioModRunner` runs a draft test or a live deploy of one saved revision of a project:
 
 ```cpp
-auto runner = game.createCrowdyStudioModRunner();
+auto runner = game.createCrowdyStudioModRunner(appToken);
 crowdy::studio::CrowdyStudioRunHandle run = runner->run(
-    {.scope = {appId, gridId}, .projectId = projectId, .expectedRevisionId = revision},
+    {.scope = {appId, gridId}, .projectId = projectId, .expectedRevisionId = revision,
+     .expectedServerModuleName = serverModule, .expectedClientModuleName = clientModule},
     [](crowdy::studio::CrowdyStudioRunResult result) {
-      // result.outcome, and per target: buildLog, diagnostics, digest, version.
+      // result.outcome, and per target: state, buildLog, diagnostics, digest, version,
+      // modId, enabled, running, blocked.
     },
     [](const crowdy::studio::CrowdyStudioRunProgress& progress) {
       // progress.step: ReadingProject, CheckingLiveModding, Building, Deploying, ...
     });
 ```
 
+From CrowdyCPP 0.93.0, `createCrowdyStudioModRunner(appToken)` makes a runner whose requests carry
+that app token, whatever token your game installs on `game` between calls. It starts at `game`'s
+endpoint, follows a datacenter move on its own, and takes a new token when yours rotates:
+`runner->setAppToken(newToken)`. `createCrowdyStudioModRunner()` without a token uses `game`'s own
+session.
+
 A run:
 
 1. reads the project, and stops if it is no longer at `expectedRevisionId` (a project bound to a
-   GitHub repository can pin `expectedGithubSha` instead);
+   GitHub repository can pin `expectedGithubSha` instead), or if its module names are no longer
+   `expectedServerModuleName` or `expectedClientModuleName` when you set them;
 2. asks the live-modding check first when `checkLiveModding` is set;
 3. builds exactly the files it read, the CLIENT half first, so a failed compile deploys nothing;
 4. deploys the SERVER half to the grid and switches it on (a project with only a CLIENT half rides
@@ -129,21 +138,37 @@ half report which saved revision the grid runs (`studioProjectId`, `studioRevisi
 `game.exec().mods(appId, gridId)`; see [which Studio revision a mod
 runs](/exec/mods#which-studio-revision-a-mod-runs)).
 
+A read that gets no answer, an HTTP 5xx or 429 that is not the API's answer, or `PLATFORM_BUSY`
+does not end a run (from 0.93.0). The run polls a build's status again, counting the miss toward
+`pollLimit`, and gives the project, live-modding, mod-listing, and mod-starter reads one more try.
+It never repeats a build, deploy, switch-on, attach, or consent call.
+
 It ends with one outcome:
 
 | Outcome | What happened |
 |---|---|
-| `Running` | The mod runs on the grid with this revision |
+| `Running` | The mod is switched on with this revision, and nothing blocks it |
+| `Blocked` | Every step went through, but the mod is blocked; the target's `blocked` says why |
 | `CompileFailed` | A build failed; its target carries the build log and the parsed diagnostics |
-| `RevisionConflict` | The project moved past the revision the player saved |
+| `RevisionConflict` | The project moved past the revision or the module names the player saw |
 | `RateLimited` | Too many builds; try again later |
 | `QueueFull` | The build service is busy; try again later |
 | `Refused` | The platform refused a step; `result.error->code` says why |
 | `Cancelled` | `run.cancel()` stopped it at its next step |
-| `Failed` | Anything else, such as a lost connection |
+| `Failed` | Anything else: a connection that stayed down, a build that outran `pollLimit`, or an exception inside the run |
 
-`deployment` chooses a draft test (the default) or a live deploy. Destroying the runner ends its
-runs without calling back. The build log is kept to its last 64 KiB.
+A mod is blocked by a switch of the app's kill ladder, the app's own switch, its budget, or the
+owner's access. A blocked run still attaches and consents to the CLIENT half, so once the block
+clears both halves are this run's.
+
+Whatever the outcome, each target's `state` says what the platform holds for it: `NotStarted`,
+`Building`, `BuildFailed`, `Built`, `Deployed`, or `SwitchedOn` for the SERVER half, and `Attached`
+or `Consented` for the CLIENT half. `modId`, `enabled`, `running`, and `blocked` describe the mod the
+target is or rides; a mod just switched on may report `running` as false for a moment.
+
+`deployment` chooses a draft test (the default) or a live deploy. Every run calls `onDone` exactly
+once, as `Failed` if something inside it throws, your `onProgress` included. Destroying the runner
+ends its runs without calling back. The build log is kept to its last 64 KiB.
 
 ## Studio's address
 
