@@ -2,7 +2,7 @@
 slug: voice-chat
 sidebar_position: 4
 title: Voice Chat
-description: "Turn on the built-in voice channel: open your microphone, hear other players, set how far your voice reaches, play it flat or spatial, talk to a channel's members, mute or turn down one player, see who is talking and what the microphone is doing, test with owner echo, send audio that is not the microphone, what changes across maps, devices and platforms, and why every player needs the same SDK version."
+description: "Turn on the built-in voice channel: open your microphone, hear other players, set how far your voice reaches, play it flat or spatial, talk to a channel's members, mute or turn down one player, choose whose voice the server sends you, see who is talking and what the microphone is doing, test with owner echo, send audio that is not the microphone, what changes across maps, devices and platforms, and why every player needs the same SDK version."
 ---
 
 import Tabs from '@theme/Tabs';
@@ -40,6 +40,8 @@ Everything lives on the **Crowdy SDK Subsystem** (`UCrowdySDKSubsystem`, a Game 
 | **Set Voice Speaker Volume** | `SetVoiceSpeakerVolume(int64 UserId, float Volume)` | How loud one player is: 0 to 4, 1 is as received. |
 | **Get Voice Speaker Volume** | `GetVoiceSpeakerVolume(int64 UserId)` | The volume set for that player. |
 | **Get Voice Speaker User Id** | `GetVoiceSpeakerUserId(const FString& SpeakerUuid)` | The user id behind a **Speaker Uuid**, or 0 until it is known. |
+| **Set Voice Speakers** (Speaker Uuids) | `SetVoiceSpeakers(const TArray<FString>& SpeakerUuids)` | Has the server send you voice only from these players. See [Choose whose voice you receive](#choose-whose-voice-you-receive). |
+| **Hear All Voice Speakers** | `HearAllVoiceSpeakers()` | Goes back to receiving every player in range. |
 | **Get Voice Mic State** | `GetVoiceMicState()` | What your microphone is doing right now. |
 | **On Voice Mic State Changed** | `OnVoiceMicStateChanged` | Fires when that state changes. |
 | **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking to the players near them. Channel voice has its own, see [Talk to a channel](#talk-to-a-channel). |
@@ -169,7 +171,7 @@ All of these carry over across map changes, like the other voice settings; when 
 
 **You can hear someone twice.** A listener who shares a channel with a speaker standing nearby hears that speaker spatially and on the channel. This is deliberate, and it is how CrowdyJS behaves. If your game does not want it, the speaker can turn spatial voice off with **Set Spatial Voice Enabled** while talking on the channel (then nobody near them hears them spatially), or a listener can mute the channel with **Set Voice Channel Muted**.
 
-**A known limit.** The server does not yet check that channel voice comes from the player whose actor id it carries, so a member who may talk on a channel can send voice that claims to be another player's. Such voice is heard, shown in talking events and muted as that player, so muting the voice you hear mutes the player it claims to be and does not stop it; muting the channel does. It reaches only listeners who joined that channel's voice.
+**Whose voice it is.** The server checks that channel voice comes from the player whose actor id it carries and drops voice sent under another player's id, so the player a talking event names is the one who spoke.
 
 **What it costs.** One 20 ms frame is encoded once and sent once for each channel you talk on, plus once spatially. Every channel you add is another packet per frame, and channel delivery is billed per member. Talking on more than about three channels at once can hide the server's refusals from the log: the connection numbers its sends with one byte, and past about 256 sends a second it can no longer tell which send a refusal is about.
 
@@ -192,6 +194,12 @@ Bind `OnVoiceSpeakerTalking`. In the handler, call `GetVoiceSpeakerUserId(Speake
 
 **Get Voice Speaker User Id** answers 0 until the user is known, usually a moment after they first speak, and 0 for a speaker not heard on this map in the last minute, so check for 0 before you use it. A lookup that finds no user is tried again every 10 seconds. A muted player's voice is not decoded and takes no speaker place. While anyone is muted, a new speaker is held silent for up to 1.5 seconds until their user is known, so a muted player is not heard for a moment after they sign in again. Muting is yours to offer; blocking, which the platform enforces, is stronger and is covered in [Player Safety](./player-safety.md#what-a-block-covers).
 
+## Choose whose voice you receive
+
+**Set Voice Speakers** tells the server whose spatial voice to send you: only the players whose actor ids are in **Speaker Uuids**, at most 32, and nobody when the list is empty. The server sends the others nothing, so they cost you no data, where a muted player's voice still arrives and is thrown away. **Hear All Voice Speakers** goes back to every player in range. A list of more than 32 ids, or with an id that is not 32 characters, returns false, logs a warning and changes nothing. The app can set a lower limit, `maxVoiceSpeakers` (see [game setup](/management-api/game-setup#c5-cap-the-speakers-each-player-receives)); the server refuses a longer list, and the node cannot know, so keep your lists within it. Calling it again with the same players, in any order, sends nothing, so a game can refresh its list every frame.
+
+Which players to name is your game's choice: the **Speaker Uuid** values from **On Voice Speaker Talking**, a party's members, or the few players nearest to you. The list holds across map changes and reconnects until **Hear All Voice Speakers** or sign-out, and the next player to sign in hears everyone. It covers spatial voice only: a channel's voice still reaches every member who joined it. [Video Frames](../runtime/video-frames.md) has the same pair for webcam video.
+
 ## Reading the microphone
 
 **Get Voice Mic State** returns one of five values, and **On Voice Mic State Changed** fires with the new one.
@@ -208,12 +216,12 @@ A map change closes and reopens the microphone, so you see **Off** then **Starti
 
 ## Confirming capture with owner echo
 
-Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, and speak. You should hear yourself, a little late: your voice goes to the server and comes back like any other player's. While echo is on, your own **Speaker Uuid** also shows up in **On Voice Speaker Talking**.
+Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, and speak. You should hear yourself, a little late: your voice goes to the server and comes back like any other player's. While echo is on, your own **Speaker Uuid** also shows up in **On Voice Speaker Talking**. The server sends your own webcam video back too, which the SDK discards.
 
 You need **Play Voice Chat** for this too, since echo is played like anyone else's voice.
 
 :::note[Realtime servers from v0.48.0 send your own voice back only when the plugin asks.]
-The servers no longer return a speaker's own voice by default, which saves the data out that copy cost. The plugin needs a release that asks while owner echo is on; until you have one, **Toggle Owner Echo** plays nothing on those servers. The [changelog](/releases/intro) says which release asks.
+From SDK v2.28.0, **Toggle Owner Echo** asks while it is on. On earlier releases it plays nothing on those servers.
 :::
 
 :::caution[Turn owner echo back off once capture is confirmed.]
@@ -280,7 +288,7 @@ The feed and the microphone share one stream, so `FeedVoicePcm` answers false an
 
 The tool for troubleshooting is a console variable. `crowdy.voice.trace 1` turns on `LogCrowdyVoice` info logging for the microphone, playback and device changes. Warnings and errors are always on. Use it as a troubleshooting knob, not as a gameplay hook; for gameplay, bind **On Voice Speaker Talking** and **On Voice Mic State Changed**.
 
-From C++, `UVoiceChatSubsystem::GetStats()` (a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`) returns running counters for the current map: packets sent, silent frames the gate skipped, packets received, frames played, frames concealed for loss, frames dropped because a speaker's playback was full, malformed packets, packets from speakers beyond **Max Speakers** (`PacketsOverCap`), speakers displaced by a nearer one (`SpeakersDisplaced`), packets from muted players and channels, or held while a new speaker's user is looked up (`PacketsMuted`), channel voice packets sent and received (`ChannelPacketsSent`, `ChannelPacketsReceived`) and those from a channel whose voice you have not joined (`ChannelPacketsIgnored`), and the number of speakers heard right now. A debug overlay or a soak test can read them; they are not a Blueprint node.
+From C++, `UVoiceChatSubsystem::GetStats()` (a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`) returns running counters for the current map: packets sent, silent frames the gate skipped, packets received, frames played, frames concealed for loss, frames dropped because a speaker's playback was full, malformed packets, packets from speakers beyond **Max Speakers** (`PacketsOverCap`), speakers displaced by a nearer one (`SpeakersDisplaced`), packets from muted players and channels, or held while a new speaker's user is looked up (`PacketsMuted`), channel voice packets sent and received (`ChannelPacketsSent`, `ChannelPacketsReceived`) and those from a channel whose voice you have not joined (`ChannelPacketsIgnored`), your own voice the server sent back while owner echo is off on this map (`OwnPacketsIgnored`), and the number of speakers heard right now. A debug overlay or a soak test can read them; they are not a Blueprint node.
 
 ## How the transport works
 

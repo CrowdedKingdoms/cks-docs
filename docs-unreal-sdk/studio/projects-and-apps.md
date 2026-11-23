@@ -62,6 +62,8 @@ Press **Create app** in the page header. It needs an organization to create in: 
 
 **Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots, which are retired: its apps share one free allowance. Press **Create app**. The Application API connection is available immediately; there is no provisioning wait.
 
+An organization without a funded wallet or auto-billing may have at most 10 apps that are not archived, and restoring an archived app counts too. Past it, Studio says the organization has reached its limit of 10 apps: archive one you no longer use, or fund the organization's wallet (or turn on auto-billing) to create more.
+
 :::note[The datacenter is chosen once, at creation, and cannot be changed later.]
 Everything the app stores lives in that one datacenter. Pick the one closest to your players. Status and visibility are not asked at creation; the server defaults them and the details pane changes them afterwards.
 :::
