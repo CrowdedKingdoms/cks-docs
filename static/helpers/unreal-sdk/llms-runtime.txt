@@ -4627,6 +4627,17 @@ Reassembly is turned on by the first bind. The one frame that was assembling whe
 
 **Success signal.** With another client in range sending video into the same app (this SDK or another), the torch's intensity jumps with every completed frame, and `GetPendingSenderCount()` reads above zero while a frame is half arrived.
 
+## Choose whose video you receive
+
+These two are on the **Crowdy SDK Subsystem** (category **Crowdy SDK > Video**). The server sends no video that is left out, so it costs no data.
+
+| Blueprint | C++ | Does |
+|---|---|---|
+| **Set Video Speakers** (Speaker Uuids) | `SetVideoSpeakers(const TArray<FString>& SpeakerUuids)` | Has the server send you video only from these players' actor ids, at most 32, and none when the list is empty. Returns false, logs a warning and changes nothing for a longer list or an id that is not 32 characters. |
+| **See All Video Speakers** | `SeeAllVideoSpeakers()` | Goes back to every player in range. |
+
+The app can set a lower limit, `maxVideoSpeakers` (see [game setup](/management-api/game-setup#c5-cap-the-speakers-each-player-receives)), and the server refuses a longer list. Calling it again with the same players, in any order, sends nothing. Which players to name is your game's choice, such as the `SenderId` of the cameras on screen. The list holds across map changes and reconnects until **See All Video Speakers** or sign-out. Voice has its own pair; see [Voice Chat](../services/voice-chat.md#choose-whose-voice-you-receive).
+
 ## The frame
 
 `FCrowdyVideoFrame`, all fields read-only:
@@ -4662,7 +4673,7 @@ The receiver releases a sender itself when the server announces its departure or
 
 ## What is not delivered
 
-- A client's own fragments. The server fans a video packet out over the chunk it was sent to, which includes the sender, and a frame of your own camera is one you already have. They are discarded, never reassembled.
+- A client's own fragments. The server sends them back only while **Toggle Owner Echo** is on, and a frame of your own camera is one you already have, so they are discarded, never reassembled.
 - A frame that never completes. A fragment for a frame the sender has moved past is dropped; the incomplete frame is abandoned and counted.
 
 Video fragments share the per-frame receive budget with every other message the connection receives; see [Connection and reconnect](./connection-and-reconnect.md#the-receive-budget).

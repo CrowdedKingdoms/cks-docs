@@ -35,6 +35,12 @@ browser Studio runs it in a Web Worker. Compiler output becomes
 (`StudioLayoutController`) is persisted in the same format the browser Studio
 uses.
 
+From CrowdyPy 0.39.1 a build-status read that gets no answer, an HTTP 5xx or
+429 that is not the API's answer, or `PLATFORM_BUSY` is a missed poll: it counts
+toward `compile_poll_limit`, and the deploy goes on. A CLIENT-only project's mod
+listing and mod starter get one more try, and `exec.wait_for_mod_build` reads
+again until its `timeout_ms`. A refusal still ends the deploy.
+
 ## Player-host observation
 
 `crowdypy.player_host` is the typed contract a game implements so tooling can

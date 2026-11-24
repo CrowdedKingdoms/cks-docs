@@ -22,12 +22,12 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 Download the plugin from its public repository on GitHub, [CrowdedKingdoms/CrowdySDK-Unreal](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal):
 
-- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.27.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.27.0`; rename that folder to `CrowdySDK`.
-- **Or with git:** `git clone --branch v2.27.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
+- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.28.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.28.0`; rename that folder to `CrowdySDK`.
+- **Or with git:** `git clone --branch v2.28.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
 
 The repository's root is the plugin root: the folder you download is the one that goes at `Plugins/CrowdySDK` in Step 2.
 
-:::note[The release you install must match the version this guide describes (2.27).]
+:::note[The release you install must match the version this guide describes (2.28).]
 :::
 
 From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
