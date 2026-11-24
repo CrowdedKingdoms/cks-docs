@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-The organization's six-question project profile. Complete, it earns the PROFILE free tier level.
+The organization's project profile: seven questions, the last optional. Complete and approved by Crowded Kingdoms, it earns the PROFILE free tier level.
 
 
 ```graphql
@@ -24,8 +24,10 @@ type OrgProjectProfile {
   whatBuilding: String
   worldShape: ProjectWorldShape
   playersPerWorldLaunch: Int
+  agentsPerWorldLaunch: Int
   playersInViewLaunch: Int
   playersPerWorldYear1: Int
+  agentsPerWorldYear1: Int
   playersInViewYear1: Int
   stage: ProjectStage
   launchDate: DateTime
@@ -33,8 +35,12 @@ type OrgProjectProfile {
   logicLocation: ProjectLogicLocation
   currentNetworking: String
   currentNetworkingMonthlyCostCents: Int
+  startingFromScratch: Boolean
   referenceConsent: Boolean
+  anythingElse: String
   completedAt: DateTime
+  status: ProjectProfileStatus!
+  reviewedAt: DateTime
   updatedAt: DateTime
 }
 ```
@@ -47,7 +53,7 @@ type OrgProjectProfile {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>whatBuilding</b></code>](#what-building)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #what-building */} 
-What the game is.
+What the organization is building: a game, an experience or another application.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>worldShape</b></code>](#world-shape)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectWorldShape</b></code>](/reference/graphql/types/enums/project-world-shape.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #world-shape */} 
@@ -58,16 +64,24 @@ What the game is.
 Players in one world at launch.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>agentsPerWorldLaunch</b></code>](#agents-per-world-launch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #agents-per-world-launch */} 
+AI agents that act in one world at launch.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>playersInViewLaunch</b></code>](#players-in-view-launch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-in-view-launch */} 
-Players each one sees at launch.
+Players and AI agents that see or interact with each other at once, at launch.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>playersPerWorldYear1</b></code>](#players-per-world-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-per-world-year-1 */} 
 Players in one world a year on.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>agentsPerWorldYear1</b></code>](#agents-per-world-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #agents-per-world-year-1 */} 
+AI agents that act in one world a year on.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>playersInViewYear1</b></code>](#players-in-view-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-in-view-year-1 */} 
-Players each one sees a year on.
+Players and AI agents that see or interact with each other at once, a year on.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>stage</b></code>](#stage)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectStage</b></code>](/reference/graphql/types/enums/project-stage.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #stage */} 
@@ -94,12 +108,28 @@ The networking it uses today.
 What that networking costs a month, in US cents.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>startingFromScratch</b></code>](#starting-from-scratch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #starting-from-scratch */} 
+True when the organization is starting from scratch, with no networking to replace. It answers the networking question in place of currentNetworking and its cost.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>referenceConsent</b></code>](#reference-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reference-consent */} 
-Whether Crowded Kingdoms may name the studio as a reference.
+Whether Crowded Kingdoms may name the organization as a customer at launch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>anythingElse</b></code>](#anything-else)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #anything-else */} 
+Anything else the organization wants Crowded Kingdoms to know. Optional.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>completedAt</b></code>](#completed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #completed-at */} 
-When every answer was in; null while any is missing.
+When every answer was in; null while any is missing. anythingElse is optional.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectProfileStatus!</b></code>](/reference/graphql/types/enums/project-profile-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #status */} 
+INCOMPLETE, WAITING&#x005F;FOR&#x005F;REVIEW, APPROVED or DECLINED. Crowded Kingdoms reviews a complete profile before the PROFILE level applies, and promises no time for it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>reviewedAt</b></code>](#reviewed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reviewed-at */} 
+When Crowded Kingdoms approved or declined the profile; null while it waits.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgProjectProfile.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
@@ -110,4 +140,4 @@ When every answer was in; null while any is missing.
 
 ### Returned By
 
-[`orgProjectProfile`](/reference/graphql/operations/queries/org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setOrgProjectProfile`](/reference/graphql/operations/mutations/set-org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`orgProjectProfile`](/reference/graphql/operations/queries/org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setOrgProjectProfile`](/reference/graphql/operations/mutations/set-org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setOrgProjectProfileReview`](/reference/graphql/operations/mutations/set-org-project-profile-review.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

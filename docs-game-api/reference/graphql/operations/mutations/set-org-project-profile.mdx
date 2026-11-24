@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Saves answers to the organization's project profile. An omitted field keeps its answer; null clears it. When every answer is in, the profile is complete and next month's free tier level is checked again at once (PROFILE). Requires the 'manage&#x005F;billing' org permission.
+Saves answers to the organization's project profile. An omitted field keeps its answer; null clears it. When every answer but anythingElse is in, the profile is complete and waits for Crowded Kingdoms' review; approved, it earns the PROFILE free tier level from the start of the next month. Next month's level is checked again at once. Requires the 'manage&#x005F;billing' org permission.
 
 
 ```graphql
@@ -36,4 +36,4 @@ setOrgProjectProfile(
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>OrgProjectProfile</b></code>](/reference/graphql/types/objects/org-project-profile.mdx) <Badge class="badge badge--secondary " text="object"/> 
-The organization's six-question project profile. Complete, it earns the PROFILE free tier level.
+The organization's project profile: seven questions, the last optional. Complete and approved by Crowded Kingdoms, it earns the PROFILE free tier level.

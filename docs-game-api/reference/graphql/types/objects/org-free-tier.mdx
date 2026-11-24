@@ -26,6 +26,7 @@ type OrgFreeTier {
   nextMonth: OrgFreeTierMonth!
   earnedLevel: FreeTierLevel!
   conditions: [OrgFreeTierCondition!]!
+  profileStatus: ProjectProfileStatus!
   ownDomain: String
   measuredQualifyingDays: Int!
   agreements: [OrgFreeTierAgreement!]!
@@ -58,6 +59,10 @@ The level the conditions met now earn.
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>conditions</b></code>](#conditions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OrgFreeTierCondition!]!</b></code>](/reference/graphql/types/objects/org-free-tier-condition.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #conditions */} 
 DOMAIN, PROFILE and MEASURED, with whether each is met now.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>profileStatus</b></code>](#profile-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectProfileStatus!</b></code>](/reference/graphql/types/enums/project-profile-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #profile-status */} 
+Where the project profile stands. PROFILE is met while it is APPROVED.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgFreeTier.<b>ownDomain</b></code>](#own-domain)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #own-domain */} 
