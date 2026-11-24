@@ -1,0 +1,53 @@
+---
+id: project-profile-status
+title: ProjectProfileStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where an organization's project profile stands. The PROFILE free tier level needs it APPROVED.
+
+
+```graphql
+enum ProjectProfileStatus {
+  INCOMPLETE
+  WAITING_FOR_REVIEW
+  APPROVED
+  DECLINED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectProfileStatus.<b>INCOMPLETE</b></code>](#incomplete) {/* #incomplete */} 
+An answer is missing (anythingElse is optional).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectProfileStatus.<b>WAITING&#x005F;FOR&#x005F;REVIEW</b></code>](#waiting-for-review) {/* #waiting-for-review */} 
+Every answer is in, and Crowded Kingdoms has not decided yet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectProfileStatus.<b>APPROVED</b></code>](#approved) {/* #approved */} 
+Crowded Kingdoms approved it: the PROFILE level applies from the start of the next month.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProjectProfileStatus.<b>DECLINED</b></code>](#declined) {/* #declined */} 
+Crowded Kingdoms declined it: the organization has the level its other conditions give it.
+
+
+
+
+### Member Of
+
+[`OrgFreeTier`](/reference/graphql/types/objects/org-free-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrgProjectProfile`](/reference/graphql/types/objects/org-project-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
