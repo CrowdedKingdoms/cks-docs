@@ -1,6 +1,6 @@
 {
-  "generated": "2026-11-21T00:19:32Z",
-  "sdk_version": "2.27.0",
+  "generated": "2026-11-23T17:16:40Z",
+  "sdk_version": "2.28.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
     {
@@ -9224,6 +9224,25 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::HearAllVoiceSpeakers",
+      "class": "UCrowdySDKSubsystem",
+      "name": "HearAllVoiceSpeakers",
+      "display_name": "Hear All Voice Speakers",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "void",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::IsChannelVoiceOn",
       "class": "UCrowdySDKSubsystem",
       "name": "IsChannelVoiceOn",
@@ -9516,6 +9535,25 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::SeeAllVideoSpeakers",
+      "class": "UCrowdySDKSubsystem",
+      "name": "SeeAllVideoSpeakers",
+      "display_name": "See All Video Speakers",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "void",
+      "category": "Crowdy SDK|Video",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::SetChannelVoiceMode",
       "class": "UCrowdySDKSubsystem",
       "name": "SetChannelVoiceMode",
@@ -9611,6 +9649,27 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::SetVideoSpeakers",
+      "class": "UCrowdySDKSubsystem",
+      "name": "SetVideoSpeakers",
+      "display_name": "Set Video Speakers",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "bool",
+      "category": "Crowdy SDK|Video",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {
+        "AutoCreateRefTerm": "SpeakerUuids"
+      },
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::SetVoiceChannelMuted",
       "class": "UCrowdySDKSubsystem",
       "name": "SetVoiceChannelMuted",
@@ -9703,6 +9762,27 @@
         "BlueprintCallable"
       ],
       "meta": {},
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::SetVoiceSpeakers",
+      "class": "UCrowdySDKSubsystem",
+      "name": "SetVoiceSpeakers",
+      "display_name": "Set Voice Speakers",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "bool",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {
+        "AutoCreateRefTerm": "SpeakerUuids"
+      },
       "editor_module": false
     },
     {
@@ -27590,6 +27670,25 @@
       "editor_module": false
     },
     {
+      "id": "EMode",
+      "name": "EMode",
+      "kind": "enum",
+      "scope": "FCrowdyCppSpeakerList",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [],
+      "enumerators": [
+        "Keep",
+        "Everyone",
+        "Only"
+      ],
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppReplication.h",
+      "editor_module": false
+    },
+    {
       "id": "ENext",
       "name": "ENext",
       "kind": "enum",
@@ -28620,40 +28719,6 @@
       "id": "FBinding",
       "name": "FBinding",
       "kind": "struct",
-      "scope": "FCrowdyServerMessageBindings",
-      "reflected": "",
-      "blueprint_type": false,
-      "template": false,
-      "bases": [],
-      "fields": [
-        {
-          "name": "Message",
-          "type": "FName",
-          "static": false,
-          "uproperty": false
-        },
-        {
-          "name": "Handler",
-          "type": "TWeakObjectPtr<UObject>",
-          "static": false,
-          "uproperty": false
-        },
-        {
-          "name": "Function",
-          "type": "FName",
-          "static": false,
-          "uproperty": false
-        }
-      ],
-      "enumerators": [],
-      "module": "CrowdyExec",
-      "header": "CrowdyExec/Public/CrowdyServerObject.h",
-      "editor_module": false
-    },
-    {
-      "id": "FBinding",
-      "name": "FBinding",
-      "kind": "struct",
       "scope": "FCrowdyServerVariableBindings",
       "reflected": "",
       "blueprint_type": false,
@@ -28687,6 +28752,40 @@
         {
           "name": "Serial",
           "type": "uint64",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyExec",
+      "header": "CrowdyExec/Public/CrowdyServerObject.h",
+      "editor_module": false
+    },
+    {
+      "id": "FBinding",
+      "name": "FBinding",
+      "kind": "struct",
+      "scope": "FCrowdyServerMessageBindings",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "Message",
+          "type": "FName",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Handler",
+          "type": "TWeakObjectPtr<UObject>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Function",
+          "type": "FName",
           "static": false,
           "uproperty": false
         }
@@ -31985,6 +32084,12 @@
           "uproperty": false
         },
         {
+          "name": "LimitValue",
+          "type": "TOptional<int64>",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "Msgpack",
           "type": "TArray<uint8>",
           "static": false,
@@ -32430,6 +32535,12 @@
       ],
       "fields": [
         {
+          "name": "MaxMediaSpeakers",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
           "name": "MaxSendAttributionAgeMs",
           "type": "int64",
           "static": true,
@@ -32537,6 +32648,12 @@
         },
         {
           "name": "bAdvertiseCapabilities",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bOwnMediaEcho",
           "type": "bool",
           "static": false,
           "uproperty": false
@@ -33026,6 +33143,34 @@
         {
           "name": "Sequence",
           "type": "uint8",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppReplication.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppSpeakerList",
+      "name": "FCrowdyCppSpeakerList",
+      "kind": "struct",
+      "scope": "",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "Mode",
+          "type": "EMode",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Uuids",
+          "type": "TArray<FString>",
           "static": false,
           "uproperty": false
         }
@@ -49977,6 +50122,12 @@
         },
         {
           "name": "PacketsMuted",
+          "type": "int64",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "OwnPacketsIgnored",
           "type": "int64",
           "static": false,
           "uproperty": false
@@ -73831,6 +73982,52 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyCppReplication::SetMediaSpeakers",
+      "owner": "FCrowdyCppReplication",
+      "owner_kind": "class",
+      "name": "SetMediaSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool SetMediaSpeakers(const FCrowdyCppSpeakerList& Voice, const FCrowdyCppSpeakerList& Video, FString& OutError)",
+      "return_type": "bool",
+      "params": "const FCrowdyCppSpeakerList& Voice, const FCrowdyCppSpeakerList& Video, FString& OutError",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppReplication.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppReplication::SetOwnMediaEcho",
+      "owner": "FCrowdyCppReplication",
+      "owner_kind": "class",
+      "name": "SetOwnMediaEcho",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetOwnMediaEcho(bool bOn)",
+      "return_type": "void",
+      "params": "bool bOn",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppReplication.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyCppReplication::SetToken",
       "owner": "FCrowdyCppReplication",
       "owner_kind": "class",
@@ -73842,6 +74039,29 @@
       "params": "const FCrowdyCppReplicationToken& Token",
       "access": "public",
       "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppReplication.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppReplication::ValidateSpeakerUuids",
+      "owner": "FCrowdyCppReplication",
+      "owner_kind": "class",
+      "name": "ValidateSpeakerUuids",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool ValidateSpeakerUuids(TConstArrayView<FString> Uuids, FString& OutError)",
+      "return_type": "bool",
+      "params": "TConstArrayView<FString> Uuids, FString& OutError",
+      "access": "public",
+      "static": true,
       "virtual": false,
       "pure_virtual": false,
       "const": false,
@@ -93473,6 +93693,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyCppReplicationSubsystem::ForgetSpeakers",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "ForgetSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void ForgetSpeakers()",
+      "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyCppReplicationSubsystem::Get",
       "owner": "UCrowdyCppReplicationSubsystem",
       "owner_kind": "class",
@@ -93556,6 +93799,75 @@
       "virtual": false,
       "pure_virtual": false,
       "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyCppReplicationSubsystem::GetVideoSpeakers",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "GetVideoSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "const TOptional<TArray<FString>>& GetVideoSpeakers() const",
+      "return_type": "const TOptional<TArray<FString>>&",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyCppReplicationSubsystem::GetVoiceSpeakers",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "GetVoiceSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "const TOptional<TArray<FString>>& GetVoiceSpeakers() const",
+      "return_type": "const TOptional<TArray<FString>>&",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyCppReplicationSubsystem::HearAllVoiceSpeakers",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "HearAllVoiceSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void HearAllVoiceSpeakers()",
+      "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
       "template": false,
       "ufunction": false,
       "deprecated": false,
@@ -93657,6 +93969,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyCppReplicationSubsystem::IsSameSpeakerList",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "IsSameSpeakerList",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool IsSameSpeakerList(const TOptional<TArray<FString>>& Stored, const TOptional<TArray<FString>>& Wanted)",
+      "return_type": "bool",
+      "params": "const TOptional<TArray<FString>>& Stored, const TOptional<TArray<FString>>& Wanted",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyCppReplicationSubsystem::NewSendTicket",
       "owner": "UCrowdyCppReplicationSubsystem",
       "owner_kind": "class",
@@ -93749,6 +94084,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyCppReplicationSubsystem::SeeAllVideoSpeakers",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "SeeAllVideoSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SeeAllVideoSpeakers()",
+      "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyCppReplicationSubsystem::SetConnection",
       "owner": "UCrowdyCppReplicationSubsystem",
       "owner_kind": "class",
@@ -93772,6 +94130,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyCppReplicationSubsystem::SetOwnMediaEcho",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "SetOwnMediaEcho",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetOwnMediaEcho(bool bOn)",
+      "return_type": "void",
+      "params": "bool bOn",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyCppReplicationSubsystem::SetReceiveTarget",
       "owner": "UCrowdyCppReplicationSubsystem",
       "owner_kind": "class",
@@ -93781,6 +94162,52 @@
       "signature": "void SetReceiveTarget(FCrowdyMessageParser* InParser, FCrowdyServiceRegistry* InRegistry, UCrowdyUDPSubsystem* InUdpSubsystem)",
       "return_type": "void",
       "params": "FCrowdyMessageParser* InParser, FCrowdyServiceRegistry* InRegistry, UCrowdyUDPSubsystem* InUdpSubsystem",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyCppReplicationSubsystem::SetVideoSpeakers",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "SetVideoSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool SetVideoSpeakers(const TArray<FString>& Uuids, FString& OutError)",
+      "return_type": "bool",
+      "params": "const TArray<FString>& Uuids, FString& OutError",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyCppReplicationSubsystem::SetVoiceSpeakers",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "owner_kind": "class",
+      "name": "SetVoiceSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool SetVoiceSpeakers(const TArray<FString>& Uuids, FString& OutError)",
+      "return_type": "bool",
+      "params": "const TArray<FString>& Uuids, FString& OutError",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -109918,6 +110345,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::HearAllVoiceSpeakers",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "HearAllVoiceSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void HearAllVoiceSpeakers()",
+      "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::IsChannelVoiceOn",
       "owner": "UCrowdySDKSubsystem",
       "owner_kind": "class",
@@ -110263,6 +110713,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::SeeAllVideoSpeakers",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "SeeAllVideoSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SeeAllVideoSpeakers()",
+      "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::SendMessage",
       "owner": "UCrowdySDKSubsystem",
       "owner_kind": "class",
@@ -110470,6 +110943,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::SetVideoSpeakers",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "SetVideoSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool SetVideoSpeakers(const TArray<FString>& SpeakerUuids)",
+      "return_type": "bool",
+      "params": "const TArray<FString>& SpeakerUuids",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::SetVoiceChannelMuted",
       "owner": "UCrowdySDKSubsystem",
       "owner_kind": "class",
@@ -110571,6 +111067,29 @@
       "signature": "void SetVoiceSpeakerMuted(int64 UserId, bool bMuted)",
       "return_type": "void",
       "params": "int64 UserId, bool bMuted",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::SetVoiceSpeakers",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "SetVoiceSpeakers",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool SetVoiceSpeakers(const TArray<FString>& SpeakerUuids)",
+      "return_type": "bool",
+      "params": "const TArray<FString>& SpeakerUuids",
       "access": "public",
       "static": false,
       "virtual": false,

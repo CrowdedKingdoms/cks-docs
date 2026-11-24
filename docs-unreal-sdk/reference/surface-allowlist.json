@@ -2464,6 +2464,51 @@
     "note": "The vendored CrowdyCPP bridge and its worker threads; the game-facing surface is UCrowdySDKSubsystem and UCrowdyConnectionMonitor, documented on connection-and-reconnect."
   },
   {
+    "id": "UCrowdyCppReplicationSubsystem::ForgetSpeakers",
+    "reason": "internal",
+    "note": "Called by the SDK at sign-out and account switch; the speaker lists' lifetime is documented on voice-chat."
+  },
+  {
+    "id": "UCrowdyCppReplicationSubsystem::GetVideoSpeakers",
+    "reason": "internal",
+    "note": "The stored list behind Set Video Speakers on UCrowdySDKSubsystem, documented on video-frames."
+  },
+  {
+    "id": "UCrowdyCppReplicationSubsystem::GetVoiceSpeakers",
+    "reason": "internal",
+    "note": "The stored list behind Set Voice Speakers on UCrowdySDKSubsystem, documented on voice-chat."
+  },
+  {
+    "id": "UCrowdyCppReplicationSubsystem::HearAllVoiceSpeakers",
+    "reason": "internal",
+    "note": "Behind Hear All Voice Speakers on UCrowdySDKSubsystem, documented on voice-chat."
+  },
+  {
+    "id": "UCrowdyCppReplicationSubsystem::IsSameSpeakerList",
+    "reason": "internal",
+    "note": "How an unchanged list is recognised and not sent, documented on voice-chat."
+  },
+  {
+    "id": "UCrowdyCppReplicationSubsystem::SeeAllVideoSpeakers",
+    "reason": "internal",
+    "note": "Behind See All Video Speakers on UCrowdySDKSubsystem, documented on video-frames."
+  },
+  {
+    "id": "UCrowdyCppReplicationSubsystem::SetOwnMediaEcho",
+    "reason": "internal",
+    "note": "Behind Toggle Owner Echo on UCrowdySDKSubsystem, documented on voice-chat."
+  },
+  {
+    "id": "UCrowdyCppReplicationSubsystem::SetVideoSpeakers",
+    "reason": "internal",
+    "note": "Behind Set Video Speakers on UCrowdySDKSubsystem, documented on video-frames."
+  },
+  {
+    "id": "UCrowdyCppReplicationSubsystem::SetVoiceSpeakers",
+    "reason": "internal",
+    "note": "Behind Set Voice Speakers on UCrowdySDKSubsystem, documented on voice-chat."
+  },
+  {
     "id": "UCrowdyCppReplicationSubsystem::DescribeInboundDrainCost",
     "reason": "internal",
     "note": "The vendored CrowdyCPP bridge and its worker threads; the game-facing surface is UCrowdySDKSubsystem and UCrowdyConnectionMonitor, documented on connection-and-reconnect."
@@ -4187,6 +4232,31 @@
     "id": "FCrowdyCppReplication::SendChannelAudio",
     "reason": "internal",
     "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::SetMediaSpeakers",
+    "reason": "internal",
+    "note": "The bridge under Set Voice Speakers and Set Video Speakers on UCrowdySDKSubsystem, documented on voice-chat and video-frames."
+  },
+  {
+    "id": "FCrowdyCppReplication::SetOwnMediaEcho",
+    "reason": "internal",
+    "note": "The bridge under Toggle Owner Echo on UCrowdySDKSubsystem, documented on voice-chat."
+  },
+  {
+    "id": "FCrowdyCppReplication::ValidateSpeakerUuids",
+    "reason": "internal",
+    "note": "The check behind Set Voice Speakers and Set Video Speakers returning false, documented on voice-chat."
+  },
+  {
+    "id": "FCrowdyCppSpeakerList",
+    "reason": "internal",
+    "note": "The bridge's speaker list argument; a game uses Set Voice Speakers and Set Video Speakers on UCrowdySDKSubsystem."
+  },
+  {
+    "id": "EMode",
+    "reason": "internal",
+    "note": "FCrowdyCppSpeakerList::EMode, the bridge's speaker list mode (the surface names a nested enum by its own name); a game uses Set Voice Speakers and Set Video Speakers on UCrowdySDKSubsystem."
   },
   {
     "id": "FCrowdyCppReplication::SendSpatial",
