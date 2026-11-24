@@ -1961,7 +1961,9 @@ enum FreeTierLevel {
   A member has confirmed an email address at the domain the organization gives as its own; free email providers' domains do not count. 100 GB.
   """
   DOMAIN
-  """The organization has completed its project profile. 200 GB."""
+  """
+  The organization has completed its project profile and Crowded Kingdoms has approved it. 200 GB.
+  """
   PROFILE
   """
   One of the organization's apps had at least 10 different player accounts play on at least 3 of the last 7 UTC days; the organization's own members do not count. 500 GB.
@@ -2037,6 +2039,8 @@ type OrgFreeTier {
   earnedLevel: FreeTierLevel!
   """DOMAIN, PROFILE and MEASURED, with whether each is met now."""
   conditions: [OrgFreeTierCondition!]!
+  """Where the project profile stands. PROFILE is met while it is APPROVED."""
+  profileStatus: ProjectProfileStatus!
   """The domain the organization gives as its own."""
   ownDomain: String
   """
@@ -2050,20 +2054,48 @@ type OrgFreeTier {
 }
 
 """
-The organization's six-question project profile. Complete, it earns the PROFILE free tier level.
+Where an organization's project profile stands. The PROFILE free tier level needs it APPROVED.
+"""
+enum ProjectProfileStatus {
+  """An answer is missing (anythingElse is optional)."""
+  INCOMPLETE
+  """Every answer is in, and Crowded Kingdoms has not decided yet."""
+  WAITING_FOR_REVIEW
+  """
+  Crowded Kingdoms approved it: the PROFILE level applies from the start of the next month.
+  """
+  APPROVED
+  """
+  Crowded Kingdoms declined it: the organization has the level its other conditions give it.
+  """
+  DECLINED
+}
+
+"""
+The organization's project profile: seven questions, the last optional. Complete and approved by Crowded Kingdoms, it earns the PROFILE free tier level.
 """
 type OrgProjectProfile {
   orgId: BigInt!
-  """What the game is."""
+  """
+  What the organization is building: a game, an experience or another application.
+  """
   whatBuilding: String
   worldShape: ProjectWorldShape
   """Players in one world at launch."""
   playersPerWorldLaunch: Int
-  """Players each one sees at launch."""
+  """AI agents that act in one world at launch."""
+  agentsPerWorldLaunch: Int
+  """
+  Players and AI agents that see or interact with each other at once, at launch.
+  """
   playersInViewLaunch: Int
   """Players in one world a year on."""
   playersPerWorldYear1: Int
-  """Players each one sees a year on."""
+  """AI agents that act in one world a year on."""
+  agentsPerWorldYear1: Int
+  """
+  Players and AI agents that see or interact with each other at once, a year on.
+  """
   playersInViewYear1: Int
   stage: ProjectStage
   """The planned launch date."""
@@ -2075,16 +2107,34 @@ type OrgProjectProfile {
   currentNetworking: String
   """What that networking costs a month, in US cents."""
   currentNetworkingMonthlyCostCents: Int
-  """Whether Crowded Kingdoms may name the studio as a reference."""
+  """
+  True when the organization is starting from scratch, with no networking to replace. It answers the networking question in place of currentNetworking and its cost.
+  """
+  startingFromScratch: Boolean
+  """
+  Whether Crowded Kingdoms may name the organization as a customer at launch.
+  """
   referenceConsent: Boolean
-  """When every answer was in; null while any is missing."""
+  """
+  Anything else the organization wants Crowded Kingdoms to know. Optional.
+  """
+  anythingElse: String
+  """
+  When every answer was in; null while any is missing. anythingElse is optional.
+  """
   completedAt: DateTime
+  """
+  INCOMPLETE, WAITING_FOR_REVIEW, APPROVED or DECLINED. Crowded Kingdoms reviews a complete profile before the PROFILE level applies, and promises no time for it.
+  """
+  status: ProjectProfileStatus!
+  """
+  When Crowded Kingdoms approved or declined the profile; null while it waits.
+  """
+  reviewedAt: DateTime
   updatedAt: DateTime
 }
 
-"""
-Whether the game is one world with everyone in it or many copies of a small one.
-"""
+"""Whether the project is one shared world or many copies of a small one."""
 enum ProjectWorldShape {
   ONE_WORLD
   MANY_COPIES
@@ -2101,7 +2151,7 @@ enum ProjectStage {
 }
 
 """
-Where the game's logic runs: on the clients, in light server code, or in a full server simulation.
+Where the project's logic runs: on the clients, in light server code, or in a full server simulation.
 """
 enum ProjectLogicLocation {
   CLIENTS
@@ -4986,7 +5036,7 @@ type Mutation {
     idempotencyKey: String
   ): AppBudget! @requiresPermission(scope: "app", permission: "manage_billing", scopeArg: "appId")
   """
-  Saves answers to the organization's project profile. An omitted field keeps its answer; null clears it. When every answer is in, the profile is complete and next month's free tier level is checked again at once (PROFILE). Requires the 'manage_billing' org permission.
+  Saves answers to the organization's project profile. An omitted field keeps its answer; null clears it. When every answer but anythingElse is in, the profile is complete and waits for Crowded Kingdoms' review; approved, it earns the PROFILE free tier level from the start of the next month. Next month's level is checked again at once. Requires the 'manage_billing' org permission.
   """
   setOrgProjectProfile(input: SetOrgProjectProfileInput!): OrgProjectProfile! @requiresPermission(scope: "org", permission: "manage_billing", scopeArg: "input.orgId")
   """
@@ -5821,17 +5871,23 @@ input ExchangeManagedPlayerAssertionInput {
 }
 
 """
-Answers to the project profile. An omitted field keeps its answer; null clears it. Complete when every answer is in.
+Answers to the project profile. An omitted field keeps its answer; null clears it. Complete when every answer but anythingElse is in; startingFromScratch true answers the networking question.
 """
 input SetOrgProjectProfileInput {
   """Organization id."""
   orgId: BigInt!
-  """What the game is (2,000 characters at most)."""
+  """
+  What the organization is building: a game, an experience or another application (2,000 characters at most).
+  """
   whatBuilding: String
   worldShape: ProjectWorldShape
   playersPerWorldLaunch: Int
+  """AI agents that act in one world at launch; 0 when none do."""
+  agentsPerWorldLaunch: Int
   playersInViewLaunch: Int
   playersPerWorldYear1: Int
+  """AI agents that act in one world a year on; 0 when none do."""
+  agentsPerWorldYear1: Int
   playersInViewYear1: Int
   stage: ProjectStage
   launchDate: DateTime
@@ -5842,7 +5898,13 @@ input SetOrgProjectProfileInput {
   currentNetworking: String
   """US cents a month, 0 to 2,000,000,000."""
   currentNetworkingMonthlyCostCents: Int
+  """
+  True when starting from scratch: it answers the networking question in place of currentNetworking and its cost.
+  """
+  startingFromScratch: Boolean
   referenceConsent: Boolean
+  """Optional; 2,000 characters at most."""
+  anythingElse: String
 }
 
 """

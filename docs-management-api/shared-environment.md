@@ -123,7 +123,7 @@ every tier.
 |---|---|---|
 | Base | 15 GB | Every organization |
 | Domain | 100 GB | A member has confirmed an email address at the domain the organization gives as its own; free email providers' domains do not count |
-| Profile | 200 GB | The organization has completed its project profile |
+| Profile | 200 GB | The organization has completed its project profile, and Crowded Kingdoms has approved it |
 | Measured | 500 GB | One of its apps had at least 10 different player accounts, not the organization's members, play on at least 3 of the last 7 UTC days |
 
 - **A tier applies from the start of the next month.** A check at 23:30 UTC every
@@ -147,10 +147,20 @@ every tier.
   with `null`; a free email provider's domain is refused with
   [`FREE_EMAIL_DOMAIN`](/overview/error-codes). A member's confirmed account email
   at the domain, or at one of its subdomains, meets the condition.
-- **The project profile.** Six questions about the game, read with
+- **The project profile.** Seven questions about what the organization is
+  building, the last one optional (`anythingElse`), read with
   `orgProjectProfile(orgId)` (`view_billing`) and saved with
   `setOrgProjectProfile(input)` (`manage_billing`): an omitted field keeps its
-  answer and `null` clears it. `completedAt` is set while every answer is in.
+  answer and `null` clears it. `completedAt` is set while every answer but the
+  last is in; `startingFromScratch: true` answers the networking question in
+  place of `currentNetworking` and its cost.
+- **Crowded Kingdoms reviews a complete profile** before the Profile tier
+  applies, and promises no time for it. `status` (on the profile, and
+  `profileStatus` on `orgFreeTier`) is `INCOMPLETE`, `WAITING_FOR_REVIEW`,
+  `APPROVED` or `DECLINED`; `reviewedAt` is when Crowded Kingdoms decided. An
+  approved profile earns the tier from the start of the next month. A decision
+  stands when answers change; an incomplete profile earns nothing until it is
+  complete again.
 - **Usage reporting follows the tier.** `orgUsageProjection`'s
   `totalFreeAllowanceBytes` and `allowancePools` report the egress and ingress
   quotas at the organization's tier.
