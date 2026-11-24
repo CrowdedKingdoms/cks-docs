@@ -1,0 +1,48 @@
+---
+id: set-org-project-profile-review-input
+title: SetOrgProjectProfileReviewInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only: Crowded Kingdoms' decision on an organization's project profile, or back to waiting for review.
+
+
+```graphql
+input SetOrgProjectProfileReviewInput {
+  orgId: BigInt!
+  status: ProjectProfileStatus!
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileReviewInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+Organization id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileReviewInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectProfileStatus!</b></code>](/reference/graphql/types/enums/project-profile-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #status */} 
+APPROVED or DECLINED, or WAITING&#x005F;FOR&#x005F;REVIEW to clear the decision. INCOMPLETE is refused.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileReviewInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why, for the audit (billing&#x005F;rate&#x005F;changes).
+
+
+
+
+### Member Of
+
+[`setOrgProjectProfileReview`](/reference/graphql/operations/mutations/set-org-project-profile-review.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
