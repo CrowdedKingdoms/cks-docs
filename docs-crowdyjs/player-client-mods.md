@@ -219,6 +219,13 @@ of it. See [serving CLIENT halves to visitors](/exec/client-halves#serving-it-to
   to the glue worker. A full-stack project builds its CLIENT target first, so a
   CLIENT failure never deploys a new server version.
 
+From CrowdyJS 18.39.1 a build poll that gets no answer, an HTTP 5xx or 429 that
+is not the API's answer, or `PLATFORM_BUSY` is a missed poll: it counts toward
+`compilePollLimit`, and the deploy goes on. A CLIENT-only project's mod listing
+and mod starter get one more try, and `client.exec.waitForModBuild` reads again
+until its `timeoutMs`. A refusal still ends the deploy, and the controller never
+repeats a build, deploy, switch-on, attach, or consent call.
+
 A player has one build at a time, server or CLIENT, in this app and across
 every other (on each API instance): another is refused `RATE_LIMITED` until the
 first finishes. A mod bills its owner's [player

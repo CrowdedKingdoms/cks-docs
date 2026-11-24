@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Fetch a single app by its numeric id. Requires authentication (any signed-in user); does NOT enforce org/app permissions, so it can read apps the caller does not own, of any visibility/status. Returns null if the id does not exist. Prefer appBySlug for slug-based marketplace lookups.
+Fetch a single app by its numeric id. Requires authentication (any signed-in user) and does not require org membership, so it can name apps the caller does not own, of any visibility/status. Returns null if the id does not exist. redirectUris and state are empty unless the caller holds manage&#x005F;apps; runtimeDenialReason is null unless the caller is a member of the app's organization. Prefer appBySlug for slug-based marketplace lookups.
 
 
 ```graphql

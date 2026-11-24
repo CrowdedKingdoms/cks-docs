@@ -5,7 +5,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.27**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.28**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 ## What 2.27 changes
 
@@ -84,12 +84,12 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 Download the plugin from its public repository on GitHub, [CrowdedKingdoms/CrowdySDK-Unreal](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal):
 
-- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.27.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.27.0`; rename that folder to `CrowdySDK`.
-- **Or with git:** `git clone --branch v2.27.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
+- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.28.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.28.0`; rename that folder to `CrowdySDK`.
+- **Or with git:** `git clone --branch v2.28.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
 
 The repository's root is the plugin root: the folder you download is the one that goes at `Plugins/CrowdySDK` in Step 2.
 
-:::note[The release you install must match the version this guide describes (2.27).]
+:::note[The release you install must match the version this guide describes (2.28).]
 :::
 
 From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
@@ -1459,6 +1459,8 @@ Press **Create app** in the page header. It needs an organization to create in: 
 **Step 1, Name your app.** Type a name; the URL identifier (lowercase letters, digits, hyphens) is derived from it, and **Advanced options** lets you override it and add a description. Pick a datacenter card. The first available datacenter is preselected.
 
 **Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots, which are retired: its apps share one free allowance. Press **Create app**. The Application API connection is available immediately; there is no provisioning wait.
+
+An organization without a funded wallet or auto-billing may have at most 10 apps that are not archived, and restoring an archived app counts too. Past it, Studio says the organization has reached its limit of 10 apps: archive one you no longer use, or fund the organization's wallet (or turn on auto-billing) to create more.
 
 :::note[The datacenter is chosen once, at creation, and cannot be changed later.]
 Everything the app stores lives in that one datacenter. Pick the one closest to your players. Status and visibility are not asked at creation; the server defaults them and the details pane changes them afterwards.
@@ -6553,6 +6555,17 @@ Reassembly is turned on by the first bind. The one frame that was assembling whe
 
 **Success signal.** With another client in range sending video into the same app (this SDK or another), the torch's intensity jumps with every completed frame, and `GetPendingSenderCount()` reads above zero while a frame is half arrived.
 
+## Choose whose video you receive
+
+These two are on the **Crowdy SDK Subsystem** (category **Crowdy SDK > Video**). The server sends no video that is left out, so it costs no data.
+
+| Blueprint | C++ | Does |
+|---|---|---|
+| **Set Video Speakers** (Speaker Uuids) | `SetVideoSpeakers(const TArray<FString>& SpeakerUuids)` | Has the server send you video only from these players' actor ids, at most 32, and none when the list is empty. Returns false, logs a warning and changes nothing for a longer list or an id that is not 32 characters. |
+| **See All Video Speakers** | `SeeAllVideoSpeakers()` | Goes back to every player in range. |
+
+The app can set a lower limit, `maxVideoSpeakers` (see [game setup](/management-api/game-setup#c5-cap-the-speakers-each-player-receives)), and the server refuses a longer list. Calling it again with the same players, in any order, sends nothing. Which players to name is your game's choice, such as the `SenderId` of the cameras on screen. The list holds across map changes and reconnects until **See All Video Speakers** or sign-out. Voice has its own pair; see [Voice Chat](../services/voice-chat.md#choose-whose-voice-you-receive).
+
 ## The frame
 
 `FCrowdyVideoFrame`, all fields read-only:
@@ -6588,7 +6601,7 @@ The receiver releases a sender itself when the server announces its departure or
 
 ## What is not delivered
 
-- A client's own fragments. The server fans a video packet out over the chunk it was sent to, which includes the sender, and a frame of your own camera is one you already have. They are discarded, never reassembled.
+- A client's own fragments. The server sends them back only while **Toggle Owner Echo** is on, and a frame of your own camera is one you already have, so they are discarded, never reassembled.
 - A frame that never completes. A fragment for a frame the sender has moved past is dropped; the incomplete frame is abandoned and counted.
 
 Video fragments share the per-frame receive budget with every other message the connection receives; see [Connection and reconnect](./connection-and-reconnect.md#the-receive-budget).
@@ -18251,6 +18264,8 @@ Everything lives on the **Crowdy SDK Subsystem** (`UCrowdySDKSubsystem`, a Game 
 | **Set Voice Speaker Volume** | `SetVoiceSpeakerVolume(int64 UserId, float Volume)` | How loud one player is: 0 to 4, 1 is as received. |
 | **Get Voice Speaker Volume** | `GetVoiceSpeakerVolume(int64 UserId)` | The volume set for that player. |
 | **Get Voice Speaker User Id** | `GetVoiceSpeakerUserId(const FString& SpeakerUuid)` | The user id behind a **Speaker Uuid**, or 0 until it is known. |
+| **Set Voice Speakers** (Speaker Uuids) | `SetVoiceSpeakers(const TArray<FString>& SpeakerUuids)` | Has the server send you voice only from these players. See [Choose whose voice you receive](#choose-whose-voice-you-receive). |
+| **Hear All Voice Speakers** | `HearAllVoiceSpeakers()` | Goes back to receiving every player in range. |
 | **Get Voice Mic State** | `GetVoiceMicState()` | What your microphone is doing right now. |
 | **On Voice Mic State Changed** | `OnVoiceMicStateChanged` | Fires when that state changes. |
 | **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking to the players near them. Channel voice has its own, see [Talk to a channel](#talk-to-a-channel). |
@@ -18454,7 +18469,7 @@ All of these carry over across map changes, like the other voice settings; when 
 
 **You can hear someone twice.** A listener who shares a channel with a speaker standing nearby hears that speaker spatially and on the channel. This is deliberate, and it is how CrowdyJS behaves. If your game does not want it, the speaker can turn spatial voice off with **Set Spatial Voice Enabled** while talking on the channel (then nobody near them hears them spatially), or a listener can mute the channel with **Set Voice Channel Muted**.
 
-**A known limit.** The server does not yet check that channel voice comes from the player whose actor id it carries, so a member who may talk on a channel can send voice that claims to be another player's. Such voice is heard, shown in talking events and muted as that player, so muting the voice you hear mutes the player it claims to be and does not stop it; muting the channel does. It reaches only listeners who joined that channel's voice.
+**Whose voice it is.** The server checks that channel voice comes from the player whose actor id it carries and drops voice sent under another player's id, so the player a talking event names is the one who spoke.
 
 **What it costs.** One 20 ms frame is encoded once and sent once for each channel you talk on, plus once spatially. Every channel you add is another packet per frame, and channel delivery is billed per member. Talking on more than about three channels at once can hide the server's refusals from the log: the connection numbers its sends with one byte, and past about 256 sends a second it can no longer tell which send a refusal is about.
 
@@ -18477,6 +18492,12 @@ Bind `OnVoiceSpeakerTalking`. In the handler, call `GetVoiceSpeakerUserId(Speake
 
 **Get Voice Speaker User Id** answers 0 until the user is known, usually a moment after they first speak, and 0 for a speaker not heard on this map in the last minute, so check for 0 before you use it. A lookup that finds no user is tried again every 10 seconds. A muted player's voice is not decoded and takes no speaker place. While anyone is muted, a new speaker is held silent for up to 1.5 seconds until their user is known, so a muted player is not heard for a moment after they sign in again. Muting is yours to offer; blocking, which the platform enforces, is stronger and is covered in [Player Safety](./player-safety.md#what-a-block-covers).
 
+## Choose whose voice you receive
+
+**Set Voice Speakers** tells the server whose spatial voice to send you: only the players whose actor ids are in **Speaker Uuids**, at most 32, and nobody when the list is empty. The server sends the others nothing, so they cost you no data, where a muted player's voice still arrives and is thrown away. **Hear All Voice Speakers** goes back to every player in range. A list of more than 32 ids, or with an id that is not 32 characters, returns false, logs a warning and changes nothing. The app can set a lower limit, `maxVoiceSpeakers` (see [game setup](/management-api/game-setup#c5-cap-the-speakers-each-player-receives)); the server refuses a longer list, and the node cannot know, so keep your lists within it. Calling it again with the same players, in any order, sends nothing, so a game can refresh its list every frame.
+
+Which players to name is your game's choice: the **Speaker Uuid** values from **On Voice Speaker Talking**, a party's members, or the few players nearest to you. The list holds across map changes and reconnects until **Hear All Voice Speakers** or sign-out, and the next player to sign in hears everyone. It covers spatial voice only: a channel's voice still reaches every member who joined it. [Video Frames](../runtime/video-frames.md) has the same pair for webcam video.
+
 ## Reading the microphone
 
 **Get Voice Mic State** returns one of five values, and **On Voice Mic State Changed** fires with the new one.
@@ -18493,12 +18514,12 @@ A map change closes and reopens the microphone, so you see **Off** then **Starti
 
 ## Confirming capture with owner echo
 
-Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, and speak. You should hear yourself, a little late: your voice goes to the server and comes back like any other player's. While echo is on, your own **Speaker Uuid** also shows up in **On Voice Speaker Talking**.
+Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, and speak. You should hear yourself, a little late: your voice goes to the server and comes back like any other player's. While echo is on, your own **Speaker Uuid** also shows up in **On Voice Speaker Talking**. The server sends your own webcam video back too, which the SDK discards.
 
 You need **Play Voice Chat** for this too, since echo is played like anyone else's voice.
 
 :::note[Realtime servers from v0.48.0 send your own voice back only when the plugin asks.]
-The servers no longer return a speaker's own voice by default, which saves the data out that copy cost. The plugin needs a release that asks while owner echo is on; until you have one, **Toggle Owner Echo** plays nothing on those servers. The [changelog](/releases/intro) says which release asks.
+From SDK v2.28.0, **Toggle Owner Echo** asks while it is on. On earlier releases it plays nothing on those servers.
 :::
 
 :::caution[Turn owner echo back off once capture is confirmed.]
@@ -18565,7 +18586,7 @@ The feed and the microphone share one stream, so `FeedVoicePcm` answers false an
 
 The tool for troubleshooting is a console variable. `crowdy.voice.trace 1` turns on `LogCrowdyVoice` info logging for the microphone, playback and device changes. Warnings and errors are always on. Use it as a troubleshooting knob, not as a gameplay hook; for gameplay, bind **On Voice Speaker Talking** and **On Voice Mic State Changed**.
 
-From C++, `UVoiceChatSubsystem::GetStats()` (a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`) returns running counters for the current map: packets sent, silent frames the gate skipped, packets received, frames played, frames concealed for loss, frames dropped because a speaker's playback was full, malformed packets, packets from speakers beyond **Max Speakers** (`PacketsOverCap`), speakers displaced by a nearer one (`SpeakersDisplaced`), packets from muted players and channels, or held while a new speaker's user is looked up (`PacketsMuted`), channel voice packets sent and received (`ChannelPacketsSent`, `ChannelPacketsReceived`) and those from a channel whose voice you have not joined (`ChannelPacketsIgnored`), and the number of speakers heard right now. A debug overlay or a soak test can read them; they are not a Blueprint node.
+From C++, `UVoiceChatSubsystem::GetStats()` (a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`) returns running counters for the current map: packets sent, silent frames the gate skipped, packets received, frames played, frames concealed for loss, frames dropped because a speaker's playback was full, malformed packets, packets from speakers beyond **Max Speakers** (`PacketsOverCap`), speakers displaced by a nearer one (`SpeakersDisplaced`), packets from muted players and channels, or held while a new speaker's user is looked up (`PacketsMuted`), channel voice packets sent and received (`ChannelPacketsSent`, `ChannelPacketsReceived`) and those from a channel whose voice you have not joined (`ChannelPacketsIgnored`), your own voice the server sent back while owner echo is off on this map (`OwnPacketsIgnored`), and the number of speakers heard right now. A debug overlay or a soak test can read them; they are not a Blueprint node.
 
 ## How the transport works
 
@@ -20114,11 +20135,21 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.15 or later (2.26.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)). In 2.26.0, the host surface and everything deprecated are deleted and the owner id is renamed the writer id (see [its entry](#2026-11-19-sdk-v2260)).
+You built against the SDK in July, you are updating the plugin to 2.15 or later (2.28.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)). In 2.26.0, the host surface and everything deprecated are deleted and the owner id is renamed the writer id (see [its entry](#2026-11-19-sdk-v2260)).
 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the Application API's legacy game-model engine, which ck-exec replaced; the Application API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-11-23 (SDK v2.28.0)
+
+This release makes owner echo work again, lets a game choose whose voice and webcam video each player receives, and moves to the Application API's new names. It needs Application API v2.85.0 on every tier it ships to.
+
+- **Toggle Owner Echo plays your own voice back again.** Realtime servers from v0.48.0 send a player their own spatial voice and video only when asked, so on 2.27.0 and earlier owner echo played nothing there. The plugin now asks while echo is on, across map changes and reconnects. Your own webcam video comes back too, and the video receiver discards it as before. **What you do:** nothing; turn echo off after a microphone check. See [Confirming capture with owner echo](../services/voice-chat.md#confirming-capture-with-owner-echo).
+- **Choose whose voice and video you receive.** On the Crowdy SDK subsystem, **Set Voice Speakers** (Speaker Uuids) has the server send this player spatial voice only from those actor ids, at most 32, and from nobody when the list is empty; **Hear All Voice Speakers** goes back to everyone in range. **Set Video Speakers** and **See All Video Speakers** do the same for webcam video. A stream left out is not sent, so it is not billed. A list of more than 32 ids, or with an id that is not 32 characters, returns false, logs a warning and changes nothing. The lists hold across map changes and reconnects until sign-out. Which players to name is the game's choice, such as a party or the nearest few. Channel voice is not affected. Needs realtime server v0.49.0. **What you do:** nothing unless you want it; see [Choose whose voice you receive](../services/voice-chat.md#choose-whose-voice-you-receive) and [Choose whose video you receive](../runtime/video-frames.md#choose-whose-video-you-receive).
+- **Studio says plainly when an organization has reached its app limit.** An organization without a funded wallet or auto-billing may have 10 apps that are not archived; past it, Studio says so and how to make room instead of showing the server's message. **What you do:** nothing. See [Create an app](../studio/projects-and-apps.md#create-an-app).
+- **The app's API addresses are read under the Application API's new names**, `applicationApiUrl` and `applicationApiWsUrl`, falling back to `gameApiUrl` and `gameApiWsUrl` where a reply carries only those. The vendored CrowdyCPP is 0.92.0. **What you do:** make sure every tier you ship to runs Application API v2.85.0; an older one refuses the request that finds the app's datacenter.
+- **Channel voice is checked against its sender.** The server now drops channel voice sent under another player's actor id, so the 2.27.0 known limit is gone, with no change in the plugin. **What you do:** nothing.
 
 ## 2026-11-21 (SDK v2.27.0)
 

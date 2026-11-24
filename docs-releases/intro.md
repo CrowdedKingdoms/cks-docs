@@ -39,6 +39,37 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-23 (SDKs: a dropped build-status read no longer ends a Studio deploy)
+
+CrowdyJS 18.39.1, CrowdyCPP 0.93.0 and CrowdyPy 0.39.1. They work with every Application API.
+
+- **A Studio deploy survives a dropped read.** Until these releases, one build-status read that got no answer ended
+  a draft test or a live deploy. Now a read that gets no answer, an HTTP 5xx or 429 that is not the API's answer,
+  or `PLATFORM_BUSY` is a missed poll: it counts toward the poll limit, and the deploy goes on. The same holds in
+  `waitForModBuild` / `wait_for_mod_build`, up to its timeout. A refusal still ends the wait, and no build, deploy,
+  switch-on, attach, or consent call is repeated. **What you do:** nothing. See
+  [the deploy loop](/crowdyjs/player-client-mods#the-deploy-loop).
+- **CrowdyCPP's `CrowdyStudioModRunner` reports what each target holds.** Each target carries a `state` (for example
+  built but not attached, or switched on), the mod's id, and whether it is enabled, running, or blocked. A run whose
+  mod comes back blocked ends `Blocked` with the reason. A run can pin the module names the player saw, and
+  `createCrowdyStudioModRunner(appToken)` makes a runner that carries its own app token, for an engine that switches
+  one client between tokens. See [draft tests and live deploys](/crowdycpp/crowdy-studio#draft-tests-and-live-deploys).
+
+## 2026-11-23 (Unreal SDK v2.28.0: owner echo works again, and choose whose voice and video you receive)
+
+Needs Application API v2.85.0. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-23-sdk-v2280).
+
+- **Toggle Owner Echo plays your own voice back again** on realtime servers from v0.48.0: the plugin asks for the copy
+  while echo is on. Your own webcam video comes back too and is discarded. Nothing to do.
+- **Set Voice Speakers and Set Video Speakers** have the server send a player spatial voice or webcam video only from
+  the actor ids named, at most 32 (none for an empty list); **Hear All Voice Speakers** and **See All Video Speakers**
+  go back to everyone in range. The lists hold across map changes and reconnects until sign-out. Which players to name
+  is the game's choice.
+- **Studio says plainly when an organization has reached its app limit**, and how to make room.
+- **The plugin reads the app's API addresses under the Application API's new names**, falling back to the old ones.
+  Every tier you ship to must run Application API v2.85.0.
+
 ## 2026-11-22 (app tokens on the REST sign-in routes)
 
 Application API v2.85.1.
