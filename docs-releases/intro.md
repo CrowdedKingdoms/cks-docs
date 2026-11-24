@@ -39,6 +39,18 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-25 (Unreal SDK v2.28.1: no avatar state is not an error, and a quiet PIE)
+
+A patch release. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-25-sdk-v2281).
+
+- **An avatar with no state for your app is no longer an error.** **Get Avatar App State** succeeds with an empty
+  `RawState`, and **Get Avatar App State As** succeeds with its output at the type's defaults. A saved state whose
+  size does not match the connected struct now fails instead of half-filling it.
+- **A PIE session no longer logs the plugin's own test errors**, so an automation test that starts PIE passes on a clean
+  project.
+- **The vendored CrowdyCPP is 0.93.0**, with no change to the plugin.
+
 ## 2026-11-24 (the Profile tier needs approval, and the project profile asks seven questions)
 
 Application API v2.87.0 and Studio v1.71.0.
