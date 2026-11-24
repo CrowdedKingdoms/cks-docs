@@ -39,6 +39,21 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-24 (the Profile tier needs approval, and the project profile asks seven questions)
+
+Application API v2.87.0 and Studio v1.71.0.
+
+- **The Profile tier needs Crowded Kingdoms' approval.** A complete project profile waits for review; approved, it
+  earns 200 GB of free data out and 200 GB of free data in a month from the start of the next month. No time is
+  promised for the review. `OrgProjectProfile.status` and `reviewedAt`, and `OrgFreeTier.profileStatus`, say where it
+  stands: `INCOMPLETE`, `WAITING_FOR_REVIEW`, `APPROVED` or `DECLINED`. See
+  [free data tiers](/management-api/shared-environment#free-data-tiers).
+- **The profile asks seven questions.** New answers: `agentsPerWorldLaunch` and `agentsPerWorldYear1` (AI agents that
+  act in one world), `startingFromScratch` (answers the networking question in place of the networking and its cost),
+  and `anythingElse` (optional). A profile saved before is incomplete until the agent counts are in.
+- **What you do:** nothing, unless your organization saved a profile. Then answer the new questions in Studio's
+  **Plan and Usage** tab.
+
 ## 2026-11-23 (SDKs: a dropped build-status read no longer ends a Studio deploy)
 
 CrowdyJS 18.39.1, CrowdyCPP 0.93.0 and CrowdyPy 0.39.1. They work with every Application API.

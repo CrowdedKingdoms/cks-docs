@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Answers to the project profile. An omitted field keeps its answer; null clears it. Complete when every answer is in.
+Answers to the project profile. An omitted field keeps its answer; null clears it. Complete when every answer but anythingElse is in; startingFromScratch true answers the networking question.
 
 
 ```graphql
@@ -24,8 +24,10 @@ input SetOrgProjectProfileInput {
   whatBuilding: String
   worldShape: ProjectWorldShape
   playersPerWorldLaunch: Int
+  agentsPerWorldLaunch: Int
   playersInViewLaunch: Int
   playersPerWorldYear1: Int
+  agentsPerWorldYear1: Int
   playersInViewYear1: Int
   stage: ProjectStage
   launchDate: DateTime
@@ -33,7 +35,9 @@ input SetOrgProjectProfileInput {
   logicLocation: ProjectLogicLocation
   currentNetworking: String
   currentNetworkingMonthlyCostCents: Int
+  startingFromScratch: Boolean
   referenceConsent: Boolean
+  anythingElse: String
 }
 ```
 
@@ -45,7 +49,7 @@ Organization id.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>whatBuilding</b></code>](#what-building)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #what-building */} 
-What the game is (2,000 characters at most).
+What the organization is building: a game, an experience or another application (2,000 characters at most).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>worldShape</b></code>](#world-shape)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ProjectWorldShape</b></code>](/reference/graphql/types/enums/project-world-shape.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #world-shape */} 
@@ -56,12 +60,20 @@ What the game is (2,000 characters at most).
 
 
 
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>agentsPerWorldLaunch</b></code>](#agents-per-world-launch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #agents-per-world-launch */} 
+AI agents that act in one world at launch; 0 when none do.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>playersInViewLaunch</b></code>](#players-in-view-launch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-in-view-launch */} 
 
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>playersPerWorldYear1</b></code>](#players-per-world-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-per-world-year-1 */} 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>agentsPerWorldYear1</b></code>](#agents-per-world-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #agents-per-world-year-1 */} 
+AI agents that act in one world a year on; 0 when none do.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>playersInViewYear1</b></code>](#players-in-view-year-1)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #players-in-view-year-1 */} 
@@ -92,8 +104,16 @@ What the game is (2,000 characters at most).
 US cents a month, 0 to 2,000,000,000.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>startingFromScratch</b></code>](#starting-from-scratch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #starting-from-scratch */} 
+True when starting from scratch: it answers the networking question in place of currentNetworking and its cost.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>referenceConsent</b></code>](#reference-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reference-consent */} 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgProjectProfileInput.<b>anythingElse</b></code>](#anything-else)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #anything-else */} 
+Optional; 2,000 characters at most.
 
 
 
