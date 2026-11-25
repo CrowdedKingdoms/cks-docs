@@ -1,0 +1,39 @@
+---
+id: set-org-compute-ceiling
+title: setOrgComputeCeiling
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. Give an organization its own compute ceiling in place of the platform's default for a funded organization (16,384 instances reserving 65,536 MB for each app in each datacenter), or remove it with clear: true. Each of the organization's apps takes the change within about a minute. Lowering a ceiling stops nothing that runs, and nothing more is placed past it. It applies only while the organization is funded. Reserved memory is billed as before (meteredRateCard).
+
+
+```graphql
+setOrgComputeCeiling(
+  input: SetOrgComputeCeilingInput!
+): OrgComputeCeiling!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgComputeCeiling.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetOrgComputeCeilingInput!</b></code>](/reference/graphql/types/inputs/set-org-compute-ceiling-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgComputeCeiling</b></code>](/reference/graphql/types/objects/org-compute-ceiling.mdx) <Badge class="badge badge--secondary " text="object"/> 
+What each of an organization's apps may run of compute modules in one datacenter once the organization is funded: the platform's default, or a ceiling an operator set for this organization. Each app has the whole of it in each datacenter.
