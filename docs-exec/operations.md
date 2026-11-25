@@ -202,7 +202,7 @@ Since ck-exec 0.11 two more limits keep one player from filling what everyone sh
   gets **16,384 instances and 64 GB for each app**. Crowded Kingdoms can set a different limit
   for one organization (Application API 2.88): write to us when a game needs more, with the
   instances and the memory it needs, and `orgComputeCeiling(orgId)` shows what your
-  organization has and whether it was set for you. Reserved memory is billed by the GB-hour, so
+  organization has and whether it was set for you. We bill reserved memory by the GB-hour, so
   a higher limit raises what an app can cost: 4,096 hubs of 16 MB reserve 65,536 MB, which is
   $1.20 an hour past the free 730 GB-hours a month. An instance reserves its type's memory limit
   times its concurrency, and mods count too. `execAppStatus` reports the organization's shared

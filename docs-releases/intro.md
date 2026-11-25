@@ -44,7 +44,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 Application API v2.88.0 and ck-exec 0.24.
 
 - **`PLATFORM_BUSY` carries `extensions.retryAfterMs`**, 1,000 to 1,999 and different for each refusal. CrowdyJS,
-  CrowdyCPP and CrowdyPy already wait for it. See
+  CrowdyCPP and CrowdyPy already report it on the error. See
   [Error codes](/overview/error-codes#platform_busy-we-could-not-start-the-work).
 - **New managed players signing in at once no longer slow everyone else down.** The platform takes a few first
   sign-ins at a time, for all organizations in turn, and answers the rest `PLATFORM_BUSY` with the wait. Returning

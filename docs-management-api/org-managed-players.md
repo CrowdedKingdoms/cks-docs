@@ -250,8 +250,8 @@ a time for all organizations in turn. A returning player's sign-in stores nothin
 and is not held up by it. When more new players arrive at once than the platform takes, the
 sign-ins past that are answered `PLATFORM_BUSY` with `extensions.retryAfterMs` (Application API
 2.88). Nothing was stored for them: sign the player in again after that wait. At a launch,
-start new players over a few minutes instead of all in the same second, and keep each player's
-session on your server for as long as it is valid instead of signing them in again.
+start new players over a few minutes. Keep each player's session for as long as it is valid,
+so that a player who comes back needs no new sign-in.
 
 ## Mods paid by your organization
 
