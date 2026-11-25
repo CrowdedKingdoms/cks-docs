@@ -1,0 +1,78 @@
+---
+id: org-compute-ceiling
+title: OrgComputeCeiling
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What each of an organization's apps may run of compute modules in one datacenter once the organization is funded: the platform's default, or a ceiling an operator set for this organization. Each app has the whole of it in each datacenter.
+
+
+```graphql
+type OrgComputeCeiling {
+  orgId: BigInt!
+  maxInstances: Int!
+  maxReservedMb: Int!
+  operatorSet: Boolean!
+  funded: Boolean!
+  defaultMaxInstances: Int!
+  defaultMaxReservedMb: Int!
+  reason: String
+  updatedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+The organization (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>maxInstances</b></code>](#max-instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-instances */} 
+Instances one of its apps may have placed at once in one datacenter.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>maxReservedMb</b></code>](#max-reserved-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-reserved-mb */} 
+Memory, in MB, one of its apps' instances may reserve at once in one datacenter (each instance reserves its type's memory limit times its copies).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>operatorSet</b></code>](#operator-set)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #operator-set */} 
+True when an operator set these for this organization; false when they are the platform's default for a funded organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>funded</b></code>](#funded)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #funded */} 
+Whether the organization is funded now (a spendable wallet balance, automatic billing or a billing exemption). While it is not, its apps keep the free tier limits whatever this says; execAppStatus reports what an app has.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>defaultMaxInstances</b></code>](#default-max-instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #default-max-instances */} 
+The platform's default instances for a funded organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>defaultMaxReservedMb</b></code>](#default-max-reserved-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #default-max-reserved-mb */} 
+The platform's default reserved memory, in MB, for a funded organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why the operator set it. Null for the default.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgComputeCeiling.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
+When the operator set it. Null for the default.
+
+
+
+
+### Returned By
+
+[`orgComputeCeiling`](/reference/graphql/operations/queries/org-compute-ceiling.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setOrgComputeCeiling`](/reference/graphql/operations/mutations/set-org-compute-ceiling.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

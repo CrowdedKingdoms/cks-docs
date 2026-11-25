@@ -244,6 +244,15 @@ With an org admin's session (`manage_players`), or from your server with an org 
 datacenter takes part in, so first sign-ins one at a time are slow in bulk;
 `provisionManagedPlayers` creates up to 500 in one write.
 
+**A player's first sign-in is slower than the ones after it.** It stores the player's age
+bracket and country, which is the same kind of write, and the platform does a few of those at
+a time for all organizations in turn. A returning player's sign-in stores nothing of the kind
+and is not held up by it. When more new players arrive at once than the platform takes, the
+sign-ins past that are answered `PLATFORM_BUSY` with `extensions.retryAfterMs` (Application API
+2.88). Nothing was stored for them: sign the player in again after that wait. At a launch,
+start new players over a few minutes. Keep each player's session for as long as it is valid,
+so that a player who comes back needs no new sign-in.
+
 ## Mods paid by your organization
 
 A managed player has no wallet, so its mods are your organization's to pay for, and only where
@@ -382,6 +391,7 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 | `MANAGED_PLAYER_LIMIT` | Your organization is at its player cap. |
 | `MANAGED_PLAYER_NOT_ALLOWED` | A managed player asked for a wallet, or for mods where your organization has not switched them on. |
 | `ACCOUNT_BLOCKED` | The player is disabled. |
+| `PLATFORM_BUSY` | The platform could not start the sign-in or the provisioning in time, most often because many new players arrived at once. Nothing was stored. Wait `extensions.retryAfterMs`, then send it again. 503. |
 | `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. An open or escalated [safety report](/application-api/safety-reports) about the player sets one. |
 | `TERRITORY_NOT_SUPPORTED` | The country or region you sent (`extensions.country`, `extensions.region`) is one Crowded Kingdoms does not serve, or the country is checked by region and you sent no `region`. |
 | `AGE_REQUIREMENT_NOT_MET` | The player is under 13, or under the app's or the country's minimum age, or was refused so in the last 24 hours. Tell the player, without a reason or an age; do not retry with another age. |
