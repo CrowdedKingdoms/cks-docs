@@ -155,6 +155,7 @@ moment." It says nothing about your request or your code: the operation did not 
         "code": "PLATFORM_BUSY",
         "blame": "PLATFORM",
         "retryable": true,
+        "retryAfterMs": 1340,
         "remediation": "Ours, not the app's: the work could not be STARTED in time."
       }
     }
@@ -162,6 +163,10 @@ moment." It says nothing about your request or your code: the operation did not 
   "data": null
 }
 ```
+
+`extensions.retryAfterMs` says how long to wait before the same call (Application API 2.88): a
+value from 1,000 to 1,999, different for each refusal, so callers refused together come back
+at different moments. CrowdyJS, CrowdyCPP and CrowdyPy wait for it when they retry.
 
 A pool timeout while the API looks up the caller's token is this code too. That is not
 `UNAUTHENTICATED`: the token was not rejected, so do not sign the player out.

@@ -164,6 +164,7 @@
       "myOrganizations",
       "myPropertyTokens",
       "orgAutoBilling",
+      "orgComputeCeiling",
       "orgFreeAppQuota",
       "orgManagedPlayerSettings",
       "orgMembers",
