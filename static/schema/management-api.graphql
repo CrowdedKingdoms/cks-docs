@@ -3362,6 +3362,38 @@ type PlayerPulse {
 }
 
 """
+What each of an organization's apps may run of compute modules in one datacenter once the organization is funded: the platform's default, or a ceiling an operator set for this organization. Each app has the whole of it in each datacenter.
+"""
+type OrgComputeCeiling {
+  """The organization (BigInt as a decimal string)."""
+  orgId: BigInt!
+  """Instances one of its apps may have placed at once in one datacenter."""
+  maxInstances: Int!
+  """
+  Memory, in MB, one of its apps' instances may reserve at once in one datacenter (each instance reserves its type's memory limit times its copies).
+  """
+  maxReservedMb: Int!
+  """
+  True when an operator set these for this organization; false when they are the platform's default for a funded organization.
+  """
+  operatorSet: Boolean!
+  """
+  Whether the organization is funded now (a spendable wallet balance, automatic billing or a billing exemption). While it is not, its apps keep the free tier limits whatever this says; execAppStatus reports what an app has.
+  """
+  funded: Boolean!
+  """The platform's default instances for a funded organization."""
+  defaultMaxInstances: Int!
+  """
+  The platform's default reserved memory, in MB, for a funded organization.
+  """
+  defaultMaxReservedMb: Int!
+  """Why the operator set it. Null for the default."""
+  reason: String
+  """When the operator set it. Null for the default."""
+  updatedAt: DateTime
+}
+
+"""
 One model the answering ck-api instance carries, with the pinned price it will meter against.
 """
 type CrowdyStudioAgentCatalogModel {
@@ -4387,6 +4419,13 @@ type Query {
     """Organization id (BigInt) to report player pulse for."""
     orgId: BigInt!
   ): PlayerPulse! @requiresPermission(scope: "org", permission: "view_usage", scopeArg: "orgId")
+  """
+  What each of the organization's apps may run of compute modules in one datacenter once it is funded: instances placed at once and the memory they reserve, and whether an operator set them for this organization. Requires view_compute_diagnostics on the org (super-admins and operators bypass). Read-only.
+  """
+  orgComputeCeiling(
+    """The organization (BigInt as a decimal string)."""
+    orgId: BigInt!
+  ): OrgComputeCeiling!
   """
   Operator only (is_operator or is_super_admin). What the ANSWERING ck-api instance carries for Agentic Studio: allowlisted models with their pinned micro-USD prices, the implemented crowdy.agent-tools/1 tools with risk classes, and the complete mode and risk-class value sets a policy may draw from. It is deployed configuration read from that one process, not stored policy and not a fleet-wide claim, so it reports which instance and datacenter answered. A platform policy may name a model or tool absent here: the write succeeds, the value is stored and echoed back, and no run can use it.
   """

@@ -7171,6 +7171,38 @@ type ExecRestartResult {
 }
 
 """
+What each of an organization's apps may run of compute modules in one datacenter once the organization is funded: the platform's default, or a ceiling an operator set for this organization. Each app has the whole of it in each datacenter.
+"""
+type OrgComputeCeiling {
+  """The organization (BigInt as a decimal string)."""
+  orgId: BigInt!
+  """Instances one of its apps may have placed at once in one datacenter."""
+  maxInstances: Int!
+  """
+  Memory, in MB, one of its apps' instances may reserve at once in one datacenter (each instance reserves its type's memory limit times its copies).
+  """
+  maxReservedMb: Int!
+  """
+  True when an operator set these for this organization; false when they are the platform's default for a funded organization.
+  """
+  operatorSet: Boolean!
+  """
+  Whether the organization is funded now (a spendable wallet balance, automatic billing or a billing exemption). While it is not, its apps keep the free tier limits whatever this says; execAppStatus reports what an app has.
+  """
+  funded: Boolean!
+  """The platform's default instances for a funded organization."""
+  defaultMaxInstances: Int!
+  """
+  The platform's default reserved memory, in MB, for a funded organization.
+  """
+  defaultMaxReservedMb: Int!
+  """Why the operator set it. Null for the default."""
+  reason: String
+  """When the operator set it. Null for the default."""
+  updatedAt: DateTime
+}
+
+"""
 The CLIENT half of a mod: browser WASM built from a crowdy-client-sdk crate and attached to the mod, which the mod’s grid serves to visitors who consent to it.
 """
 type ExecModClient {
@@ -9392,6 +9424,13 @@ type Query {
     """The app whose ck-exec code this is about."""
     appId: BigInt!
   ): ExecAppStatus! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
+  What each of the organization's apps may run of compute modules in one datacenter once it is funded: instances placed at once and the memory they reserve, and whether an operator set them for this organization. Requires view_compute_diagnostics on the org (super-admins and operators bypass). Read-only.
+  """
+  orgComputeCeiling(
+    """The organization (BigInt as a decimal string)."""
+    orgId: BigInt!
+  ): OrgComputeCeiling!
   """
   The starter packs, which replace the compute templates: ckx-sdk hub crates for a root world, matchmaking, game sessions, NPCs and mobs, game genres (leaderboards, cards, tactics, waves, duels, private runs, arenas, races, territory), and the economy (a player's own hub, markets), to pass to `execBuild`, with a manifest for `execDeploy`. `starters` has one entry per node type, so a crate that serves two types appears twice: build it once. Requires the org 'manage_compute' permission.
   """
@@ -11866,6 +11905,10 @@ type Mutation {
     key: String
   ): ExecConnection! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "appId")
   """
+  Operator only. Give an organization its own compute ceiling in place of the platform's default for a funded organization (16,384 instances reserving 65,536 MB for each app in each datacenter), or remove it with clear: true. Each of the organization's apps takes the change within about a minute. Lowering a ceiling stops nothing that runs, and nothing more is placed past it. It applies only while the organization is funded. Reserved memory is billed as before (meteredRateCard).
+  """
+  setOrgComputeCeiling(input: SetOrgComputeCeilingInput!): OrgComputeCeiling! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
   Build ck-exec modules from Rust source: each crate is compiled with the platform's pinned toolchain and `ckx-sdk`, for wasm32-unknown-unknown, and checked against the guest ABI. Returns at once with the build queued; poll `execBuildStatus`, then pass its id to `execDeploy`. Requires the org 'manage_compute' permission.
   """
   execBuild(
@@ -14268,6 +14311,28 @@ input ExecArtifactInput {
   digest: String!
   """The WASM module (wasm32-unknown-unknown, built with ckx-sdk), base64."""
   wasmBase64: String!
+}
+
+"""
+An organization's own compute ceiling, or its return to the platform's default.
+"""
+input SetOrgComputeCeilingInput {
+  """The organization (BigInt as a decimal string)."""
+  orgId: BigInt!
+  """
+  Instances one of its apps may have placed at once in one datacenter, 1 to 1,048,576. Required unless clear is true.
+  """
+  maxInstances: Int
+  """
+  Memory, in MB, one of its apps' instances may reserve at once in one datacenter, 1 to 4,194,304. Required unless clear is true.
+  """
+  maxReservedMb: Int
+  """
+  True to remove the organization's own ceiling, so its apps go back to the platform's default.
+  """
+  clear: Boolean
+  """Why, kept with the ceiling."""
+  reason: String!
 }
 
 """Sources to build into ck-exec modules."""
