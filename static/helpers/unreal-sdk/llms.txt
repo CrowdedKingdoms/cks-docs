@@ -158,7 +158,7 @@ This section is split into 4 files, each readable whole.
 
 Sign-in and account settings, player names, teams, playing together with parties, chat, emotes and spectating, avatars, player safety, voice and the optional UI hooks.
 
-- [Player Services as one file (188 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-services.txt)
+- [Player Services as one file (189 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-services.txt)
 - [Authentication](https://docs.crowdedkingdoms.com/unreal-sdk/services/authentication): Sign a player in with a password, a magic link, or a social provider, what the SDK hands back, the two tokens it holds for you and why you never see the one that talks to the game, session persistence, sign-out, account settings (password, email, delete, sign out everywhere), linked identities, the player's own access and claiming free access, and what to show when the app is paused, the player's access ends or the account is blocked.
 - [Player Names](https://docs.crowdedkingdoms.com/unreal-sdk/services/player-names): Read a player's public name by User ID for a nametag, read up to 100 at once for a roster, and let the signed-in player choose their own, with the Name Taken refusal, in C++ and Blueprint.
 - [Teams](https://docs.crowdedkingdoms.com/unreal-sdk/services/teams): Persistent, server-owned player groups with membership, roles, and permissions: the cache for instant UI, the per-call and async-action surfaces, and why runtime code and Crowdy Studio edit the same rows.
@@ -173,7 +173,7 @@ Sign-in and account settings, player names, teams, playing together with parties
 
 Where state goes, how to test locally, how to package, what to do when it breaks, the sample project, and what changed since the July docs.
 
-- [Guides as one file (308 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-guides.txt)
+- [Guides as one file (310 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-guides.txt)
 - [Best Practices](https://docs.crowdedkingdoms.com/unreal-sdk/guides/best-practices): Where a piece of state belongs, who decides an outcome, what a per-entity loop costs, and what the Leader is for. The rules every other page assumes you already know, stated once in the abstract.
 - [Testing Locally](https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally): How to exercise RPC and Crowdy State replication with a single Play in Editor client using the loopback console variables, how to set up a genuine two-client PIE session and its account caveats, the per-area trace console variables worth reaching for first, and a short debugging loop.
 - [Packaging and Shipping](https://docs.crowdedkingdoms.com/unreal-sdk/guides/packaging): A pre-cook checklist for setup mistakes that pass in the editor and only break in a packaged build: the baked registry, map profiles, project settings, what Shipping strips, and the plugin's own CoreRedirects.

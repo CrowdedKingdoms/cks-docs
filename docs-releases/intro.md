@@ -39,6 +39,38 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-25 (a busy answer says how long to wait, and compute holds up under hubs that save often)
+
+Application API v2.88.0 and ck-exec 0.24.
+
+- **`PLATFORM_BUSY` carries `extensions.retryAfterMs`**, 1,000 to 1,999 and different for each refusal. CrowdyJS,
+  CrowdyCPP and CrowdyPy already report it on the error. See
+  [Error codes](/overview/error-codes#platform_busy-we-could-not-start-the-work).
+- **New managed players signing in at once no longer slow everyone else down.** The platform takes a few first
+  sign-ins at a time, for all organizations in turn, and answers the rest `PLATFORM_BUSY` with the wait. Returning
+  players are not held up. See [Org-managed players](/management-api/org-managed-players#administering-your-players).
+- **Hubs that save at every change keep answering.** A host sends one snapshot of an instance at a time, and the
+  newest one taken meanwhile goes next, so thousands of hubs calling `persist_now` every few seconds no longer crowd
+  out calls. In our test, 3,000 hubs that each saved every ten seconds answered 270,000 calls in 15 minutes with none
+  refused, and every change was in the stored snapshots at the end. A hub is still snapshotted on its interval, so
+  a change that can wait for that needs no `persist_now`.
+- **Crowded Kingdoms can raise an organization's compute limit.** The default stays 16,384 instances and 64 GB for
+  each app in each datacenter. `orgComputeCeiling(orgId)` shows what your organization has. See
+  [Operations](/exec/operations).
+- **What you do:** nothing. If your server retries `PLATFORM_BUSY` itself, read `retryAfterMs`.
+
+## 2026-11-25 (Unreal SDK v2.28.1: no avatar state is not an error, and a quiet PIE)
+
+A patch release. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-25-sdk-v2281).
+
+- **An avatar with no state for your app is no longer an error.** **Get Avatar App State** succeeds with an empty
+  `RawState`, and **Get Avatar App State As** succeeds with its output at the type's defaults. A saved state whose
+  size does not match the connected struct now fails instead of half-filling it.
+- **A PIE session no longer logs the plugin's own test errors**, so an automation test that starts PIE passes on a clean
+  project.
+- **The vendored CrowdyCPP is 0.93.0**, with no change to the plugin.
+
 ## 2026-11-24 (the Profile tier needs approval, and the project profile asks seven questions)
 
 Application API v2.87.0 and Studio v1.71.0.
