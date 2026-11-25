@@ -173,7 +173,7 @@ Sign-in and account settings, player names, teams, playing together with parties
 
 Where state goes, how to test locally, how to package, what to do when it breaks, the sample project, and what changed since the July docs.
 
-- [Guides as one file (310 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-guides.txt)
+- [Guides as one file (312 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-guides.txt)
 - [Best Practices](https://docs.crowdedkingdoms.com/unreal-sdk/guides/best-practices): Where a piece of state belongs, who decides an outcome, what a per-entity loop costs, and what the Leader is for. The rules every other page assumes you already know, stated once in the abstract.
 - [Testing Locally](https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally): How to exercise RPC and Crowdy State replication with a single Play in Editor client using the loopback console variables, how to set up a genuine two-client PIE session and its account caveats, the per-area trace console variables worth reaching for first, and a short debugging loop.
 - [Packaging and Shipping](https://docs.crowdedkingdoms.com/unreal-sdk/guides/packaging): A pre-cook checklist for setup mistakes that pass in the editor and only break in a packaged build: the baked registry, map profiles, project settings, what Shipping strips, and the plugin's own CoreRedirects.

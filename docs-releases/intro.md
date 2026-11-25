@@ -39,6 +39,17 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-26 (Unreal SDK v2.28.2: a class with a near tier shell promotes)
+
+A patch release. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-26-sdk-v2282).
+
+- **A class with a near tier shell and no authored Mass entity config now promotes.** Its rows stayed at the farthest
+  level of detail, so a row that came close never became its shell. Now the nearest rows are promoted. An authored
+  config for a class with a shell gets the same fix, and one that cannot promote is reported in the log.
+- **What you do:** nothing. A class you gave an authored config only to make it promote can go back to the derived
+  one.
+
 ## 2026-11-25 (a busy answer says how long to wait, and compute holds up under hubs that save often)
 
 Application API v2.88.0 and ck-exec 0.24.
