@@ -17,6 +17,12 @@ You built against the SDK in July, you are updating the plugin to 2.15 or later 
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the Application API's legacy game-model engine, which ck-exec replaced; the Application API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
 
+## 2026-11-26 (SDK v2.28.2)
+
+A patch release: one fix. Nothing breaks.
+
+- **A class with a near tier shell and no authored Mass entity config now promotes.** The config the SDK builds from such a class left its level-of-detail settings untagged, so the crowd's level-of-detail pass never measured those entities against the camera: every row stayed at the farthest level, and a row that came close was never promoted to its shell. Rows still drew and animated, so nothing looked wrong until you came close. Now the derived config carries the crowd tag that pass reads, so rows get their level by distance and the nearest are promoted. When the SDK patches an authored config for a class with a shell, the copy gets the same tag if the authored trait has none; a tag you chose is kept, though only the crowd tag is measured. For a class with a shell, an authored config that promotes on its own with no filter tag at all is now reported in the log as a promotion that cannot work. Classes with no shell are unchanged. On the tagged v2.28.1 plugin, only a class whose config carries the crowd tag (such as one built on the crowd visualization trait) promotes. **What you do:** nothing; a class you gave an authored config only to make it promote can go back to the derived one. See [Promote close entities to actors](../mass/promote-close-entities-to-actors.md).
+
 ## 2026-11-25 (SDK v2.28.1)
 
 A patch release: two fixes and a newer CrowdyCPP. Nothing breaks.
