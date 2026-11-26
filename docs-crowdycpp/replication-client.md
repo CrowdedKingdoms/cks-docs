@@ -207,6 +207,10 @@ Most games should not drive `Connection` by hand — the
 [World session](/crowdycpp/world-session) layer packages the send loop,
 registries, and caches on top of it.
 
+An organization's own game server uses `crowdy::replication::FleetSession` in
+place of `Connection`: one session that carries all of the server's players.
+See [Run your own game servers with a fleet session](/management-api/fleet-sessions#crowdycpp).
+
 ## Webcam video
 
 `crowdy/media/video_frames.hpp` is the header-only fragmenter and reassembler

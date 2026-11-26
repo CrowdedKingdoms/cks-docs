@@ -92,7 +92,9 @@ A hub runs while it is used, then persists and stops once it has been unused for
 topics, a player or another hub.
 
 A pending timer keeps an otherwise unused hub running **only while players are in the app**:
-connected to an execution host, or in the app's world. When nobody has been in the app for a
+connected to an execution host, or in the app's world. A connected
+[game server of your organization](operations#your-organizations-game-servers) counts as a
+connection too. When nobody has been in the app for a
 type's window, the app's instances of that type stop, however busy they keep each other. They
 start again when a player calls or subscribes, and the root hub starts when a player enters the
 world.

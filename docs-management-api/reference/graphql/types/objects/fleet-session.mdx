@@ -1,0 +1,63 @@
+---
+id: fleet-session
+title: FleetSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A fleet session: one realtime session an organization's game server opens for itself, in which it carries the players who are on it. A player still signs in once, when they join (mintManagedPlayerToken); moving to another of the organization's servers is that server starting to carry them, with no call to this API. The session's token never goes to a player's device.
+
+
+```graphql
+type FleetSession {
+  token: String!
+  gameTokenId: BigInt!
+  appId: BigInt!
+  expiresAt: DateTime!
+  maxPlayers: Int!
+  server: ServerStatus!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FleetSession.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #token */} 
+The session's token: 64 characters, the key the game server signs the session's realtime messages with. Keep it on the server. It is not a bearer for this API.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FleetSession.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #game-token-id */} 
+The token's id (BigInt as a decimal string): what the session's own realtime messages carry, and what refreshFleetSession and closeFleetSession name it by.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FleetSession.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app the session is in (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FleetSession.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #expires-at */} 
+When the session ends unless it is refreshed first: 24 hours after it was opened or last refreshed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FleetSession.<b>maxPlayers</b></code>](#max-players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-players */} 
+How many players the session may carry at once: the organization's maxFleetPlayers when the session was opened. A carry past it is refused, so a game with more players on one server opens a second session or asks for a higher number.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FleetSession.<b>server</b></code>](#server)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerStatus!</b></code>](/reference/graphql/types/objects/server-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #server */} 
+The realtime server to connect the session to (ip4 and clientPort), in the datacenter that holds the app. The token is authorized there and nowhere else.
+
+
+
+
+### Returned By
+
+[`openFleetSession`](/reference/graphql/operations/mutations/open-fleet-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`refreshFleetSession`](/reference/graphql/operations/mutations/refresh-fleet-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
