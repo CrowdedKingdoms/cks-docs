@@ -6,8 +6,9 @@ title: Operations
 # Operations
 
 Everything you need to run an app's ck-exec code: its logs, what is running and where, its
-versions and a rollback, a kill switch, calls per endpoint, the call limit, what it costs, and
-a developer connection for tools and admin endpoints.
+versions and a rollback, a kill switch, calls per endpoint, the call limit, what it costs, a
+developer connection for tools and admin endpoints, and a connection for your organization's
+own game servers.
 
 Reads need the org's `view_compute_diagnostics` permission. Changes and developer connections
 need `manage_compute`. None of them take an app token: use your own session.
@@ -295,6 +296,90 @@ player session. Guard an admin endpoint with `call.developer()`:
 
 A module built with an older `ckx-sdk` (guest ABI 3 or earlier) refuses developer calls. Rebuild
 it with the current SDK first.
+
+## Your organization's game servers
+
+`execConnectAsServer` returns a gateway and a connect token for your organization's own game
+server, the process that runs the game your players play. It takes an org token with the
+scope `fleet:session` and is called from that server: see
+[fleet sessions](/management-api/fleet-sessions).
+
+It needs ck-exec 0.25.0, and a hub takes a server's calls once it is built with `ckx-sdk`
+0.15.0 (guest ABI 6).
+
+```graphql
+mutation {
+  execConnectAsServer(appId: "…", nodeType: "world", key: "") {
+    gatewayUrl
+    token
+    host
+    expiresAt
+  }
+}
+```
+
+Open one WebSocket for each game server, as a player's game does after `execConnect`. The
+token lasts 60 seconds and opens one socket, so ask again to connect again. The connection may
+call and subscribe to any node type of the app, as a developer connection may. It can never
+reach the platform's `$` methods, and subscribing doesn't count as a player session. A hub that
+a server's call places counts toward no player's 64 instances. The host closes the connection
+with code `4403` when the org token that asked for it is revoked or expires, and when fleet
+sessions or org-managed players are switched off for your organization.
+
+### A server calls for itself or for a player
+
+A plain call (`0x01`) on a server connection is the server's own. The call-as frame makes a
+call for one player:
+
+| Frame | Direction | Layout |
+|---|---|---|
+| call-as | client → host | `0x05` rid `u32`, player `u64`, type `str8`, key `str16`, method `str8`, payload |
+
+`player` is the player's user id, which `FLEET_CARRY_RESULT` carries for each player a
+[fleet session](/management-api/fleet-sessions) carries. Naming player 0 is the server's own
+call. A host accepts `0x05` only on a server connection: on a player's or a developer's
+connection it is an unknown frame, and the host closes the connection.
+
+### A hub decides what a server may do
+
+A server's calls arrive as `Caller::Org { player }`: `None` for the server's own call and
+`Some(p)` for a call-as. The platform checked that the connection belongs to the app's
+organization. It did not check the player: the organization vouches for who its players are,
+so `p` may be any id. `Caller::Org { player: Some(p) }` means "this organization's server says
+player `p`", and `Caller::Player(p)` means "the platform saw `p`'s own session".
+
+```rust
+// From the player's own session only: an organization's server is refused.
+"trade" => { let p = call.player()?; /* … */ }
+
+// From the player, or from your organization's server acting for the player.
+"report_position" => { let p = call.player_or_org()?; /* … */ }
+
+// From your organization's servers only. `for_player` is None for the server itself.
+"tick" => { let for_player = call.org()?; /* … */ }
+```
+
+- **A module built for guest ABI 5 or earlier answers a server's call `Denied`**, and the
+  handler does not run. Build it again with the SDK version above.
+- **The platform never presents a server's call as a verified player's.** No `$session` event
+  is sent for a server's subscription, a server's call spends none of a player's call budget,
+  and a hub it places counts toward no player's instances.
+- `ckx_sdk::testing` drives a hub as `Caller::Org { player: None }` or
+  `Caller::Org { player: Some(p) }`, like any other caller.
+
+### A server connection has its own limits
+
+| Limit | Value |
+|---|---|
+| Calls on one server connection | 2,000 a second. A message costs 1, and 1 more for each further 4 KiB |
+| Calls on all of an organization's server connections to one app through one host | 32,000 a second |
+| Server connections an organization holds to one app through one host | 256 |
+| Subscriptions on a connection, pings, and the largest message | As for a player's connection: 256, 60 per 10 seconds, and 4 MiB and 64 KiB |
+
+These take the place of a player's 120 calls per 10 seconds and 16 connections. Subscribing
+and unsubscribing count as calls. A call past either budget is refused `Busy` before the
+handler runs: its message starts `rate limited`, names the limit it reached, and says how long
+to wait.
 
 ## From an SDK
 

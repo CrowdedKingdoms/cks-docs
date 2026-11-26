@@ -23,7 +23,7 @@ match the current wire enum; the `MAP_*` forms are legacy aliases.
 |------|------|----------------|
 | 5 | `INVALID_TOKEN` | Malformed token material, or not a valid app-scoped token |
 | 6 | `APP_NOT_FOUND` | Unknown app (formerly `MAP_NOT_FOUND`) |
-| 7 | `UNAUTHORIZED` | Permission denied — no active app access / tier permission, or no grid permission for the target chunk (see Permissions below) |
+| 7 | `UNAUTHORIZED` | Permission denied: no active app access / tier permission, or no grid permission for the target chunk (see Permissions below). For a [fleet session](/replication-api/wire-formats#what-a-fleet-session-sends): a message that names a player the session does not carry |
 | 13 | `GAME_TOKEN_WRONG_SIZE` | Malformed token material |
 | 15 | `INVALID_REQUEST` | Wire layout or field error |
 | 18 | `INVALID_APP_ID` | Not authorized for this app — unknown app **or the token is scoped to a different app** (app-scope mismatch) |

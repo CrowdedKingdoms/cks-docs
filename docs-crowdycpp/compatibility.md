@@ -31,6 +31,11 @@ deployments:
   Org-Managed Players Addendum. The addendum fields on `managedPlayers().settings()` and
   `graphql::orgLegalAcceptanceRequiredOf` are 0.69.0. See
   [Org-managed players](/management-api/org-managed-players).
+- **Fleet sessions** (`admin().fleetSessions()`, `replication::FleetSession`,
+  `exec().connectAsServer`, and `ExecConnection::callAs`) need Application API v2.89.0,
+  replication server v0.50.0, and ck-exec 0.25.0, and Crowded Kingdoms switches them on for
+  an organization. See
+  [Run your own game servers with a fleet session](/management-api/fleet-sessions).
 
 ## CrowdyJS parity
 
