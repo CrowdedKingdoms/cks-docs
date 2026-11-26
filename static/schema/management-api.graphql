@@ -1251,6 +1251,18 @@ type OrgManagedPlayerSettings {
   """The longest sign-in the org may ask for (seconds)."""
   maxSessionTtlSeconds: Int!
   """
+  Whether the organization's game servers may open fleet sessions (openFleetSession): one realtime session a server, carrying the server's players. An operator switches it on; it needs org-managed players enabled too.
+  """
+  fleetSessionsEnabled: Boolean!
+  """
+  Fleet sessions the organization may hold at once, over all its apps (512 unless an operator set another, 1 to 65,536). An organization grows by adding game servers, so an operator raises this when it needs more.
+  """
+  maxFleetSessions: Int!
+  """
+  Players one fleet session may carry at once (256 unless an operator set another, 1 to 1,024). A session opened earlier keeps the number it was opened with until it is opened again.
+  """
+  maxFleetPlayers: Int!
+  """
   The current version of the Org-Managed Players Addendum, which an admin of the organization accepts (acceptManagedPlayerTerms) before its players are created or signed in.
   """
   termsVersion: String!
@@ -1301,6 +1313,66 @@ type OrgSigningKey {
   createdAt: DateTime!
   """When the key was revoked; a revoked key verifies nothing."""
   revokedAt: DateTime
+}
+
+"""
+What each of an organization's apps may run of compute modules in one datacenter once the organization is funded: the platform's default, or a ceiling an operator set for this organization. Each app has the whole of it in each datacenter.
+"""
+type OrgComputeCeiling {
+  """The organization (BigInt as a decimal string)."""
+  orgId: BigInt!
+  """Instances one of its apps may have placed at once in one datacenter."""
+  maxInstances: Int!
+  """
+  Memory, in MB, one of its apps' instances may reserve at once in one datacenter (each instance reserves its type's memory limit times its copies).
+  """
+  maxReservedMb: Int!
+  """
+  True when an operator set these for this organization; false when they are the platform's default for a funded organization.
+  """
+  operatorSet: Boolean!
+  """
+  Whether the organization is funded now (a spendable wallet balance, automatic billing or a billing exemption). While it is not, its apps keep the free tier limits whatever this says; execAppStatus reports what an app has.
+  """
+  funded: Boolean!
+  """The platform's default instances for a funded organization."""
+  defaultMaxInstances: Int!
+  """
+  The platform's default reserved memory, in MB, for a funded organization.
+  """
+  defaultMaxReservedMb: Int!
+  """Why the operator set it. Null for the default."""
+  reason: String
+  """When the operator set it. Null for the default."""
+  updatedAt: DateTime
+}
+
+"""
+A fleet session: one realtime session an organization's game server opens for itself, in which it carries the players who are on it. A player still signs in once, when they join (mintManagedPlayerToken); moving to another of the organization's servers is that server starting to carry them, with no call to this API. The session's token never goes to a player's device.
+"""
+type FleetSession {
+  """
+  The session's token: 64 characters, the key the game server signs the session's realtime messages with. Keep it on the server. It is not a bearer for this API.
+  """
+  token: String!
+  """
+  The token's id (BigInt as a decimal string): what the session's own realtime messages carry, and what refreshFleetSession and closeFleetSession name it by.
+  """
+  gameTokenId: BigInt!
+  """The app the session is in (BigInt as a decimal string)."""
+  appId: BigInt!
+  """
+  When the session ends unless it is refreshed first: 24 hours after it was opened or last refreshed.
+  """
+  expiresAt: DateTime!
+  """
+  How many players the session may carry at once: the organization's maxFleetPlayers when the session was opened. A carry past it is refused, so a game with more players on one server opens a second session or asks for a higher number.
+  """
+  maxPlayers: Int!
+  """
+  The realtime server to connect the session to (ip4 and clientPort), in the datacenter that holds the app. The token is authorized there and nowhere else.
+  """
+  server: ServerStatus!
 }
 
 type OrgWallet {
@@ -3362,38 +3434,6 @@ type PlayerPulse {
 }
 
 """
-What each of an organization's apps may run of compute modules in one datacenter once the organization is funded: the platform's default, or a ceiling an operator set for this organization. Each app has the whole of it in each datacenter.
-"""
-type OrgComputeCeiling {
-  """The organization (BigInt as a decimal string)."""
-  orgId: BigInt!
-  """Instances one of its apps may have placed at once in one datacenter."""
-  maxInstances: Int!
-  """
-  Memory, in MB, one of its apps' instances may reserve at once in one datacenter (each instance reserves its type's memory limit times its copies).
-  """
-  maxReservedMb: Int!
-  """
-  True when an operator set these for this organization; false when they are the platform's default for a funded organization.
-  """
-  operatorSet: Boolean!
-  """
-  Whether the organization is funded now (a spendable wallet balance, automatic billing or a billing exemption). While it is not, its apps keep the free tier limits whatever this says; execAppStatus reports what an app has.
-  """
-  funded: Boolean!
-  """The platform's default instances for a funded organization."""
-  defaultMaxInstances: Int!
-  """
-  The platform's default reserved memory, in MB, for a funded organization.
-  """
-  defaultMaxReservedMb: Int!
-  """Why the operator set it. Null for the default."""
-  reason: String
-  """When the operator set it. Null for the default."""
-  updatedAt: DateTime
-}
-
-"""
 One model the answering ck-api instance carries, with the pinned price it will meter against.
 """
 type CrowdyStudioAgentCatalogModel {
@@ -3948,6 +3988,13 @@ type Query {
     orgId: BigInt!
   ): [OrgSigningKey!]!
   """
+  What each of the organization's apps may run of compute modules in one datacenter once it is funded: instances placed at once and the memory they reserve, and whether an operator set them for this organization. Requires view_compute_diagnostics on the org (super-admins and operators bypass). Read-only.
+  """
+  orgComputeCeiling(
+    """The organization (BigInt as a decimal string)."""
+    orgId: BigInt!
+  ): OrgComputeCeiling!
+  """
   The app's safety reports, newest first, with open CHILD_SAFETY reports ahead of the rest; only those with the given status if one is given. At most `first` (default 50, at most 200). Requires 'moderate_safety' on the app (an org role, or the org's admins); super admins bypass. Send the identity session to the app's datacenter.
   """
   safetyReports(
@@ -4419,13 +4466,6 @@ type Query {
     """Organization id (BigInt) to report player pulse for."""
     orgId: BigInt!
   ): PlayerPulse! @requiresPermission(scope: "org", permission: "view_usage", scopeArg: "orgId")
-  """
-  What each of the organization's apps may run of compute modules in one datacenter once it is funded: instances placed at once and the memory they reserve, and whether an operator set them for this organization. Requires view_compute_diagnostics on the org (super-admins and operators bypass). Read-only.
-  """
-  orgComputeCeiling(
-    """The organization (BigInt as a decimal string)."""
-    orgId: BigInt!
-  ): OrgComputeCeiling!
   """
   Operator only (is_operator or is_super_admin). What the ANSWERING ck-api instance carries for Agentic Studio: allowlisted models with their pinned micro-USD prices, the implemented crowdy.agent-tools/1 tools with risk classes, and the complete mode and risk-class value sets a policy may draw from. It is deployed configuration read from that one process, not stored policy and not a fleet-wide claim, so it reports which instance and datacenter answered. A platform policy may name a model or tool absent here: the write succeeds, the value is stored and echoed back, and no run can use it.
   """
@@ -5035,6 +5075,18 @@ type Mutation {
     """
     enabled: Boolean!
   ): Boolean! @requiresPermission(scope: "app", permission: "manage_billing", scopeArg: "appId")
+  """
+  ORG TOKEN ONLY. Open a fleet session for one of your organization's game servers: one realtime session the server holds for itself, in which it carries the players who are on it. Call from the server with `Authorization: Bearer cko_...` (scope fleet:session) when the server starts; a request with an Origin header is refused. The answer is the session's token (its signing key; keep it on the server), its gameTokenId, when it expires (24 hours; keep it with refreshFleetSession), how many players it may carry at once (maxPlayers) and the realtime server to connect to. A player still signs in once, when they join the game (mintManagedPlayerToken); the server then carries that player with the player's own token, and a player who moves to another of your servers is carried by that server with no call to this API. The app must be one of your organization's apps (and in the token's app list, if it has one). Refused FORBIDDEN until a Crowded Kingdoms operator has switched fleet sessions on for the organization (orgManagedPlayerSettings.fleetSessionsEnabled), ORG_LEGAL_ACCEPTANCE_REQUIRED until an admin has accepted the current Org-Managed Players Addendum, and FLEET_SESSION_LIMIT when the organization holds as many sessions as it may (maxFleetSessions). Open one session for each game server.
+  """
+  openFleetSession(input: OpenFleetSessionInput!): FleetSession!
+  """
+  ORG TOKEN ONLY. Keep a fleet session: its expiry moves to 24 hours from now, with the same token and gameTokenId, and it is authorized again on a realtime server. Name the server the session is connected to (currentServer) and it stays there while that server still serves the app; leave it out, or name one that no longer serves, and the answer's server is a new one to connect to, which is how a session that a realtime server told to move finds its next server. Call it before expiresAt, from the same server, with the org token that opened the session (scope fleet:session). Refused NOT_FOUND for a session that has expired, was closed, or was opened with another org token: open a new one. The checks of openFleetSession apply again, so a session stops within a day of fleet sessions being switched off.
+  """
+  refreshFleetSession(input: RefreshFleetSessionInput!): FleetSession!
+  """
+  ORG TOKEN ONLY. End a fleet session now, when its game server stops: the realtime servers release the players it carries (their actors leave, as when a player's own session ends) and its place counts toward the organization's maxFleetSessions no longer. True when a session was ended; false when there was none by that id (already closed, or opened with another org token). A session that is neither closed nor refreshed ends by itself at expiresAt. The org token that opened the session, with scope fleet:session; to end the sessions another org token opened, revoke that token.
+  """
+  closeFleetSession(input: CloseFleetSessionInput!): Boolean!
   """
   Resolve an open report with its outcome: its preserved copy is deleted and the legal hold its reported account got on deletion, if any, is released (a deferred erasure then resumes). Resolving it again changes nothing; an escalated report cannot be resolved (BAD_REQUEST). Requires 'moderate_safety' on the app (an org role, or the org's admins); super admins bypass. Send the identity session to the app's datacenter.
   """
@@ -5907,6 +5959,34 @@ input ExchangeManagedPlayerAssertionInput {
   The compact JWS your organization signed for this player (header alg EdDSA, ES256 or RS256 with a registered kid; claims iss, aud, sub, iat, exp at most 300 s after iat, a fresh jti, and optionally gamertag). Use each once.
   """
   assertion: String!
+}
+
+"""The app to open a fleet session in."""
+input OpenFleetSessionInput {
+  """
+  One of the organization's apps (BigInt as a decimal string), in the org token's app list if it has one.
+  """
+  appId: BigInt!
+}
+
+"""The fleet session to keep, and where it is connected."""
+input RefreshFleetSessionInput {
+  """The app the session is in (BigInt as a decimal string)."""
+  appId: BigInt!
+  """The session's gameTokenId, from openFleetSession."""
+  gameTokenId: BigInt!
+  """
+  The realtime server the session is connected to (the ip4 and clientPort it was given). When that server still serves the app the session stays on it. Leave it out, or name one that no longer serves, and the answer names a new server to connect to: use that after a realtime server told the session to move.
+  """
+  currentServer: CurrentServerInput
+}
+
+"""The fleet session to end."""
+input CloseFleetSessionInput {
+  """The app the session is in (BigInt as a decimal string)."""
+  appId: BigInt!
+  """The session's gameTokenId, from openFleetSession."""
+  gameTokenId: BigInt!
 }
 
 """

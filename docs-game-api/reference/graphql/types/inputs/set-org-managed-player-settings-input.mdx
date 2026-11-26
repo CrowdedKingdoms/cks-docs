@@ -26,6 +26,9 @@ input SetOrgManagedPlayerSettingsInput {
   mintsPerMinute: Int
   defaultSessionTtlSeconds: Int
   maxSessionTtlSeconds: Int
+  fleetSessionsEnabled: Boolean
+  maxFleetSessions: Int
+  maxFleetPlayers: Int
 }
 ```
 
@@ -54,6 +57,18 @@ input SetOrgManagedPlayerSettingsInput {
 
 #### [<code style={{ fontWeight: 'normal' }}>SetOrgManagedPlayerSettingsInput.<b>maxSessionTtlSeconds</b></code>](#max-session-ttl-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-session-ttl-seconds */} 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgManagedPlayerSettingsInput.<b>fleetSessionsEnabled</b></code>](#fleet-sessions-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #fleet-sessions-enabled */} 
+Whether the organization's game servers may open fleet sessions (openFleetSession). Left out, it stays as it is (off for an organization never given it). Switching it off, or switching the organization's managed players off, ends the fleet sessions it holds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgManagedPlayerSettingsInput.<b>maxFleetSessions</b></code>](#max-fleet-sessions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-fleet-sessions */} 
+Fleet sessions the organization may hold at once, over all its apps: 1 to 65,536 (512 for an organization never given another). Left out, it stays as it is.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgManagedPlayerSettingsInput.<b>maxFleetPlayers</b></code>](#max-fleet-players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-fleet-players */} 
+Players one fleet session may carry at once: 1 to 1,024 (256 for an organization never given another). Left out, it stays as it is. It applies to sessions opened from then on.
 
 
 
