@@ -16,7 +16,7 @@ This guide is for an organization that runs its own game servers and signs its p
 device keeps using that player's own session and needs nothing here.
 
 :::note[What is switched on]
-Fleet sessions need Application API v2.89.1, realtime servers v0.50.0, and ck-exec 0.25.0.
+Fleet sessions need Application API v2.89.1, realtime servers v0.50.1, and ck-exec 0.25.0.
 **Not yet in production.** Crowded Kingdoms switches them on for one organization at a time
 ([below](#what-you-need-before-the-first-session)). CrowdyCPP and CrowdyJS carry them in
 releases that are still to come, and CrowdyPy follows. A server written in another language
@@ -30,6 +30,12 @@ Without a fleet session, a game server signs each player in, opens a realtime se
 player, and opens a hub connection for that player. A game made of many servers repeats all
 three each time a player moves to the next server. If 3,000 players each cross between
 servers about every 40 seconds, that is 75 sign-ins a second for as long as anyone plays.
+
+We measured the same load with fleet sessions on November 26, 2026, on Crowded Kingdoms'
+internal dev environment: 100 fleet sessions carried 3,000 players for 30 minutes. The players
+made 140,656 crossings, about 75 a second. None was lost, and no crossing called the
+Application API. A carry was answered in 35 ms at the median and in 50 ms at the 99th
+percentile.
 
 With a fleet session:
 
@@ -146,7 +152,10 @@ to. Open one session for each game server.
 
 Then send [`CLIENT_CAPABILITIES`](/replication-api/wire-formats#signed-bundles--message_bundle_signed-30-and-client_capabilities-29)
 (29) to that server's `clientPort`, signed with the fleet token and carrying the session's own
-`gameTokenId`. That first signed datagram binds the session to your address. Connect your UDP
+`gameTokenId`. That first signed datagram binds the session to your address. Advertise
+`BUNDLE_SIGNED` and `BOUND_CONTROL` in it: a refusal of a send then arrives verified, and the
+realtime server acknowledges each capabilities message, which is how your server knows the
+session is alive ([below](#what-ends-a-session-and-what-ends-a-carry)). Connect your UDP
 socket to the realtime server's address, so the operating system drops datagrams from anywhere
 else. The SDKs do.
 
@@ -160,7 +169,7 @@ session's `gameTokenId`, the player's `gameTokenId`, and the time. The realtime 
 | Status | Meaning | What to do |
 |---|---|---|
 | 0 | Carried. The answer carries the player's user id. | Start sending for the player. |
-| 1 | No live token by that id, or the token is for another app. | Sign the player in again, or refresh their token, then carry. |
+| 1 | No live token by that id, or the token is for another app. | Send the carry once more about 250 ms later, with a new time and proof. If the answer is 1 again, sign the player in again, or refresh their token, then carry. |
 | 2 | The player belongs to another organization. | You cannot carry this player. |
 | 3 | The proof failed, the time is more than 30 seconds from the realtime server's, or the message was a replay. | Check your server's clock, then send a new carry. |
 | 4 | The session already carries as many players as it may. | Open a second session, or ask for a higher `maxFleetPlayers`. |
@@ -189,22 +198,44 @@ message that names a player the session does not carry is answered `UNAUTHORIZED
   When every carried player in range may receive one, it arrives plain. When only some may, it
   arrives inside a `FLEET_DELIVERY` that lists them.
 - **Your own players' state does not come back.** A game server already simulates its own
-  players. Set capability bit 3 (`FLEET_OWN_STATE`) if you want it.
+  players. Set capability bit 3 (`FLEET_OWN_STATE`) if you want it. Two things come back with
+  the bit off: a voxel edit the session sent, and the departure of one of its own players'
+  actors.
 
 Voice and video do not keep a carried player present. Each player needs gameplay input within
 the app's idle timeout, and an idle actor needs a heartbeat, as on a player's own session.
 
 ### A player crosses to another of your servers
 
-The server the player leaves sends the player's app token to the next server over your own
-link. The next server sends `FLEET_CARRY`. From the moment that carry is accepted, only the new
-session's messages for the player are accepted, and the session that carried the player before
-is sent `FLEET_RELEASED` (52) with reason 1. The newest carry wins, so the player is never
-carried by two sessions.
+The server the player leaves stops sending for the player, then sends the player's app token
+to the next server over your own link. The next server sends `FLEET_CARRY`. The newest carry
+wins, so the player is never carried by two sessions.
 
-The server that holds a player's app token refreshes it before its `expiresAt`
-(`refreshAppToken`) and then carries the player again with the new token and its
-`gameTokenId`. The new carry replaces the old one without a gap.
+- **The server the player left learns it in two ways.** It is sent `FLEET_RELEASED` (52) with
+  reason 1, once. That message can be lost, and it can arrive up to about 6 seconds late. The
+  sign to rely on is the refusal of its next send for the player (`UNAUTHORIZED`).
+- **Stop sending before you hand the player off.** For a few milliseconds after a crossing,
+  and rarely for up to about 5 seconds, the realtime servers can still accept the previous
+  session's sends for the player.
+- **The server the player arrived on treats state for that player as stale.** Just after the
+  carry, it can receive a few state updates for the player that the previous session sent a
+  moment before. Your server is the authority on the players it carries.
+
+### Refresh each carried player's token
+
+A player's app token lasts 30 minutes today. The server that holds it refreshes it before its
+`expiresAt` (`refreshAppToken`), which answers a new token and a new `gameTokenId`.
+
+1. Send `FLEET_CARRY` with the new token.
+2. From that moment, name the new `gameTokenId` on every send for the player. A send that
+   names the new id and arrives before the carry takes effect waits for it.
+3. Once the new carry takes effect, a send that still names the old id is answered
+   `UNAUTHORIZED`.
+
+The carry made with the old token stands until the new one takes effect, so there is no gap,
+and the player keeps their actors and their idle clock. A carried player whose token expires
+with no new carry is released with reason 2 at the expiry, and a send that lands just before
+it is answered `TOKEN_EXPIRED`.
 
 ### Refresh before the session expires
 
@@ -212,11 +243,12 @@ Call `refreshFleetSession(input: { appId, gameTokenId, currentServer })` with th
 that opened the session. The token and its `gameTokenId` stay the same, and `expiresAt` moves
 to 24 hours from the call. Name the realtime server the session is connected to in
 `currentServer`, by its IPv4 address (`ip4`) and its `clientPort`, and the session stays there
-while that server still serves the app. Its
-carries stand: send `CLIENT_CAPABILITIES` again and no `FLEET_CARRY`.
+while that server still serves the app. Its carries stand, so send no `FLEET_CARRY`. Send
+`CLIENT_CAPABILITIES` at once after every refresh: the realtime server sends the session
+nothing until it hears from it again.
 
-The checks of `openFleetSession` run again at every refresh, so a session stops within a day
-of fleet sessions being switched off for your organization.
+The checks of `openFleetSession` run again at every refresh, so a refresh is refused once one
+of them no longer holds.
 
 ### Move when a realtime server asks
 
@@ -240,7 +272,10 @@ is carried elsewhere or goes idle.
 ## An SDK does the same steps for you
 
 Both SDKs take the org token as the client's bearer for the Application API calls, sign every
-message with the fleet token, and send an unanswered carry again.
+message with the fleet token, and send an unanswered carry again. Both send the session's
+capabilities every 15 seconds and call a refresh due after 45 seconds without an
+acknowledgement. Both drop and count a notification that names another app than the session's,
+and one that nothing signed.
 
 ### CrowdyCPP
 
@@ -307,18 +342,23 @@ fleet.close();
   (`carriesPerSecond`, `carryBurst`), under the 64 a second the realtime servers accept. The
   result is `Carried` with the player's user id, or `NoLiveToken` (1), `OtherOrganization`
   (2), `ProofRefused` (3), or `NoRoom` (4). After you refresh a player's token, call `carry`
-  with the new one.
+  with the new one. Once that carry is confirmed it replaces the entry the same user had.
 - **Every send of `Connection`** has a `FleetSession` form that takes the carried player's
   `gameTokenId` first, `setSpeakers` included. A send for a player the session does not carry
   returns `Errc::NotCarried` and puts nothing on the wire.
 - **`FleetHandlers`** are `Connection`'s handlers with a `FleetRecipients` last.
   `recipients.forSession()` is true for a notification that arrived plain. Otherwise
   `recipients.players()` lists the carried players who may receive it, at most 32.
-- **`refreshDue()`** is true once half of the token's 24 hours have passed, and at once after
-  a realtime server tells the session to move (`moveOrdered()`). `sessions.refresh(fleet)`
-  names the server the session is on, or no server after a move order. `applyFleetRefresh`
-  moves the session when the answer names another server, and the session then carries its
-  players again. The SDK makes no Application API call on its own.
+- **`refreshDue()`** is true once half of the token's 24 hours have passed, at once after a
+  realtime server tells the session to move (`moveOrdered()`), and after 45 seconds without an
+  acknowledgement of the session's capabilities (`FleetConfig::transport.watchdogSilenceMs`).
+  `sessions.refresh(fleet)` names the server the session is on, or no server after a move
+  order. `applyFleetRefresh` moves the session when the answer names another server, and the
+  session then carries its players again. A refresh that answers `NOT_FOUND` means the session
+  ended: open a new one. The SDK makes no Application API call on its own.
+- **`fleet.stats()`** counts what the session dropped: `wrongApp` for a notification that names
+  another app, and `unsignedNotifications` for one that nothing signed. Neither reaches a
+  handler.
 - **`fleet.setFleetOwnState(true)`** asks for the state your own carried players sent.
 - **Refusals** of the Application API calls are GraphQL errors. `crowdy/graphql/errors.hpp`
   reads them: `orgTokenRequiredOf`, `fleetSessionLimitOf`, `fleetSessionNotFoundOf`, and
@@ -358,8 +398,11 @@ if (carry.carried) {
   await fleet.sendActorUpdate(player.gameTokenId, { chunk, uuid, state });
 }
 
+// You refreshed the player's app token: carry them again, naming the id they had.
+await fleet.carry({ token: fresh.token, gameTokenId: fresh.gameTokenId, replaces: player.gameTokenId });
+
 // The player left the game:
-await fleet.release(player.gameTokenId);
+await fleet.release(fresh.gameTokenId);
 
 // From your loop: keep the session, and follow it to another realtime server.
 if (fleet.refreshDue()) {
@@ -377,18 +420,26 @@ fleet.close();
 
 - **`fleet.carry`** resolves with how the carry ended. `carried` is true when the session
   carries the player, and `userId` is then the player's user id. The session sends an
-  unanswered carry again with a new time and proof, and paces its carries under the 64 a
-  second the realtime servers accept.
+  unanswered carry again with a new time and proof, sends a carry answered "no live token"
+  once more 250 ms later, and paces its carries under the 64 a second the realtime servers
+  accept.
+- **`replaces`** carries a player again with a refreshed token and no gap. The player stays
+  carried throughout, and the session names the new `gameTokenId` on the player's sends from
+  the moment it sends the new carry. Use the new id once the promise resolves `carried`.
 - **Each send of `client.udp`** has a `FleetSession` form that takes the carried player's
   `gameTokenId` first, `setSpeakers` included. A send for a player the session does not carry
   rejects with `FleetNotCarriedError` and puts nothing on the wire.
 - **Each handler's second argument** is the list of carried players who may receive the
   notification, at most 32, or `null` for a notification that arrived plain.
-- **`refreshDue()`** is true once half of the session's 24 hours have passed, and at once
-  after a realtime server tells the session to move. `refreshInput()` is the input for
-  `client.fleetSessions.refresh`: it names the server the session is on, or no server after a
-  move order. `applyRefresh` takes the answer, and after a move the session carries its
-  players again. `FleetSession` makes no Application API call on its own.
+- **`refreshDue()`** is true once half of the session's 24 hours have passed, at once after a
+  realtime server tells the session to move or releases it, and after 45 seconds without an
+  acknowledgement of the session's capabilities (`silenceTimeoutMs`). `refreshInput()` is the
+  input for `client.fleetSessions.refresh`: it names the server the session is on, or no
+  server after a move order. `applyRefresh` takes the answer, and after a move the session
+  carries its players again. A refresh that answers `NOT_FOUND` means the session ended: open
+  a new one. `FleetSession` makes no Application API call on its own.
+- **`fleet.stats()`** counts what the session dropped: `wrongApp` for a notification that names
+  another app, and `unsigned` for one that nothing signed. Neither reaches a handler.
 - **`fleetOwnState: true`**, or `fleet.setFleetOwnState(true)`, asks for the state your own
   carried players sent.
 - **On any connection that is not a server's, `callAs` is refused locally** with `Denied`, and
@@ -417,10 +468,12 @@ or a refresh is the number that applies to that session.
 
 With fleet sessions, these are the calls a game still makes to the Application API:
 
-- one `openFleetSession` for each game server at start, and a `refreshFleetSession` before
-  each expiry;
+- one `openFleetSession` for each game server at start, and one `refreshFleetSession` a day;
 - one `mintManagedPlayerToken` for each player when they join;
-- one `refreshAppToken` for each player before that player's app token expires.
+- one `refreshAppToken` for each lifetime of a player's app token, 30 minutes today.
+
+The token refresh is the only one of these that grows with the players online: 3,000 players
+make 3,000 refreshes in 1,800 seconds, which is under 2 a second.
 
 ## What ends a session, and what ends a carry
 
@@ -435,30 +488,79 @@ With fleet sessions, these are the calls a game still makes to the Application A
 When a session ends, its carries end with it and no `FLEET_RELEASED` is sent. Each player's
 actors leave as they do when a player's own session ends.
 
+**Your server learns that a session ended in two ways.** The first is a signed message. The
+realtime server sends the session
+[`COMMAND_SESSION_RELEASED`](/replication-api/wire-formats#session-released--command_session_released-28)
+(28, or 45 in its bound form), signed with the fleet token, once:
+
+| Reason | Meaning |
+|---|---|
+| 0 | The session was closed through the Application API, its org token was revoked, or fleet sessions were switched off. |
+| 1 | The realtime server heard nothing from the session for too long. |
+| 2 | The fleet token expired. |
+| 3, 4 | The realtime server is shedding load, or it is moving the session. |
+
+The second is silence, because that one message can be lost. Advertise `BOUND_CONTROL` in the
+session's capabilities. The realtime server then answers each capabilities message of a live
+session with a signed `CONTROL_BOUND_ACK` (46), and it never answers an ended session's. Send
+`CLIENT_CAPABILITIES` every 15 seconds, and treat 45 seconds without an acknowledgement as the
+session being gone.
+
+In both cases call `refreshFleetSession`. When it answers a server, connect there, send
+`CLIENT_CAPABILITIES` at once, and carry every player again: a server that released the
+session holds no carry. When it answers `NOT_FOUND`, the session is over: open a new one and
+carry your players again.
+
 **A carry ends** when you send `FLEET_RELEASE`, or when the realtime servers send
 `FLEET_RELEASED` (52) with one of three reasons:
 
 | Reason | Meaning | What to do |
 |---|---|---|
 | 1 | Another session carries the player: a crossing. | Stop sending for the player. |
-| 2 | The player's sign-in ended: you ended their sessions, disabled or deleted the player, their account was blocked, or the sign-in's length ran out and no carry with a live token followed. | Sign the player in again if they may still play. |
+| 2 | The player's sign-in ended: you ended their sessions, disabled or deleted the player, their account was blocked, or their token expired and no carry with a live token followed. | Sign the player in again if they may still play. |
 | 5 | The player sent no gameplay input for the app's idle timeout (15 minutes unless the app sets its own). | Carry the player again when they act. |
 
-## Treat a refusal or a release as a prompt to check
+`FLEET_RELEASED` is sent once, so it can be lost, and it can arrive up to about 6 seconds
+late. It can also be a replay: a 51, 52, or 53 is signed with the fleet token and carries
+nothing that marks it as new, so a captured `FLEET_RELEASED` that is sent again verifies again.
+When a release arrives for a player who is still on your server, carry the player again. The
+realtime server answers that carry, and its answer says where the player stands.
 
-- **A player whose access is suspended or ended.** The realtime servers deliver nothing for
-  that player, and they answer your sends for that player `UNAUTHORIZED`. Stop serving the
-  player when you see that answer. State for your other players still arrives plain, and a
-  plain notification does not say which of your players it is not for.
-- **A release can be a replay.** A 51, 52, or 53 is signed with the fleet token and carries
-  nothing that marks it as new, so a captured `FLEET_RELEASED` that is sent again verifies
-  again. When
-  a release arrives for a player who is still on your server, carry the player again. The
-  realtime server answers that carry, and its answer says where the player stands.
-- **An error frame outside a signed bundle carries no HMAC.** Treat a
-  `GENERIC_ERROR_MESSAGE` (`[3][seq][code]`) that arrives that way as a hint: stop sending for
-  the player whose send it matches, then carry the player again or check the player's access
-  through the Application API.
+## Why a send is refused, and what your server does
+
+A refusal is a `GENERIC_ERROR_MESSAGE`: three bytes, `[3][seq][code]`. It names no player. Its
+sequence number is one byte that the whole session shares, so match it to your recent sends.
+
+- **To a session that advertised `BUNDLE_SIGNED`**, a refusal arrives inside the session's
+  signed bundle and is verified like everything else in it.
+- **To a session that did not**, a refusal arrives alone and unsigned. Treat it as a hint:
+  stop sending for the player whose send it matches, then carry the player again or check the
+  player's access through the Application API.
+
+`UNAUTHORIZED` (7) has these causes, and the refusal does not say which one applies:
+
+| Why the send was refused | What your server does |
+|---|---|
+| It names the player's previous `gameTokenId` after a carry with a refreshed token took effect. | Name the new `gameTokenId`. |
+| The session no longer carries the player: you released them, they went idle, their sign-in ended, or another session carries them. | Carry the player again if your server should still serve them. |
+| The player lacks a permission the message needs: access to the app, voice, video, text, direct messages, or voxel edits. | Grant the permission, or stop sending that kind of message for the player. |
+| The permissions for that part of the world were still loading after 2 seconds, or too many sends were waiting for them. | Send again. |
+| The actor belongs to another player. | Send for an actor only under the player who owns it. |
+| The platform could not confirm whose actor it is within 2 seconds. | Send again. |
+| A communication rule refuses the message: a direct message from a player under 18, or a kind of communication that is switched off. | Nothing. The message is not delivered. |
+| The player's access to the app is suspended or ended. | Stop serving the player. |
+| The message went under the session's own `gameTokenId` and is not one of its four kinds. | Send it under a carried player's `gameTokenId`. |
+
+Three outcomes of a send are not `UNAUTHORIZED`:
+
+- **A player over their send rate** gets no answer. The message is dropped.
+- **A player whose token expired** gets `TOKEN_EXPIRED` (32), and `FLEET_RELEASED` with reason 2
+  follows.
+- **A paused app** gets `APP_PAUSED` (33).
+
+While a player's access is suspended or ended, the realtime servers also deliver nothing for
+that player. State for your other players still arrives plain, and a plain notification does
+not say which of your players it is not for.
 
 ## One hub connection serves the whole server
 
@@ -540,7 +642,7 @@ places a player, so its datacenter answers apply to them: see
   direct message to a player elsewhere in the app, and no channel of its own.
 - **It does not name the player a refusal was for.** An `UNAUTHORIZED` answer carries the
   one-byte sequence number of the send, which the whole session shares. Match it to your
-  recent sends, and [check before you act](#treat-a-refusal-or-a-release-as-a-prompt-to-check).
+  recent sends, and see [why a send is refused](#why-a-send-is-refused-and-what-your-server-does).
 - **It does not keep its carries across a move.** After the session connects to another
   realtime server, carry every player again.
 - **It does not raise your app's compute limit.** Hubs your server places count toward your
