@@ -17,7 +17,8 @@ device keeps using that player's own session and needs nothing here.
 
 :::note[What is switched on]
 Fleet sessions need Application API v2.89.1, realtime servers v0.50.3, and ck-exec 0.25.0.
-**Not yet in production.** Crowded Kingdoms switches them on for one organization at a time
+All three are in production since November 26, 2026. Crowded Kingdoms switches fleet sessions
+on for one organization at a time
 ([below](#what-you-need-before-the-first-session)). CrowdyCPP and CrowdyJS carry them in
 releases that are still to come, and CrowdyPy follows. A server written in another language
 calls the Application API and speaks the
