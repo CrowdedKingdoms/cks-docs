@@ -5,7 +5,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.28**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.29**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 ## What 2.27 changes
 
@@ -84,12 +84,12 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 Download the plugin from its public repository on GitHub, [CrowdedKingdoms/CrowdySDK-Unreal](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal):
 
-- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.28.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.28.0`; rename that folder to `CrowdySDK`.
-- **Or with git:** `git clone --branch v2.28.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
+- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.29.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.29.0`; rename that folder to `CrowdySDK`.
+- **Or with git:** `git clone --branch v2.29.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
 
 The repository's root is the plugin root: the folder you download is the one that goes at `Plugins/CrowdySDK` in Step 2.
 
-:::note[The release you install must match the version this guide describes (2.28).]
+:::note[The release you install must match the version this guide describes (2.29).]
 :::
 
 From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
@@ -2403,7 +2403,7 @@ The shipped default profile leaves **Backend Config** at None and runs on the bu
 | `MaxUpdatesPerBatch`, `MaxBatchWaitTime` | 100, 5 ms | How updates for not-yet-seen entities are batched off the game thread. |
 | `InterpolationDelayMs` | 100 ms | How far behind the server's clock the actor pool draws remote entities. Longer hides late updates but shows everyone further in the past; below one send interval (100 ms at the default 10 Hz) entities overshoot and snap back. Mass-drawn rows ignore it. See [Rendering backends](./rendering-backends.md). |
 
-The tracker's events, all on the game thread: `OnRemoteEntityAppeared` (an id seen for the first time, with its `InitialState`), `OnRemoteEntityTimedOut` (this client heard nothing for `ActorTimeoutThreshold`), `OnRemoteEntityLeft` (the server said it is gone, with an `FCrowdyActorLeft` carrying the `ECrowdyActorLeftReason`: `Stale`, or `SessionReleased` when the server ended that actor's session), and `OnRemoteEntityLeftAnnounced` (every departure, including one for an actor this client never held, for code keeping its own per-sender state). Whichever of timed-out and left reaches an actor first is the only one that reports it. The delegate types are `FOnActorSpawnRequested`, `FOnActorTimeoutRequested`, `FOnActorLeftReported` (used by both departure events), and `FOnActorUpdateGameThreadBatch`. `ToggleOwnerTracking` and `ToggleBroadcastUpdatesToGameThread` change those two settings at runtime. `Configure` does not: it applies only before the tracker starts, which is before any Blueprint can call it, so on a running tracker it logs a Warning and changes nothing, and it has no Blueprint node. Set the limits in the [map profile](./map-profile.md) or in the Crowdy SDK developer settings instead. `FCrowdyActorUpdate` is the batch element, carrying `PayloadTypeID`, the payload type id the sender's state blob led with, kept even when no struct is registered for it on this client. `crowdy.replication.tracker.maxgatheredupdates` caps the backlog of gathered updates for actors already on screen. You do not normally touch any of this: the actor manager and the [rendering backend](./rendering-backends.md) consume it for you.
+The tracker's events, all on the game thread: `OnRemoteEntityAppeared` (an id seen for the first time, with its `InitialState`), `OnRemoteEntityTimedOut` (this client heard nothing for `ActorTimeoutThreshold`), `OnRemoteEntityLeft` (the server said it is gone, with an `FCrowdyActorLeft` carrying the `ECrowdyActorLeftReason`: `Stale`, or `SessionReleased` when the server ended that actor's session), and `OnRemoteEntityLeftAnnounced` (every departure, including one for an actor this client never held, for code keeping its own per-sender state). Whichever of timed-out and left reaches an actor first is the only one that reports it. **Get Tracked Remote Entities** (`GetTrackedRemoteEntities()`) returns the ids of the remote entities the tracker holds now, so a listener that starts late can catch up on who is already there, then bind the events for the rest. An entity can leave the list just before its timeout or left event reaches you, and one appearing in the same batch can be in the list and in **On Remote Entity Appeared** too, so treat an event for an entity you already know about as nothing new. It is a call, not a pure node: it copies the whole list, so call it once and keep the array. The delegate types are `FOnActorSpawnRequested`, `FOnActorTimeoutRequested`, `FOnActorLeftReported` (used by both departure events), and `FOnActorUpdateGameThreadBatch`. `ToggleOwnerTracking` and `ToggleBroadcastUpdatesToGameThread` change those two settings at runtime. `Configure` does not: it applies only before the tracker starts, which is before any Blueprint can call it, so on a running tracker it logs a Warning and changes nothing, and it has no Blueprint node. Set the limits in the [map profile](./map-profile.md) or in the Crowdy SDK developer settings instead. `FCrowdyActorUpdate` is the batch element, carrying `PayloadTypeID`, the payload type id the sender's state blob led with, kept even when no struct is registered for it on this client. `crowdy.replication.tracker.maxgatheredupdates` caps the backlog of gathered updates for actors already on screen. You do not normally touch any of this: the actor manager and the [rendering backend](./rendering-backends.md) consume it for you.
 
 ## Looking entities up
 
@@ -8006,6 +8006,10 @@ When a row becomes a near tier actor, it appears already in the right pose: its 
 
 Promotion needs a class that declares a shell, a shell that loads as an actor and carries a Crowdy Mass Near Tier component, and a free place under **Max Near Tier Actors**. A class with a shell but no assigned **Near Tier Actor Class** is drawn as a row at every distance. For the ordered checklist and the log line each cause prints, see the section "A class never promotes" in [Fix a crowd that does not look right](./troubleshooting.md).
 
+## Know when an actor starts or stops standing for an entity
+
+**On Entity Binding Changed** (`OnEntityBindingChanged`, `FCrowdyMassNearTierBindingChanged`) is an event on the **Crowdy Mass Near Tier** component, category **Crowdy Mass|Near Tier**. It fires with **Entity UUID** (`FGuid`) and **Bound** (`bBound`): true after the near tier actor starts standing for that entity, false after it stops, with the id of the entity it stood for. A pooled actor handed straight to another entity reports the old one stopping first, then the new one starting. The event is delivered when the crowd's frame has finished, never inside its update, so by then the actor may stand for another entity: trust the id it passes, not **Get Entity UUID**. An entity with no id passes an invalid one, an actor destroyed before delivery reports nothing more, changes made while the game is paused arrive on the next tick, and nothing is delivered once the world is shutting down. To follow every near tier actor in the world at once, bind **On Near Tier Binding Changed** on the **Crowdy Mass Entity Subsystem** instead: it carries the **Actor** as well, in the same order, and still reports a destroyed actor's stop, with no **Actor**: drop a record you keep by entity when the actor you recorded for it is no longer valid. Bind it to show or hide something that belongs to the entity, such as a nametag, instead of polling **Is Bound to Entity**.
+
 ## Demotion and release
 
 When an entity moves out of the near band, a class whose configuration the SDK builds from the class releases its near tier actor back to the pool: the actor is hidden, unbound and has its collision off. If the entity comes back, it takes an actor from the pool again, so it may not be the same one. An authored configuration follows its own level settings.
@@ -8020,6 +8024,7 @@ Everything above is available from Blueprint. A C++ shell or game system can als
 |---|---|
 | `UCrowdyMassNearTierComponent::BindToEntity`, `UnbindFromEntity` | Join or leave an entity by hand, for an actor class of your own. Promotion calls them for you. |
 | `GetBoundEntity`, `GetResolvedAnimSet` | Read the bound entity and the anim set it renders through. |
+| `OnEntityBindingChanged` (`FCrowdyMassNearTierBindingChanged`) | Fires with the `FGuid` and a `bool` when the actor starts or stops standing for an entity; see [Know when an actor starts or stops standing for an entity](#know-when-an-actor-starts-or-stops-standing-for-an-entity). |
 | `ReadServerValueInto`, `OnServerValuesChanged` (`FCrowdyMassNearTierServerValuesChanged`) | Read a server value of the bound entity, and listen for changes. |
 | `ACrowdyMassNearTierActor::IsReadyForRepresentation` | Virtual. Answer true as soon as there is something to draw. |
 
@@ -17350,6 +17355,21 @@ A custom event `OnChooseNamePressed` runs **Set Player Name**. **On Error** brea
 </TabItem>
 </Tabs>
 
+## Save per-player settings
+
+`UCrowdyPlayers` also keeps one private piece of state for the signed-in player in your app, for settings that should follow the player to any machine: a chosen microphone, a key binding, a tutorial step already seen. It is base64 text, so pair it with **Serialize Struct to Avatar State** and **Deserialize Avatar State to Struct** to store a struct, as [avatar state](./avatars.md#serializing-struct-state) does.
+
+| Blueprint node | C++ | What it does |
+|---|---|---|
+| **Get My App State** | `GetMyAppState(OnResult, OnError)` | Reads the state. **On Success** gives **State**, the base64 text, empty when none was saved. |
+| **Set My App State** | `SetMyAppState(State, OnDone, OnError)` | Replaces the state with the base64 text. An empty one clears it. |
+
+Both nodes are async: they continue on **On Success** or **On Error**, which carries **Error** and **Message**. Both need a signed-in player. In C++ they answer on `FOnPlayerAppStateRead` (the text), `FOnPlayerAppStateWritten` and `FOnPlayersError`.
+
+Only that player can read it. The platform keeps it per account, not per avatar and not per machine, so it is there on the next machine they sign in on. The client writes it, so it is for settings, never for anything a player must not be able to change: keep that in a [Server Object](/exec/intro).
+
+The state is one value for your whole app, so if more than one feature saves into it, read it, change only your part and write it back, and give each part a version so an older build keeps fields a newer one added.
+
 ## Gotchas
 
 - Names are not live: read again when you need a current one, for example when a player joins a team or a match.
@@ -18053,6 +18073,8 @@ Every write, `UpdateAvatar`, `UpdateAvatarState`, `UpdatePublicAvatarState`, `Up
 
 An avatar that has never saved state in this app is not an error. `GetAvatarAppState` and the **Get Avatar App State** node succeed with an empty `RawState` and that avatar's `AvatarId` and `AppId`; `GetAvatarAppStates` leaves the avatar out of its list; **Get Avatar App State As** succeeds with its state output set to the type's default. Only a refusal, a failed request or an answer that cannot be read reaches `On Error`, and **Get Avatar App State As** also fails when a saved state's size does not match the struct you connected. **Deserialize Avatar State to Struct** returns false in the same case. Either way the struct is left as it was. The state is stored by position with no field names, so a change to the struct that keeps its size (a field retyped to one of the same size, two fields swapped) still reads, with wrong values.
 
+This state belongs to one avatar. For a setting that belongs to the player and should be the same whichever avatar they pick, use **Get My App State** and **Set My App State** on [Player Names](./player-names.md#save-per-player-settings), which the platform keeps per account.
+
 :::warning[AppId always comes from project settings; there is no per-call override.]
 `GetAvatarAppState`, `GetAvatarAppStates`, and `UpdateAvatarAppState` resolve `AppId` from project settings, not a parameter. This subsystem cannot target a different app's slot.
 :::
@@ -18265,9 +18287,14 @@ Everything lives on the **Crowdy SDK Subsystem** (`UCrowdySDKSubsystem`, a Game 
 | **Is Voice Speaker Muted** | `IsVoiceSpeakerMuted(int64 UserId)` | Whether that player is muted. |
 | **Set Voice Speaker Volume** | `SetVoiceSpeakerVolume(int64 UserId, float Volume)` | How loud one player is: 0 to 4, 1 is as received. |
 | **Get Voice Speaker Volume** | `GetVoiceSpeakerVolume(int64 UserId)` | The volume set for that player. |
+| **Set Voice Playback Volume** | `SetVoicePlaybackVolume(float Volume)` | How loud every other player's voice plays, spatial and channel alike: 0 is silent, 1 is as received. See [Turn all voices down](#turn-all-voices-down). |
+| **Get Voice Playback Volume** | `GetVoicePlaybackVolume()` | The volume set, or 1 when none was set. |
 | **Get Voice Speaker User Id** | `GetVoiceSpeakerUserId(const FString& SpeakerUuid)` | The user id behind a **Speaker Uuid**, or 0 until it is known. |
 | **Set Voice Speakers** (Speaker Uuids) | `SetVoiceSpeakers(const TArray<FString>& SpeakerUuids)` | Has the server send you voice only from these players. See [Choose whose voice you receive](#choose-whose-voice-you-receive). |
 | **Hear All Voice Speakers** | `HearAllVoiceSpeakers()` | Goes back to receiving every player in range. |
+| **Get Voice Input Devices** | `GetVoiceInputDevices()` | The microphones this machine has now, as an array of **Crowdy Voice Input Device** (`FCrowdyVoiceInputDevice`). See [Choose the microphone](#choose-the-microphone). |
+| **Set Voice Input Device** (Device Id) | `SetVoiceInputDevice(const FString& DeviceId)` | Captures your voice from the microphone with that **Id**. Empty follows the OS default. |
+| **Get Voice Input Device** | `GetVoiceInputDevice()` | The **Id** you chose, or empty while following the OS default. |
 | **Get Voice Mic State** | `GetVoiceMicState()` | What your microphone is doing right now. |
 | **On Voice Mic State Changed** | `OnVoiceMicStateChanged` | Fires when that state changes. |
 | **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking to the players near them. Channel voice has its own, see [Talk to a channel](#talk-to-a-channel). |
@@ -18494,6 +18521,10 @@ Bind `OnVoiceSpeakerTalking`. In the handler, call `GetVoiceSpeakerUserId(Speake
 
 **Get Voice Speaker User Id** answers 0 until the user is known, usually a moment after they first speak, and 0 for a speaker not heard on this map in the last minute, so check for 0 before you use it. A lookup that finds no user is tried again every 10 seconds. A muted player's voice is not decoded and takes no speaker place. While anyone is muted, a new speaker is held silent for up to 1.5 seconds until their user is known, so a muted player is not heard for a moment after they sign in again. Muting is yours to offer; blocking, which the platform enforces, is stronger and is covered in [Player Safety](./player-safety.md#what-a-block-covers).
 
+## Turn all voices down
+
+**Set Voice Playback Volume** sets how loud every other player's voice plays, from 0 (silent) to 1 (as received), for example for a Voice Volume slider in a settings menu. It covers spatial and channel voice alike. It multiplies each speaker's own volume from **Set Voice Speaker Volume** and each channel's from **Set Voice Channel Volume**, so their levels relative to each other stay as they were. It applies at once, to voices already playing too, and it is kept across map changes. **Get Voice Playback Volume** reads it back, 1 until you set one. It does not change what your microphone sends.
+
 ## Choose whose voice you receive
 
 **Set Voice Speakers** tells the server whose spatial voice to send you: only the players whose actor ids are in **Speaker Uuids**, at most 32, and nobody when the list is empty. The server sends the others nothing, so they cost you no data, where a muted player's voice still arrives and is thrown away. **Hear All Voice Speakers** goes back to every player in range. A list of more than 32 ids, or with an id that is not 32 characters, returns false, logs a warning and changes nothing. The app can set a lower limit, `maxVoiceSpeakers` (see [game setup](/management-api/game-setup#c5-cap-the-speakers-each-player-receives)); the server refuses a longer list, and the node cannot know, so keep your lists within it. Calling it again with the same players, in any order, sends nothing, so a game can refresh its list every frame.
@@ -18514,6 +18545,22 @@ Which players to name is your game's choice: the **Speaker Uuid** values from **
 
 A map change closes and reopens the microphone, so you see **Off** then **Starting** again. That is expected. A microphone that opens but delivers no audio for about three seconds goes to **Error**, with a log warning that points at the OS microphone permission. The usual cause is a denied permission.
 
+## Choose the microphone
+
+By default voice chat captures from the OS default microphone. **Get Voice Input Devices** lists the microphones this machine has now, for a settings menu, as an array of **Crowdy Voice Input Device** (`FCrowdyVoiceInputDevice`). It asks the OS each time, so call it once when the menu opens and keep the array, rather than reading it per frame or in a binding:
+
+| Field | Means |
+|---|---|
+| **Id** (`Id`) | On Windows, the same for this microphone across sessions, so save it and pass it back later. On other platforms an **Id** can change when any audio device is added or removed. |
+| **Name** (`Name`) | The name the OS shows for it. |
+| **Is Default** (`bIsDefault`) | Whether it is the OS default microphone right now. |
+
+**Set Voice Input Device** takes an **Id** from that list. An empty one goes back to following the OS default. A microphone that is already open moves to the new device at once, and the choice is kept across map changes. **Get Voice Input Device** returns the **Id** you chose, empty while following the default. A game that saves the **Id** can pass it to **Set Voice Input Device** at startup, and the choice then holds across sessions.
+
+Voice chat never opens a different microphone in place of the one you chose. If it is unplugged, the state reads **No Device**, and it opens again once the microphone is plugged back in; choosing it again also retries it. A microphone you chose no longer follows a change of the OS default.
+
+The list is empty where the platform cannot capture audio.
+
 ## Confirming capture with owner echo
 
 Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, and speak. You should hear yourself, a little late: your voice goes to the server and comes back like any other player's. While echo is on, your own **Speaker Uuid** also shows up in **On Voice Speaker Talking**. The server sends your own webcam video back too, which the SDK discards.
@@ -18532,7 +18579,7 @@ Leaving it on means the player hears their own microphone continuously, not just
 
 - **Your pawn places your voice.** Each frame is addressed to the chunk your pawn stands in when it is sent, so voice follows the player as they move. Between pawns, during a respawn or as a map ends, it stays where the pawn last stood in that map. Before the map's first pawn, it is addressed to the chunk last given to **Set Player Current Chunk Coordinates** on the game session, which is the origin chunk unless your game sets it. Frames are dropped until the connection is up and your player has an id.
 - **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo and the timeout stay as you set them when the next map loads, and so does a distance you set with **Set Voice Chat Distance**. A distance you never set follows each map's **Voice Distance** instead. You do not call anything again after a map change.
-- **A missing microphone is not a failure.** The state reads **No Device**, and voice chat opens the microphone as soon as one is available. On Windows a newly connected microphone is noticed right away; elsewhere voice chat looks again every couple of seconds.
+- **A missing microphone is not a failure.** The state reads **No Device**, and voice chat opens the microphone as soon as one is available. If you chose one with **Set Voice Input Device**, it waits for that one and opens no other. On Windows a newly connected microphone is noticed right away; elsewhere voice chat looks again every couple of seconds.
 - **A changed default microphone restarts capture on Windows.** If the player unplugs a headset or picks another default device, voice chat reopens the microphone by itself.
 - **The nearest speakers are heard.** Up to **Max Speakers** (16 by default); a farther speaker is not played while every place is taken.
 - **Received voice plays 120 ms behind by default.** **Playout Delay** sets it. The delay absorbs uneven delivery, and it is on top of the network time.
@@ -20137,11 +20184,21 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.15 or later (2.28.1 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)). In 2.26.0, the host surface and everything deprecated are deleted and the owner id is renamed the writer id (see [its entry](#2026-11-19-sdk-v2260)).
+You built against the SDK in July, you are updating the plugin to 2.15 or later (2.29.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)). In 2.26.0, the host surface and everything deprecated are deleted and the owner id is renamed the writer id (see [its entry](#2026-11-19-sdk-v2260)).
 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the Application API's legacy game-model engine, which ck-exec replaced; the Application API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-11-26 (SDK v2.29.0)
+
+Five additions. Nothing breaks.
+
+- **Choose the microphone.** **Get Voice Input Devices** lists the microphones the machine has, each with an **Id** (on Windows the same across sessions), and **Set Voice Input Device** captures from the one you pick; an empty **Id** follows the OS default. An open microphone moves at once and the choice is kept across map changes. A chosen microphone that is unplugged reads **No Device** until it is connected again; voice chat never opens a different one in its place, and a chosen one no longer follows a change of the OS default. **What you do:** nothing, unless you want a microphone picker: save the **Id** and pass it to **Set Voice Input Device** at startup. See [Choose the microphone](../services/voice-chat.md#choose-the-microphone).
+- **Turn all voices down at once.** **Set Voice Playback Volume** (0 to 1) multiplies the volume of every other player's voice, spatial and channel alike, so the volumes you set for single players and channels keep their levels relative to each other. It applies to voices already playing and is kept across map changes. **What you do:** nothing, unless you want a Voice Volume slider. See [Turn all voices down](../services/voice-chat.md#turn-all-voices-down).
+- **The actor tracker can list who is already there.** **Get Tracked Remote Entities** returns the remote entities the tracker holds now. **What you do:** if a listener of yours can start after entities appeared, call it once when it starts, then bind the events, handling an appearance or departure you already know about as nothing new. See [The actor tracker](../runtime/entities-and-spawning.md#the-actor-tracker).
+- **A near tier actor reports when it starts or stops standing for an entity.** The **Crowdy Mass Near Tier** component has a new event, **On Entity Binding Changed**, with the entity's id and whether it is now bound, delivered in order once the crowd's frame has finished; **On Near Tier Binding Changed** on the **Crowdy Mass Entity Subsystem** reports every near tier actor in the world, with the actor. A pooled actor handed straight to another entity reports the old one stopping first. **What you do:** nothing; bind it instead of polling **Is Bound to Entity**. See [Know when an actor starts or stops standing for an entity](../mass/promote-close-entities-to-actors.md#know-when-an-actor-starts-or-stops-standing-for-an-entity).
+- **Save private per-player state that follows the player.** The async nodes **Get My App State** and **Set My App State** (**Crowdy Players**) read and write one private piece of state for the signed-in player in your app, as base64 text. Only that player can read it, and the platform keeps it per account, not per avatar or per machine. **What you do:** nothing, unless you want settings that follow the player to any machine; pair them with **Serialize Struct to Avatar State** to store a struct. See [Save per-player settings](../services/player-names.md#save-per-player-settings).
 
 ## 2026-11-26 (SDK v2.28.2)
 

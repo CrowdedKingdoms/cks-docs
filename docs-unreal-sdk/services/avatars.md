@@ -47,6 +47,8 @@ Every write, `UpdateAvatar`, `UpdateAvatarState`, `UpdatePublicAvatarState`, `Up
 
 An avatar that has never saved state in this app is not an error. `GetAvatarAppState` and the **Get Avatar App State** node succeed with an empty `RawState` and that avatar's `AvatarId` and `AppId`; `GetAvatarAppStates` leaves the avatar out of its list; **Get Avatar App State As** succeeds with its state output set to the type's default. Only a refusal, a failed request or an answer that cannot be read reaches `On Error`, and **Get Avatar App State As** also fails when a saved state's size does not match the struct you connected. **Deserialize Avatar State to Struct** returns false in the same case. Either way the struct is left as it was. The state is stored by position with no field names, so a change to the struct that keeps its size (a field retyped to one of the same size, two fields swapped) still reads, with wrong values.
 
+This state belongs to one avatar. For a setting that belongs to the player and should be the same whichever avatar they pick, use **Get My App State** and **Set My App State** on [Player Names](./player-names.md#save-per-player-settings), which the platform keeps per account.
+
 :::warning[AppId always comes from project settings; there is no per-call override.]
 `GetAvatarAppState`, `GetAvatarAppStates`, and `UpdateAvatarAppState` resolve `AppId` from project settings, not a parameter. This subsystem cannot target a different app's slot.
 :::
