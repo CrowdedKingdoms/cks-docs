@@ -186,7 +186,7 @@ viewer function is ever detached.
   (`not_configured` before 2026-11-06; `grep -rn "Not yet in production" docs*`); remove it on
   every tier once Kids Web Services is live in production. Do not list the blocked countries or
   regions: point at `territoryPolicies` and the Player Terms (sections 1.7 and 1.8).
-- **The fleet session pages** (2026-11-26; Application API v2.89.1, realtime servers v0.50.0,
+- **The fleet session pages** (2026-11-26; Application API v2.89.1, realtime servers v0.50.1,
   ck-exec 0.25.0, `ckx-sdk` 0.15.0). `docs-management-api/fleet-sessions.md` is the guide; the
   bytes are in `docs-udp-api/wire-formats.md` ("Fleet sessions (messages 49 to 53)"), the hub
   side in `docs-exec/operations.md` ("Your organization's game servers"), and the band rule in

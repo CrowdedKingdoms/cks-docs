@@ -41,7 +41,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 ## 2026-11-26 (dev: fleet sessions, one realtime session for each of your game servers)
 
-Application API v2.89.1, realtime servers v0.50.0, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6). Not yet in
+Application API v2.89.1, realtime servers v0.50.1, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6). Not yet in
 production. The guide is [Run your own game servers with a fleet session](/management-api/fleet-sessions).
 
 - **An organization's own game server can hold one realtime session and carry its players on it.**
@@ -51,7 +51,16 @@ production. The guide is [Run your own game servers with a fleet session](/manag
   (`mintManagedPlayerToken`), and the platform applies each carried player's own permissions, blocks, age rules,
   speaker lists, send rate, and idle timeout.
 - **A player who moves between your servers needs no new sign-in.** The server they arrive on carries them, and the
-  server that carried them before is sent `FLEET_RELEASED`. No Application API call is made.
+  server that carried them before is sent `FLEET_RELEASED` and has its next send for the player refused. No
+  Application API call is made.
+- **Measured on our internal dev environment on November 26, 2026:** 100 fleet sessions carried 3,000 players for
+  30 minutes. The players made 140,656 crossings, about 75 a second. None was lost, no crossing called the
+  Application API, and a carry was answered in 35 ms at the median and in 50 ms at the 99th percentile.
+- **A session is told when it ends.** The realtime server sends `COMMAND_SESSION_RELEASED`, signed, with the reason.
+  A session also sends its capabilities every 15 seconds and treats 45 seconds without an acknowledgement
+  (`CONTROL_BOUND_ACK`) as its end. A refusal of a send reaches a session that advertised signed bundles inside its
+  signed bundle. See
+  [why a send is refused](/management-api/fleet-sessions#why-a-send-is-refused-and-what-your-server-does).
 - **Five messages and one capability bit:** `FLEET_CARRY` (49), `FLEET_RELEASE` (50), `FLEET_CARRY_RESULT` (51),
   `FLEET_RELEASED` (52), `FLEET_DELIVERY` (53), and `FLEET_OWN_STATE` (bit 3 of `CLIENT_CAPABILITIES`). A fleet
   session is sent shared state once, and communications inside `FLEET_DELIVERY` with the carried players who may

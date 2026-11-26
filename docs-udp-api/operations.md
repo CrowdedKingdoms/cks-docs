@@ -23,10 +23,10 @@ match the current wire enum; the `MAP_*` forms are legacy aliases.
 |------|------|----------------|
 | 5 | `INVALID_TOKEN` | Malformed token material, or not a valid app-scoped token |
 | 6 | `APP_NOT_FOUND` | Unknown app (formerly `MAP_NOT_FOUND`) |
-| 7 | `UNAUTHORIZED` | Permission denied: no active app access / tier permission, or no grid permission for the target chunk (see Permissions below). For a [fleet session](/replication-api/wire-formats#what-a-fleet-session-sends): a message that names a player the session does not carry |
+| 7 | `UNAUTHORIZED` | Permission denied: no active app access / tier permission, or no grid permission for the target chunk (see Permissions below). For a fleet session, see [below](#fleet-sessions) |
 | 13 | `GAME_TOKEN_WRONG_SIZE` | Malformed token material |
 | 15 | `INVALID_REQUEST` | Wire layout or field error |
-| 18 | `INVALID_APP_ID` | Not authorized for this app — unknown app **or the token is scoped to a different app** (app-scope mismatch) |
+| 18 | `INVALID_APP_ID` | Not authorized for this app: unknown app **or the token is scoped to a different app** (app-scope mismatch). For a fleet session: a heartbeat that names a chunk of an app the session is not in; it registers nothing |
 | 20 | `USER_NOT_AUTHENTICATED` | Session not ready (or not an app-scoped token) — `mintAppToken`, call `serverWithLeastClients`, wait ~1.5 s, retry |
 | 32 | `TOKEN_EXPIRED` | The app-scoped token passed its `expiresAt` — Buddy evicted the session. Mint a fresh token (`refreshAppToken` for the same app) and re-assign |
 | 33 | `APP_PAUSED` | The app is paused (its organization has no funds, reached a spend cap, or its subscription lapsed): nothing it sends replicates. Keep the session and tell the player; the server re-checks with backoff and serves it again once the app is active, without a reconnect (server v0.37.0) |
@@ -125,6 +125,33 @@ sequence number to echo, and no reason field; it is a one-shot directive.
 > Native (direct-UDP) clients should verify the HMAC and handle type `22`.
 > **[Browser clients](#browser-clients)** using the GraphQL UDP proxy are moved
 > automatically by the proxy (which verifies the HMAC) and never see this message.
+
+## Fleet sessions
+
+A [fleet session](/management-api/fleet-sessions) is one session on which an organization's
+game server carries many players (replication server v0.50.1+). The codes above reach it with
+these differences:
+
+- **Error frames can be verified.** To a fleet session that advertised `BUNDLE_SIGNED`, an
+  error frame arrives inside its signed bundle. To one that did not, it arrives alone and
+  unsigned, and is a hint.
+- **`UNAUTHORIZED` (7)** also answers a message that names a player the session does not
+  carry, or the player's previous `gameTokenId` after a carry with a refreshed token.
+  [Why a send is refused](/management-api/fleet-sessions#why-a-send-is-refused-and-what-your-server-does)
+  lists every cause and what to do for each.
+- **`TOKEN_EXPIRED` (32)** answers a message for a carried player whose token just expired.
+  `FLEET_RELEASED` with reason 2 follows. The session itself goes on.
+- **The session's own end** is `COMMAND_SESSION_RELEASED` (28, or 45 in its bound form), signed
+  and sent once: reason 0 when the session was closed, its org token revoked, or fleet sessions
+  switched off; 2 when the fleet token expired; 1, 3, and 4 for a stale session, load
+  shedding, and a move.
+- **Liveness.** Send `CLIENT_CAPABILITIES` every 15 seconds. A live session's is answered with
+  `CONTROL_BOUND_ACK` (46). Treat 45 seconds without one as the session being gone: call
+  `refreshFleetSession`, and on `NOT_FOUND` open a new session and carry the players again.
+  After every refresh, send `CLIENT_CAPABILITIES` at once.
+
+The bytes are in
+[Wire formats](/replication-api/wire-formats#fleet-sessions-messages-49-to-53).
 
 ## Browser clients
 

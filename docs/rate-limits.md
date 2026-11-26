@@ -76,7 +76,7 @@ rather than a request quota:
   your send rate before suspecting the network. The limit is spent only by messages
   that already passed session and HMAC checks; unauthenticated traffic cannot consume
   a real session's budget.
-- **Fleet sessions (replication server v0.50.0+).** A
+- **Fleet sessions (replication server v0.50.1+).** A
   [fleet session](/management-api/fleet-sessions) carries many players on one session, and
   **each carried player has that budget**: 500 messages a second with bursts up to 1,000, so
   one player's flood does not spend another's. The session itself may send **64 carries a
