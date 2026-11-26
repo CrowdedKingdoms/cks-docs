@@ -70,6 +70,21 @@ A custom event `OnChooseNamePressed` runs **Set Player Name**. **On Error** brea
 </TabItem>
 </Tabs>
 
+## Save per-player settings
+
+`UCrowdyPlayers` also keeps one private piece of state for the signed-in player in your app, for settings that should follow the player to any machine: a chosen microphone, a key binding, a tutorial step already seen. It is base64 text, so pair it with **Serialize Struct to Avatar State** and **Deserialize Avatar State to Struct** to store a struct, as [avatar state](./avatars.md#serializing-struct-state) does.
+
+| Blueprint node | C++ | What it does |
+|---|---|---|
+| **Get My App State** | `GetMyAppState(OnResult, OnError)` | Reads the state. **On Success** gives **State**, the base64 text, empty when none was saved. |
+| **Set My App State** | `SetMyAppState(State, OnDone, OnError)` | Replaces the state with the base64 text. An empty one clears it. |
+
+Both nodes are async: they continue on **On Success** or **On Error**, which carries **Error** and **Message**. Both need a signed-in player. In C++ they answer on `FOnPlayerAppStateRead` (the text), `FOnPlayerAppStateWritten` and `FOnPlayersError`.
+
+Only that player can read it. The platform keeps it per account, not per avatar and not per machine, so it is there on the next machine they sign in on. The client writes it, so it is for settings, never for anything a player must not be able to change: keep that in a [Server Object](/exec/intro).
+
+The state is one value for your whole app, so if more than one feature saves into it, read it, change only your part and write it back, and give each part a version so an older build keeps fields a newer one added.
+
 ## Gotchas
 
 - Names are not live: read again when you need a current one, for example when a player joins a team or a match.

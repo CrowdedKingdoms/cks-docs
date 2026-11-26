@@ -9,7 +9,7 @@ title: Changelog
 Notable, consumer-facing changes to the public Crowded Kingdoms APIs (Management API,
 Game API, Replication API) and SDKs. Newest first.
 
-The intent is that a breaking change ships with a deprecation window — the field keeps
+The intent is that a breaking change ships with a deprecation window: the field keeps
 working and is marked `@deprecated` in the schema (visible in the
 [reference](/management-api/reference/graphql-overview) and the downloadable SDL) until
 a stated removal date. **Four removals did not get one**, and each is called out in
@@ -85,6 +85,20 @@ production. The guide is [Run your own game servers with a fleet session](/manag
   The CrowdyJS session runs in Node only.
 - **What you do:** nothing, unless you run your own game servers. Then follow the guide, and build the hubs your
   servers call again with `ckx-sdk` 0.15.0.
+
+## 2026-11-26 (Unreal SDK v2.29.0: microphone choice, voice volume, private player state)
+
+Five additions; nothing breaks. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-26-sdk-v2290).
+
+- **Choose the microphone and turn every voice down.** **Get Voice Input Devices** and **Set Voice Input Device**
+  pick the microphone voice chat captures from; **Set Voice Playback Volume** scales every other player's voice.
+- **Know who is already there.** **Get Tracked Remote Entities** lists the remote entities the actor tracker holds.
+- **Know when a near tier actor stands for an entity.** **On Entity Binding Changed** on the near tier component,
+  and **On Near Tier Binding Changed** for every near tier actor in the world.
+- **Private per-player state.** The async nodes **Get My App State** and **Set My App State** keep one private
+  value per player in your app, readable only by that player.
+- **What you do:** nothing.
 
 ## 2026-11-26 (Unreal SDK v2.28.2: a class with a near tier shell promotes)
 
