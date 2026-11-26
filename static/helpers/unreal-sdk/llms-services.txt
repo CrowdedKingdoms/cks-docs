@@ -965,6 +965,21 @@ A custom event `OnChooseNamePressed` runs **Set Player Name**. **On Error** brea
 </TabItem>
 </Tabs>
 
+## Save per-player settings
+
+`UCrowdyPlayers` also keeps one private piece of state for the signed-in player in your app, for settings that should follow the player to any machine: a chosen microphone, a key binding, a tutorial step already seen. It is base64 text, so pair it with **Serialize Struct to Avatar State** and **Deserialize Avatar State to Struct** to store a struct, as [avatar state](./avatars.md#serializing-struct-state) does.
+
+| Blueprint node | C++ | What it does |
+|---|---|---|
+| **Get My App State** | `GetMyAppState(OnResult, OnError)` | Reads the state. **On Success** gives **State**, the base64 text, empty when none was saved. |
+| **Set My App State** | `SetMyAppState(State, OnDone, OnError)` | Replaces the state with the base64 text. An empty one clears it. |
+
+Both nodes are async: they continue on **On Success** or **On Error**, which carries **Error** and **Message**. Both need a signed-in player. In C++ they answer on `FOnPlayerAppStateRead` (the text), `FOnPlayerAppStateWritten` and `FOnPlayersError`.
+
+Only that player can read it. The platform keeps it per account, not per avatar and not per machine, so it is there on the next machine they sign in on. The client writes it, so it is for settings, never for anything a player must not be able to change: keep that in a [Server Object](/exec/intro).
+
+The state is one value for your whole app, so if more than one feature saves into it, read it, change only your part and write it back, and give each part a version so an older build keeps fields a newer one added.
+
 ## Gotchas
 
 - Names are not live: read again when you need a current one, for example when a player joins a team or a match.
@@ -1668,6 +1683,8 @@ Every write, `UpdateAvatar`, `UpdateAvatarState`, `UpdatePublicAvatarState`, `Up
 
 An avatar that has never saved state in this app is not an error. `GetAvatarAppState` and the **Get Avatar App State** node succeed with an empty `RawState` and that avatar's `AvatarId` and `AppId`; `GetAvatarAppStates` leaves the avatar out of its list; **Get Avatar App State As** succeeds with its state output set to the type's default. Only a refusal, a failed request or an answer that cannot be read reaches `On Error`, and **Get Avatar App State As** also fails when a saved state's size does not match the struct you connected. **Deserialize Avatar State to Struct** returns false in the same case. Either way the struct is left as it was. The state is stored by position with no field names, so a change to the struct that keeps its size (a field retyped to one of the same size, two fields swapped) still reads, with wrong values.
 
+This state belongs to one avatar. For a setting that belongs to the player and should be the same whichever avatar they pick, use **Get My App State** and **Set My App State** on [Player Names](./player-names.md#save-per-player-settings), which the platform keeps per account.
+
 :::warning[AppId always comes from project settings; there is no per-call override.]
 `GetAvatarAppState`, `GetAvatarAppStates`, and `UpdateAvatarAppState` resolve `AppId` from project settings, not a parameter. This subsystem cannot target a different app's slot.
 :::
@@ -1880,9 +1897,14 @@ Everything lives on the **Crowdy SDK Subsystem** (`UCrowdySDKSubsystem`, a Game 
 | **Is Voice Speaker Muted** | `IsVoiceSpeakerMuted(int64 UserId)` | Whether that player is muted. |
 | **Set Voice Speaker Volume** | `SetVoiceSpeakerVolume(int64 UserId, float Volume)` | How loud one player is: 0 to 4, 1 is as received. |
 | **Get Voice Speaker Volume** | `GetVoiceSpeakerVolume(int64 UserId)` | The volume set for that player. |
+| **Set Voice Playback Volume** | `SetVoicePlaybackVolume(float Volume)` | How loud every other player's voice plays, spatial and channel alike: 0 is silent, 1 is as received. See [Turn all voices down](#turn-all-voices-down). |
+| **Get Voice Playback Volume** | `GetVoicePlaybackVolume()` | The volume set, or 1 when none was set. |
 | **Get Voice Speaker User Id** | `GetVoiceSpeakerUserId(const FString& SpeakerUuid)` | The user id behind a **Speaker Uuid**, or 0 until it is known. |
 | **Set Voice Speakers** (Speaker Uuids) | `SetVoiceSpeakers(const TArray<FString>& SpeakerUuids)` | Has the server send you voice only from these players. See [Choose whose voice you receive](#choose-whose-voice-you-receive). |
 | **Hear All Voice Speakers** | `HearAllVoiceSpeakers()` | Goes back to receiving every player in range. |
+| **Get Voice Input Devices** | `GetVoiceInputDevices()` | The microphones this machine has now, as an array of **Crowdy Voice Input Device** (`FCrowdyVoiceInputDevice`). See [Choose the microphone](#choose-the-microphone). |
+| **Set Voice Input Device** (Device Id) | `SetVoiceInputDevice(const FString& DeviceId)` | Captures your voice from the microphone with that **Id**. Empty follows the OS default. |
+| **Get Voice Input Device** | `GetVoiceInputDevice()` | The **Id** you chose, or empty while following the OS default. |
 | **Get Voice Mic State** | `GetVoiceMicState()` | What your microphone is doing right now. |
 | **On Voice Mic State Changed** | `OnVoiceMicStateChanged` | Fires when that state changes. |
 | **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking to the players near them. Channel voice has its own, see [Talk to a channel](#talk-to-a-channel). |
@@ -2109,6 +2131,10 @@ Bind `OnVoiceSpeakerTalking`. In the handler, call `GetVoiceSpeakerUserId(Speake
 
 **Get Voice Speaker User Id** answers 0 until the user is known, usually a moment after they first speak, and 0 for a speaker not heard on this map in the last minute, so check for 0 before you use it. A lookup that finds no user is tried again every 10 seconds. A muted player's voice is not decoded and takes no speaker place. While anyone is muted, a new speaker is held silent for up to 1.5 seconds until their user is known, so a muted player is not heard for a moment after they sign in again. Muting is yours to offer; blocking, which the platform enforces, is stronger and is covered in [Player Safety](./player-safety.md#what-a-block-covers).
 
+## Turn all voices down
+
+**Set Voice Playback Volume** sets how loud every other player's voice plays, from 0 (silent) to 1 (as received), for example for a Voice Volume slider in a settings menu. It covers spatial and channel voice alike. It multiplies each speaker's own volume from **Set Voice Speaker Volume** and each channel's from **Set Voice Channel Volume**, so their levels relative to each other stay as they were. It applies at once, to voices already playing too, and it is kept across map changes. **Get Voice Playback Volume** reads it back, 1 until you set one. It does not change what your microphone sends.
+
 ## Choose whose voice you receive
 
 **Set Voice Speakers** tells the server whose spatial voice to send you: only the players whose actor ids are in **Speaker Uuids**, at most 32, and nobody when the list is empty. The server sends the others nothing, so they cost you no data, where a muted player's voice still arrives and is thrown away. **Hear All Voice Speakers** goes back to every player in range. A list of more than 32 ids, or with an id that is not 32 characters, returns false, logs a warning and changes nothing. The app can set a lower limit, `maxVoiceSpeakers` (see [game setup](/management-api/game-setup#c5-cap-the-speakers-each-player-receives)); the server refuses a longer list, and the node cannot know, so keep your lists within it. Calling it again with the same players, in any order, sends nothing, so a game can refresh its list every frame.
@@ -2129,6 +2155,22 @@ Which players to name is your game's choice: the **Speaker Uuid** values from **
 
 A map change closes and reopens the microphone, so you see **Off** then **Starting** again. That is expected. A microphone that opens but delivers no audio for about three seconds goes to **Error**, with a log warning that points at the OS microphone permission. The usual cause is a denied permission.
 
+## Choose the microphone
+
+By default voice chat captures from the OS default microphone. **Get Voice Input Devices** lists the microphones this machine has now, for a settings menu, as an array of **Crowdy Voice Input Device** (`FCrowdyVoiceInputDevice`). It asks the OS each time, so call it once when the menu opens and keep the array, rather than reading it per frame or in a binding:
+
+| Field | Means |
+|---|---|
+| **Id** (`Id`) | On Windows, the same for this microphone across sessions, so save it and pass it back later. On other platforms an **Id** can change when any audio device is added or removed. |
+| **Name** (`Name`) | The name the OS shows for it. |
+| **Is Default** (`bIsDefault`) | Whether it is the OS default microphone right now. |
+
+**Set Voice Input Device** takes an **Id** from that list. An empty one goes back to following the OS default. A microphone that is already open moves to the new device at once, and the choice is kept across map changes. **Get Voice Input Device** returns the **Id** you chose, empty while following the default. A game that saves the **Id** can pass it to **Set Voice Input Device** at startup, and the choice then holds across sessions.
+
+Voice chat never opens a different microphone in place of the one you chose. If it is unplugged, the state reads **No Device**, and it opens again once the microphone is plugged back in; choosing it again also retries it. A microphone you chose no longer follows a change of the OS default.
+
+The list is empty where the platform cannot capture audio.
+
 ## Confirming capture with owner echo
 
 Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, and speak. You should hear yourself, a little late: your voice goes to the server and comes back like any other player's. While echo is on, your own **Speaker Uuid** also shows up in **On Voice Speaker Talking**. The server sends your own webcam video back too, which the SDK discards.
@@ -2147,7 +2189,7 @@ Leaving it on means the player hears their own microphone continuously, not just
 
 - **Your pawn places your voice.** Each frame is addressed to the chunk your pawn stands in when it is sent, so voice follows the player as they move. Between pawns, during a respawn or as a map ends, it stays where the pawn last stood in that map. Before the map's first pawn, it is addressed to the chunk last given to **Set Player Current Chunk Coordinates** on the game session, which is the origin chunk unless your game sets it. Frames are dropped until the connection is up and your player has an id.
 - **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo and the timeout stay as you set them when the next map loads, and so does a distance you set with **Set Voice Chat Distance**. A distance you never set follows each map's **Voice Distance** instead. You do not call anything again after a map change.
-- **A missing microphone is not a failure.** The state reads **No Device**, and voice chat opens the microphone as soon as one is available. On Windows a newly connected microphone is noticed right away; elsewhere voice chat looks again every couple of seconds.
+- **A missing microphone is not a failure.** The state reads **No Device**, and voice chat opens the microphone as soon as one is available. If you chose one with **Set Voice Input Device**, it waits for that one and opens no other. On Windows a newly connected microphone is noticed right away; elsewhere voice chat looks again every couple of seconds.
 - **A changed default microphone restarts capture on Windows.** If the player unplugs a headset or picks another default device, voice chat reopens the microphone by itself.
 - **The nearest speakers are heard.** Up to **Max Speakers** (16 by default); a farther speaker is not played while every place is taken.
 - **Received voice plays 120 ms behind by default.** **Playout Delay** sets it. The delay absorbs uneven delivery, and it is on top of the network time.

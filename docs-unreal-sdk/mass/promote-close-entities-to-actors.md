@@ -184,6 +184,10 @@ When a row becomes a near tier actor, it appears already in the right pose: its 
 
 Promotion needs a class that declares a shell, a shell that loads as an actor and carries a Crowdy Mass Near Tier component, and a free place under **Max Near Tier Actors**. A class with a shell but no assigned **Near Tier Actor Class** is drawn as a row at every distance. For the ordered checklist and the log line each cause prints, see the section "A class never promotes" in [Fix a crowd that does not look right](./troubleshooting.md).
 
+## Know when an actor starts or stops standing for an entity
+
+**On Entity Binding Changed** (`OnEntityBindingChanged`, `FCrowdyMassNearTierBindingChanged`) is an event on the **Crowdy Mass Near Tier** component, category **Crowdy Mass|Near Tier**. It fires with **Entity UUID** (`FGuid`) and **Bound** (`bBound`): true after the near tier actor starts standing for that entity, false after it stops, with the id of the entity it stood for. A pooled actor handed straight to another entity reports the old one stopping first, then the new one starting. The event is delivered when the crowd's frame has finished, never inside its update, so by then the actor may stand for another entity: trust the id it passes, not **Get Entity UUID**. An entity with no id passes an invalid one, an actor destroyed before delivery reports nothing more, changes made while the game is paused arrive on the next tick, and nothing is delivered once the world is shutting down. To follow every near tier actor in the world at once, bind **On Near Tier Binding Changed** on the **Crowdy Mass Entity Subsystem** instead: it carries the **Actor** as well, in the same order, and still reports a destroyed actor's stop, with no **Actor**: drop a record you keep by entity when the actor you recorded for it is no longer valid. Bind it to show or hide something that belongs to the entity, such as a nametag, instead of polling **Is Bound to Entity**.
+
 ## Demotion and release
 
 When an entity moves out of the near band, a class whose configuration the SDK builds from the class releases its near tier actor back to the pool: the actor is hidden, unbound and has its collision off. If the entity comes back, it takes an actor from the pool again, so it may not be the same one. An authored configuration follows its own level settings.
@@ -198,6 +202,7 @@ Everything above is available from Blueprint. A C++ shell or game system can als
 |---|---|
 | `UCrowdyMassNearTierComponent::BindToEntity`, `UnbindFromEntity` | Join or leave an entity by hand, for an actor class of your own. Promotion calls them for you. |
 | `GetBoundEntity`, `GetResolvedAnimSet` | Read the bound entity and the anim set it renders through. |
+| `OnEntityBindingChanged` (`FCrowdyMassNearTierBindingChanged`) | Fires with the `FGuid` and a `bool` when the actor starts or stops standing for an entity; see [Know when an actor starts or stops standing for an entity](#know-when-an-actor-starts-or-stops-standing-for-an-entity). |
 | `ReadServerValueInto`, `OnServerValuesChanged` (`FCrowdyMassNearTierServerValuesChanged`) | Read a server value of the bound entity, and listen for changes. |
 | `ACrowdyMassNearTierActor::IsReadyForRepresentation` | Virtual. Answer true as soon as there is something to draw. |
 
