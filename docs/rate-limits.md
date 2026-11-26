@@ -43,6 +43,13 @@ answered `Unavailable` while other players still place. A text
 message closes the connection, because the protocol is binary. See
 [call limits](/exec/operations#call-limits).
 
+Your organization's own game server has limits of its own in place of a player's (ck-exec
+0.25.0): **2,000 calls a second** on one server connection, **32,000 a second** for all of an
+organization's server connections to one app through one host, and at most **256** such
+connections there. A call over either budget is refused with `Busy`, and its message starts
+`rate limited`. See
+[your organization's game servers](/exec/operations#a-server-connection-has-its-own-limits).
+
 ## Realtime (UDP) cost model
 
 The realtime path is **best-effort UDP** and is governed by a spatial fan-out model
@@ -69,6 +76,16 @@ rather than a request quota:
   your send rate before suspecting the network. The limit is spent only by messages
   that already passed session and HMAC checks; unauthenticated traffic cannot consume
   a real session's budget.
+- **Fleet sessions (replication server v0.50.0+).** A
+  [fleet session](/management-api/fleet-sessions) carries many players on one session, and
+  **each carried player has that budget**: 500 messages a second with bursts up to 1,000, so
+  one player's flood does not spend another's. The session itself may send **64 carries a
+  second**, with a burst of its `maxPlayers` + 32; a `FLEET_CARRY` past that is dropped
+  unanswered. One session carries at most **256 players** at once and an organization holds at
+  most **512 sessions** at once; Crowded Kingdoms can set either for an organization, up to
+  1,024 players and 65,536 sessions. An `openFleetSession` past the session limit answers
+  `FLEET_SESSION_LIMIT`, and a carry past the player limit answers status 4. A session lasts
+  24 hours from when it was opened or last refreshed.
 
 ## Quotas (a different concept)
 

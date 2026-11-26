@@ -78,6 +78,12 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   the [Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html)
   in Studio. Until then those calls answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`, which neither the
   player nor a retry can fix. See [Org-managed players](/management-api/org-managed-players).
+- **An organization's own game servers (fleet sessions):** a server that runs many players
+  opens one realtime session and one hub connection for itself with an org token (scope
+  `fleet:session`) and carries its players on them, so a player who moves between the
+  organization's servers needs no new sign-in. The org token and the session's fleet token
+  stay on the organization's servers. See
+  [Run your own game servers with a fleet session](/management-api/fleet-sessions).
 - **Who may play (Application API v2.60.0):** every sign-up, mint and refresh checks the player's
   country, then their age, then their documents: `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED`,
   `AGE_REQUIREMENT_NOT_MET`, and `LEGAL_ACCEPTANCE_REQUIRED` with `extensions.missingDocuments`;

@@ -216,7 +216,9 @@ Egress that is not delivered over a client connection, such as API responses,
 is charged at the first band's rate, and what an app uses of the free quota comes
 off its first band first. The month's total is still rounded up to the cent
 once. A minute recorded in parts, because the client reconnected or moved to
-another server during it, is banded part by part. An app's bands for the month
+another server during it, is banded part by part. A game server's
+[fleet session](#data-out-for-a-fleet-session) has one first band for each
+player it carries. An app's bands for the month
 are set at its first charge in that month, so a change to the rate card reaches
 an app from its next month: an app that sent egress in November 2026 before the
 switch keeps the previous volume bands (by the month's total) until December 1.
@@ -259,6 +261,26 @@ query {
   }
 }
 ```
+
+### Data out for a fleet session
+
+A [fleet session](/management-api/fleet-sessions) is one connection on which an
+organization's game server carries many players. A carried player is billed as
+a connected player, and nothing is added to the rate card.
+
+- **Data in (ingress)** is what the session sends.
+- **Data out (egress)** is what the session is sent. The rate bands above apply with one
+  first band for each carried player: for each fleet session and UTC minute, the
+  first 165,000 bytes for each carried player-minute are charged at the first
+  band's rate, and the rest at the second band's. A player carried for the whole
+  minute is one player-minute, and a player carried for 30 seconds of it is half
+  of one. A session that carries 40 players for a whole minute has 6,600,000
+  bytes in the first band (40 × 165,000).
+- **Allowances and spend caps** count bytes as before.
+
+A fleet session is sent a shared update once, however many of its players can
+see it, and it is not sent its own players' state unless it asks. Those bytes
+are not delivered, so they are not billed.
 
 ## Creating an app (shared by default)
 

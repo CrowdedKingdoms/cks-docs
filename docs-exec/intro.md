@@ -116,8 +116,11 @@ subscriptions. A spoke that sets a timer gets `timers are for hubs`. Its key is 
 `ctx.call` to it uses an empty key: the host picks the replica. Export it with
 `ckx_sdk::export_spoke!`.
 
-`call.caller` says who is calling: a player (`Caller::Player(user_id)`), another instance, or
-the platform. The platform sets it; a handler can trust it for authorization. A hub calls
+`call.caller` says who is calling: a player (`Caller::Player(user_id)`), another instance, the
+platform, a developer of the app, or your organization's own game server (`Caller::Org`, whose
+player is the server's word: see
+[your organization's game servers](operations#your-organizations-game-servers)). The platform
+sets it; a handler can trust it for authorization. A hub calls
 other instances with `ctx.call(type, key, method, bytes)` and publishes to its subscribers with
 `ctx.publish(topic, bytes)`. Payloads are bytes; `encode` and `decode` use MessagePack with
 named fields, which game clients decode into plain objects.
@@ -211,6 +214,7 @@ bytes, `str16` a two-byte length and UTF-8 bytes. Payloads are MessagePack.
 | subscribe | client → host | `0x02` rid `u32`, type `str8`, key `str16`, topic `str8` |
 | unsubscribe | client → host | `0x03` rid `u32`, type `str8`, key `str16`, topic `str8` |
 | ping | client → host | `0x04` nonce `u32` |
+| call-as | client → host | `0x05` rid `u32`, player `u64`, type `str8`, key `str16`, method `str8`, payload. Only on a [game server's connection](operations#your-organizations-game-servers) |
 | reply | host → client | `0x81` rid `u32`, status `u8`, payload |
 | push | host → client | `0x82` type `str8`, key `str16`, topic `str8`, payload |
 | pong | host → client | `0x84` nonce `u32` |
@@ -226,7 +230,7 @@ spoke's: the host picks a replica.
 | `Moved` | 3 | The instance moved. Retry; a fresh `execConnect` may pick a closer host. |
 | `NotFound` | 4 | No such type in the app's active version. |
 | `DeadlineExceeded` | 5 | No reply in time. If the handler passed the type's `deadline_ms`, the instance restarts from its last snapshot and unsaved changes are lost. If the caller's own wait expired while the call was still queued or the instance was still being placed, the instance keeps running. |
-| `Denied` | 6 | Players may not call that type, the method or topic is reserved, or (from a host before the pause and switch statuses) the app or type is switched off or paused. The message says which. |
+| `Denied` | 6 | Players may not call that type, the method or topic is reserved, the module was built before its SDK knew the caller (a developer, or an organization's game server), or (from a host before the pause and switch statuses) the app or type is switched off or paused. The message says which. |
 | `RateLimited` | 7 | The root hub's rate limit. |
 | `Unavailable` | 8 | The platform could not place or reach the instance, for example the app is at its instance or memory limit, or a new version is not ready on that host yet (the message says why). See below for when it is safe to retry. |
 | `Internal` | 9 | A platform fault. |
