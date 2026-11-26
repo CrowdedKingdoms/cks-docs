@@ -41,7 +41,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 ## 2026-11-26 (dev: fleet sessions, one realtime session for each of your game servers)
 
-Application API v2.89.0, realtime servers v0.50.0, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6). Not yet in
+Application API v2.89.1, realtime servers v0.50.0, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6). Not yet in
 production. The guide is [Run your own game servers with a fleet session](/management-api/fleet-sessions).
 
 - **An organization's own game server can hold one realtime session and carry its players on it.**
@@ -72,8 +72,8 @@ production. The guide is [Run your own game servers with a fleet session](/manag
   game-server fields too. See [Error codes](/overview/error-codes).
 - **Off until switched on.** Crowded Kingdoms switches fleet sessions on for one organization at a time; ask at
   hello@crowdedkingdoms.com.
-- **SDKs.** CrowdyCPP is the first to carry fleet sessions, in a release that is still to come. CrowdyJS and
-  CrowdyPy follow.
+- **SDKs.** CrowdyCPP and CrowdyJS carry fleet sessions in releases that are still to come, and CrowdyPy follows.
+  The CrowdyJS session runs in Node only.
 - **What you do:** nothing, unless you run your own game servers. Then follow the guide, and build the hubs your
   servers call again with `ckx-sdk` 0.15.0.
 

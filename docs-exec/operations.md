@@ -319,7 +319,8 @@ mutation {
 ```
 
 Open one WebSocket for each game server, as a player's game does after `execConnect`. The
-token lasts 60 seconds and opens one socket, so ask again to connect again. The connection may
+token lasts 60 seconds and opens one socket, so ask again at each reconnect. It travels in the
+WebSocket URL's query string, as a player's does: do not log the answer or that URL. The connection may
 call and subscribe to any node type of the app, as a developer connection may. It can never
 reach the platform's `$` methods, and subscribing doesn't count as a player session. A hub that
 a server's call places counts toward no player's 64 instances. The host closes the connection

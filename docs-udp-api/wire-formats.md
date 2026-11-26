@@ -352,7 +352,8 @@ The session's token is the **fleet token** that `openFleetSession` answers: 64 o
 `gameTokenId` of its own. The Application API authorizes it on the realtime server the answer
 names when the session is opened and again at each refresh. The session's first signed
 datagram, its `CLIENT_CAPABILITIES` (29) under its own `gameTokenId`, binds the session to its
-address, as a player's session is bound.
+address, as a player's session is bound. Connect the UDP socket to that server's address, so
+the operating system drops datagrams from anywhere else.
 
 ### What a fleet session sends
 
@@ -373,6 +374,12 @@ address, as a player's session is bound.
   `UNAUTHORIZED` (`[3][seq][7]`). `CLIENT_CAPABILITIES` under a player's `gameTokenId` is
   answered `INVALID_REQUEST`. The sequence number is one byte for the whole session, so it does
   not say which player a refusal was for.
+- An error frame outside a `MESSAGE_BUNDLE_SIGNED` carries no HMAC. Treat it as a hint: stop
+  sending for the player whose send it matches, then carry the player again or check the
+  player's access through the Application API.
+- A player whose access is suspended or ended is delivered nothing, and sends for that player
+  are answered `UNAUTHORIZED`. State for the session's other players still arrives plain and
+  does not say which player it is not for.
 
 ### `FLEET_CARRY` (49) and `FLEET_RELEASE` (50) (client → server)
 
@@ -416,7 +423,7 @@ proof = HMAC-SHA256(key     = the player's 64-octet token,
   player, it is a replay and is answered status 3.
 - **Rate.** A session may send 64 carries a second, with a burst of its `maxPlayers` + 32. A 49
   past that is dropped unanswered. A 49 can go unanswered for other reasons too: send it again
-  with a new `epochMillis` and proof.
+  with a new `epochMillis` and proof, as the SDKs do.
 - **`FLEET_RELEASE` has no answer** and may be sent twice. After it, the player's actors leave
   as a session's do: `ACTOR_LEFT_NOTIFICATION_2` five seconds after their last message, unless
   they continue elsewhere. A lost 50 leaves the carry in place until the player is carried
@@ -512,6 +519,11 @@ To a session that advertised `BUNDLE_SIGNED`, the frame is a member of a
 `MESSAGE_BUNDLE_SIGNED` (30) with no HMAC of its own. A `FLEET_DELIVERY` above 1,197 bytes
 cannot be a member, so it is sent in the first form, alone. A session that advertised
 `BUNDLE_SIGNED` therefore reads both forms.
+
+**Replays.** In either form a 51, 52, or 53 is signed with the fleet token and carries nothing
+that marks it as new, so a captured one that is sent again verifies again. Answer a
+`FLEET_RELEASED` for a player who is still on the server by carrying the player again: the
+server answers that carry.
 
 **The notification inside a 53.** It is what a player's own session would have been sent,
 without an HMAC:
