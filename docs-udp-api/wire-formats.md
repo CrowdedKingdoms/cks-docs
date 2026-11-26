@@ -492,8 +492,8 @@ its carries end and no `FLEET_RELEASED` is sent.
 | playerGameTokenIds | X    | 8 × count | int64 | The carried players who may receive the notification.                        |
 | notification       | X    | X     | bytes | One notification, as a player's own session would be sent it, unsigned (below).  |
 
-**Each of the three arrives in one of two forms**, and which one depends on whether the session
-advertised `BUNDLE_SIGNED` in its capabilities.
+**Two forms.** Each of the three arrives in one of two forms, and which one depends on whether
+the session advertised `BUNDLE_SIGNED` in its capabilities.
 
 To a session that did not advertise `BUNDLE_SIGNED`, each frame is followed by its own HMAC, the
 last 32 bytes (in a 53, after the wrapped notification):
@@ -510,11 +510,11 @@ prefix counts the frame and its HMAC.
 
 To a session that advertised `BUNDLE_SIGNED`, the frame is a member of a
 `MESSAGE_BUNDLE_SIGNED` (30) with no HMAC of its own. A `FLEET_DELIVERY` above 1,197 bytes
-cannot be a member, so it is sent in the first form, alone. **A session that advertised
-`BUNDLE_SIGNED` must read both forms.**
+cannot be a member, so it is sent in the first form, alone. A session that advertised
+`BUNDLE_SIGNED` therefore reads both forms.
 
-**The notification inside a 53** is what a player's own session would have been sent, without
-an HMAC:
+**The notification inside a 53.** It is what a player's own session would have been sent,
+without an HMAC:
 
 ```
 long-spatial:  [1B notification type][8B appId][8B chunkX][8B chunkY][8B chunkZ][1B distance]
@@ -527,8 +527,8 @@ A long-spatial notification keeps its 9-byte tail and has `containsAuth` 0. A ch
 notification is byte for byte what any session receives. The notification's length is the
 frame's length (without the frame's own HMAC in the first form) minus `2 + 8 × count`.
 
-**The largest datagram a fleet session is sent is 1,242 bytes:** a 53 with one player, alone,
-with its own HMAC. Nothing else the server sends a client is above 1232. Size receive buffers
+**The largest datagram.** A fleet session is sent datagrams of up to 1,242 bytes: a 53 with
+one player, alone, with its own HMAC. Nothing else the server sends a client is above 1232. Size receive buffers
 for 1,242.
 
 ### What arrives plain and what arrives inside `FLEET_DELIVERY`
