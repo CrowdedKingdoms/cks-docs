@@ -1,0 +1,48 @@
+---
+id: refresh-fleet-session-input
+title: RefreshFleetSessionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The fleet session to keep, and where it is connected.
+
+
+```graphql
+input RefreshFleetSessionInput {
+  appId: BigInt!
+  gameTokenId: BigInt!
+  currentServer: CurrentServerInput
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RefreshFleetSessionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app the session is in (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RefreshFleetSessionInput.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #game-token-id */} 
+The session's gameTokenId, from openFleetSession.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RefreshFleetSessionInput.<b>currentServer</b></code>](#current-server)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CurrentServerInput</b></code>](/reference/graphql/types/inputs/current-server-input.mdx) <Badge class="badge badge--secondary " text="input"/> {/* #current-server */} 
+The realtime server the session is connected to (the ip4 and clientPort it was given). When that server still serves the app the session stays on it. Leave it out, or name one that no longer serves, and the answer names a new server to connect to: use that after a realtime server told the session to move.
+
+
+
+
+### Member Of
+
+[`refreshFleetSession`](/reference/graphql/operations/mutations/refresh-fleet-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

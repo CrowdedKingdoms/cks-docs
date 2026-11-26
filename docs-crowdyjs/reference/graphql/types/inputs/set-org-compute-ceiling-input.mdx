@@ -1,0 +1,58 @@
+---
+id: set-org-compute-ceiling-input
+title: SetOrgComputeCeilingInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An organization's own compute ceiling, or its return to the platform's default.
+
+
+```graphql
+input SetOrgComputeCeilingInput {
+  orgId: BigInt!
+  maxInstances: Int
+  maxReservedMb: Int
+  clear: Boolean
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgComputeCeilingInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+The organization (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgComputeCeilingInput.<b>maxInstances</b></code>](#max-instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-instances */} 
+Instances one of its apps may have placed at once in one datacenter, 1 to 1,048,576. Required unless clear is true.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgComputeCeilingInput.<b>maxReservedMb</b></code>](#max-reserved-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #max-reserved-mb */} 
+Memory, in MB, one of its apps' instances may reserve at once in one datacenter, 1 to 4,194,304. Required unless clear is true.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgComputeCeilingInput.<b>clear</b></code>](#clear)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #clear */} 
+True to remove the organization's own ceiling, so its apps go back to the platform's default.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetOrgComputeCeilingInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why, kept with the ceiling.
+
+
+
+
+### Member Of
+
+[`setOrgComputeCeiling`](/reference/graphql/operations/mutations/set-org-compute-ceiling.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

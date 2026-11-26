@@ -27,6 +27,9 @@ type OrgManagedPlayerSettings {
   mintsPerMinute: Int!
   defaultSessionTtlSeconds: Int!
   maxSessionTtlSeconds: Int!
+  fleetSessionsEnabled: Boolean!
+  maxFleetSessions: Int!
+  maxFleetPlayers: Int!
   termsVersion: String!
   termsUrl: String!
   termsAccepted: Boolean!
@@ -66,6 +69,18 @@ How long one sign-in lasts (seconds) when the org does not ask for less: app tok
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>maxSessionTtlSeconds</b></code>](#max-session-ttl-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-session-ttl-seconds */} 
 The longest sign-in the org may ask for (seconds).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>fleetSessionsEnabled</b></code>](#fleet-sessions-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #fleet-sessions-enabled */} 
+Whether the organization's game servers may open fleet sessions (openFleetSession): one realtime session a server, carrying the server's players. An operator switches it on; it needs org-managed players enabled too.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>maxFleetSessions</b></code>](#max-fleet-sessions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-fleet-sessions */} 
+Fleet sessions the organization may hold at once, over all its apps (512 unless an operator set another, 1 to 65,536). An organization grows by adding game servers, so an operator raises this when it needs more.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>maxFleetPlayers</b></code>](#max-fleet-players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-fleet-players */} 
+Players one fleet session may carry at once (256 unless an operator set another, 1 to 1,024). A session that is already open takes the new number at its next refresh; the maxPlayers of an open or refresh answer is the one that applies.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsVersion</b></code>](#terms-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-version */} 
