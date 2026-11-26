@@ -266,7 +266,9 @@ query {
 
 A [fleet session](/management-api/fleet-sessions) is one connection on which an
 organization's game server carries many players. A carried player is billed as
-a connected player, and nothing is added to the rate card.
+a connected player, and nothing is added to the rate card. The charge is still
+for bytes: the number of players a session carries only sets how many of its
+bytes fall in the first band.
 
 - **Data in (ingress)** is what the session sends.
 - **Data out (egress)** is what the session is sent. The rate bands above apply with one

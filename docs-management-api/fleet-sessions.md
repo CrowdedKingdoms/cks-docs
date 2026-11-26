@@ -7,9 +7,9 @@ title: Game servers and fleet sessions
 
 A fleet session is one realtime session that your game server holds for itself. The server
 *carries* the players who are on it: it sends and receives for each of them on that one
-session. One hub connection does the same for your app's hubs. When a player moves to another
-of your servers, that server starts to carry the player with one small message, and no
-Application API call is made.
+session. One hub connection does the same for your app's [hubs](/exec/intro). When a player
+moves to another of your servers, that server starts to carry the player with one small
+message and makes no Application API call.
 
 This guide is for an organization that runs its own game servers and signs its players in as
 [org-managed players](/management-api/org-managed-players). A game that runs on a player's
@@ -33,10 +33,12 @@ servers about every 40 seconds, that is 75 sign-ins a second for as long as anyo
 
 With a fleet session:
 
-- **A player signs in once**, when they join the game (`mintManagedPlayerToken`, as today).
+- **A player signs in once**, when they join the game (`mintManagedPlayerToken`, as for any
+  managed player).
 - **Each game server opens one session** when it starts, and carries the players on it.
-- **A crossing is one message to the realtime servers.** The server the player arrives on
-  carries them, and the server they left is told.
+- **A crossing is one message to the realtime servers.** A crossing is a player moving from
+  one of your servers to another: the server the player arrives on carries them, and the
+  server they left is told.
 
 The platform still decides everything by the player a message names. A carried player keeps
 what a player with their own session has:
@@ -80,6 +82,10 @@ what a player with their own session has:
 
 ## Keep both tokens on your servers
 
+Your server holds two secrets: the org token you created above, and the *fleet token* that
+`openFleetSession` answers for each session. The fleet token is the key your server signs that
+session's messages with.
+
 :::warning[An org token and a fleet token never leave servers you run]
 Put neither in a game client, a web page, or anything a player can download. A fleet token
 signs for every player its session carries, and an org token signs your players in.
@@ -88,11 +94,11 @@ signs for every player its session carries, and an org token signs your players 
 - **The org token** opens, refreshes, and closes fleet sessions and connects your server to
   your app's hubs. The Application API refuses an org token sent with an `Origin` header
   (`ORG_TOKEN_NOT_ALLOWED`), so a browser cannot use one.
-- **The fleet token** is the session's signing key. The Application API does not accept it as a
+- **The fleet token** signs one session's messages. The Application API does not accept it as a
   bearer, so it signs nobody in and cannot renew itself.
 - **A player's app token** comes from that player's sign-in: your server calls
-  `mintManagedPlayerToken` after your own sign-in succeeds, as it does for managed players
-  today. The game server that carries the player holds the token. At a crossing, send it to the
+  `mintManagedPlayerToken` after your own sign-in succeeds, as it does for any managed player.
+  The game server that carries the player holds the token. At a crossing, send it to the
   next server over a link between your own servers that you authenticate and encrypt.
 - **Refresh and close work only with the org token that opened the session.** Another org token
   of the same organization gets `NOT_FOUND` from `refreshFleetSession` and `false` from
@@ -189,7 +195,7 @@ is sent `FLEET_RELEASED` (52) with reason 1. The newest carry wins, so the playe
 carried by two sessions.
 
 The server that holds a player's app token refreshes it before its `expiresAt`
-(`refreshAppToken`, as today) and then carries the player again with the new token and its
+(`refreshAppToken`) and then carries the player again with the new token and its
 `gameTokenId`. The new carry replaces the old one without a gap.
 
 ### Refresh before the session expires
@@ -219,8 +225,8 @@ Call `closeFleetSession(input: { appId, gameTokenId })` with the org token that 
 session. The players it carried are released, their actors leave as they do when a player's
 own session ends, and the session stops counting toward your organization's limit. When one
 player leaves the game while the server keeps running, send `FLEET_RELEASE` (50) for that
-player. It has no answer, so a lost one leaves the carry in place until the player is carried
-elsewhere or goes idle.
+player. `FLEET_RELEASE` has no answer, so a lost one leaves the carry in place until the player
+is carried elsewhere or goes idle.
 
 ## An SDK does the same steps for you
 
@@ -361,19 +367,20 @@ frame, the caller, and the limits.
 
 ## A carried player is billed as a connected player
 
-Nothing new is on the rate card.
+Nothing new is on the rate card, and you still pay for bytes. There is no charge for a
+player or for a carry: the number of players a session carries only sets how many of its bytes
+fall in the first [rate band](/management-api/shared-environment#data-out-for-a-fleet-session).
 
 - **Data in** is what the session sends.
 - **Data out** is what the session is sent. For each fleet session and minute, the first
-  165,000 bytes for each carried player-minute are charged at the first band's rate and the
-  rest at the second band's. A session that carries 40 players for a whole minute has
-  6,600,000 bytes in the first band (40 × 165,000).
+  165,000 bytes for each carried player-minute (one player carried for one minute) are charged
+  at the first band's rate and the rest at the second band's. A session that carries 40
+  players for a whole minute has 6,600,000 bytes in the first band (40 × 165,000).
 - **Allowances and spend caps** count bytes as before.
 
 A fleet session is sent a shared update once where 40 sessions were each sent a copy, and it
-is not sent its own players' state, so it is billed for fewer bytes. The band rule is in
-[data out for a fleet session](/management-api/shared-environment#data-out-for-a-fleet-session),
-and the rates are on the [pricing page](https://crowdedkingdoms.com/pricing.html).
+is not sent its own players' state, so it is billed for fewer bytes. The rates are on the
+[pricing page](https://crowdedkingdoms.com/pricing.html).
 
 ## Four Application API calls take the org token
 
