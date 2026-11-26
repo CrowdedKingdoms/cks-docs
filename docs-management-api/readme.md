@@ -23,7 +23,7 @@ Runtime game data (chunks, voxels, actors, grids, grid permissions, UDP) lives i
 
 - **Sign-in**: a user signs in with **email + password**, a **magic link**, or a **social/OIDC** provider, and receives a bearer **identity session token** (64-character hex). Send `Authorization: Bearer <token>` on Management API GraphQL requests. Full flow — `register`/`login`, `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, and federated identities — is in **[Sign in](/management-api/authentication)**.
 - **Identity session token is management-plane only**: it is **not** valid for the Application API / realtime / UDP. To play, mint a short-lived **app-scoped token** from it (`mintAppToken`, or the browser portal flow); see **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**.
-- **Org tokens**: a server credential for your organization's own backend, created in the Management UI (or via GraphQL). What a token may call is its scopes; today the only scopes sign in and manage your [org-managed players](/management-api/org-managed-players).
+- **Org tokens**: a server credential for your organization's own backend, created in the Management UI (or via GraphQL). What a token may call is its scopes: `players:mint` and `players:manage` sign in and manage your [org-managed players](/management-api/org-managed-players), and `fleet:session` opens [fleet sessions](/management-api/fleet-sessions) for your own game servers.
 
 ## GraphQL endpoint
 

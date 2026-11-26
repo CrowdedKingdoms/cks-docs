@@ -46,6 +46,11 @@ COMMAND_RECONNECT_BOUND = 44;      // server -> client: COMMAND_RECONNECT bound 
 COMMAND_SESSION_RELEASED_BOUND = 45; // server -> client: COMMAND_SESSION_RELEASED bound to the nonce; server v0.45.0+
 CONTROL_BOUND_ACK = 46;            // server -> client: this assignment's control frames come only in the bound forms; server v0.46.0+
 CLIENT_MEDIA_SPEAKERS = 47;        // client -> server: the speakers whose spatial voice and video this client receives (see "Speaker lists"); server v0.49.0+
+FLEET_CARRY = 49;                  // client -> server: a fleet session starts to carry a player (see "Fleet sessions"); server v0.50.3+
+FLEET_RELEASE = 50;                // client -> server: a fleet session stops carrying a player; server v0.50.3+
+FLEET_CARRY_RESULT = 51;           // server -> client: the answer to FLEET_CARRY; server v0.50.3+
+FLEET_RELEASED = 52;               // server -> client: the server ended a carry; server v0.50.3+
+FLEET_DELIVERY = 53;               // server -> client: one notification and the carried players who may receive it; server v0.50.3+
 // other values in 19–127 are unused / reserved or internal server-to-server
 ```
 
@@ -336,6 +341,295 @@ chunk `(0,0,0)`, distance 0 and no actor UUID, like `CLIENT_CAPABILITIES`. The a
   unchanged; a speaker's own copy stays governed by `OWN_MEDIA_ECHO`; blocks and communication
   scopes still apply first.
 
+## Fleet sessions (messages 49 to 53)
+
+From replication server v0.50.3 an organization's own game server can hold one session and
+*carry* its players on it: it sends and receives for each of them on that session.
+[Run your own game servers with a fleet session](/management-api/fleet-sessions) explains the
+lifecycle, the limits, and where each token lives. This section is the bytes.
+
+The session's token is the **fleet token** that `openFleetSession` answers: 64 octets, with a
+`gameTokenId` of its own. The Application API authorizes it on the realtime server the answer
+names when the session is opened and again at each refresh. The session's first signed
+datagram, its `CLIENT_CAPABILITIES` (29) under its own `gameTokenId`, binds the session to its
+address, as a player's session is bound. Connect the UDP socket to that server's address, so
+the operating system drops datagrams from anywhere else.
+
+### What a fleet session sends
+
+| Message | Game token ID in the tail | HMAC key |
+| --- | --- | --- |
+| For a carried player: any message that player's own session would send | The carried player's `gameTokenId` | The fleet token |
+| The session's own: `CLIENT_CAPABILITIES` (29), `FLEET_CARRY` (49), `FLEET_RELEASE` (50), and `CLIENT_ACTOR_HEARTBEAT` (26) as a keep-alive that registers no actor | The fleet session's `gameTokenId` | The fleet token |
+
+- A message for a carried player has the layout and the length it has on that player's own
+  session. Only the key of the HMAC differs.
+- The server applies the carried player's own permissions, blocks, age rules, speaker lists
+  (`CLIENT_MEDIA_SPEAKERS`, 47, under the player's `gameTokenId`), send-rate budget (500
+  messages a second with bursts to 1,000, for each carried player), idle timeout, and input log.
+- A heartbeat for a carried player's actor carries that player's `gameTokenId`, like any other
+  message for the player.
+- A message that names a player the session does not carry, and any message other than those
+  four under the session's own `gameTokenId`, is answered `GENERIC_ERROR_MESSAGE` with
+  `UNAUTHORIZED` (`[3][seq][7]`). `CLIENT_CAPABILITIES` under a player's `gameTokenId` is
+  answered `INVALID_REQUEST`. A heartbeat (26) that names a chunk of an app the session is not
+  in is answered `INVALID_APP_ID` (18) and registers nothing.
+- The sequence number is one byte for the whole session, so an error frame does not say which
+  player a refusal was for.
+- **How an error frame arrives.** To a fleet session that advertised `BUNDLE_SIGNED`, an error
+  frame is a member of the session's `MESSAGE_BUNDLE_SIGNED`, so it is verified like every
+  other member. To a fleet session that did not, it arrives alone and unsigned: treat it as a
+  hint, stop sending for the player whose send it matches, then carry the player again or
+  check the player's access through the Application API. A player's own session is unchanged.
+- A player whose access is suspended or ended is delivered nothing, and sends for that player
+  are answered `UNAUTHORIZED`. State for the session's other players still arrives plain and
+  does not say which player it is not for.
+  [Why a send is refused](/management-api/fleet-sessions#why-a-send-is-refused-and-what-your-server-does)
+  lists every cause of `UNAUTHORIZED` and what a game server does for each.
+
+### `FLEET_CARRY` (49) and `FLEET_RELEASE` (50) (client → server)
+
+Both use the long-form spatial layout exactly as `CLIENT_CAPABILITIES` does: chunk `(0,0,0)`,
+distance 0, no actor UUID, the fleet session's own `gameTokenId` in the tail, and the HMAC keyed
+with the fleet token. The app payload starts at offset 68.
+
+`FLEET_CARRY` payload (48 bytes; the datagram is 157 bytes):
+
+| Identifier        | Bits | Bytes | Type  | Description                                                              |
+| ----------------- | ---- | ----- | ----- | ------------------------------------------------------------------------ |
+| playerGameTokenId | 64   | 8     | int64 | The `gameTokenId` of the player's app token.                             |
+| epochMillis       | 64   | 8     | int64 | The sender's clock, in epoch milliseconds.                               |
+| proof             | 256  | 32    | bytes | Proof that the sender holds the player's token (below).                  |
+
+```
+proof = HMAC-SHA256(key     = the player's 64-octet token,
+                    message = "ck-fleet-carry" (14 ASCII bytes)
+                              || 8B fleet gameTokenId
+                              || 8B player gameTokenId
+                              || 8B epoch millis)          integers little-endian
+```
+
+`FLEET_RELEASE` payload (8 bytes; the datagram is 117 bytes):
+
+| Identifier        | Bits | Bytes | Type  | Description                                           |
+| ----------------- | ---- | ----- | ----- | ----------------------------------------------------- |
+| playerGameTokenId | 64   | 8     | int64 | The `gameTokenId` of the player to stop carrying.     |
+
+- **When a carry is accepted.** The player's token is live in the session's app, it belongs to a
+  player of the fleet token's organization, the proof holds, and `epochMillis` is within 30
+  seconds of the server's clock.
+- **A carry belongs to the player.** A carry of a user who is already carried, by the same
+  session or another one, on any server, replaces the carry that stood. The session that
+  carried the player before is sent `FLEET_RELEASED` with reason 1. When it is the same session
+  (a carry with the player's refreshed token), nothing is sent and the player continues under
+  the new `gameTokenId`. A player's own session under a `gameTokenId` ends when that
+  `gameTokenId` is carried.
+- **A carry with a refreshed token.** After `refreshAppToken`, send a 49 with the new token,
+  and name the new `gameTokenId` on every message for the player from that moment. A message
+  that names the new `gameTokenId` and arrives before the carry takes effect waits for it. The
+  carry made with the old token stands until the new one takes effect, so there is no gap, and
+  the player keeps their actors and their idle clock. After that, a message that still names
+  the old `gameTokenId` is answered `UNAUTHORIZED`.
+- **Status 1.** Send the carry once more about 250 ms later, with a new `epochMillis` and
+  proof, before you take the token as gone.
+- **Sending the same carry again.** While its carry stands, the same 49 is answered as it was.
+  After that carry ended, or when it is older than the session's last accepted carry of that
+  player, it is a replay and is answered status 3.
+- **Rate.** A session may send 64 carries a second, with a burst of its `maxPlayers` + 32. A 49
+  past that is dropped unanswered. A 49 can go unanswered for other reasons too: send it again
+  with a new `epochMillis` and proof, as the SDKs do.
+- **`FLEET_RELEASE` has no answer** and may be sent twice. After it, the player's actors leave
+  as a session's do: `ACTOR_LEFT_NOTIFICATION_2` five seconds after their last message, unless
+  they continue elsewhere. A lost 50 leaves the carry in place until the player is carried
+  elsewhere or goes idle.
+
+Test vectors: fleet token `fleet-token-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP`
+with `gameTokenId` 9001, player token
+`player-token-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNO` with `gameTokenId` 4242,
+`appId` 7, and `epochMillis` 1795000000000.
+
+```
+proof:
+5602abb9300581f6a20e247ea0b406f690646a3d27f9427e95c5f6363115b35a
+
+FLEET_CARRY, sequenceNumber 0 (157 bytes):
+3107000000000000000000000000000000000000000000000000000000000000000000010000000000000000
+0000000000000000000000000000000000000000000000009210000000000000005e56eea10100005602abb9
+300581f6a20e247ea0b406f690646a3d27f9427e95c5f6363115b35a9d69b5b07c19a2450e61725d9995c19c
+940e41fa602fcce2535e780e5d2d81e3292300000000000000
+
+ACTOR_UPDATE_REQUEST for the carried player, sequenceNumber 1, chunk (1,-2,3), distance 8,
+uuid "0123456789abcdef0123456789abcdef", payload de ad be ef (113 bytes):
+8007000000000000000100000000000000feffffffffffffff03000000000000000800013031323334353637
+383961626364656630313233343536373839616263646566deadbeefafca3c1e53f866c6384fb186e2396664
+b62d7acd0fee6d9445b96e283d1c09f4921000000000000001
+```
+
+The actor update's tail carries the player's `gameTokenId` (4242), and its HMAC verifies with
+the fleet token and fails with the player's.
+
+### `FLEET_CARRY_RESULT` (51), `FLEET_RELEASED` (52), and `FLEET_DELIVERY` (53) (server → client)
+
+`FLEET_CARRY_RESULT` (18 bytes):
+
+| Identifier        | Bits | Bytes | Type  | Description                                                    |
+| ----------------- | ---- | ----- | ----- | -------------------------------------------------------------- |
+| messageType       | 8    | 1     | enum  | `FLEET_CARRY_RESULT` (51).                                     |
+| playerGameTokenId | 64   | 8     | int64 | The `gameTokenId` the carry named.                             |
+| userId            | 64   | 8     | int64 | The player's user id when `status` is 0; otherwise 0.          |
+| status            | 8    | 1     | uint8 | The result (below).                                            |
+
+| status | Meaning |
+| ------ | ------- |
+| 0      | Carried. |
+| 1      | No live token has that `gameTokenId`, or the token is for another app. |
+| 2      | The token belongs to another organization's player. |
+| 3      | The proof or its time failed, or the carry was a replay. |
+| 4      | The session carries as many players as it may, or the server has no room for the carry. |
+
+`FLEET_RELEASED` (10 bytes):
+
+| Identifier        | Bits | Bytes | Type  | Description                                   |
+| ----------------- | ---- | ----- | ----- | --------------------------------------------- |
+| messageType       | 8    | 1     | enum  | `FLEET_RELEASED` (52).                        |
+| playerGameTokenId | 64   | 8     | int64 | The `gameTokenId` the session carried.        |
+| reason            | 8    | 1     | uint8 | Why the carry ended (below).                  |
+
+| reason | Meaning |
+| ------ | ------- |
+| 1      | Another session carries the player. |
+| 2      | The player's sign-in ended: it was revoked, or it expired and the player was not carried again with a live token. |
+| 5      | The player sent no gameplay input for the app's idle timeout. |
+
+Treat a reason you do not know as the carry having ended. When the fleet session itself ends,
+its carries end and no `FLEET_RELEASED` is sent.
+
+- **A 52 is sent once.** It can be lost, and it can arrive up to about 6 seconds after the
+  carry ended. The sign to rely on is `UNAUTHORIZED` on the session's next message for that
+  player.
+- **After a crossing**, the previous session's messages for the player are answered
+  `UNAUTHORIZED`. For a few milliseconds, and rarely for up to about 5 seconds, they can still
+  be accepted, so a game server stops sending for a player before it hands the player off.
+- **Reason 2 at a token's expiry.** A carried player whose token expires with no new carry is
+  released with reason 2 at the expiry. A message that lands just before it is answered
+  `TOKEN_EXPIRED` (`[3][seq][32]`).
+
+`FLEET_DELIVERY`:
+
+| Identifier         | Bits | Bytes | Type  | Description                                                                      |
+| ------------------ | ---- | ----- | ----- | -------------------------------------------------------------------------------- |
+| messageType        | 8    | 1     | enum  | `FLEET_DELIVERY` (53).                                                           |
+| count              | 8    | 1     | uint8 | How many players follow, 1 to 32.                                                |
+| playerGameTokenIds | X    | 8 × count | int64 | The carried players who may receive the notification.                        |
+| notification       | X    | X     | bytes | One notification, as a player's own session would be sent it, unsigned (below).  |
+
+**Two forms.** Each of the three arrives in one of two forms, and which one depends on whether
+the session advertised `BUNDLE_SIGNED` in its capabilities.
+
+To a session that did not advertise `BUNDLE_SIGNED`, each frame is followed by its own HMAC, the
+last 32 bytes (in a 53, after the wrapped notification):
+
+```
+[frame][32B HMAC]      51: 50 bytes      52: 42 bytes      53: 2 + 8 × count + notification + 32
+HMAC = HMAC-SHA256(key     = the fleet token's 64 octets,
+                   message = every byte before the HMAC, from the type byte on,
+                             followed by the fleet token's 64 octets)
+```
+
+The signed frame is alone in its datagram or a member of a `MESSAGE_BUNDLE` (2), whose length
+prefix counts the frame and its HMAC.
+
+To a session that advertised `BUNDLE_SIGNED`, the frame is a member of a
+`MESSAGE_BUNDLE_SIGNED` (30) with no HMAC of its own. A `FLEET_DELIVERY` above 1,197 bytes
+cannot be a member, so it is sent in the first form, alone. A session that advertised
+`BUNDLE_SIGNED` therefore reads both forms.
+
+**Replays.** In either form a 51, 52, or 53 is signed with the fleet token and carries nothing
+that marks it as new, so a captured one that is sent again verifies again. Answer a
+`FLEET_RELEASED` for a player who is still on the server by carrying the player again: the
+server answers that carry.
+
+**The notification inside a 53.** It is what a player's own session would have been sent,
+without an HMAC:
+
+```
+long-spatial:  [1B notification type][8B appId][8B chunkX][8B chunkY][8B chunkZ][1B distance]
+               [1B decay][1B containsAuth = 0][32B uuid][payload][8B epoch millis][1B seq]
+channel:       [1B 18 | 36][8B channelId][32B sender uuid][2B payload length][payload]
+               [8B epoch millis][1B seq]
+```
+
+A long-spatial notification keeps its 9-byte tail and has `containsAuth` 0. A channel
+notification is byte for byte what any session receives. The notification's length is the
+frame's length (without the frame's own HMAC in the first form) minus `2 + 8 × count`.
+
+**The largest datagram.** A fleet session is sent datagrams of up to 1,242 bytes: a 53 with
+one player, alone, with its own HMAC. Nothing else the server sends a client is above 1232. Size receive buffers
+for 1,242.
+
+### What arrives plain and what arrives inside `FLEET_DELIVERY`
+
+| What | How a fleet session receives it |
+| --- | --- |
+| State: actor updates (130), actor departures (145), voxel edits (133), server events (139), and chunk changes (146) | The plain notification, once, when at least one carried player may receive it |
+| State that is filtered for each receiver: a client's events (138) and app-defined spatial messages (140), to which blocks, age rules, and communication settings apply | Plain and once when no carried player in range is excluded. Inside a 53 that lists those who may receive it, and not plain as well, when some are excluded. Nothing when all are excluded |
+| Communications: spatial voice (135), text (137), and video (144), `SINGLE_ACTOR_MESSAGE` (142), channel messages (18), and channel audio (36) | Always inside a 53 that lists the carried players who may receive it |
+
+- A 53 always means "these players only". A plain 138 or 140 means "every player of yours in
+  range".
+- A 53 lists at most 32 players. A message for more is split over several frames.
+- State that one of the session's own carried players sent is not sent back to the session,
+  unless the session set `FLEET_OWN_STATE` (capability bit 3, value 8) and another of its
+  carried players is in range. With the bit off a session still receives two things: a voxel
+  edit it sent, and `ACTOR_LEFT_NOTIFICATION_2` for the actor of one of its own players.
+- Around a crossing, the new session can receive a few state updates for the player that the
+  previous session sent just before. Treat state for a player the session carries as stale.
+- A carried sender's own text lists the sender. Its own voice and video list it only when the
+  session set `OWN_MEDIA_ECHO`.
+- A player with their own session sees carried players as any other actors, and carried
+  players see that player the same way.
+
+### How a session learns that it ended
+
+The signed signal is `COMMAND_SESSION_RELEASED` (28), or `COMMAND_SESSION_RELEASED_BOUND` (45)
+to a session that advertised `BOUND_CONTROL`. It is its own datagram, carries its own HMAC
+keyed with the fleet token, and is sent once.
+
+| reason | Meaning for a fleet session |
+| ------ | --------------------------- |
+| 0      | The fleet token was deauthorized: the session was closed through the Application API, its org token was revoked, or fleet sessions were switched off. |
+| 1      | The server heard nothing from the session for too long. |
+| 2      | The fleet token expired. |
+| 3, 4   | The server is shedding load, or it is moving the session. |
+
+The liveness signal is `CONTROL_BOUND_ACK` (46). A live session's `CLIENT_CAPABILITIES` with
+`BOUND_CONTROL` is always answered with a signed 46, and an ended session's never is.
+
+- Send `CLIENT_CAPABILITIES` every 15 seconds, and treat 45 seconds without a 46 as the session
+  being gone: call `refreshFleetSession`, and when it answers `NOT_FOUND`, open a new session
+  and carry the players again. The silence check also covers a lost 28 or 45 and a session
+  that was never authorized on that server.
+- After a `refreshFleetSession`, the server sends the session nothing until the next datagram
+  it accepts from it. Send `CLIENT_CAPABILITIES` at once after every refresh.
+- Until the first 46, a session can receive a plain `MESSAGE_BUNDLE` (2) whose members each
+  carry their own HMAC. A frame too large for a signed bundle carries its own HMAC at any
+  time.
+
+### A session that comes back
+
+- **The same server, from a new address.** After a `refreshFleetSession`, which authorizes the
+  same token again, the carries stand. The session sends `CLIENT_CAPABILITIES` again and no
+  `FLEET_CARRY`. Without a refresh, the server does not follow a change of address.
+- **Another server.** A fleet session is sent `COMMAND_RECONNECT` (22, or 44 in the bound form)
+  signed with the fleet token, and a refresh can name a new server. The new server holds no
+  carry. After the refresh and `CLIENT_CAPABILITIES`, the session sends a new `FLEET_CARRY`
+  (a new `epochMillis` and proof) for every player and is answered 51 for each. The server it
+  left sends no `FLEET_RELEASED` for those players. If that server asked the session to move,
+  it later sends `COMMAND_SESSION_RELEASED` (28, or 45 in the bound form) with reason 3 or 4.
+- **Presence.** Voice and video do not keep a carried player present, as for any player. A
+  carried player needs gameplay input within the app's idle timeout, or the carry ends with
+  reason 5.
+
 ## Message Bundle per Datagram
 
 The message bundle type simply puts multiple messages in a datagram as size allows.
@@ -360,6 +654,9 @@ The server accumulates notifications for about 1 ms and sends them as one bundle
 `COMMAND_RECONNECT` (22) and `COMMAND_SESSION_RELEASED` (28) are never bundled, so
 their first byte is always the opcode. Clients must parse bundles.
 
+One datagram can be larger than 1232 bytes: a [fleet session](#fleet-sessions-messages-49-to-53)
+is sent a `FLEET_DELIVERY` of up to 1,242 bytes. A player's own session is never sent one.
+
 ### Signed bundles — `MESSAGE_BUNDLE_SIGNED` (30) and `CLIENT_CAPABILITIES` (29)
 
 Since replication server v0.30.0 a client can ask for its downlink bundles to be
@@ -373,7 +670,9 @@ the bit set, and an older one reads only the flags. Bit 2 (`OWN_MEDIA_ECHO = 4`,
 v0.48.0+) means "send me my own spatial voice and video": from v0.48.0 a server does not send a
 client the `CLIENT_AUDIO_PACKET_2` and `CLIENT_VIDEO_PACKET_2` it sent itself unless the bit is
 set. Send the message again to turn the bit on or off; an older server ignores it and always
-sends the copy. The
+sends the copy. Bit 3 (`FLEET_OWN_STATE = 8`, server v0.50.3+) is for a
+[fleet session](#fleet-sessions-messages-49-to-53): "send me the state my own carried players
+sent, when another of my carried players is in range". It is off by default. The
 server binds the flags to the worker that serves this client's flow and forgets them
 when the session goes, so a client sends the message **after every assignment,
 reassignment and token refresh, and again every ~15 s** (the SDKs do). Until it lands
