@@ -129,7 +129,7 @@ sequence number to echo, and no reason field; it is a one-shot directive.
 ## Fleet sessions
 
 A [fleet session](/management-api/fleet-sessions) is one session on which an organization's
-game server carries many players (replication server v0.50.1+). The codes above reach it with
+game server carries many players (replication server v0.50.3+). The codes above reach it with
 these differences:
 
 - **Error frames can be verified.** To a fleet session that advertised `BUNDLE_SIGNED`, an

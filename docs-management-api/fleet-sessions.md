@@ -16,7 +16,7 @@ This guide is for an organization that runs its own game servers and signs its p
 device keeps using that player's own session and needs nothing here.
 
 :::note[What is switched on]
-Fleet sessions need Application API v2.89.1, realtime servers v0.50.1, and ck-exec 0.25.0.
+Fleet sessions need Application API v2.89.1, realtime servers v0.50.3, and ck-exec 0.25.0.
 **Not yet in production.** Crowded Kingdoms switches them on for one organization at a time
 ([below](#what-you-need-before-the-first-session)). CrowdyCPP and CrowdyJS carry them in
 releases that are still to come, and CrowdyPy follows. A server written in another language
@@ -33,8 +33,8 @@ servers about every 40 seconds, that is 75 sign-ins a second for as long as anyo
 
 We measured the same load with fleet sessions on November 26, 2026, on Crowded Kingdoms'
 internal dev environment: 100 fleet sessions carried 3,000 players for 30 minutes. The players
-made 140,656 crossings, about 75 a second. None was lost, and no crossing called the
-Application API. A carry was answered in 35 ms at the median and in 50 ms at the 99th
+made 135,106 crossings in those 30 minutes, 75 a second. None was lost, and no crossing called
+the Application API. A carry was answered in 36 ms at the median and in 50 ms at the 99th
 percentile.
 
 With a fleet session:
