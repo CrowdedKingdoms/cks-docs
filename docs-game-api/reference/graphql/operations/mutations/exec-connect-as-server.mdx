@@ -1,0 +1,49 @@
+---
+id: exec-connect-as-server
+title: execConnectAsServer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+ORG TOKEN ONLY. Connect one of your organization's game servers to an app's hubs as itself. Open a WebSocket to the answer's gatewayUrl with its token, as a player's game does after execConnect. The connection's calls reach a hub as `Caller::Org`: the server's own, or with the call-as frame made for a player the server names. Crowded Kingdoms checks that the server is your organization's; the player a call names is your organization's word, so a hub should treat it as that. The connection may call and subscribe to any node type of the app, has its own budget of 2,000 calls a second in place of a player's, and a hub placed by it counts toward no player's limit. One connection for each game server; an organization may hold 64 to one app on one execution host. Hubs built with ckx-sdk before 0.15 answer such a call `Denied` until they are built again. Call from the server with `Authorization: Bearer cko_...` (scope fleet:session); a request with an Origin header is refused. The checks of openFleetSession apply (fleet sessions switched on for the organization, the app its own, the addendum accepted), and the connection closes when the org token is revoked or fleet sessions are switched off. The token lasts a minute and is for opening the socket once; ask again to connect again.
+
+
+```graphql
+execConnectAsServer(
+  appId: BigInt!
+  nodeType: String
+  key: String
+): ExecConnection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execConnectAsServer.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+One of the organization's apps (BigInt as a decimal string), in the org token's app list if it has one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execConnectAsServer.<b>nodeType</b></code>](#node-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #node-type */} 
+Put the connection on the host running an instance of this type (with `key`), placing it if needed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execConnectAsServer.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #key */} 
+The instance key within `nodeType`.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecConnection</b></code>](/reference/graphql/types/objects/exec-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Where and how a game client connects to ck-exec, the hub-and-spoke execution service. Open a WebSocket to `{gatewayUrl}/v1/connect?token={token}` before `expiresAt`.
