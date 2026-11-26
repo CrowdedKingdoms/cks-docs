@@ -225,6 +225,16 @@ To stop a player:
 - Revoking an org token with `revokeOrgToken(orgTokenId, endSessions: true)` also ends every
   session that token signed in.
 
+## Game servers that carry many players
+
+If your organization runs its own game servers, each server can hold one realtime session and
+one hub connection for all of the players on it, so a player who moves between your servers
+needs no new sign-in. Your server still signs each player in once with
+`mintManagedPlayerToken`. See
+[Run your own game servers with a fleet session](/management-api/fleet-sessions). It needs an
+org token with the scope `fleet:session`, and Crowded Kingdoms switches it on for your
+organization.
+
 ## Administering your players
 
 With an org admin's session (`manage_players`), or from your server with an org token holding
@@ -375,7 +385,8 @@ on and the tier keys above.
 | Players per `provisionManagedPlayers` call | 500 |
 
 A Crowded Kingdoms operator can change your organization's first three. Over the player cap,
-sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
+sign-ins of new players answer `MANAGED_PLAYER_LIMIT`. A game server's fleet session has
+[limits of its own](/management-api/fleet-sessions#each-session-has-a-known-limit-and-you-grow-by-adding-servers).
 
 ## Errors
 
@@ -383,8 +394,9 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 |---|---|
 | `FEATURE_DISABLED` | Org-managed players are not available here. |
 | `ORG_LEGAL_ACCEPTANCE_REQUIRED` | Your organization has not accepted the current Org-Managed Players Addendum; an admin of it does, in Studio. Sign-ins, refreshes and provisioning answer it. |
-| `ORG_TOKEN_REQUIRED` | `mintManagedPlayerToken` was called without an org token. |
+| `ORG_TOKEN_REQUIRED` | `mintManagedPlayerToken`, or one of the [game-server fields](/management-api/fleet-sessions#four-application-api-calls-take-the-org-token), was called without an org token. |
 | `ORG_TOKEN_NOT_ALLOWED` | An org token was sent to a field it cannot call, or from a browser (an `Origin` header). |
+| `FLEET_SESSION_LIMIT` | `openFleetSession`: your organization holds as many [fleet sessions](/management-api/fleet-sessions) as it may. |
 | `FORBIDDEN` | Org-managed players are not switched on for your organization (an operator does that), the org token lacks the scope, or the app is another organization's. |
 | `SCOPE_MISSING` | The app is outside the org token's app list. |
 | `ASSERTION_REJECTED` | The assertion failed the check named in `extensions.reason`. 401. |

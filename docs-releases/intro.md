@@ -39,6 +39,58 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-26 (fleet sessions, one realtime session for each of your game servers)
+
+Application API v2.89.1, realtime servers v0.50.3, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6), in production
+since November 26, 2026. The guide is [Run your own game servers with a fleet session](/management-api/fleet-sessions).
+
+- **An organization's own game server can hold one realtime session and carry its players on it.**
+  `openFleetSession`, with an org token that holds the new scope `fleet:session`, answers a fleet token and a
+  realtime server. The server then carries each player with `FLEET_CARRY` and a proof made with that player's app
+  token, and sends and receives for the players it carries. A player still signs in once
+  (`mintManagedPlayerToken`), and the platform applies each carried player's own permissions, blocks, age rules,
+  speaker lists, send rate, and idle timeout.
+- **A player who moves between your servers needs no new sign-in.** The server they arrive on carries them, and the
+  server that carried them before is sent `FLEET_RELEASED` and has its next send for the player refused. No
+  Application API call is made.
+- **Measured on our internal dev environment on November 26, 2026:** 100 fleet sessions carried 3,000 players for
+  30 minutes. The players made 135,106 crossings in those 30 minutes, 75 a second. None was lost, no crossing called
+  the Application API, and a carry was answered in 36 ms at the median and in 50 ms at the 99th percentile.
+- **A session is told when it ends.** The realtime server sends `COMMAND_SESSION_RELEASED`, signed, with the reason.
+  A session also sends its capabilities every 15 seconds and treats 45 seconds without an acknowledgement
+  (`CONTROL_BOUND_ACK`) as its end. A refusal of a send reaches a session that advertised signed bundles inside its
+  signed bundle. See
+  [why a send is refused](/management-api/fleet-sessions#why-a-send-is-refused-and-what-your-server-does).
+- **Five messages and one capability bit:** `FLEET_CARRY` (49), `FLEET_RELEASE` (50), `FLEET_CARRY_RESULT` (51),
+  `FLEET_RELEASED` (52), `FLEET_DELIVERY` (53), and `FLEET_OWN_STATE` (bit 3 of `CLIENT_CAPABILITIES`). A fleet
+  session is sent shared state once, and communications inside `FLEET_DELIVERY` with the carried players who may
+  receive them. See [Wire formats](/replication-api/wire-formats#fleet-sessions-messages-49-to-53).
+- **A game server can call your hubs as itself.** `execConnectAsServer` gives it one hub connection, and the call-as
+  frame (`0x05`) makes a call for one player. A hub sees `Caller::Org { player }` and decides what a server may do. A
+  module built for guest ABI 5 or earlier answers a server's call `Denied` until it is built again. See
+  [your organization's game servers](/exec/operations#your-organizations-game-servers).
+- **A carried player is billed as a connected player.** For each fleet session and minute, the first 165,000 bytes
+  of data out for each carried player-minute are charged at the first band's rate and the rest at the second
+  band's. Nothing is added to the rate card. See
+  [data out for a fleet session](/management-api/shared-environment#data-out-for-a-fleet-session).
+- **Limits:** 256 players a session and 512 sessions an organization unless Crowded Kingdoms sets other numbers (up
+  to 1,024 and 65,536), 64 carries a second a session, and 24 hours from when a session was opened or last
+  refreshed. A server's hub connection may make 2,000 calls a second. See
+  [Rate limits](/overview/rate-limits).
+- **New error code:** `FLEET_SESSION_LIMIT`. `ORG_TOKEN_REQUIRED` and `ORG_TOKEN_NOT_ALLOWED` now cover the four
+  game-server fields too. See [Error codes](/overview/error-codes).
+- **Off until switched on.** Crowded Kingdoms switches fleet sessions on for one organization at a time; ask at
+  hello@crowdedkingdoms.com.
+- **Two fixes for every game, in the same realtime release.** A client datagram of exactly 1232 bytes, the size
+  of a full video fragment and of the largest text, now reaches every player in range. Before, it reached only some
+  of them, depending on which part of a realtime server each player was connected through. In a crowd of thousands
+  spread over a wide area and moving, some updates were not delivered, and a player could be sent updates from a
+  place they had left. Both are fixed in realtime servers v0.50.3.
+- **SDKs.** CrowdyCPP and CrowdyJS carry fleet sessions in releases that are still to come, and CrowdyPy follows.
+  The CrowdyJS session runs in Node only.
+- **What you do:** nothing, unless you run your own game servers. Then follow the guide, and build the hubs your
+  servers call again with `ckx-sdk` 0.15.0.
+
 ## 2026-11-25 (a busy answer says how long to wait, and compute holds up under hubs that save often)
 
 Application API v2.88.0 and ck-exec 0.24.
