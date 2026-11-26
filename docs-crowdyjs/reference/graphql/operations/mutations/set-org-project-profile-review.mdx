@@ -1,0 +1,39 @@
+---
+id: set-org-project-profile-review
+title: setOrgProjectProfileReview
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. Records Crowded Kingdoms' decision on an organization's project profile (APPROVED or DECLINED), or clears it (WAITING&#x005F;FOR&#x005F;REVIEW). The business side decides in its CRM, whose webhook records the same; this is the operator's path. Recorded in billing&#x005F;rate&#x005F;changes (scope SHARED, metric free&#x005F;tier&#x005F;profile&#x005F;review); next month's level is checked again at once.
+
+
+```graphql
+setOrgProjectProfileReview(
+  input: SetOrgProjectProfileReviewInput!
+): OrgProjectProfile!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgProjectProfileReview.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetOrgProjectProfileReviewInput!</b></code>](/reference/graphql/types/inputs/set-org-project-profile-review-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgProjectProfile</b></code>](/reference/graphql/types/objects/org-project-profile.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The organization's project profile: seven questions, the last optional. Complete and approved by Crowded Kingdoms, it earns the PROFILE free tier level.

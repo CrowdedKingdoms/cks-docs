@@ -1,0 +1,39 @@
+---
+id: refresh-fleet-session
+title: refreshFleetSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+ORG TOKEN ONLY. Keep a fleet session: its expiry moves to 24 hours from now, with the same token and gameTokenId, and it is authorized again on a realtime server. Name the server the session is connected to (currentServer) and it stays there while that server still serves the app; leave it out, or name one that no longer serves, and the answer's server is a new one to connect to, which is how a session that a realtime server told to move finds its next server. Call it before expiresAt, from the same server, with the org token that opened the session (scope fleet:session). Refused NOT&#x005F;FOUND for a session that has expired, was closed, or was opened with another org token: open a new one. The checks of openFleetSession apply again, so a session stops within a day of fleet sessions being switched off.
+
+
+```graphql
+refreshFleetSession(
+  input: RefreshFleetSessionInput!
+): FleetSession!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>refreshFleetSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RefreshFleetSessionInput!</b></code>](/reference/graphql/types/inputs/refresh-fleet-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>FleetSession</b></code>](/reference/graphql/types/objects/fleet-session.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A fleet session: one realtime session an organization's game server opens for itself, in which it carries the players who are on it. A player still signs in once, when they join (mintManagedPlayerToken); moving to another of the organization's servers is that server starting to carry them, with no call to this API. The session's token never goes to a player's device.

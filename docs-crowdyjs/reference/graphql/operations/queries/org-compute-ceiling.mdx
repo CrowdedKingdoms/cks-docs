@@ -1,0 +1,39 @@
+---
+id: org-compute-ceiling
+title: orgComputeCeiling
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What each of the organization's apps may run of compute modules in one datacenter once it is funded: instances placed at once and the memory they reserve, and whether an operator set them for this organization. Requires view&#x005F;compute&#x005F;diagnostics on the org (super-admins and operators bypass). Read-only.
+
+
+```graphql
+orgComputeCeiling(
+  orgId: BigInt!
+): OrgComputeCeiling!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgComputeCeiling.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+The organization (BigInt as a decimal string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgComputeCeiling</b></code>](/reference/graphql/types/objects/org-compute-ceiling.mdx) <Badge class="badge badge--secondary " text="object"/> 
+What each of an organization's apps may run of compute modules in one datacenter once the organization is funded: the platform's default, or a ceiling an operator set for this organization. Each app has the whole of it in each datacenter.

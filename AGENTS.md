@@ -190,9 +190,10 @@ viewer function is ever detached.
   ck-exec 0.25.0, `ckx-sdk` 0.15.0). `docs-management-api/fleet-sessions.md` is the guide; the
   bytes are in `docs-udp-api/wire-formats.md` ("Fleet sessions (messages 49 to 53)"), the hub
   side in `docs-exec/operations.md` ("Your organization's game servers"), and the band rule in
-  `docs-management-api/shared-environment.md` ("Data out for a fleet session"). The guide and
-  the changelog entry say **Not yet in production**: remove that on every tier once production
-  serves it (`grep -rn "Not yet in production" docs*`). No page names an SDK version for it:
+  `docs-management-api/shared-environment.md` ("Data out for a fleet session"). Production serves
+  it since 21:08 UTC on 2026-11-26, and the guide and the changelog entry say so. The measured
+  paragraph is the 30-minute run on realtime servers v0.50.3 (135,106 crossings). No page names
+  an SDK version for it yet:
   when the SDKs release, name them in the guide's "What is switched on" box, in the changelog
   entry, in `docs-crowdycpp/compatibility.md` and in `docs-crowdyjs/best-practices.md`, and add
   `### CrowdyPy` beside `### CrowdyCPP` and `### CrowdyJS` under "An SDK does the same steps

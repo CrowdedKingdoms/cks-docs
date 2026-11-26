@@ -39,10 +39,10 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
-## 2026-11-26 (dev: fleet sessions, one realtime session for each of your game servers)
+## 2026-11-26 (fleet sessions, one realtime session for each of your game servers)
 
-Application API v2.89.1, realtime servers v0.50.3, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6). Not yet in
-production. The guide is [Run your own game servers with a fleet session](/management-api/fleet-sessions).
+Application API v2.89.1, realtime servers v0.50.3, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6), in production
+since November 26, 2026. The guide is [Run your own game servers with a fleet session](/management-api/fleet-sessions).
 
 - **An organization's own game server can hold one realtime session and carry its players on it.**
   `openFleetSession`, with an org token that holds the new scope `fleet:session`, answers a fleet token and a
