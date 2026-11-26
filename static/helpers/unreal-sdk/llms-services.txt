@@ -510,7 +510,7 @@ A custom event `OnGetFreeAccessPressed` runs **Claim Free Access**; its **On Err
 
 ## Session persistence and sign-out
 
-`Login`, `Register`, the link, and the social flow persist the session token; `RestoreSession` on the next launch re-mints from it and fires `OnSessionRestored`, and the SDK connects as after any sign-in. Gate your login screen on `IsSignedIn()`.
+`Login`, `Register`, the link, and the social flow persist the session token; `RestoreSession` on the next launch re-mints from it and fires `OnSessionRestored`, and the SDK connects as after any sign-in. Gate your login screen, `RestoreSession` and every sign-in call on `IsSignedIn()` being false: to change account, the player signs out with `Logout` and then signs in. Signing in while a player is signed in is not supported; while that sign-in runs, the session can name the new player while calls still carry the previous player's token.
 
 ### Restore a saved session
 
