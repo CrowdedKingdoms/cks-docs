@@ -46,11 +46,11 @@ COMMAND_RECONNECT_BOUND = 44;      // server -> client: COMMAND_RECONNECT bound 
 COMMAND_SESSION_RELEASED_BOUND = 45; // server -> client: COMMAND_SESSION_RELEASED bound to the nonce; server v0.45.0+
 CONTROL_BOUND_ACK = 46;            // server -> client: this assignment's control frames come only in the bound forms; server v0.46.0+
 CLIENT_MEDIA_SPEAKERS = 47;        // client -> server: the speakers whose spatial voice and video this client receives (see "Speaker lists"); server v0.49.0+
-FLEET_CARRY = 49;                  // client -> server: a fleet session starts to carry a player (see "Fleet sessions"); server v0.50.1+
-FLEET_RELEASE = 50;                // client -> server: a fleet session stops carrying a player; server v0.50.1+
-FLEET_CARRY_RESULT = 51;           // server -> client: the answer to FLEET_CARRY; server v0.50.1+
-FLEET_RELEASED = 52;               // server -> client: the server ended a carry; server v0.50.1+
-FLEET_DELIVERY = 53;               // server -> client: one notification and the carried players who may receive it; server v0.50.1+
+FLEET_CARRY = 49;                  // client -> server: a fleet session starts to carry a player (see "Fleet sessions"); server v0.50.3+
+FLEET_RELEASE = 50;                // client -> server: a fleet session stops carrying a player; server v0.50.3+
+FLEET_CARRY_RESULT = 51;           // server -> client: the answer to FLEET_CARRY; server v0.50.3+
+FLEET_RELEASED = 52;               // server -> client: the server ended a carry; server v0.50.3+
+FLEET_DELIVERY = 53;               // server -> client: one notification and the carried players who may receive it; server v0.50.3+
 // other values in 19–127 are unused / reserved or internal server-to-server
 ```
 
@@ -343,7 +343,7 @@ chunk `(0,0,0)`, distance 0 and no actor UUID, like `CLIENT_CAPABILITIES`. The a
 
 ## Fleet sessions (messages 49 to 53)
 
-From replication server v0.50.1 an organization's own game server can hold one session and
+From replication server v0.50.3 an organization's own game server can hold one session and
 *carry* its players on it: it sends and receives for each of them on that session.
 [Run your own game servers with a fleet session](/management-api/fleet-sessions) explains the
 lifecycle, the limits, and where each token lives. This section is the bytes.
@@ -670,7 +670,7 @@ the bit set, and an older one reads only the flags. Bit 2 (`OWN_MEDIA_ECHO = 4`,
 v0.48.0+) means "send me my own spatial voice and video": from v0.48.0 a server does not send a
 client the `CLIENT_AUDIO_PACKET_2` and `CLIENT_VIDEO_PACKET_2` it sent itself unless the bit is
 set. Send the message again to turn the bit on or off; an older server ignores it and always
-sends the copy. Bit 3 (`FLEET_OWN_STATE = 8`, server v0.50.1+) is for a
+sends the copy. Bit 3 (`FLEET_OWN_STATE = 8`, server v0.50.3+) is for a
 [fleet session](#fleet-sessions-messages-49-to-53): "send me the state my own carried players
 sent, when another of my carried players is in range". It is off by default. The
 server binds the flags to the worker that serves this client's flow and forgets them

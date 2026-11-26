@@ -41,7 +41,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 ## 2026-11-26 (dev: fleet sessions, one realtime session for each of your game servers)
 
-Application API v2.89.1, realtime servers v0.50.1, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6). Not yet in
+Application API v2.89.1, realtime servers v0.50.3, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6). Not yet in
 production. The guide is [Run your own game servers with a fleet session](/management-api/fleet-sessions).
 
 - **An organization's own game server can hold one realtime session and carry its players on it.**
@@ -54,8 +54,8 @@ production. The guide is [Run your own game servers with a fleet session](/manag
   server that carried them before is sent `FLEET_RELEASED` and has its next send for the player refused. No
   Application API call is made.
 - **Measured on our internal dev environment on November 26, 2026:** 100 fleet sessions carried 3,000 players for
-  30 minutes. The players made 140,656 crossings, about 75 a second. None was lost, no crossing called the
-  Application API, and a carry was answered in 35 ms at the median and in 50 ms at the 99th percentile.
+  30 minutes. The players made 135,106 crossings in those 30 minutes, 75 a second. None was lost, no crossing called
+  the Application API, and a carry was answered in 36 ms at the median and in 50 ms at the 99th percentile.
 - **A session is told when it ends.** The realtime server sends `COMMAND_SESSION_RELEASED`, signed, with the reason.
   A session also sends its capabilities every 15 seconds and treats 45 seconds without an acknowledgement
   (`CONTROL_BOUND_ACK`) as its end. A refusal of a send reaches a session that advertised signed bundles inside its
@@ -81,6 +81,11 @@ production. The guide is [Run your own game servers with a fleet session](/manag
   game-server fields too. See [Error codes](/overview/error-codes).
 - **Off until switched on.** Crowded Kingdoms switches fleet sessions on for one organization at a time; ask at
   hello@crowdedkingdoms.com.
+- **Two fixes for every game, in the same realtime release.** A client datagram of exactly 1232 bytes, the size
+  of a full video fragment and of the largest text, now reaches every player in range. Before, it reached only some
+  of them, depending on which part of a realtime server each player was connected through. In a crowd of thousands
+  spread over a wide area and moving, some updates were not delivered, and a player could be sent updates from a
+  place they had left. Both are fixed in realtime servers v0.50.3.
 - **SDKs.** CrowdyCPP and CrowdyJS carry fleet sessions in releases that are still to come, and CrowdyPy follows.
   The CrowdyJS session runs in Node only.
 - **What you do:** nothing, unless you run your own game servers. Then follow the guide, and build the hubs your
