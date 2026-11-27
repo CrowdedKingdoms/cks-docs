@@ -198,12 +198,14 @@ Since ck-exec 0.11 two more limits keep one player from filling what everyone sh
   report `Unavailable` with the reason. Close the connections a game no longer uses.
 - **Instances.** Each app has an instance limit and a memory limit per datacenter, set by its
   organization's funding (ck-exec 0.15). An organization that cannot be charged (no spendable
-  wallet balance, no auto-billing) gets **16 instances reserving at most 1 GB per datacenter for
+  wallet balance, no auto-billing) gets **16 instances reserving at most 1,024 MB per datacenter for
   all of its apps together** (ck-exec 0.22; until then, for each app); one that can be charged
-  gets **16,384 instances and 64 GB for each app**. Crowded Kingdoms can set a different limit
+  gets **16,384 instances and 65,536 MB for each app**. Crowded Kingdoms can set a different limit
   for one organization (Application API 2.88): write to us when a game needs more, with the
   instances and the memory it needs, and `orgComputeCeiling(orgId)` shows what your
-  organization has and whether it was set for you. We bill reserved memory by the GB-hour, so
+  organization has and whether it was set for you.
+  [What your organization can change](/overview/organization-limits#funding-raises-your-compute-limit-and-crowded-kingdoms-can-set-a-higher-one)
+  has the address and what to send. We bill reserved memory by the GB-hour, so
   a higher limit raises what an app can cost: 4,096 hubs of 16 MB reserve 65,536 MB, which is
   $1.20 an hour past the free 730 GB-hours a month. An instance reserves its type's memory limit
   times its concurrency, and mods count too. `execAppStatus` reports the organization's shared

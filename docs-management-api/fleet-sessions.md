@@ -72,6 +72,8 @@ what a player with their own session has:
    hello@crowdedkingdoms.com with your organization, the app, how many game servers you run,
    and how many players one server holds. `orgManagedPlayerSettings(orgId)` then reports
    `fleetSessionsEnabled`, `maxFleetSessions`, and `maxFleetPlayers`.
+   [What your organization can change](/overview/organization-limits#crowded-kingdoms-switches-fleet-sessions-on-and-sets-how-many-you-hold)
+   lists every setting Crowded Kingdoms holds for an organization and what to send for each.
 3. **An org token with the scope `fleet:session`.** Create it with an org admin's session:
 
    ```graphql
@@ -522,8 +524,10 @@ players means more servers, and the defaults carry 131,072 players at once (512 
 256). Your sessions spread over the realtime servers, and carried players on different
 realtime servers see each other as players with their own sessions do. A carry past
 `maxPlayers` is refused with status 4, and a carry past the rate is dropped unanswered. To
-raise either number, write to hello@crowdedkingdoms.com. `maxPlayers` in the answer of an open
-or a refresh is the number that applies to that session.
+raise either number, write to hello@crowdedkingdoms.com.
+[What your organization can change](/overview/organization-limits#crowded-kingdoms-switches-fleet-sessions-on-and-sets-how-many-you-hold)
+says what to send. `maxPlayers` in the answer of an open or a refresh is the number that
+applies to that session.
 
 With fleet sessions, these are the calls a game still makes to the Application API:
 
