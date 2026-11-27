@@ -59,6 +59,9 @@ page applies in production.
 
 Crowded Kingdoms can also delete and erase an account itself, for example at a parent's request
 for a child's account, and records a parent's withdrawal of consent that reaches it by email.
+[What your organization can change](/overview/organization-limits#you-delete-your-own-players-and-crowded-kingdoms-handles-the-requests-you-cannot)
+says which of a player's data requests your organization answers itself and which it sends to
+Crowded Kingdoms.
 
 ## What your game needs to admit players under 18
 

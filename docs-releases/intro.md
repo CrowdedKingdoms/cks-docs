@@ -39,6 +39,24 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-27 (a new page: what your organization can change, and what to ask Crowded Kingdoms for)
+
+A documentation page. Nothing changed in the platform.
+
+- **One page lists the settings Crowded Kingdoms holds for an organization.**
+  [What your organization can change](/overview/organization-limits) gives, for each one, the default, where to
+  read your organization's value, what you change yourself, what to send to hello@crowdedkingdoms.com when you ask
+  for a change, and the error code at the limit. It covers org-managed players, fleet sessions, the compute limit,
+  the free data tiers, the limit of 10 apps before funding, app trust, a dedicated environment, a player's data,
+  closing an organization, the largest crowd measured, and how to report a security problem.
+- **The pages that named these settings now link to it:** org-managed players, fleet sessions, the shared
+  environment, ck-exec operations, portals and app tokens, player safety, rate limits, and four rows of the error
+  codes.
+- **Corrected on those pages:** the compute limits read 1,024 MB and 65,536 MB, as `orgComputeCeiling` and
+  `execAppStatus` report them (they read "1 GB" and "64 GB"), and a managed-player sign-in past your organization's
+  rate is named: `RATE_LIMITED`.
+- **What you do:** nothing.
+
 ## 2026-11-26 (fleet sessions, one realtime session for each of your game servers)
 
 Application API v2.89.1, realtime servers v0.50.3, ck-exec 0.25.0, and `ckx-sdk` 0.15.0 (guest ABI 6), in production
