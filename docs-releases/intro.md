@@ -55,7 +55,7 @@ Four changes; nothing breaks, and derived crowd rows now cast shadows by default
 
 ## 2026-11-27 (a keepalive is held to `access`; sign-ins take turns; players are deleted 100 at a time; an erasure finishes whatever the number of hubs)
 
-On the dev environment: Application API v2.90.0, realtime servers v0.51.0, ck-exec 0.26.0, and CrowdyJS 18.41.0.
+On dev, test, and production since November 27, 2026: Application API v2.90.0, realtime servers v0.51.0, ck-exec 0.26.1, and CrowdyJS 18.41.0.
 
 - **Realtime servers v0.51.0: a keepalive is accepted only where the player's actor update would be.** A place is
   private to keepalives (`CLIENT_ACTOR_HEARTBEAT`, 26) exactly when it is private to updates. Where the player has no
