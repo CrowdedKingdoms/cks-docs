@@ -183,6 +183,11 @@ The gate's other refusals read with `territoryNotSupportedOf`, `ageRequiredOf`,
 - `portal.mintAppToken(appId)` — first-party / non-browser: mint directly from a
   session token. Returns an `AppTokenResponse` (`token`, `applicationApiUrl`,
   `applicationApiWsUrl`, `expiresAt`, …); it is **not** stored on the calling client.
+  From CrowdyJS 18.41.0 every app-token answer carries `userId`, the user the token signs
+  in, as `users.me()` returns it: `mintAppToken`, `exchangeCode`, `refresh`,
+  `exchangeManagedPlayerAssertion`, and `signInWithMinecraft`. A game server reads the
+  player from the answer and makes no `me` call. These calls select `userId`, so 18.41.0
+  needs Application API v2.90.0 or later: an earlier API refuses the selection.
 - `portal.beginEntry(...)` → `portal.handleAuthorizeRequest()` →
   `portal.completeEntry()` — the same PKCE steps without the defaults;
   `handleAuthorizeRequest` is what Studio's `/authorize` page runs. For an
@@ -494,6 +499,50 @@ onPlayerInput(() => {
 });
 ```
 
+### The client checks what it receives before a handler runs
+
+From CrowdyJS 18.41.0 a player's client drops, and counts, what does not verify and what
+names another app. What it can check depends on the transport.
+
+**On the binary relay** (`realtime: { binaryTransport: true }`) the client verifies each
+datagram's HMAC with the player's app token before a handler runs. No option turns the check
+off. In this table a *spatial notification* is any notification except a channel message,
+channel audio, and a refused send.
+
+| What arrives | What the client does | Counter |
+|---|---|---|
+| A signed bundle whose HMAC fails | Drops the whole bundle | `hmacFailures` |
+| A spatial notification whose own HMAC fails | Drops it | `hmacFailures` |
+| A spatial notification with no signature, outside a signed bundle | Drops it. The realtime servers sign every spatial notification they send | `unsigned` |
+| A frame the client cannot read | Drops it | `malformed` |
+| A channel message or channel audio outside a signed bundle | Delivers it. These two have no field for a signature | none |
+| A refused send | Delivers it to `genericError`, with `verified` | `errorsReceived`, `unverifiedErrorsReceived` |
+
+**On the GraphQL subscription** (the default transport) the client receives objects the
+Application API read from those datagrams. No signature reaches the client, so on this
+transport it trusts the Application API, over TLS.
+
+**On both transports** the client drops a notification that names another app than the one
+you subscribed for, and counts it in `wrongApp`. Run one client for each app, as before.
+
+- **`genericError` receives `(event, verified)`.** `verified` is false for every refusal
+  today, because the realtime servers send a player's session each refusal alone, as 3 bytes
+  with no room for a signature. A refusal rejects the awaited send whose sequence number it
+  names, and changes nothing else in the client.
+- **Treat an unverified `TOKEN_EXPIRED` as a hint.** Refresh the app token through the
+  Application API and act on that answer.
+- **`client.realtime.receiveStats()`** returns the seven counters: `hmacFailures`, `unsigned`,
+  `malformed`, `wrongApp`, `errorsReceived`, `unauthorizedReceived`, and
+  `unverifiedErrorsReceived`. Report a count above 0 in `wrongApp`, `unsigned`, or
+  `hmacFailures` to Crowded Kingdoms.
+- **Two things change for your code.** On the relay a notification reaches its handler after
+  an asynchronous check, in the order the datagrams arrived. A test that feeds the relay an
+  unsigned spatial notification must sign it.
+
+A player's client sends no keepalive message: it keeps an actor present with actor updates.
+So the [keepalive rule](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be)
+of realtime servers v0.51.0 changes nothing for it.
+
 The SDK uses the `graphql-transport-ws` protocol, reconnects with backoff, re-reads the current token before reconnecting, and resubscribes to the UDP notifications subscription. It does **not** rotate an expiring app token for you — call `game.portal.refresh()` before the token's `expiresAt` to keep the same-app session alive (see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)).
 
 ## Raw UDP sends
@@ -622,6 +671,29 @@ the last one: an admin of the organization accepts the addendum in Studio.
 the organization's code.
 An `ExecConnection` whose player's access or session ends is closed for good with
 `EXEC_CLOSE_ACCESS_ENDED` (4403); `onAccessEnded(listener)` hears the reason.
+
+`platformBusyOf(err).retryAfterMs` holds the wait the API sent with a `PLATFORM_BUSY`. From
+CrowdyJS 18.41.0, `retryWaitMs(hint)` bounds a wait at 30 seconds
+(`MAX_RETRY_AFTER_WAIT_MS`); the platform's hints run from 200 ms to 10 seconds. Pass the
+hint through it before you wait. The SDK bounds its own waits the same way, and
+`CrowdyExecError.retryAfterMs` too.
+
+Three calls for an organization's tools are new in 18.41.0:
+
+- **`client.managedPlayers.deleteMany(orgId, externalIds)`** deletes 1 to 100
+  [org-managed players](/management-api/org-managed-players#sessions-refresh-and-signing-out)
+  in one call (Application API v2.90.0). It answers `deleted`, `notFound`, `held`, and each
+  external id's outcome: `DELETED`, `NOT_FOUND`, or `LEGAL_HOLD`. A held player is kept and
+  does not fail the call.
+- **`client.managedPlayers.settings(orgId)`** now reports the organization's fleet settings:
+  `fleetSessionsEnabled`, `maxFleetSessions`, and `maxFleetPlayers` (Application API
+  v2.89.0).
+- **`client.exec.orgComputeCeiling(orgId)`** reads what each of the organization's apps may
+  run in one datacenter once the organization is funded (`maxInstances`, `maxReservedMb`),
+  and whether Crowded Kingdoms set those numbers (`operatorSet`). It needs
+  `view_compute_diagnostics` on the organization and Application API v2.88.0 or later.
+  [What your organization can change](/overview/organization-limits#funding-raises-your-compute-limit-and-crowded-kingdoms-can-set-a-higher-one)
+  explains the limit.
 
 Driving the Application API or realtime surface with an identity session token instead of an app-scoped token fails with the realtime `RealtimeConnectionEvent` codes `APP_TOKEN_REQUIRED` / `APP_SCOPE_MISMATCH`; an app token whose TTL elapsed mid-session yields the `UdpErrorCode` `TOKEN_EXPIRED`. Minting a portal code for an untrusted app without consent surfaces as `PortalConsentRequiredError` (or a `FORBIDDEN`/`CONSENT_REQUIRED` GraphQL error when calling the API directly). See [Error codes](/overview/error-codes).
 

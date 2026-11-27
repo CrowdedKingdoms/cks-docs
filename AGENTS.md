@@ -178,6 +178,20 @@ viewer function is ever detached.
   repo is promoted, change those to the target branch (`grep -rn "blob/dev\|-b dev"`).
   Site-internal links and `llms.txt` need nothing: the `tier-origin` plugin
   rewrites the prod origin in built text files to the tier's own.
+  **Nothing does this re-pointing but a person, and `test` was missed** (found
+  2026-11-27, OI-2026-11-26-010 item 7). On `dev` it is eight lines in six pages:
+  `docs-build-a-game/10-bwf-mod-development.md` and `intro.md` (`git clone -b dev`),
+  `docs-crowdyjs/agentic-crowdy-studio.md`, `docs-crowdypy/compatibility.md` (three),
+  `docs-exec/client-halves.md` and `docs-releases/intro.md`. `prod` reads `prod` on all
+  of them, by hand; `test` still reads `dev`, because a merge keeps the destination's
+  line only where somebody changed it there, and `promote.mjs` resolves the schemas and
+  the reference and nothing else. The fix at the source is a build step, as
+  `tier-origin` is one: a remark plugin, given `CKS_DOCS_TIER`, that rewrites
+  `github.com/CrowdedKingdoms/<repo>/blob|tree/dev/` in links and `git clone -b dev` in
+  code blocks to the tier's branch, so that all three branches carry the same bytes
+  (`dev`) and no promotion edits them. It is not built: it is a plugin and a line in
+  each docs instance of `docusaurus.config.ts`, which is a change for whoever owns the
+  build. Until it is, re-point by hand on `test` as well as on `prod`.
 - **The players-under-18 pages** (2026-10-30; production opened to players 13 and over on
   2026-11-04, Game API v2.61.1). `docs/player-safety.md` is the map, and each page in the set has
   a "What is switched on" box. One fact is production's own and goes stale on purpose: Kids Web
@@ -201,6 +215,18 @@ viewer function is ever detached.
   still changing when they were written. The ck-exec page states
   the `ckx-sdk` version once; `docs-exec/develop-locally.md` ("Versions") names the kit release
   when there is one.
+- **The pages for Application API v2.90.0, realtime servers v0.51.0 and ck-exec 0.26.0**
+  (2026-11-27, with CrowdyJS 18.41.0). The keepalive rule is in
+  `docs-udp-api/wire-formats.md` ("A keepalive is accepted only where the actor's update
+  would be"), and every page that says what keeps an actor present points at it. The
+  join path and `deleteManagedPlayers` are in `docs-management-api/org-managed-players.md`;
+  the erasure rule is in `docs-exec/players-and-safety.md` ("An erasure is complete only
+  when every hub with stored state has been asked"). The changelog entry opens "On the
+  dev environment:"; change that sentence at each promotion, as the entries of 2026-11-02
+  and 2026-10-30 were. **CrowdyCPP 0.95.0 and CrowdyPy 0.41.0 were not released when
+  these were written**, so no page names them: when they are, add what they wrap to
+  `docs-crowdycpp/` and `docs-crowdypy/`, to the fleet guide's `### CrowdyCPP` and
+  `### CrowdyPy`, and to the changelog entry.
 - **The Minecraft server page is a draft** (`docs-minecraft/intro.md`, `draft: true`, 2026-11-04):
   it links the private mod repository's releases and describes features not publicly released.
   Its navbar item, footer column and `llms.txt` entry were removed with it; restore all three

@@ -38,10 +38,18 @@ made 135,106 crossings in those 30 minutes, 75 a second. None was lost, and no c
 the Application API. A carry was answered in 36 ms at the median and in 50 ms at the 99th
 percentile.
 
+We measured twice that crowd on November 27, 2026, on the same environment, with realtime
+servers v0.51.0 on three servers: 200 fleet sessions carried 6,000 players for 15 minutes. The
+players made 153,079 crossings in the run, at 150 a second. None was lost, and a carry was
+answered in 36 ms at the median and in 57 ms at the 99th percentile. The 3,000-player load,
+run again that day on v0.51.0, made 135,092 crossings in its 30 minutes, and none was lost.
+No larger crowd, and no faster rate of crossing, has been measured.
+
 With a fleet session:
 
 - **A player signs in once**, when they join the game (`mintManagedPlayerToken`, as for any
-  managed player).
+  managed player). The answer carries the player's `userId` (Application API v2.90.0), so your
+  server needs no `me` call to learn who it signed in.
 - **Each game server opens one session** when it starts, and carries the players on it.
 - **A crossing is one message to the realtime servers.** A crossing is a player moving from
   one of your servers to another: the server the player arrives on carries them, and the
@@ -208,6 +216,18 @@ message that names a player the session does not carry is answered `UNAUTHORIZED
 Voice and video do not keep a carried player present. Each player needs gameplay input within
 the app's idle timeout, and an idle actor needs a heartbeat, as on a player's own session.
 
+**A heartbeat keeps an actor present only where the player may enter** (realtime servers
+v0.51.0). A carried player's heartbeat is judged for that player, as their actor update is.
+Where the player has no `access`, every heartbeat for the actor is answered `UNAUTHORIZED`
+inside the session's signed bundle. The player is not present there, the session is sent
+nothing of the place for that player, and the session still carries the player. Keep sending
+at the same cadence, never faster, and do not treat the player as present. A refused heartbeat
+is not gameplay input for the idle timeout and is not counted as data in. After access is
+granted, the next heartbeat is admitted within about 6 seconds. If your players only stand
+where they may enter, your server has nothing to change. The session's own keep-alive is not
+held to `access`. See
+[the keepalive rule](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be).
+
 ### A player crosses to another of your servers
 
 The server the player leaves stops sending for the player, then sends the player's app token
@@ -245,8 +265,10 @@ it is answered `TOKEN_EXPIRED`.
 Call `refreshFleetSession(input: { appId, gameTokenId, currentServer })` with the org token
 that opened the session. The token and its `gameTokenId` stay the same, and `expiresAt` moves
 to 24 hours from the call. Name the realtime server the session is connected to in
-`currentServer`, by its IPv4 address (`ip4`) and its `clientPort`, and the session stays there
-while that server still serves the app. Its carries stand, so send no `FLEET_CARRY`. Send
+`currentServer`, by the address the session connected to and its `clientPort`, and the session
+stays there while that server still serves the app. Give `ip4` or `ip6`, exactly one: both, or
+neither, is refused `BAD_REQUEST`. `ip6` needs Application API v2.90.0; before it,
+`currentServer` took an IPv4 address only. Its carries stand, so send no `FLEET_CARRY`. Send
 `CLIENT_CAPABILITIES` at once after every refresh: the realtime server sends the session
 nothing until it hears from it again.
 
@@ -446,6 +468,18 @@ fleet.close();
   another app, and `unsigned` for one that nothing signed. Neither reaches a handler.
 - **`fleetOwnState: true`**, or `fleet.setFleetOwnState(true)`, asks for the state your own
   carried players sent.
+- **A refused keepalive is reported once** (CrowdyJS 18.41.0, realtime servers v0.51.0). The
+  session sends a keepalive every 2 seconds for each actor, and keeps that rate when one is
+  refused. Where a carried player has no `access`, the session calls `notPresent(report)`
+  once for the player, the actor, and the place, and `notPresentEnded(report, end)` once when
+  that ends: `accepted`, `moved`, or `stopped`. `genericError` still receives every refusal,
+  with a third argument `keepalive`. `fleet.notPresent(player, uuid)` reads the report, and
+  `fleet.stats()` adds `keepalivesRefused` and `notPresentReports`. A session that sends more
+  than about 85 messages a second makes no report, because the one-byte sequence number no
+  longer names one send, and `keepalivesRefused` still counts.
+- **`refreshInput()` names the address the session connected to** (18.41.0): the server's
+  `ip4`, or its `ip6` when it has no `ip4`. Naming an `ip6` needs Application API v2.90.0.
+  Through 18.40.1 a session that connected over `ip6` named no server.
 - **On any connection that is not a server's, `callAs` is refused locally** with `Denied`, and
   nothing is sent. On Node before 22, pass `{ WebSocket }` from the `ws` package to
   `connectAsServer`, as for `connect`.
@@ -544,8 +578,11 @@ make 3,000 refreshes in 1,800 seconds, which is under 2 a second.
 
 - at once, when you call `closeFleetSession`, when you revoke the org token that opened it,
   and when fleet sessions or org-managed players are switched off for your organization;
-- within five minutes, when the org token that opened it expires, the app is archived or moves
-  to another organization, or your organization is no longer active;
+- at once, from Application API v2.90.0, when the app is archived (`archiveApp`), and when your
+  organization is frozen or closed. Your game servers' hub connections end with the sessions.
+  Before v2.90.0 these took up to five minutes;
+- within five minutes, when the org token that opened it expires, or the app moves to another
+  organization;
 - at `expiresAt`, 24 hours after it was opened or last refreshed.
 
 When a session ends, its carries end with it and no `FLEET_RELEASED` is sent. Each player's
@@ -612,6 +649,7 @@ sequence number is one byte that the whole session shares, so match it to your r
 | The platform could not confirm whose actor it is within 2 seconds. | Send again. |
 | A communication rule refuses the message: a direct message from a player under 18, or a kind of communication that is switched off. | Nothing. The message is not delivered. |
 | The player's access to the app is suspended or ended. | Stop serving the player. |
+| The message is a heartbeat for an actor in a place where the player has no `access` (realtime servers v0.51.0). Every heartbeat there is answered. | Keep the cadence, never faster. Do not treat the player as present there. Grant `access`, or move the actor to a place the player may enter. |
 | The message went under the session's own `gameTokenId` and is not one of its four kinds. | Send it under a carried player's `gameTokenId`. |
 
 Three outcomes of a send are not `UNAUTHORIZED`:
@@ -662,7 +700,7 @@ All four take an org token with the scope `fleet:session` as the bearer
 | Mutation | Input | Answer |
 |---|---|---|
 | [`openFleetSession`](/management-api/reference/graphql/operations/mutations/open-fleet-session) | `input: { appId }` | `FleetSession`: `token`, `gameTokenId`, `appId`, `expiresAt`, `maxPlayers`, `server { ip4 ip6 clientPort }` |
-| [`refreshFleetSession`](/management-api/reference/graphql/operations/mutations/refresh-fleet-session) | `input: { appId, gameTokenId, currentServer: { ip4, clientPort } }`; `currentServer` is optional, and `ip4` is an IPv4 address | `FleetSession`: the same `token` and `gameTokenId`, a new `expiresAt`, and the server to be on |
+| [`refreshFleetSession`](/management-api/reference/graphql/operations/mutations/refresh-fleet-session) | `input: { appId, gameTokenId, currentServer: { ip4, clientPort } }`, or `ip6` in place of `ip4` (Application API v2.90.0); `currentServer` is optional, and takes exactly one address | `FleetSession`: the same `token` and `gameTokenId`, a new `expiresAt`, and the server to be on |
 | [`closeFleetSession`](/management-api/reference/graphql/operations/mutations/close-fleet-session) | `input: { appId, gameTokenId }` | `true` when a session was ended; `false` when there was none by that id for this org token |
 | [`execConnectAsServer`](/application-api/reference/graphql/operations/mutations/exec-connect-as-server) | `appId`, and optionally `nodeType` and `key` | `gatewayUrl`, `token` (good for 60 seconds and one socket), `host`, `expiresAt` |
 
