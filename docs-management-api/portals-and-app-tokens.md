@@ -220,8 +220,9 @@ mutation Approve($input: AuthorizeAppInput!) {
 ```
 
 **App owners: register client settings.** With `manage_apps` on the app, configure
-the allow-list and client metadata (the `isTrusted` flag is **not** settable here —
-it is platform-controlled):
+the allow-list and client metadata. The `isTrusted` flag is not settable here, because
+Crowded Kingdoms sets it:
+[what to send to ask for it](/overview/organization-limits#crowded-kingdoms-decides-which-apps-skip-the-consent-screen).
 
 ```graphql
 mutation Settings($input: SetAppClientSettingsInput!) {

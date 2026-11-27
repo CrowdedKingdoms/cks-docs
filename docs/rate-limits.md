@@ -12,6 +12,11 @@ they do **not** return rate-limit headers or an `extensions.cost` budget on resp
 There is no documented max query depth or complexity today. If limits are introduced,
 this page and the [changelog](/releases/intro) will describe them.
 
+Some limits are set for each organization: managed-player sign-ins a minute, fleet sessions,
+compute instances, and the number of apps.
+[What your organization can change](/overview/organization-limits) lists them with their defaults, who changes each, and
+what to send when you ask Crowded Kingdoms for a change.
+
 This does not mean "unlimited" — treat the platform as a shared service and design for
 back-pressure:
 
@@ -35,7 +40,7 @@ long to wait. The limit is kept per host, so a player connected to hubs on two h
 A player also holds at most **16 connections** to one app through a host; the 17th is
 answered `HTTP 429` before any socket opens. How many instances run at once depends on the
 organization's funding: while it cannot be charged, **all of its apps together** get **16**
-per datacenter (reserving at most 1 GB); once it can, each app gets **16,384**. Mods count
+per datacenter (reserving at most 1,024 MB); once it can, each app gets **16,384**. Mods count
 too, and a call that would start one more is answered `Unavailable` (see
 [ck-exec operations](/exec/operations)). One player's
 own calls hold at most **64** of them at once (ck-exec 0.17); past it their next new key is
