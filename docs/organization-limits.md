@@ -22,13 +22,13 @@ auto-billing is on.
 |---|---|---|
 | [Org-managed players](#crowded-kingdoms-switches-org-managed-players-on-and-sets-their-limits) | Off | Crowded Kingdoms switches them on. An admin of your organization accepts the addendum. |
 | Managed players your organization holds | 100,000 | Crowded Kingdoms |
-| Managed-player sign-ins a minute | 600 | Crowded Kingdoms, from 1 to 100,000 |
-| Length of a managed player's sign-in | 24 hours, and 7 days at most | Your server, for each sign-in, up to the maximum. Crowded Kingdoms sets the default and the maximum, up to 30 days. |
+| Managed-player sign-ins a minute | 600 | Crowded Kingdoms |
+| Length of a managed player's sign-in | 24 hours, and 7 days at most | Your server, for each sign-in, from 60 seconds up to your organization's maximum. Crowded Kingdoms sets the default and the maximum. |
 | [Fleet sessions](#crowded-kingdoms-switches-fleet-sessions-on-and-sets-how-many-you-hold) | Off | Crowded Kingdoms |
-| Fleet sessions your organization holds at once | 512 | Crowded Kingdoms, from 1 to 65,536 |
-| Players one fleet session carries | 256 | Crowded Kingdoms, from 1 to 1,024 |
+| Fleet sessions your organization holds at once | 512 | Crowded Kingdoms |
+| Players one fleet session carries | 256 | Crowded Kingdoms |
 | [Compute](#funding-raises-your-compute-limit-and-crowded-kingdoms-can-set-a-higher-one) before funding | 16 instances that reserve 1,024 MB, in each datacenter, shared by all your apps | You, by funding your organization |
-| Compute once funded | 16,384 instances that reserve 65,536 MB, in each datacenter, for each app | Crowded Kingdoms, up to 1,048,576 instances and 4,194,304 MB |
+| Compute once funded | 16,384 instances that reserve 65,536 MB, in each datacenter, for each app | Crowded Kingdoms |
 | [Free data out and data in](#you-reach-two-free-data-tiers-yourself-and-crowded-kingdoms-decides-two-more) a month | 15 GB each (the Base tier) | You reach Domain (100 GB) and Measured (500 GB). Crowded Kingdoms approves Profile (200 GB) and makes written agreements. |
 | [Apps](#funding-lifts-the-limit-of-10-apps) that are not archived | 10 before funding, and no limit once funded | You, by funding your organization |
 | [App trust](#crowded-kingdoms-decides-which-apps-skip-the-consent-screen) | Not trusted | Crowded Kingdoms |
@@ -70,8 +70,7 @@ time for these requests, so ask as early as you can.
   to your maximum. Deleting players you no longer need (`deleteManagedPlayer`) makes room
   under the cap.
 - **What Crowded Kingdoms changes.** It switches org-managed players on or off. It sets the
-  player cap, the sign-ins a minute (1 to 100,000), and the default and the maximum length of
-  a sign-in. The maximum can be up to 30 days.
+  player cap, the sign-ins a minute, and the default and the maximum length of a sign-in.
 - **What to send.** For the player cap, the number of player accounts you expect to hold.
   For the sign-in rate, the most sign-ins you expect in one minute, and whether you create
   your players ahead of a launch with `provisionManagedPlayers`.
@@ -97,9 +96,8 @@ time for these requests, so ask as early as you can.
   it with `closeFleetSession` when the server stops. A session ends by itself 24 hours after
   it was opened or last refreshed.
 - **What Crowded Kingdoms changes.** It switches fleet sessions on or off; switching them
-  off ends the sessions you hold. It sets `maxFleetSessions` from 1 to 65,536 and
-  `maxFleetPlayers` from 1 to 1,024. An open session takes a new player number at its next
-  refresh.
+  off ends the sessions you hold. It sets `maxFleetSessions` and `maxFleetPlayers`. An open
+  session takes a new player number at its next refresh.
 - **What to send.** How many game servers you run, and how many players one server holds.
 - **At the limit.** `openFleetSession` answers `FLEET_SESSION_LIMIT` (403) while your
   organization holds as many sessions as it may. A carry past the player number is refused
@@ -129,8 +127,7 @@ time for these requests, so ask as early as you can.
   `memory_mb` and keep a spoke's `concurrency` to what it needs
   ([usage and budgets](/exec/operations#usage-and-budgets)).
 - **What Crowded Kingdoms changes.** It sets a limit for your organization in place of the
-  funded default: 1 to 1,048,576 instances and 1 to 4,194,304 MB, for each app in each
-  datacenter. Your apps take the change within about a minute. The limit applies only while
+  funded default, for each app in each datacenter. Your apps take the change within about a minute. The limit applies only while
   your organization is funded. Reserved memory is billed by the GB-hour as before, so a
   higher limit raises what an app can cost.
 - **What to send.** The instances and the memory you need, with the sum behind them: for
