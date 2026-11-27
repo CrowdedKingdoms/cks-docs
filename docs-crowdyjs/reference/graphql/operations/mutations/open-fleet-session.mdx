@@ -1,0 +1,39 @@
+---
+id: open-fleet-session
+title: openFleetSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+ORG TOKEN ONLY. Open a fleet session for one of your organization's game servers: one realtime session the server holds for itself, in which it carries the players who are on it. Call from the server with `Authorization: Bearer cko_...` (scope fleet:session) when the server starts; a request with an Origin header is refused. The answer is the session's token (its signing key; keep it on the server), its gameTokenId, when it expires (24 hours; keep it with refreshFleetSession), how many players it may carry at once (maxPlayers) and the realtime server to connect to. A player still signs in once, when they join the game (mintManagedPlayerToken); the server then carries that player with the player's own token, and a player who moves to another of your servers is carried by that server with no call to this API. The app must be one of your organization's apps (and in the token's app list, if it has one). Refused FORBIDDEN until a Crowded Kingdoms operator has switched fleet sessions on for the organization (orgManagedPlayerSettings.fleetSessionsEnabled), ORG&#x005F;LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED until an admin has accepted the current Org-Managed Players Addendum, and FLEET&#x005F;SESSION&#x005F;LIMIT when the organization holds as many sessions as it may (maxFleetSessions). Open one session for each game server.
+
+
+```graphql
+openFleetSession(
+  input: OpenFleetSessionInput!
+): FleetSession!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>openFleetSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>OpenFleetSessionInput!</b></code>](/reference/graphql/types/inputs/open-fleet-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>FleetSession</b></code>](/reference/graphql/types/objects/fleet-session.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A fleet session: one realtime session an organization's game server opens for itself, in which it carries the players who are on it. A player still signs in once, when they join (mintManagedPlayerToken); moving to another of the organization's servers is that server starting to carry them, with no call to this API. The session's token never goes to a player's device.
