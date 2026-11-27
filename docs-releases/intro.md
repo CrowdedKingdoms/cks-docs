@@ -39,6 +39,20 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-27 (Unreal SDK v2.30.0: crowd row shadows, voice channels in Studio, directional channel voice)
+
+Four changes; nothing breaks, and derived crowd rows now cast shadows by default. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-27-sdk-v2300).
+
+- **Crowd rows cast shadows.** A row built from an actor class casts one when the class's mesh does;
+  **Derived Rows Cast Shadows** turns that off for a dense crowd.
+- **Channels whose members can talk.** Crowdy Studio's **Create channel** card has **Members can speak**, and
+  `-op=createchannel` takes `-memberscanspeak`.
+- **Pick a channel name in the editor.** An `FString` property marked `meta = (CrowdyChannelPicker)` gets the
+  **Pick** menu of your app's channels.
+- **Hear where a channel speaker stands.** **Directional Channel Voice**, with an optional **Channel Attenuation**,
+  plays room voice from each speaker's position.
+
 ## 2026-11-27 (a keepalive is held to `access`; sign-ins take turns; players are deleted 100 at a time; an erasure finishes whatever the number of hubs)
 
 On the dev environment: Application API v2.90.0, realtime servers v0.51.0, ck-exec 0.26.0, and CrowdyJS 18.41.0.

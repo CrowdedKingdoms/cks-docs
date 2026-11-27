@@ -41,7 +41,7 @@ Press **Set Policy** to write it. The current policy is echoed above the control
 
 ![The Channels page: the channel list, the Create channel card, and the Channel policy card](/img/unreal-sdk/studio-channels.png)
 
-The Channels page mirrors Teams: a **Channels** list, a **Create channel** card with a name, a description, and a **Members can send** checkbox (on by default), a **Members can speak** checkbox (off by default; it gives the default member role the `send_voice` permission, so members can talk on the channel's voice, see [Let members speak](../runtime/channels.md#let-members-speak); on the tagged v2.29.0 plugin the checkbox is not there, see [What's Changed](../guides/whats-changed.md#unreleased-after-v2290)), and a **Channel policy** card with the same four settings as the team policy.
+The Channels page mirrors Teams: a **Channels** list, a **Create channel** card with a name, a description, and a **Members can send** checkbox (on by default), a **Members can speak** checkbox (off by default; it gives the default member role the `send_voice` permission, so members can talk on the channel's voice, see [Let members speak](../runtime/channels.md#let-members-speak)), and a **Channel policy** card with the same four settings as the team policy.
 
 :::caution[A channel name authored here is the exact string gameplay code references.]
 It is the value of the `CrowdyChannel` meta on a Multicast `CrowdyEvent`, and the target of a raw channel publish. Keep the name stable once code uses it.

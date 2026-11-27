@@ -72,7 +72,7 @@ UPROPERTY(EditAnywhere, meta = (CrowdyChannelPicker))
 FString ChannelName;
 ```
 
-**Pick** lists the channels of the app you are signed in to in Crowdy Studio, the same menu a Crowdy event's **Channel** field has; choose one and its name fills the box. **(None)** clears it. You can still type any name, such as a channel you create at runtime. The list needs a Crowdy Studio sign-in; without one the menu says to sign in. This is an editor aid only: the property stays a plain string, and nothing reads the meta at run time. On the tagged v2.29.0 plugin the meta does nothing and only a Crowdy event's **Channel** field has the menu; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2290).
+**Pick** lists the channels of the app you are signed in to in Crowdy Studio, the same menu a Crowdy event's **Channel** field has; choose one and its name fills the box. **(None)** clears it. You can still type any name, such as a channel you create at runtime. The list needs a Crowdy Studio sign-in; without one the menu says to sign in. This is an editor aid only: the property stays a plain string, and nothing reads the meta at run time.
 
 ## Ban a member
 

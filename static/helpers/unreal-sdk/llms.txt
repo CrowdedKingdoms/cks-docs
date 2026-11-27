@@ -26,7 +26,7 @@ The ideas the rest of the SDK documentation assumes: the two planes of state, en
 
 Connect your app to your project and author teams, channels, grids, and more from inside the editor. Start here before you write any game code.
 
-- [Crowdy Studio (Management) as one file (52 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-studio.txt)
+- [Crowdy Studio (Management) as one file (51 KB)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-studio.txt)
 - [Crowdy Studio Overview](https://docs.crowdedkingdoms.com/unreal-sdk/studio/overview): What Crowdy Studio is, when to use it, and the pages in its sidebar.
 - [Signing In](https://docs.crowdedkingdoms.com/unreal-sdk/studio/sign-in): The account and organization-token sign-in options in Crowdy Studio, what each grants, and where the session is kept.
 - [Projects and Apps](https://docs.crowdedkingdoms.com/unreal-sdk/studio/projects-and-apps): Picking an organization and app on the Project page, creating a new app with its datacenter, and what the page's cards mean.

@@ -934,7 +934,7 @@ You built against the SDK in July, you are updating the plugin to 2.15 or later 
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the Application API's legacy game-model engine, which ck-exec replaced; the Application API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
 
-## Unreleased (after v2.29.0)
+## 2026-11-27 (SDK v2.30.0)
 
 Four changes, one of them a new default for derived crowd rows. Nothing breaks.
 
