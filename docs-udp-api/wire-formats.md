@@ -858,6 +858,17 @@ Four things are unchanged:
 Before v0.51.0 a keepalive was not held to `access`. A player without `access` to a region of
 their app could stay present there by keepalives, and was sent what happened there.
 
+**The SDKs report a refused keepalive once**, for the actor and the place, and again when it
+ends. They keep the keepalive rate as it was.
+
+| SDK | A player's connection | A fleet session |
+|---|---|---|
+| CrowdyJS 18.41.0 | Sends no keepalive message: it keeps an actor present with actor updates | `FleetSession`'s `notPresent` and `notPresentEnded` handlers |
+| CrowdyCPP 0.95.0 | `Handlers::notPresent` and `notPresentEnded`; `WorldSessionConfig::onNotPresent` and `onNotPresentEnded` | `FleetHandlers::notPresent` and `notPresentEnded` |
+
+See [the CrowdyCPP replication client](/crowdycpp/replication-client#a-refused-keepalive-is-reported-once)
+and [the fleet guide](/management-api/fleet-sessions#an-sdk-does-the-same-steps-for-you).
+
 **No particular keyframe cadence is needed to be seen across servers (server v0.37.0).** Two
 idle players on different servers see each other from the first full actor update after
 joining, whatever the heartbeats between them; with the SDKs' defaults (a full update every
