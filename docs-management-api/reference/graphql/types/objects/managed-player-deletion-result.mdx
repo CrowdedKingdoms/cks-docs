@@ -1,0 +1,43 @@
+---
+id: managed-player-deletion-result
+title: ManagedPlayerDeletionResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One player of a deleteManagedPlayers call, and what was done.
+
+
+```graphql
+type ManagedPlayerDeletionResult {
+  externalId: String!
+  outcome: ManagedPlayerDeletion!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayerDeletionResult.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #external-id */} 
+The externalId as it was sent.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayerDeletionResult.<b>outcome</b></code>](#outcome)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ManagedPlayerDeletion!</b></code>](/reference/graphql/types/enums/managed-player-deletion.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #outcome */} 
+DELETED, NOT&#x005F;FOUND or LEGAL&#x005F;HOLD.
+
+
+
+
+### Member Of
+
+[`DeleteManagedPlayersResult`](/reference/graphql/types/objects/delete-managed-players-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
