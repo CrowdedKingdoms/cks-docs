@@ -43,6 +43,11 @@ a list leaves out are not sent or billed. A list names at most the app's
 `gameClientBootstrap.maxVoiceSpeakers` / `maxVideoSpeakers` (32 at most); the
 connection sends the lists again with each capabilities advertisement.
 
+An organization's own game server uses `crowdypy.fleet.AsyncFleetSession` (or the polled
+`FleetSession`) in place of `client.udp`: one session that carries all of the server's
+players (0.40.0). See
+[Run your own game servers with a fleet session](/management-api/fleet-sessions#crowdypy).
+
 ## Channel messages limited by distance
 
 `send_ranged_channel_message` (0.6.0) publishes to a channel but delivers only to the
