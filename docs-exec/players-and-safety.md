@@ -58,7 +58,13 @@ erased, so delete or anonymize everything this hub holds about them. Only the pl
 
 - **Every hub of the app that holds state hears it**, [mods](mods) included: running instances,
   and stopped ones with a snapshot, which the platform starts for the event and stops after.
-  Spokes hold nothing and are not asked.
+  Spokes hold nothing and are not asked. From ck-exec 0.26.0, a stopped hub whose state was
+  last stored more than ten minutes before the player's account was created is not started
+  for that player: it cannot hold anything of them.
+- **A hub may hear it for many players, one after the other** (ck-exec 0.26.0). The platform
+  asks a hub about every deleted player it has not yet answered for in one visit: the hook
+  runs once for each player, and one snapshot is stored after the last. Keep the hook cheap
+  when the hub holds nothing of the player.
 - **Done means stored.** The hub counts as erased once a snapshot taken after the hook returned
   `Ok` is stored. An error is recorded, and the erasure asks again later; so may a retry after a
   failure elsewhere, so the hook must be safe to run twice.
@@ -73,6 +79,53 @@ erased, so delete or anonymize everything this hub holds about them. Only the pl
   every hub that keeps anything about players other than in instances keyed by their id. A hub
   built with an `ckx-sdk` older than 0.13.0 answers the same way.
 - A legal hold on the account defers the erasure until it is released.
+
+### An erasure finishes whatever the number of hubs and players
+
+From ck-exec 0.26.0 the platform records each erasure and carries it on until it is done. It
+asks an app's hubs about a set of deleted players in one pass, and after an interruption it
+carries on where it stopped, with the hubs still to ask. Before 0.26.0 each deleted player was
+one request that began again when it ran out of time, so in an app with a hub for each player
+the erasures of thousands of players did not finish.
+
+Measured on Crowded Kingdoms' internal dev environment, with Application API v2.90.0 and
+ck-exec 0.26.0, in an app with a hub for each player: 6,000 players were deleted in 33 seconds
+with 60 [`deleteManagedPlayers`](/management-api/org-managed-players#sessions-refresh-and-signing-out)
+calls, and their erasure in the app's hubs finished 4 minutes later. How long an erasure
+takes depends on how many hubs hold state and on what your hooks do, so plan on no fixed time.
+
+An erasure does not wait for room either: a hub started to be asked does not count toward
+your app's or your organization's [instance and memory limits](operations#call-limits).
+
+### An erasure is complete only when every hub with stored state has been asked
+
+The platform cannot tell what a hub's stored state holds without running the hub's code. Two
+things stop it from asking, and each keeps the erasure of **every** deleted player of that app
+open, for as long as it lasts:
+
+- **Stored state of a node type that the active version no longer has.** No code of the app
+  reads that state, so nothing can say whether a player is in it. `execInstances(appId)` lists
+  those hubs with `orphaned: true`
+  ([instances and versions](operations#instances-and-versions)).
+- **A hub whose stored state your deployed code cannot load.** Its start fails, so it cannot
+  be asked. A call to it is answered `Unavailable` with `start failed:` and the hub's address
+  ([call limits](operations#call-limits)).
+
+Both end when you deploy:
+
+- **For a dropped type**, deploy a version that has the type again. With `on_player_erased`,
+  its hubs are asked and the erasures go on at once. A type whose code has no hook answers
+  "not implemented", which holds no erasure up and leaves what those hubs hold in place.
+- **For state that does not load**, deploy code whose `load` reads that state.
+
+**Before you drop a node type that held player data:**
+
+1. Assume its hubs still have stored state. A hub that saved state keeps it after it stops,
+   and that state has no expiry. `execInstances(appId)` lists the app's instances.
+2. Keep the type in your manifest, with an `on_player_erased` that deletes or anonymizes what
+   the hub holds. The type can stop serving players: what has to stay is its `load`, its
+   `persist`, and the hook.
+3. Keep `load` able to read the state your earlier versions stored.
 
 ## Export
 

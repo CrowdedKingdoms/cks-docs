@@ -22,7 +22,7 @@ The fleet session to keep, and where it is connected.
 input RefreshFleetSessionInput {
   appId: BigInt!
   gameTokenId: BigInt!
-  currentServer: CurrentServerInput
+  currentServer: FleetCurrentServerInput
 }
 ```
 
@@ -37,8 +37,8 @@ The app the session is in (BigInt as a decimal string).
 The session's gameTokenId, from openFleetSession.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RefreshFleetSessionInput.<b>currentServer</b></code>](#current-server)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CurrentServerInput</b></code>](/reference/graphql/types/inputs/current-server-input.mdx) <Badge class="badge badge--secondary " text="input"/> {/* #current-server */} 
-The realtime server the session is connected to (the ip4 and clientPort it was given). When that server still serves the app the session stays on it. Leave it out, or name one that no longer serves, and the answer names a new server to connect to: use that after a realtime server told the session to move.
+#### [<code style={{ fontWeight: 'normal' }}>RefreshFleetSessionInput.<b>currentServer</b></code>](#current-server)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>FleetCurrentServerInput</b></code>](/reference/graphql/types/inputs/fleet-current-server-input.mdx) <Badge class="badge badge--secondary " text="input"/> {/* #current-server */} 
+The realtime server the session is connected to: the ip4 or the ip6 it was given, and the clientPort. When that server still serves the app the session stays on it. Leave it out, or name one that no longer serves, and the answer names a new server to connect to: use that after a realtime server told the session to move. An address that is not a valid IPv4 or IPv6 address is refused BAD&#x005F;REQUEST, and the session is left as it was.
 
 
 

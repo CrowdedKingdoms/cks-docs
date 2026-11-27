@@ -52,7 +52,10 @@ Your organization's own game server has limits of its own in place of a player's
 0.25.0): **2,000 calls a second** on one server connection, **32,000 a second** for all of an
 organization's server connections to one app through one host, and at most **256** such
 connections there. A call over either budget is refused with `Busy`, and its message starts
-`rate limited`. See
+`rate limited`. From ck-exec 0.26.0 a host also bounds what it queues for connections that do
+not read: **16 MiB** of answers and pushes for one player's or developer's connection, and
+**256 MiB** in total for an organization's server connections to one app, past which the
+connection furthest behind is closed. See
 [your organization's game servers](/exec/operations#a-server-connection-has-its-own-limits).
 
 ## Realtime (UDP) cost model

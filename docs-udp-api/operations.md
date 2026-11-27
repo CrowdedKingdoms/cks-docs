@@ -23,7 +23,7 @@ match the current wire enum; the `MAP_*` forms are legacy aliases.
 |------|------|----------------|
 | 5 | `INVALID_TOKEN` | Malformed token material, or not a valid app-scoped token |
 | 6 | `APP_NOT_FOUND` | Unknown app (formerly `MAP_NOT_FOUND`) |
-| 7 | `UNAUTHORIZED` | Permission denied: no active app access / tier permission, or no grid permission for the target chunk (see Permissions below). For a fleet session, see [below](#fleet-sessions) |
+| 7 | `UNAUTHORIZED` | Permission denied: no active app access / tier permission, or no grid permission for the target chunk (see Permissions below). From server v0.51.0, also the answer to every keepalive (`CLIENT_ACTOR_HEARTBEAT`) for a chunk where the player has no `access`. For a fleet session, see [below](#fleet-sessions) |
 | 13 | `GAME_TOKEN_WRONG_SIZE` | Malformed token material |
 | 15 | `INVALID_REQUEST` | Wire layout or field error |
 | 18 | `INVALID_APP_ID` | Not authorized for this app: unknown app **or the token is scoped to a different app** (app-scope mismatch). For a fleet session: a heartbeat that names a chunk of an app the session is not in; it registers nothing |
@@ -41,6 +41,13 @@ move/send events and text, `update_voxel_data` to edit voxels, `use_voice_chat` 
 **and** the target chunk must be inside a **grid** where the sender holds that
 key. A message failing either check is dropped and answered with
 `GENERIC_ERROR_MESSAGE` / `UNAUTHORIZED` (code 7).
+
+**A keepalive is held to `access` too** (replication server v0.51.0). The server accepts a
+`CLIENT_ACTOR_HEARTBEAT` only where it would accept the same actor's update. Where the player
+has no `access`, every keepalive is answered `UNAUTHORIZED`, the player is not present there,
+and the session is sent nothing of the place. The session stays connected. A game whose
+players only stand where they may enter has nothing to change. See
+[A keepalive is accepted only where the actor's update would be](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be).
 
 A **voxel update** is held to a stricter rule (replication server v0.34.0): the
 grid that decides is the **most specific** one covering the chunk, so a plot or a
@@ -70,6 +77,10 @@ into restrictions (safe zones, plot ownership) via the Application API. See
 > `UNAUTHORIZED` replies, keep sending at a reduced rate for ~10-15 seconds
 > before falling back to a fresh `serverWithLeastClients` assignment.
 
+A refused keepalive is handled differently. Keep sending it at its normal cadence: never
+faster, and never stop. Ask for no new assignment. Once the player is granted `access`, the
+next keepalive is admitted within about 6 seconds, with no new sign-in.
+
 ## App suspended or over budget
 
 If an app is **paused** — its organization is out of wallet funds, over a spend cap
@@ -77,7 +88,8 @@ on the shared environment, or its subscription lapsed — sessions still connect
 nothing the app's clients send replicates. Since server v0.37.0 the server says so: a
 refused spatial or channel send is answered `GENERIC_ERROR_MESSAGE` with code **33
 (`APP_PAUSED`)**, at most once per session every 5 seconds, and the rest are dropped
-silently. Heartbeats are not refused. The server re-checks with backoff and serves the
+silently. A keepalive is not refused for the pause: it is still accepted wherever the player
+has `access` ([the rule](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be)). The server re-checks with backoff and serves the
 session again once the app is active, with no reconnect. `mintAppToken` and `gameClientBootstrap`
 report the reason in `runtimeGate`, so tell the player the world is paused. This is a
 billing/runtime state, not a client bug: the owner resolves it on the management API
@@ -139,6 +151,10 @@ these differences:
   carry, or the player's previous `gameTokenId` after a carry with a refreshed token.
   [Why a send is refused](/management-api/fleet-sessions#why-a-send-is-refused-and-what-your-server-does)
   lists every cause and what to do for each.
+- **`UNAUTHORIZED` (7) for a keepalive** (server v0.51.0). A carried player's keepalive is
+  judged for that player. Where the player has no `access`, every keepalive is answered
+  `UNAUTHORIZED` inside the session's signed bundle, and the player is not present there. The
+  session's own keepalive is unchanged.
 - **`TOKEN_EXPIRED` (32)** answers a message for a carried player whose token just expired.
   `FLEET_RELEASED` with reason 2 follows. The session itself goes on.
 - **The session's own end** is `COMMAND_SESSION_RELEASED` (28, or 45 in its bound form), signed
