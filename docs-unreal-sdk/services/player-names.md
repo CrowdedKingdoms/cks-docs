@@ -79,7 +79,7 @@ A custom event `OnChooseNamePressed` runs **Set Player Name**. **On Error** brea
 | **Get My App State** | `GetMyAppState(OnResult, OnError)` | Reads the state. **On Success** gives **State**, the base64 text, empty when none was saved. |
 | **Set My App State** | `SetMyAppState(State, OnDone, OnError)` | Replaces the state with the base64 text. An empty one clears it. |
 
-Both nodes are async: they continue on **On Success** or **On Error**, which carries **Error** and **Message**. Both need a signed-in player. In C++ they answer on `FOnPlayerAppStateRead` (the text), `FOnPlayerAppStateWritten` and `FOnPlayersError`.
+Both nodes are async: they continue on **On Success** or **On Error**, which carries **Error** and **Message**. Both need a signed-in player. In C++ they answer on `FOnPlayerAppStateRead` (the text), `FOnPlayerAppStateWritten` and `FOnPlayersError`. The nodes are `UCrowdyPlayers_GetMyAppState` and `UCrowdyPlayers_SetMyAppState`, whose pins are `FPlayerAppStateAsyncResult` (`State`, `Error`, `Message`) and, for the write, `FPlayerAppStateWriteAsyncResult` (`Error`, `Message`).
 
 Only that player can read it. The platform keeps it per account, not per avatar and not per machine, so it is there on the next machine they sign in on. The client writes it, so it is for settings, never for anything a player must not be able to change: keep that in a [Server Object](/exec/intro).
 

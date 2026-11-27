@@ -63,6 +63,17 @@ A channel can carry voice as well as messages; see [Talk to a channel](../servic
 
 A change to the signature: in C++, `CreateChannel` takes `bMembersCanSpeak` right after `bMembersCanSend`, so existing calls need the new argument. The Blueprint node gains the pin, off.
 
+## Pick a channel name in the editor
+
+A channel is joined and published to by name in your own settings too: a village actor's channel, a room's voice channel. Mark an `FString` property with `CrowdyChannelPicker` and the Details panel shows a **Pick** button next to its text box:
+
+```cpp
+UPROPERTY(EditAnywhere, meta = (CrowdyChannelPicker))
+FString ChannelName;
+```
+
+**Pick** lists the channels of the app you are signed in to in Crowdy Studio, the same menu a Crowdy event's **Channel** field has; choose one and its name fills the box. **(None)** clears it. You can still type any name, such as a channel you create at runtime. The list needs a Crowdy Studio sign-in; without one the menu says to sign in. This is an editor aid only: the property stays a plain string, and nothing reads the meta at run time.
+
 ## Ban a member
 
 A manager removes a member for good with `BanChannelMember(ChannelId, UserId, Reason, OnSuccess, OnError)`. It takes the user out of the channel and refuses every later join, request to join and add of that user until a manager lifts the ban with `UnbanChannelMember(ChannelId, UserId, OnSuccess, OnError)`. The caller needs the manage-members permission, and the channel's owner and the caller themselves cannot be banned. A user who is not a member yet can be banned too, and leaving or being removed does not lift a ban.

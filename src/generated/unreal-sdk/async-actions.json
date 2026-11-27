@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-23T17:16:40Z",
-  "sdk_version": "2.28.0",
+  "generated_from": "2026-11-27T17:15:38Z",
+  "sdk_version": "2.30.0",
   "table": "async-actions",
   "columns": [
     {
@@ -1641,6 +1641,24 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyPlayers_GetMyAppState",
+      "node": [
+        "Get My App State"
+      ],
+      "factories": [
+        "GetMyAppState"
+      ],
+      "class": "UCrowdyPlayers_GetMyAppState",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName",
       "node": [
         "Get Player Name"
@@ -1667,6 +1685,24 @@
         "GetPlayerNames"
       ],
       "class": "UCrowdyPlayers_GetPlayerNames",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPlayers_SetMyAppState",
+      "node": [
+        "Set My App State"
+      ],
+      "factories": [
+        "SetMyAppState"
+      ],
+      "class": "UCrowdyPlayers_SetMyAppState",
       "pins": [
         "OnSuccess",
         "OnError"

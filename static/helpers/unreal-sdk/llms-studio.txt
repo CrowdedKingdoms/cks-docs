@@ -323,12 +323,12 @@ The same commandlet does what the Access, Teams, Channels and Grid pages do, so 
 | `-op=teams`, `-op=channels` | Read the app's teams or channels. |
 | `-op=groupdetail -kind=team -group=<id>` | Reads one team or channel, with its members and their roles. |
 | `-op=createteam -name="Oakford Guild" [-description="..."] [-policy=<policy>] -yes` | Creates a team. `-policy=` is `open`, `request`, `invite` or `admin`. |
-| `-op=createchannel -name=oakford-chat [-description="..."] [-policy=<policy>] [-memberscansend=<true or false>] -yes` | Creates a channel. |
+| `-op=createchannel -name=oakford-chat [-description="..."] [-policy=<policy>] [-memberscansend=<true or false>] [-memberscanspeak=<true or false>] -yes` | Creates a channel. `-memberscansend` defaults to true and `-memberscanspeak` to false, like the checkboxes on the Create channel card. Either switch needs `=true` or `=false`; written bare or empty it is refused. The member role is set only when a channel is created, so on a channel that already exists either switch is refused: find the member role's id with `-op=groupdetail -kind=channel -group=<id>`, then change it with `-op=updaterole -kind=channel -group=<id> -role=<id> -perms=send_messages,send_voice -yes`, listing every permission the role should have. |
 | `-op=updategroup -kind= -group= [-name=] [-description=] [-policy=] -yes` | Changes a team or channel. |
 | `-op=deletegroup -kind= -group= -yes` | Deletes it, with its members and roles. This cannot be undone. |
 | `-op=addmember`, `-op=removemember` with `-kind= -group= -user= -yes` | Adds a user to a team or channel, or removes them. |
 | `-op=setroles -kind= -group= -user= -roles=1,2 -yes` | Sets a member's roles by role id. `-noroles` in place of `-roles=` clears them. |
-| `-op=createrole -kind= -group= -name= [-perms=manage_members,invite_members] [-rank=] -yes` | Creates a custom role. A team role can grant `manage_group`, `manage_members`, `manage_roles` and `invite_members`; a channel role can also grant `send_messages`, which decides who may post. `-op=updaterole` and `-op=deleterole` change and delete one. |
+| `-op=createrole -kind= -group= -name= [-perms=manage_members,invite_members] [-rank=] -yes` | Creates a custom role. A team role can grant `manage_group`, `manage_members`, `manage_roles` and `invite_members`; a channel role can also grant `send_messages`, which decides who may post, and `send_voice`, which decides who may talk on the channel's voice. `-op=updaterole` and `-op=deleterole` change and delete one. |
 | `-op=setteampolicy`, `-op=setchannelpolicy` | Write the app-wide policy, like **Set Policy**. They take `-creation=` (`admin`, `member` or `anyone`), `-membership=`, `-maxmembers=` and `-maxgroupsperuser=`, all optional, and `-yes`. 0 for a maximum means unlimited. |
 
 Creating a team or channel whose name already exists succeeds with `changed:false` when the existing one matches what you asked for, and fails naming the differences when it does not.
@@ -467,7 +467,7 @@ Press **Set Policy** to write it. The current policy is echoed above the control
 
 ![The Channels page: the channel list, the Create channel card, and the Channel policy card](/img/unreal-sdk/studio-channels.png)
 
-The Channels page mirrors Teams: a **Channels** list, a **Create channel** card with a name, a description, and a **Members can send** checkbox (on by default), and a **Channel policy** card with the same four settings as the team policy.
+The Channels page mirrors Teams: a **Channels** list, a **Create channel** card with a name, a description, and a **Members can send** checkbox (on by default), a **Members can speak** checkbox (off by default; it gives the default member role the `send_voice` permission, so members can talk on the channel's voice, see [Let members speak](../runtime/channels.md#let-members-speak)), and a **Channel policy** card with the same four settings as the team policy.
 
 :::caution[A channel name authored here is the exact string gameplay code references.]
 It is the value of the `CrowdyChannel` meta on a Multicast `CrowdyEvent`, and the target of a raw channel publish. Keep the name stable once code uses it.

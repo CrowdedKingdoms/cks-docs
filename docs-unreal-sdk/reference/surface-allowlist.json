@@ -7755,5 +7755,8 @@
   { "id": "UCrowdyActorOwners::HandleSignedIn", "reason": "internal", "note": "Creates the player's actor record at sign-in; the SDK's sign-in calls it." },
   { "id": "UCrowdyActorOwners::HasSettledSignIn", "reason": "internal", "note": "The gate the realtime connection waits on at sign-in." },
   { "id": "UCrowdyActorOwners::IsSettlingSignIn", "reason": "internal", "note": "The gate the realtime connection waits on at sign-in." },
-  { "id": "UCrowdyAuthentication::EndPreviousSignIn", "reason": "internal", "note": "Ends a live sign-in before another replaces it; the SDK's sign-in calls it." }
+  { "id": "UCrowdyAuthentication::EndPreviousSignIn", "reason": "internal", "note": "Ends a live sign-in before another replaces it; the SDK's sign-in calls it." },
+  { "id": "UCrowdyMassEntitySubsystem::QueueNearTierBindingChange", "reason": "internal", "note": "The near tier component's hand-off that holds a binding change until the crowd's frame ends; a game binds On Near Tier Binding Changed instead." },
+  { "id": "FPendingNearTierBinding", "reason": "internal", "note": "The subsystem's queue entry behind QueueNearTierBindingChange." },
+  { "id": "FCrowdyVoiceSettings::ClampPlaybackVolume", "reason": "internal", "note": "Clamps the playback volume the voice settings apply; a game calls Set Voice Playback Volume." }
 ]

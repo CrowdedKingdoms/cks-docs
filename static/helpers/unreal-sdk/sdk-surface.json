@@ -1,6 +1,6 @@
 {
-  "generated": "2026-11-23T17:16:40Z",
-  "sdk_version": "2.28.0",
+  "generated": "2026-11-27T17:15:38Z",
+  "sdk_version": "2.30.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
     {
@@ -675,6 +675,25 @@
       "static": false,
       "return_type": "void",
       "category": "Crowdy SDK|Actor Pool",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyActorTracker::GetTrackedRemoteEntities",
+      "class": "UCrowdyActorTracker",
+      "name": "GetTrackedRemoteEntities",
+      "display_name": "Get Tracked Remote Entities",
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorTracker.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "TArray<FGuid>",
+      "category": "Crowdy SDK|Actor Tracker",
       "specifiers": [
         "BlueprintCallable"
       ],
@@ -8129,6 +8148,28 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyPlayers_GetMyAppState::GetMyAppState",
+      "class": "UCrowdyPlayers_GetMyAppState",
+      "name": "GetMyAppState",
+      "display_name": "Get My App State",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": true,
+      "return_type": "UCrowdyPlayers_GetMyAppState*",
+      "category": "Crowdy SDK|Players|State",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {
+        "BlueprintInternalUseOnly": "true",
+        "WorldContext": "WorldContextObject"
+      },
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName::GetPlayerName",
       "class": "UCrowdyPlayers_GetPlayerName",
       "name": "GetPlayerName",
@@ -8163,6 +8204,28 @@
       "static": true,
       "return_type": "UCrowdyPlayers_GetPlayerNames*",
       "category": "Crowdy SDK|Players",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {
+        "BlueprintInternalUseOnly": "true",
+        "WorldContext": "WorldContextObject"
+      },
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyPlayers_SetMyAppState::SetMyAppState",
+      "class": "UCrowdyPlayers_SetMyAppState",
+      "name": "SetMyAppState",
+      "display_name": "Set My App State",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": true,
+      "return_type": "UCrowdyPlayers_SetMyAppState*",
+      "category": "Crowdy SDK|Players|State",
       "specifiers": [
         "BlueprintCallable"
       ],
@@ -9167,6 +9230,44 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::GetVoiceInputDevice",
+      "class": "UCrowdySDKSubsystem",
+      "name": "GetVoiceInputDevice",
+      "display_name": "Get Voice Input Device",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": false,
+      "pure": true,
+      "static": false,
+      "return_type": "FString",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintPure"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::GetVoiceInputDevices",
+      "class": "UCrowdySDKSubsystem",
+      "name": "GetVoiceInputDevices",
+      "display_name": "Get Voice Input Devices",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "TArray<FCrowdyVoiceInputDevice>",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::GetVoiceMicState",
       "class": "UCrowdySDKSubsystem",
       "name": "GetVoiceMicState",
@@ -9178,6 +9279,25 @@
       "pure": true,
       "static": false,
       "return_type": "ECrowdyVoiceMicState",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintPure"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::GetVoicePlaybackVolume",
+      "class": "UCrowdySDKSubsystem",
+      "name": "GetVoicePlaybackVolume",
+      "display_name": "Get Voice Playback Volume",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": false,
+      "pure": true,
+      "static": false,
+      "return_type": "float",
       "category": "Crowdy SDK|Voice",
       "specifiers": [
         "BlueprintPure"
@@ -9731,6 +9851,44 @@
       "class": "UCrowdySDKSubsystem",
       "name": "SetVoiceChatStreamTimeoutThreshold",
       "display_name": "Set Voice Chat Stream Timeout Threshold",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "void",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::SetVoiceInputDevice",
+      "class": "UCrowdySDKSubsystem",
+      "name": "SetVoiceInputDevice",
+      "display_name": "Set Voice Input Device",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "void",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::SetVoicePlaybackVolume",
+      "class": "UCrowdySDKSubsystem",
+      "name": "SetVoicePlaybackVolume",
+      "display_name": "Set Voice Playback Volume",
       "module": "CrowdySDK",
       "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
       "public_header": true,
@@ -15130,6 +15288,26 @@
       "category": ""
     },
     {
+      "id": "UCrowdyMassEntitySubsystem::OnNearTierBindingChanged",
+      "class": "UCrowdyMassEntitySubsystem",
+      "name": "OnNearTierBindingChanged",
+      "type": "FCrowdyMassNearTierActorBindingChanged",
+      "module": "CrowdyMass",
+      "header": "CrowdyMass/Public/Subsystems/CrowdyMassEntitySubsystem.h",
+      "public_header": true,
+      "category": "Crowdy Mass|Near Tier"
+    },
+    {
+      "id": "UCrowdyMassNearTierComponent::OnEntityBindingChanged",
+      "class": "UCrowdyMassNearTierComponent",
+      "name": "OnEntityBindingChanged",
+      "type": "FCrowdyMassNearTierBindingChanged",
+      "module": "CrowdyMass",
+      "header": "CrowdyMass/Public/Components/CrowdyMassNearTierComponent.h",
+      "public_header": true,
+      "category": "Crowdy Mass|Near Tier"
+    },
+    {
       "id": "UCrowdyMassNearTierComponent::OnServerValuesChanged",
       "class": "UCrowdyMassNearTierComponent",
       "name": "OnServerValuesChanged",
@@ -15190,6 +15368,26 @@
       "category": "Crowdy SDK|Mod Scripts"
     },
     {
+      "id": "UCrowdyPlayers_GetMyAppState::OnError",
+      "class": "UCrowdyPlayers_GetMyAppState",
+      "name": "OnError",
+      "type": "FPlayerAppStateAsyncResult",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "public_header": true,
+      "category": ""
+    },
+    {
+      "id": "UCrowdyPlayers_GetMyAppState::OnSuccess",
+      "class": "UCrowdyPlayers_GetMyAppState",
+      "name": "OnSuccess",
+      "type": "FPlayerAppStateAsyncResult",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "public_header": true,
+      "category": ""
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName::OnError",
       "class": "UCrowdyPlayers_GetPlayerName",
       "name": "OnError",
@@ -15224,6 +15422,26 @@
       "class": "UCrowdyPlayers_GetPlayerNames",
       "name": "OnSuccess",
       "type": "FPlayerProfilesAsyncResult",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "public_header": true,
+      "category": ""
+    },
+    {
+      "id": "UCrowdyPlayers_SetMyAppState::OnError",
+      "class": "UCrowdyPlayers_SetMyAppState",
+      "name": "OnError",
+      "type": "FPlayerAppStateWriteAsyncResult",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "public_header": true,
+      "category": ""
+    },
+    {
+      "id": "UCrowdyPlayers_SetMyAppState::OnSuccess",
+      "class": "UCrowdyPlayers_SetMyAppState",
+      "name": "OnSuccess",
+      "type": "FPlayerAppStateWriteAsyncResult",
       "module": "CrowdyServices",
       "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
       "public_header": true,
@@ -17635,6 +17853,21 @@
       ]
     },
     {
+      "id": "UCrowdyPlayers_GetMyAppState",
+      "class": "UCrowdyPlayers_GetMyAppState",
+      "base": "U",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "public_header": true,
+      "factories": [
+        "GetMyAppState"
+      ],
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ]
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName",
       "class": "UCrowdyPlayers_GetPlayerName",
       "base": "U",
@@ -17658,6 +17891,21 @@
       "public_header": true,
       "factories": [
         "GetPlayerNames"
+      ],
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ]
+    },
+    {
+      "id": "UCrowdyPlayers_SetMyAppState",
+      "class": "UCrowdyPlayers_SetMyAppState",
+      "base": "U",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "public_header": true,
+      "factories": [
+        "SetMyAppState"
       ],
       "pins": [
         "OnSuccess",
@@ -20871,6 +21119,15 @@
       "meta": {}
     },
     {
+      "id": "FCrowdyVoiceInputDevice",
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/CrowdyVoiceInputDevice.h",
+      "public_header": true,
+      "meta": {
+        "DisplayName": "Crowdy Voice Input Device"
+      }
+    },
+    {
       "id": "FCrowdyVoxel",
       "module": "CrowdyServices",
       "header": "CrowdyServices/Public/Subsystem/CrowdyVoxels.h",
@@ -22403,6 +22660,13 @@
           "edit": true
         },
         {
+          "name": "bDerivedRowsCastShadows",
+          "type": "bool",
+          "category": "Crowdy Mass|Remote Entities",
+          "config": true,
+          "edit": true
+        },
+        {
           "name": "NearTierDistance",
           "type": "float",
           "category": "Crowdy Mass|Near Tier",
@@ -22703,6 +22967,20 @@
         {
           "name": "OcclusionChecksPerSecond",
           "type": "int32",
+          "category": "Playback",
+          "config": true,
+          "edit": true
+        },
+        {
+          "name": "bDirectionalChannelVoice",
+          "type": "bool",
+          "category": "Playback",
+          "config": true,
+          "edit": true
+        },
+        {
+          "name": "ChannelAttenuation",
+          "type": "TSoftObjectPtr<USoundAttenuation>",
           "category": "Playback",
           "config": true,
           "edit": true
@@ -42162,6 +42440,12 @@
           "uproperty": false
         },
         {
+          "name": "bCastShadow",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "Route",
           "type": "ECrowdyMassMeshRoute",
           "static": false,
@@ -49893,6 +50177,40 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyVoiceInputDevice",
+      "name": "FCrowdyVoiceInputDevice",
+      "kind": "struct",
+      "scope": "",
+      "reflected": "USTRUCT",
+      "blueprint_type": true,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "Id",
+          "type": "FString",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "Name",
+          "type": "FString",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "bIsDefault",
+          "type": "bool",
+          "static": false,
+          "uproperty": true
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/CrowdyVoiceInputDevice.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyVoiceSettings",
       "name": "FCrowdyVoiceSettings",
       "kind": "struct",
@@ -49975,6 +50293,18 @@
           "uproperty": false
         },
         {
+          "name": "InputDeviceId",
+          "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PlaybackVolume",
+          "type": "float",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "bSpatialVoice",
           "type": "bool",
           "static": false,
@@ -50029,6 +50359,18 @@
         {
           "name": "SampleRate",
           "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bPlaced",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "NextSwitchMs",
+          "type": "int64",
           "static": false,
           "uproperty": false
         }
@@ -51882,6 +52224,40 @@
       "enumerators": [],
       "module": "CrowdyServices",
       "header": "CrowdyServices/Public/Subsystem/CrowdyVoxelWorld.h",
+      "editor_module": false
+    },
+    {
+      "id": "FPendingNearTierBinding",
+      "name": "FPendingNearTierBinding",
+      "kind": "struct",
+      "scope": "UCrowdyMassEntitySubsystem",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "Component",
+          "type": "TWeakObjectPtr<UCrowdyMassNearTierComponent>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "UUID",
+          "type": "FGuid",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bBound",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyMass",
+      "header": "CrowdyMass/Public/Subsystems/CrowdyMassEntitySubsystem.h",
       "editor_module": false
     },
     {
@@ -58555,6 +58931,12 @@
           "uproperty": true
         },
         {
+          "name": "bDerivedRowsCastShadows",
+          "type": "bool",
+          "static": false,
+          "uproperty": true
+        },
+        {
           "name": "NearTierDistance",
           "type": "float",
           "static": false,
@@ -58688,6 +59070,12 @@
         "ICrowdyEntityEventHandler"
       ],
       "fields": [
+        {
+          "name": "OnNearTierBindingChanged",
+          "type": "FCrowdyMassNearTierActorBindingChanged",
+          "static": false,
+          "uproperty": true
+        },
         {
           "name": "OnRowClassRecorded",
           "type": "FOnCrowdyMassRowClassRecorded",
@@ -58875,6 +59263,12 @@
         {
           "name": "bApplyTraceCollision",
           "type": "bool",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "OnEntityBindingChanged",
+          "type": "FCrowdyMassNearTierBindingChanged",
           "static": false,
           "uproperty": true
         },
@@ -59416,6 +59810,36 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyPlayers_GetMyAppState",
+      "name": "UCrowdyPlayers_GetMyAppState",
+      "kind": "class",
+      "scope": "",
+      "reflected": "UCLASS",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [
+        "UBlueprintAsyncActionBase"
+      ],
+      "fields": [
+        {
+          "name": "OnSuccess",
+          "type": "FPlayerAppStateAsyncResult",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "OnError",
+          "type": "FPlayerAppStateAsyncResult",
+          "static": false,
+          "uproperty": true
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName",
       "name": "UCrowdyPlayers_GetPlayerName",
       "kind": "class",
@@ -59466,6 +59890,36 @@
         {
           "name": "OnError",
           "type": "FPlayerProfilesAsyncResult",
+          "static": false,
+          "uproperty": true
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyPlayers_SetMyAppState",
+      "name": "UCrowdyPlayers_SetMyAppState",
+      "kind": "class",
+      "scope": "",
+      "reflected": "UCLASS",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [
+        "UBlueprintAsyncActionBase"
+      ],
+      "fields": [
+        {
+          "name": "OnSuccess",
+          "type": "FPlayerAppStateWriteAsyncResult",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "OnError",
+          "type": "FPlayerAppStateWriteAsyncResult",
           "static": false,
           "uproperty": true
         }
@@ -63144,6 +63598,18 @@
         {
           "name": "OcclusionChecksPerSecond",
           "type": "int32",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "bDirectionalChannelVoice",
+          "type": "bool",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "ChannelAttenuation",
+          "type": "TSoftObjectPtr<USoundAttenuation>",
           "static": false,
           "uproperty": true
         },
@@ -82285,6 +82751,29 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyVoiceSettings::ClampPlaybackVolume",
+      "owner": "FCrowdyVoiceSettings",
+      "owner_kind": "struct",
+      "name": "ClampPlaybackVolume",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "float ClampPlaybackVolume(const float Volume)",
+      "return_type": "float",
+      "params": "const float Volume",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/CrowdyVoiceSettings.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyVoiceSettings::ClampStreamTimeout",
       "owner": "FCrowdyVoiceSettings",
       "owner_kind": "struct",
@@ -87759,6 +88248,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyActorTracker::GetTrackedRemoteEntities",
+      "owner": "UCrowdyActorTracker",
+      "owner_kind": "class",
+      "name": "GetTrackedRemoteEntities",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "TArray<FGuid> GetTrackedRemoteEntities() const",
+      "return_type": "TArray<FGuid>",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorTracker.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyActorTracker::HandleActorLeftDelivery",
       "owner": "UCrowdyActorTracker",
       "owner_kind": "class",
@@ -89852,6 +90364,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyAutoRegistry::HasCachedRepLayoutForTest",
+      "owner": "UCrowdyAutoRegistry",
+      "owner_kind": "class",
+      "name": "HasCachedRepLayoutForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "bool HasCachedRepLayoutForTest(const UClass* Class) const",
+      "return_type": "bool",
+      "params": "const UClass* Class",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Subsystem/CrowdyAutoRegistry.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyAutoRegistry::RegisterLoadedPayloadTypes",
       "owner": "UCrowdyAutoRegistry",
       "owner_kind": "class",
@@ -89958,6 +90493,29 @@
       "virtual": false,
       "pure_virtual": false,
       "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Subsystem/CrowdyAutoRegistry.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyAutoRegistry::SetSweepIncludesTestFixturesForTest",
+      "owner": "UCrowdyAutoRegistry",
+      "owner_kind": "class",
+      "name": "SetSweepIncludesTestFixturesForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void SetSweepIncludesTestFixturesForTest(bool bInclude)",
+      "return_type": "void",
+      "params": "bool bInclude",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
       "template": false,
       "ufunction": false,
       "deprecated": false,
@@ -103192,6 +103750,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyMassEntitySubsystem::QueueNearTierBindingChange",
+      "owner": "UCrowdyMassEntitySubsystem",
+      "owner_kind": "class",
+      "name": "QueueNearTierBindingChange",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool QueueNearTierBindingChange(UCrowdyMassNearTierComponent& Component, const FGuid& UUID, bool bBound)",
+      "return_type": "bool",
+      "params": "UCrowdyMassNearTierComponent& Component, const FGuid& UUID, bool bBound",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyMass",
+      "header": "CrowdyMass/Public/Subsystems/CrowdyMassEntitySubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyMassEntitySubsystem::RegisterEventHandler",
       "owner": "UCrowdyMassEntitySubsystem",
       "owner_kind": "class",
@@ -108045,6 +108626,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyPlayers_GetMyAppState::GetMyAppState",
+      "owner": "UCrowdyPlayers_GetMyAppState",
+      "owner_kind": "class",
+      "name": "GetMyAppState",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "UCrowdyPlayers_GetMyAppState* GetMyAppState(UObject* WorldContextObject)",
+      "return_type": "UCrowdyPlayers_GetMyAppState*",
+      "params": "UObject* WorldContextObject",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName::GetPlayerName",
       "owner": "UCrowdyPlayers_GetPlayerName",
       "owner_kind": "class",
@@ -108091,6 +108695,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyPlayers_SetMyAppState::SetMyAppState",
+      "owner": "UCrowdyPlayers_SetMyAppState",
+      "owner_kind": "class",
+      "name": "SetMyAppState",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "UCrowdyPlayers_SetMyAppState* SetMyAppState(UObject* WorldContextObject, const FString& State)",
+      "return_type": "UCrowdyPlayers_SetMyAppState*",
+      "params": "UObject* WorldContextObject, const FString& State",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyPlayers_SetPlayerName::SetPlayerName",
       "owner": "UCrowdyPlayers_SetPlayerName",
       "owner_kind": "class",
@@ -108111,6 +108738,29 @@
       "blueprint": true,
       "module": "CrowdyServices",
       "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyPlayers::GetMyAppState",
+      "owner": "UCrowdyPlayers",
+      "owner_kind": "class",
+      "name": "GetMyAppState",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void GetMyAppState(FOnPlayerAppStateRead OnResult, FOnPlayersError OnError)",
+      "return_type": "void",
+      "params": "FOnPlayerAppStateRead OnResult, FOnPlayersError OnError",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyPlayers.h",
       "editor_module": false
     },
     {
@@ -108169,6 +108819,29 @@
       "signature": "void InitializeForTest(const TSharedPtr<FCrowdyCppClient>& Client)",
       "return_type": "void",
       "params": "const TSharedPtr<FCrowdyCppClient>& Client",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyPlayers.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyPlayers::SetMyAppState",
+      "owner": "UCrowdyPlayers",
+      "owner_kind": "class",
+      "name": "SetMyAppState",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetMyAppState(const FString& State, FOnPlayerAppStateWritten OnDone, FOnPlayersError OnError)",
+      "return_type": "void",
+      "params": "const FString& State, FOnPlayerAppStateWritten OnDone, FOnPlayersError OnError",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -110276,6 +110949,52 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::GetVoiceInputDevice",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "GetVoiceInputDevice",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FString GetVoiceInputDevice() const",
+      "return_type": "FString",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::GetVoiceInputDevices",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "GetVoiceInputDevices",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "TArray<FCrowdyVoiceInputDevice> GetVoiceInputDevices() const",
+      "return_type": "TArray<FCrowdyVoiceInputDevice>",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::GetVoiceMicState",
       "owner": "UCrowdySDKSubsystem",
       "owner_kind": "class",
@@ -110284,6 +111003,29 @@
       "implementation": false,
       "signature": "ECrowdyVoiceMicState GetVoiceMicState() const",
       "return_type": "ECrowdyVoiceMicState",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::GetVoicePlaybackVolume",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "GetVoicePlaybackVolume",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "float GetVoicePlaybackVolume() const",
+      "return_type": "float",
       "params": "",
       "access": "public",
       "static": false,
@@ -111044,6 +111786,52 @@
       "signature": "void SetVoiceChatStreamTimeoutThreshold(const float InSeconds)",
       "return_type": "void",
       "params": "const float InSeconds",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::SetVoiceInputDevice",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "SetVoiceInputDevice",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetVoiceInputDevice(const FString& DeviceId)",
+      "return_type": "void",
+      "params": "const FString& DeviceId",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::SetVoicePlaybackVolume",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "SetVoicePlaybackVolume",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetVoicePlaybackVolume(float Volume)",
+      "return_type": "void",
+      "params": "float Volume",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -120741,6 +121529,52 @@
       "editor_module": false
     },
     {
+      "id": "UVoiceChatSubsystem::GetInputDevice",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "GetInputDevice",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FString GetInputDevice() const",
+      "return_type": "FString",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UVoiceChatSubsystem::GetInputDevices",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "GetInputDevices",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "TArray<FCrowdyVoiceInputDevice> GetInputDevices()",
+      "return_type": "TArray<FCrowdyVoiceInputDevice>",
+      "params": "",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UVoiceChatSubsystem::GetMicState",
       "owner": "UVoiceChatSubsystem",
       "owner_kind": "class",
@@ -120749,6 +121583,29 @@
       "implementation": false,
       "signature": "ECrowdyVoiceMicState GetMicState() const",
       "return_type": "ECrowdyVoiceMicState",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UVoiceChatSubsystem::GetPlaybackVolume",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "GetPlaybackVolume",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "float GetPlaybackVolume() const",
+      "return_type": "float",
       "params": "",
       "access": "public",
       "static": false,
@@ -120994,6 +121851,29 @@
       "editor_module": false
     },
     {
+      "id": "UVoiceChatSubsystem::LocateChannelSpeakerForTest",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "LocateChannelSpeakerForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "bool LocateChannelSpeakerForTest(const FString& SpeakerKey, FVector& OutLocation) const",
+      "return_type": "bool",
+      "params": "const FString& SpeakerKey, FVector& OutLocation",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UVoiceChatSubsystem::MuteVoiceChat",
       "owner": "UVoiceChatSubsystem",
       "owner_kind": "class",
@@ -121017,6 +121897,29 @@
       "editor_module": false
     },
     {
+      "id": "UVoiceChatSubsystem::PlaceChannelStreamForTest",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "PlaceChannelStreamForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "bool PlaceChannelStreamForTest(const FString& SpeakerKey, FCrowdyVoiceSpeakerStream& Stream, int64 NowMs, bool bForce)",
+      "return_type": "bool",
+      "params": "const FString& SpeakerKey, FCrowdyVoiceSpeakerStream& Stream, int64 NowMs, bool bForce",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UVoiceChatSubsystem::PlayVoiceChat",
       "owner": "UVoiceChatSubsystem",
       "owner_kind": "class",
@@ -121025,6 +121928,29 @@
       "implementation": false,
       "signature": "void PlayVoiceChat()",
       "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UVoiceChatSubsystem::ReadChannelAttenuationForTest",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "ReadChannelAttenuationForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "const FSoundAttenuationSettings& ReadChannelAttenuationForTest()",
+      "return_type": "const FSoundAttenuationSettings&",
       "params": "",
       "access": "public",
       "static": false,
@@ -121132,6 +122058,29 @@
       "editor_module": false
     },
     {
+      "id": "UVoiceChatSubsystem::SetInputDevice",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "SetInputDevice",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetInputDevice(const FString& DeviceId)",
+      "return_type": "void",
+      "params": "const FString& DeviceId",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UVoiceChatSubsystem::SetOwnerEcho",
       "owner": "UVoiceChatSubsystem",
       "owner_kind": "class",
@@ -121141,6 +122090,29 @@
       "signature": "void SetOwnerEcho(bool bEnable)",
       "return_type": "void",
       "params": "bool bEnable",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UVoiceChatSubsystem::SetPlaybackVolume",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "SetPlaybackVolume",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetPlaybackVolume(float Volume)",
+      "return_type": "void",
+      "params": "float Volume",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -121238,6 +122210,29 @@
       "virtual": false,
       "pure_virtual": false,
       "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UVoiceChatSubsystem::SpeakerVolumeForTest",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "SpeakerVolumeForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "float SpeakerVolumeForTest(const FString& SpeakerKey) const",
+      "return_type": "float",
+      "params": "const FString& SpeakerKey",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
       "template": false,
       "ufunction": false,
       "deprecated": false,
@@ -121988,6 +122983,40 @@
       ],
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Subsystem/CrowdyKitEmotes.h"
+    },
+    {
+      "id": "FCrowdyMassNearTierActorBindingChanged",
+      "name": "FCrowdyMassNearTierActorBindingChanged",
+      "owner": "",
+      "dynamic": true,
+      "multicast": true,
+      "return_value": false,
+      "params": [
+        "AActor*",
+        "Actor",
+        "FGuid",
+        "EntityUUID",
+        "bool",
+        "bBound"
+      ],
+      "module": "CrowdyMass",
+      "header": "CrowdyMass/Public/Subsystems/CrowdyMassEntitySubsystem.h"
+    },
+    {
+      "id": "FCrowdyMassNearTierBindingChanged",
+      "name": "FCrowdyMassNearTierBindingChanged",
+      "owner": "",
+      "dynamic": true,
+      "multicast": true,
+      "return_value": false,
+      "params": [
+        "FGuid",
+        "EntityUUID",
+        "bool",
+        "bBound"
+      ],
+      "module": "CrowdyMass",
+      "header": "CrowdyMass/Public/Components/CrowdyMassNearTierComponent.h"
     },
     {
       "id": "FCrowdyMassNearTierServerValuesChanged",
@@ -124127,6 +125156,31 @@
       "header": "CrowdyServices/Public/Subsystem/CrowdyAuthentication.h"
     },
     {
+      "id": "FOnPlayerAppStateRead",
+      "name": "FOnPlayerAppStateRead",
+      "owner": "",
+      "dynamic": true,
+      "multicast": false,
+      "return_value": false,
+      "params": [
+        "const FString&",
+        "State"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyPlayers.h"
+    },
+    {
+      "id": "FOnPlayerAppStateWritten",
+      "name": "FOnPlayerAppStateWritten",
+      "owner": "",
+      "dynamic": true,
+      "multicast": false,
+      "return_value": false,
+      "params": [],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyPlayers.h"
+    },
+    {
       "id": "FOnPlayerBlocks",
       "name": "FOnPlayerBlocks",
       "owner": "",
@@ -124532,6 +125586,40 @@
       ],
       "module": "CrowdySDK",
       "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h"
+    },
+    {
+      "id": "FPlayerAppStateAsyncResult",
+      "name": "FPlayerAppStateAsyncResult",
+      "owner": "",
+      "dynamic": true,
+      "multicast": true,
+      "return_value": false,
+      "params": [
+        "const FString&",
+        "State",
+        "FCrowdyAccountError",
+        "Error",
+        "FString",
+        "Message"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h"
+    },
+    {
+      "id": "FPlayerAppStateWriteAsyncResult",
+      "name": "FPlayerAppStateWriteAsyncResult",
+      "owner": "",
+      "dynamic": true,
+      "multicast": true,
+      "return_value": false,
+      "params": [
+        "FCrowdyAccountError",
+        "Error",
+        "FString",
+        "Message"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h"
     },
     {
       "id": "FPlayerBlocksAsyncResult",

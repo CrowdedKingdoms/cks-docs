@@ -5,7 +5,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.29**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.30**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 ## What 2.27 changes
 
@@ -84,12 +84,12 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 Download the plugin from its public repository on GitHub, [CrowdedKingdoms/CrowdySDK-Unreal](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal):
 
-- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.29.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.29.0`; rename that folder to `CrowdySDK`.
-- **Or with git:** `git clone --branch v2.29.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
+- **A release:** open the repository's [Releases](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/releases), pick `v2.30.0`, and download its source code zip. It unpacks to `CrowdySDK-Unreal-2.30.0`; rename that folder to `CrowdySDK`.
+- **Or with git:** `git clone --branch v2.30.0 https://github.com/CrowdedKingdoms/CrowdySDK-Unreal.git CrowdySDK`, run inside your project's `Plugins` folder.
 
 The repository's root is the plugin root: the folder you download is the one that goes at `Plugins/CrowdySDK` in Step 2.
 
-:::note[The release you install must match the version this guide describes (2.29).]
+:::note[The release you install must match the version this guide describes (2.30).]
 :::
 
 From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
@@ -1561,12 +1561,12 @@ The same commandlet does what the Access, Teams, Channels and Grid pages do, so 
 | `-op=teams`, `-op=channels` | Read the app's teams or channels. |
 | `-op=groupdetail -kind=team -group=<id>` | Reads one team or channel, with its members and their roles. |
 | `-op=createteam -name="Oakford Guild" [-description="..."] [-policy=<policy>] -yes` | Creates a team. `-policy=` is `open`, `request`, `invite` or `admin`. |
-| `-op=createchannel -name=oakford-chat [-description="..."] [-policy=<policy>] [-memberscansend=<true or false>] -yes` | Creates a channel. |
+| `-op=createchannel -name=oakford-chat [-description="..."] [-policy=<policy>] [-memberscansend=<true or false>] [-memberscanspeak=<true or false>] -yes` | Creates a channel. `-memberscansend` defaults to true and `-memberscanspeak` to false, like the checkboxes on the Create channel card. Either switch needs `=true` or `=false`; written bare or empty it is refused. The member role is set only when a channel is created, so on a channel that already exists either switch is refused: find the member role's id with `-op=groupdetail -kind=channel -group=<id>`, then change it with `-op=updaterole -kind=channel -group=<id> -role=<id> -perms=send_messages,send_voice -yes`, listing every permission the role should have. |
 | `-op=updategroup -kind= -group= [-name=] [-description=] [-policy=] -yes` | Changes a team or channel. |
 | `-op=deletegroup -kind= -group= -yes` | Deletes it, with its members and roles. This cannot be undone. |
 | `-op=addmember`, `-op=removemember` with `-kind= -group= -user= -yes` | Adds a user to a team or channel, or removes them. |
 | `-op=setroles -kind= -group= -user= -roles=1,2 -yes` | Sets a member's roles by role id. `-noroles` in place of `-roles=` clears them. |
-| `-op=createrole -kind= -group= -name= [-perms=manage_members,invite_members] [-rank=] -yes` | Creates a custom role. A team role can grant `manage_group`, `manage_members`, `manage_roles` and `invite_members`; a channel role can also grant `send_messages`, which decides who may post. `-op=updaterole` and `-op=deleterole` change and delete one. |
+| `-op=createrole -kind= -group= -name= [-perms=manage_members,invite_members] [-rank=] -yes` | Creates a custom role. A team role can grant `manage_group`, `manage_members`, `manage_roles` and `invite_members`; a channel role can also grant `send_messages`, which decides who may post, and `send_voice`, which decides who may talk on the channel's voice. `-op=updaterole` and `-op=deleterole` change and delete one. |
 | `-op=setteampolicy`, `-op=setchannelpolicy` | Write the app-wide policy, like **Set Policy**. They take `-creation=` (`admin`, `member` or `anyone`), `-membership=`, `-maxmembers=` and `-maxgroupsperuser=`, all optional, and `-yes`. 0 for a maximum means unlimited. |
 
 Creating a team or channel whose name already exists succeeds with `changed:false` when the existing one matches what you asked for, and fails naming the differences when it does not.
@@ -1705,7 +1705,7 @@ Press **Set Policy** to write it. The current policy is echoed above the control
 
 ![The Channels page: the channel list, the Create channel card, and the Channel policy card](/img/unreal-sdk/studio-channels.png)
 
-The Channels page mirrors Teams: a **Channels** list, a **Create channel** card with a name, a description, and a **Members can send** checkbox (on by default), and a **Channel policy** card with the same four settings as the team policy.
+The Channels page mirrors Teams: a **Channels** list, a **Create channel** card with a name, a description, and a **Members can send** checkbox (on by default), a **Members can speak** checkbox (off by default; it gives the default member role the `send_voice` permission, so members can talk on the channel's voice, see [Let members speak](../runtime/channels.md#let-members-speak)), and a **Channel policy** card with the same four settings as the team policy.
 
 :::caution[A channel name authored here is the exact string gameplay code references.]
 It is the value of the `CrowdyChannel` meta on a Multicast `CrowdyEvent`, and the target of a raw channel publish. Keep the name stable once code uses it.
@@ -4164,6 +4164,17 @@ Every connecting client running this asks the server to create the channel. A re
 A channel can carry voice as well as messages; see [Talk to a channel](../services/voice-chat.md#talk-to-a-channel). Sending voice needs the `send_voice` permission (`ECrowdyChannelPermission::SendVoice`, the **Send Voice** flag of `FCrowdyChannelPermissions`) on one of the sender's roles, and the player needs voice chat allowed. The `leader` role holds it, so the player who creates a channel can always talk on it. **Members Can Speak** on **Create Channel** gives the default `member` role `send_voice`; it is off by default, so on a channel made without it the server drops a member's voice until a role with the permission is granted; such members join the channel's voice in **Listen** mode. The SDK logs that refusal as a warning naming Send Voice. Receiving voice needs only membership.
 
 A change to the signature: in C++, `CreateChannel` takes `bMembersCanSpeak` right after `bMembersCanSend`, so existing calls need the new argument. The Blueprint node gains the pin, off.
+
+## Pick a channel name in the editor
+
+A channel is joined and published to by name in your own settings too: a village actor's channel, a room's voice channel. Mark an `FString` property with `CrowdyChannelPicker` and the Details panel shows a **Pick** button next to its text box:
+
+```cpp
+UPROPERTY(EditAnywhere, meta = (CrowdyChannelPicker))
+FString ChannelName;
+```
+
+**Pick** lists the channels of the app you are signed in to in Crowdy Studio, the same menu a Crowdy event's **Channel** field has; choose one and its name fills the box. **(None)** clears it. You can still type any name, such as a channel you create at runtime. The list needs a Crowdy Studio sign-in; without one the menu says to sign in. This is an editor aid only: the property stays a plain string, and nothing reads the meta at run time.
 
 ## Ban a member
 
@@ -7136,6 +7147,8 @@ The **Crowdy Mass Trace Collision** trait keeps its settings in an `FCrowdyMassT
 
 A config you assemble in code can set only the object type, with `UCrowdyMassTraceCollisionTrait::SetObjectType`.
 
+A derived row casts a shadow when the class's skinned mesh component has **Cast Shadow** and **Dynamic Shadow** on. To keep every derived row shadowless, for example to save shadow cost in a dense crowd, turn off **Derived Rows Cast Shadows** (`bDerivedRowsCastShadows`) in **Project Settings, Plugins, Crowdy Mass**, under **Remote Entities**. It is read when a class's crowd is first drawn in a map. As a guide, 300 rows at 1920x1080 added about 0.8 ms of GPU time, about half of it in the shadow depth pass. An authored config keeps its own **Cast Shadows**.
+
 The result is cached per class, and one summary line names the mesh, the route and the material verdict.
 
 If no mesh resolves, nothing is derived and the row does not appear. The log says `nothing configures a Mass entity config for` the class, `and one could not be worked out from the class, so entities of it will not appear`, followed by what is missing and what to change.
@@ -8008,7 +8021,7 @@ Promotion needs a class that declares a shell, a shell that loads as an actor an
 
 ## Know when an actor starts or stops standing for an entity
 
-**On Entity Binding Changed** (`OnEntityBindingChanged`, `FCrowdyMassNearTierBindingChanged`) is an event on the **Crowdy Mass Near Tier** component, category **Crowdy Mass|Near Tier**. It fires with **Entity UUID** (`FGuid`) and **Bound** (`bBound`): true after the near tier actor starts standing for that entity, false after it stops, with the id of the entity it stood for. A pooled actor handed straight to another entity reports the old one stopping first, then the new one starting. The event is delivered when the crowd's frame has finished, never inside its update, so by then the actor may stand for another entity: trust the id it passes, not **Get Entity UUID**. An entity with no id passes an invalid one, an actor destroyed before delivery reports nothing more, changes made while the game is paused arrive on the next tick, and nothing is delivered once the world is shutting down. To follow every near tier actor in the world at once, bind **On Near Tier Binding Changed** on the **Crowdy Mass Entity Subsystem** instead: it carries the **Actor** as well, in the same order, and still reports a destroyed actor's stop, with no **Actor**: drop a record you keep by entity when the actor you recorded for it is no longer valid. Bind it to show or hide something that belongs to the entity, such as a nametag, instead of polling **Is Bound to Entity**.
+**On Entity Binding Changed** (`OnEntityBindingChanged`, `FCrowdyMassNearTierBindingChanged`) is an event on the **Crowdy Mass Near Tier** component, category **Crowdy Mass|Near Tier**. It fires with **Entity UUID** (`FGuid`) and **Bound** (`bBound`): true after the near tier actor starts standing for that entity, false after it stops, with the id of the entity it stood for. A pooled actor handed straight to another entity reports the old one stopping first, then the new one starting. The event is delivered when the crowd's frame has finished, never inside its update, so by then the actor may stand for another entity: trust the id it passes, not **Get Entity UUID**. An entity with no id passes an invalid one, an actor destroyed before delivery reports nothing more, changes made while the game is paused arrive on the next tick, and nothing is delivered once the world is shutting down. To follow every near tier actor in the world at once, bind **On Near Tier Binding Changed** (`OnNearTierBindingChanged`, `FCrowdyMassNearTierActorBindingChanged`) on the **Crowdy Mass Entity Subsystem** instead: it carries the **Actor** as well, in the same order, and still reports a destroyed actor's stop, with no **Actor**: drop a record you keep by entity when the actor you recorded for it is no longer valid. Bind it to show or hide something that belongs to the entity, such as a nametag, instead of polling **Is Bound to Entity**.
 
 ## Demotion and release
 
@@ -17364,7 +17377,7 @@ A custom event `OnChooseNamePressed` runs **Set Player Name**. **On Error** brea
 | **Get My App State** | `GetMyAppState(OnResult, OnError)` | Reads the state. **On Success** gives **State**, the base64 text, empty when none was saved. |
 | **Set My App State** | `SetMyAppState(State, OnDone, OnError)` | Replaces the state with the base64 text. An empty one clears it. |
 
-Both nodes are async: they continue on **On Success** or **On Error**, which carries **Error** and **Message**. Both need a signed-in player. In C++ they answer on `FOnPlayerAppStateRead` (the text), `FOnPlayerAppStateWritten` and `FOnPlayersError`.
+Both nodes are async: they continue on **On Success** or **On Error**, which carries **Error** and **Message**. Both need a signed-in player. In C++ they answer on `FOnPlayerAppStateRead` (the text), `FOnPlayerAppStateWritten` and `FOnPlayersError`. The nodes are `UCrowdyPlayers_GetMyAppState` and `UCrowdyPlayers_SetMyAppState`, whose pins are `FPlayerAppStateAsyncResult` (`State`, `Error`, `Message`) and, for the write, `FPlayerAppStateWriteAsyncResult` (`Error`, `Message`).
 
 Only that player can read it. The platform keeps it per account, not per avatar and not per machine, so it is there on the next machine they sign in on. The client writes it, so it is for settings, never for anything a player must not be able to change: keep that in a [Server Object](/exec/intro).
 
@@ -18457,6 +18470,8 @@ By default every voice plays flat (2D), at the volume it was sent. Open **Projec
 | **Playback Mode** (`PlaybackMode`, an `ECrowdyVoicePlaybackMode`) | Flat (2D) | **Spatial (3D)** plays each voice from where its speaker's character is drawn on this client, every frame, on the actor pool and on Mass crowd rows. |
 | **Max Speakers** (`MaxSpeakers`) | 16 | How many players are heard at once, 1 to 64. See [The nearest speakers are heard](#the-nearest-speakers-are-heard). |
 | **Attenuation** (`Attenuation`) | `SA_CrowdyVoice` | Spatial only. How a voice fades, pans and muffles. The SDK's `/CrowdySDK/Data/Voice/SA_CrowdyVoice` follows real hearing: full volume within 2 m, then 6 dB quieter each time the distance doubles, eased to silence by 40 m; duller with distance; a little quieter behind you; muffled and half as loud behind a wall (anything that blocks the Visibility channel); binaural where your project has a spatialization plugin. Pick your own **Sound Attenuation** asset to change it. |
+| **Directional Channel Voice** (`bDirectionalChannelVoice`) | Off | Spatial only. On: voice on a channel, such as a room, comes from where each speaker's character is drawn on this client, at full volume however far away. Off plays channel voice centred. See [Talk to a channel](#talk-to-a-channel). |
+| **Channel Attenuation** (`ChannelAttenuation`) | None | Only with **Directional Channel Voice**. An optional **Sound Attenuation** asset for how a drawn speaker's channel voice fades and pans. Empty keeps full volume at any distance, panned only. |
 | **Occlusion Checks Per Second** (`OcclusionChecksPerSecond`) | 10 | Spatial only, where the attenuation muffles voices behind walls: how often each heard voice traces for a wall, 1 to 30. One trace each time, off the game thread. |
 | **Playout Delay** (`PlayoutDelayMs`) | 120 ms | How far behind received voice plays, 40 to 400 ms. A longer delay absorbs more uneven delivery. |
 | **Silence Gate** (`SilenceGateDb`) | -50 dB | Below this level your microphone sends nothing, -90 to -10 dB. |
@@ -18494,7 +18509,7 @@ All of these carry over across map changes, like the other voice settings; when 
 
 **Who may talk.** The server drops channel voice from a member who is not allowed to send it. The member's role in the channel needs the **Send Voice** permission, and the player needs voice chat allowed. **Create Channel** has a **Members Can Speak** input (off by default) that gives the default member role **Send Voice**; without it only roles you grant it to can talk. Hearing a channel needs only membership. The server does not send your own channel voice back to you. See [Channels](../runtime/channels.md#let-members-speak).
 
-**How it plays.** Channel voice always plays flat (2D), whatever **Playback Mode** says. It takes speaker places like spatial voice, up to **Max Speakers**. A channel speaker whose player is known ranks ahead of every spatial speaker, so a nearer spatial speaker never displaces them. Their player is known usually a moment after they first speak; until then, and for an actor id that belongs to no known player, they rank behind every spatial speaker, so made-up ids cannot hold places. With every place taken by nearby speakers, a party member's first words can be lost while that happens. A player you muted with **Set Voice Speaker Muted** is muted on channels too. Each channel a player talks on is its own stream, so a player who talks on two channels is heard on both, once each.
+**How it plays.** Channel voice plays centred (2D) unless **Playback Mode** is Spatial and **Directional Channel Voice** is on (see [Flat or spatial playback](#flat-or-spatial-playback)). With both, each speaker's channel voice comes from where their character is drawn on this client, at full volume however far away, so a room's voices still point at the people in it. A speaker who is not drawn on this client (not yet spawned, or out of replication range) plays centred at full volume until they are drawn. Each switch between panned and centred restarts that speaker's voice, a gap of a few tens of milliseconds, at most once a second per speaker. **Channel Attenuation** names a **Sound Attenuation** asset that sets how a drawn speaker's channel voice fades and pans; empty keeps full volume at any distance. A speaker who is not drawn plays centred at full volume whatever the asset fades. If the asset does not load, the log warns and channel voice keeps full volume. Proximity voice is unchanged. Channel voice takes speaker places like spatial voice, up to **Max Speakers**. A channel speaker whose player is known ranks ahead of every spatial speaker, so a nearer spatial speaker never displaces them. Their player is known usually a moment after they first speak; until then, and for an actor id that belongs to no known player, they rank behind every spatial speaker, so made-up ids cannot hold places. With every place taken by nearby speakers, a party member's first words can be lost while that happens. A player you muted with **Set Voice Speaker Muted** is muted on channels too. Each channel a player talks on is its own stream, so a player who talks on two channels is heard on both, once each.
 
 **You can hear someone twice.** A listener who shares a channel with a speaker standing nearby hears that speaker spatially and on the channel. This is deliberate, and it is how CrowdyJS behaves. If your game does not want it, the speaker can turn spatial voice off with **Set Spatial Voice Enabled** while talking on the channel (then nobody near them hears them spatially), or a listener can mute the channel with **Set Voice Channel Muted**.
 
@@ -18611,6 +18626,8 @@ On `UCrowdySDKSubsystem` the Blueprint events have delegate types you can bind f
 |---|---|
 | `GetMicState()` | The current `ECrowdyVoiceMicState`. |
 | `IsCapturing()` | True while the state is `Capturing`. |
+| `GetInputDevices()`, `SetInputDevice(const FString& DeviceId)`, `GetInputDevice()` | The microphones the machine has (a static call), and the one this map captures from, as **Get Voice Input Devices** and **Set Voice Input Device** set it for every map. An empty id follows the OS default. |
+| `SetPlaybackVolume(float Volume)`, `GetPlaybackVolume()` | How loud every voice plays in this map, 0 to 1, as **Set Voice Playback Volume** sets it for every map. |
 | `IsPlaying()` | True while other players' voices are being played, after `PlayVoiceChat()` and before `MuteVoiceChat()`. |
 | `SetOwnerEcho(bool bEnable)` | Plays your own voice back to you, as **Toggle Owner Echo** does. |
 | `SetDistance(int32 Chunks)`, `GetDistance()` | How far your voice reaches in this map: the map's **Voice Distance** until set. **Set Voice Chat Distance** sets it for every map. |
@@ -20189,6 +20206,15 @@ You built against the SDK in July, you are updating the plugin to 2.15 or later 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the Application API's legacy game-model engine, which ck-exec replaced; the Application API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-11-27 (SDK v2.30.0)
+
+Four changes, one of them a new default for derived crowd rows. Nothing breaks.
+
+- **Crowd rows cast shadows.** A crowd row the SDK works out from an actor class, with no Remote Entity Config authored, now casts a shadow when the class's skinned mesh component has **Cast Shadow** and **Dynamic Shadow** on; before, it never did. A new setting, **Derived Rows Cast Shadows** (on by default, in **Project Settings, Plugins, Crowdy Mass**, under **Remote Entities**), turns that off for every derived row. An authored entity config keeps its own **Cast Shadows**. Measured: 300 rows at 1920x1080 added about 0.8 ms of GPU time. **What you do:** if a dense crowd cannot afford the shadows, turn the setting off. See [What derivation builds](../mass/make-a-character-draw-as-a-crowd-row.md#what-derivation-builds).
+- **Create a channel whose members can talk.** The **Create channel** card in Crowdy Studio has a **Members can speak** checkbox (off by default) that gives the default member role `send_voice`, and `-op=createchannel` takes `-memberscanspeak=true` or `false` beside `-memberscansend`. A bare or empty switch is refused, and on a channel that already exists either switch is refused with the role edit to use instead, because the member role is set only when a channel is created. **What you do:** tick it, or pass the switch, for a channel whose members should talk on its voice; for an existing channel, edit the member role. See [Channels](../studio/teams-and-channels.md#channels) and [Teams and channels from the command line](../studio/config-sync.md#access-teams-channels-and-grids).
+- **A channel name picker for your own properties.** An `FString` property marked `meta = (CrowdyChannelPicker)` shows a **Pick** button next to its text box in the Details panel, listing the signed-in app's channels from Crowdy Studio, as a Crowdy event's **Channel** field does. You can still type a name, and **(None)** clears it. **What you do:** nothing, unless you keep a channel name in your own property; add the meta to get the menu. It is an editor aid only. See [Pick a channel name in the editor](../runtime/channels.md#pick-a-channel-name-in-the-editor).
+- **Channel voice can come from where the speaker stands.** Two new settings in **Project Settings, Plugins, Crowdy Voice**, for Spatial playback: **Directional Channel Voice** (off by default) plays voice on a channel, such as a room, from where each speaker's character is drawn, at full volume however far away; off plays it centred, as before. A speaker who is not drawn on this client plays centred until they are. Each switch between panned and centred restarts that speaker's voice, a gap of a few tens of milliseconds, at most once a second per speaker. **Channel Attenuation** is an optional **Sound Attenuation** asset for how a drawn speaker's channel voice fades and pans. Proximity voice is unchanged. **What you do:** nothing; turn it on if a room's voices should point at the people in it. See [Talk to a channel](../services/voice-chat.md#talk-to-a-channel).
 
 ## 2026-11-26 (SDK v2.29.0)
 
