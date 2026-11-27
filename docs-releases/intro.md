@@ -39,6 +39,74 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-27 (a keepalive is held to `access`; sign-ins take turns; players are deleted 100 at a time; an erasure finishes whatever the number of hubs)
+
+On dev, test, and production since November 27, 2026: Application API v2.90.0, realtime servers v0.51.0, ck-exec 0.26.1, and CrowdyJS 18.41.0.
+
+- **Realtime servers v0.51.0: a keepalive is accepted only where the player's actor update would be.** A place is
+  private to keepalives (`CLIENT_ACTOR_HEARTBEAT`, 26) exactly when it is private to updates. Where the player has no
+  `access`, every keepalive is answered `UNAUTHORIZED` (`[3][seq][7]`): unsigned on a player's session, and inside
+  the signed bundle of a fleet session. The player is not present there and is sent nothing of the place, and the
+  session stays connected. A refused keepalive is not gameplay input for the idle timeout and is not counted as data
+  in; its three-byte answer is data out. When access is granted, the next keepalive is admitted within about 6
+  seconds, with no new sign-in. Before v0.51.0 a player without `access` to a region of their app could stay present
+  there by keepalives, and was sent what happened there. The rule applies from the moment the realtime servers
+  run v0.51.0, with no deprecation window. See [the keepalive rule](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be).
+  **What you do:** nothing, if your players only stand where they may enter. Otherwise expect `UNAUTHORIZED`, do not
+  treat the player as present there, and keep sending keepalives at the normal cadence: never faster, and never
+  stop.
+- **Application API v2.90.0: every app-token answer carries `userId`.** `mintAppToken`, `refreshAppToken`,
+  `exchangePortalCode`, `mintManagedPlayerToken`, `exchangeManagedPlayerAssertion`, and `signInWithMinecraft` answer
+  the user the token signs in, the id `me` returns.
+  **What you do:** nothing. A server that called `me` only to learn who it signed in can read `userId` and drop
+  the call.
+- **Application API v2.90.0: `deleteManagedPlayers` deletes up to 100 players in one call.** It answers an outcome
+  for each `externalId`: `DELETED`, `NOT_FOUND`, or `LEGAL_HOLD`. A held player is kept and the others are still
+  deleted. See
+  [signing out and deleting](/management-api/org-managed-players#sessions-refresh-and-signing-out).
+  **What you do:** use it where you delete many players, and read the outcomes.
+- **Application API v2.90.0: an organization's sign-ins take turns.** A wave of sign-ins at one instant is held in a
+  line and served late, where part of it was refused before. A sign-in the line cannot take is answered
+  `PLATFORM_BUSY` with `extensions.retryAfterMs` from 200 ms to 10 seconds, worked out from how many are waiting.
+  Measured on a shared internal build machine, one API process for each version: of 9,600 sign-ins in waves of 120
+  joins, v2.89.1 refused 2,525 and v2.90.0 refused none. See
+  [sign-ins take turns](/management-api/org-managed-players#administering-your-players) for the four loads measured.
+  **What you do:** wait `retryAfterMs` as it is sent, then send the same call again.
+- **Application API v2.90.0: a stopped app or organization ends its game servers at once.** Archiving an app, and
+  freezing or closing an organization, end the fleet sessions and the game servers' hub connections where it
+  happens. Before, they ended within five minutes.
+  **What you do:** nothing.
+- **Application API v2.90.0: `refreshFleetSession` names its server by `ip4` or `ip6`.** `currentServer` takes
+  exactly one of the two. Before, it took an IPv4 address only.
+  **What you do:** nothing, unless your game server connects over IPv6. Then name `ip6`, and the session stays on
+  its server.
+- **ck-exec 0.26.0: the erasure of deleted players in an app's hubs finishes whatever the number of hubs and
+  players.** The platform asks an app's hubs about a set of deleted players in one pass, and carries on where it
+  stopped. A hub may hear `on_player_erased` for many players, one after the other. Measured on our internal dev
+  environment, in an app with a hub for each player: 60 calls deleted 6,000 players in 33 seconds, and their
+  erasure in the app's hubs finished 4 minutes later.
+  **What you do:** nothing, if your hubs implement `on_player_erased`.
+- **ck-exec 0.26.0: an erasure is complete only when every hub of the app that holds stored state has been
+  asked.** This rule is not new, and it is now written down. Stored state of a node type that the active version no
+  longer has cannot be asked, and it keeps the erasure of every deleted player of that app open. So does a hub
+  whose stored state its deployed code cannot load. See
+  [before you drop a node type](/exec/players-and-safety#an-erasure-is-complete-only-when-every-hub-with-stored-state-has-been-asked).
+  **What you do:** keep a node type that held player data in your manifest, with `on_player_erased`. If you have
+  dropped one, deploy a version that has it again.
+- **ck-exec 0.26.0: two limits on what a host queues for a connection that does not read.** A player's or a
+  developer's connection may have 16 MiB of answers and pushes queued. All of an organization's server connections
+  to one app through one host may have 256 MiB in total, past which the connection furthest behind is closed. A
+  failed start now names its hub: `start failed: app N, type T, key K:` and the reason. See
+  [call limits](/exec/operations#call-limits).
+  **What you do:** nothing, if your clients and servers read what they are sent.
+- **CrowdyJS 18.41.0.** A player's client drops and counts what does not verify and what names another app
+  (`client.realtime.receiveStats()`), and `genericError` receives `(event, verified)`. New:
+  `managedPlayers.deleteMany`, `userId` on app-token answers, `exec.orgComputeCeiling`, and the fleet settings on
+  `managedPlayers.settings()`. `FleetSession` reports a refused keepalive once (`notPresent`, `notPresentEnded`) and
+  names `ip4` or `ip6` at a refresh. See [the SDK overview](/crowdyjs/readme#the-client-checks-what-it-receives-before-a-handler-runs).
+  **What you do:** update. 18.41.0 needs Application API v2.90.0 or later, because every call that answers an app
+  token selects `userId`.
+
 ## 2026-11-27 (a new page: what your organization can change, and what to ask Crowded Kingdoms for)
 
 A documentation page. Nothing changed in the platform.
