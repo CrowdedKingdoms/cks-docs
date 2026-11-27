@@ -35,7 +35,7 @@ auto-billing is on.
 | [Environment](#a-dedicated-environment-needs-an-enterprise-agreement) | Shared | Crowded Kingdoms, under an Enterprise Agreement |
 | [A player's data](#you-delete-your-own-players-and-crowded-kingdoms-handles-the-requests-you-cannot) | Kept until you delete the player | You delete and disable your managed players. Crowded Kingdoms handles exports, accounts with their own sign-in, legal holds, and a parent's withdrawal of consent. |
 | [Organization status](#crowded-kingdoms-closes-and-reinstates-an-organization) | Active | Crowded Kingdoms closes and reinstates an organization |
-| [Crowd size](#talk-to-crowded-kingdoms-before-a-crowd-larger-than-the-one-it-measured) | Measured with 3,000 players on 100 fleet sessions | Write to Crowded Kingdoms before a larger crowd |
+| [Crowd size](#talk-to-crowded-kingdoms-before-a-crowd-larger-than-the-one-it-measured) | Measured with 6,000 players on 200 fleet sessions | Write to Crowded Kingdoms before a larger crowd |
 
 ## To ask for a change, write to hello@crowdedkingdoms.com
 
@@ -243,12 +243,17 @@ time for these requests, so ask as early as you can.
   answers their requests about their data
   ([Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html),
   section 5.3):
-  - `deleteManagedPlayer(orgId, externalId)` deletes a player and, within minutes, erases
-    their content in your apps
+  - `deleteManagedPlayer(orgId, externalId)` deletes a player, and their content in your
+    apps is then erased
     ([what it erases](/management-api/org-managed-players#sessions-refresh-and-signing-out)).
+    `deleteManagedPlayers` deletes up to 100 players in one call and answers an outcome for
+    each: `DELETED`, `NOT_FOUND`, or `LEGAL_HOLD` (Application API v2.90.0).
   - `updateManagedPlayer` with `disabled: true` ends a player's access and keeps their data.
   - Your hubs delete and export what they hold about a player when the platform asks:
     implement [`on_player_erased` and `on_player_export`](/exec/players-and-safety#erasure).
+    A player's erasure is complete only when every hub of the app that holds stored state has
+    been asked, so read
+    [before you drop a node type](/exec/players-and-safety#an-erasure-is-complete-only-when-every-hub-with-stored-state-has-been-asked).
 
   A player with their own Crowded Kingdoms account deletes it from their account page in
   Studio (`deleteMyAccount`).
@@ -271,7 +276,8 @@ time for these requests, so ask as early as you can.
   user id of any other. For a withdrawal of consent, say whether it covers voice, video, or
   both.
 - **At the limit.** `deleteManagedPlayer` answers `LEGAL_HOLD` (409) while a hold covers the
-  player or your organization. Disable the player instead. See
+  player or your organization. Disable the player instead. `deleteManagedPlayers` keeps a held
+  player and reports the outcome `LEGAL_HOLD` for it. See
   [Error codes](/overview/error-codes#graphql-errors).
 
 ## Crowded Kingdoms closes and reinstates an organization
@@ -286,8 +292,9 @@ time for these requests, so ask as early as you can.
   managed players, and turn auto-billing off. No API lets an organization close itself.
 - **What Crowded Kingdoms changes.** It closes an organization. The organization's apps are
   archived, its tokens stop working, its members lose their permissions in it, and it
-  leaves their list of organizations. It signs no managed player in, and its fleet sessions
-  end within five minutes. Crowded Kingdoms also reinstates a closed organization. The
+  leaves their list of organizations. It signs no managed player in. Its fleet sessions and
+  its game servers' hub connections end at once (Application API v2.90.0; within five minutes
+  before). Crowded Kingdoms also reinstates a closed organization. The
   organization is then active again and its apps stay archived: restore the ones you want
   with `updateApp`.
 - **What to send.** Your organization's name, id, and slug, and the reason. Read section 12
@@ -300,11 +307,17 @@ time for these requests, so ask as early as you can.
 - **What it is.** The largest crowd that moves between an organization's game servers for
   which Crowded Kingdoms has a published measurement. It is a measurement, and no setting
   holds your organization to it.
-- **Measured.** On November 26, 2026, on Crowded Kingdoms' internal dev environment, with
-  realtime servers v0.50.3, 100 fleet sessions carried 3,000 players for 30 minutes. The
-  players made 135,106 crossings between game servers, 75 a second, and none was lost. That
-  is one run on one environment. No larger crowd, and no faster rate of crossing, has a
-  published measurement
+- **Measured.** Two runs on November 27, 2026, on Crowded Kingdoms' internal dev environment,
+  with realtime servers v0.51.0 on three servers:
+  - 100 fleet sessions carried 3,000 players for 30 minutes. The players made 135,092
+    crossings between game servers in those 30 minutes, 75 a second, and 140,616 in the whole
+    run. None was lost.
+  - 200 fleet sessions carried 6,000 players for 15 minutes. The players made 153,079
+    crossings in the run, at 150 a second. None was lost, and a carry was answered in 36 ms
+    at the median and in 57 ms at the 99th percentile.
+
+  Those are two runs on one environment. No larger crowd, and no faster rate of crossing, has
+  a published measurement
   ([the measurement](/management-api/fleet-sessions#one-session-for-each-game-server-carries-that-servers-players)).
 - **Read your value.** Your limits allow more than was measured: at the defaults, 512
   sessions of 256 players is 131,072 players at once.
@@ -313,13 +326,14 @@ time for these requests, so ask as early as you can.
   ([administering your players](/management-api/org-managed-players#administering-your-players)).
   More players means more game servers, each with its own session.
 - **What Crowded Kingdoms changes.** Nothing by a setting. Before you bring a crowd larger
-  than 3,000 players, or one that crosses between servers more than 75 times a second, write
+  than 6,000 players, or one that crosses between servers more than 150 times a second, write
   to Crowded Kingdoms.
 - **What to send.** The players you expect online at once, how many game servers carry them,
   how often a player moves between servers, how many new players sign in during the first
   minutes, and the date.
 - **At the limit.** A sign-in that the platform cannot start in time answers
-  `PLATFORM_BUSY` (503) with `extensions.retryAfterMs`: wait that long, then send it again.
+  `PLATFORM_BUSY` (503) with `extensions.retryAfterMs`, from 200 ms to 10 seconds for a
+  sign-in (Application API v2.90.0): wait that long, then send it again.
   See [Error codes](/overview/error-codes#platform_busy-we-could-not-start-the-work).
 
 ## Report a security problem by email

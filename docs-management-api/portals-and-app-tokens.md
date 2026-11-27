@@ -105,6 +105,12 @@ first mint; an app with no free tier needs a grant first (else
 `ACCESS_NOT_GRANTED`). Use the returned `token` against `applicationApiUrl` /
 `applicationApiWsUrl`.
 
+**`userId` names the player the token signs in** (Application API v2.90.0). Every answer
+that carries an app token has it: `mintAppToken`, `refreshAppToken`, `exchangePortalCode`,
+`mintManagedPlayerToken`, `exchangeManagedPlayerAssertion`, and `signInWithMinecraft`. It is
+the id `me` returns, so a server that signs a player in reads the player from the answer and
+makes no `me` call. An API before v2.90.0 refuses the field.
+
 **Check `runtimeGate`.** A paused app (its organization has no funds, reached a
 spend cap, or its subscription lapsed) still mints, so your client can tell the
 player why: when `runtimeGate.status` is not `ACTIVE`, the world delivers nothing

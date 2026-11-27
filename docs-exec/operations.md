@@ -106,7 +106,9 @@ restart, and `execRestartType` answers `NOT_FOUND` for a type the active version
 Calls to the type then get `NotFound`. `execInstances` keeps listing those instances with
 `orphaned: true`. A hub that has a snapshot keeps that snapshot and its instance row; a hub
 snapshot has no expiry. So a later version that deploys a type of the same name starts its hubs
-from what they saved. The 10-minute forget applies only to a stopped instance with no snapshot,
+from what they saved. While such a snapshot exists, no deleted player's erasure in the app can
+complete, because no code can be asked what the snapshot holds: read
+[before you drop a node type](players-and-safety#an-erasure-is-complete-only-when-every-hub-with-stored-state-has-been-asked). The 10-minute forget applies only to a stopped instance with no snapshot,
 which is how a spoke's replicas go away.
 
 ## The kill switch
@@ -185,6 +187,9 @@ Since ck-exec 0.10.0 the host also holds each connection to a few more limits:
 - A connection holds at most 256 subscriptions at once; the next is refused `Denied`.
 - A message larger than 4 MiB and 64 KiB (a payload as large as an instance may send, with its
   address and method) closes the connection, and so does a text message: the protocol is binary.
+- A player's or a developer's connection may have at most **16 MiB** of answers and pushes
+  queued for it (ck-exec 0.26.0), as well as 1,024 messages. A connection that falls further
+  behind than that is closed. Read what you are sent, and connect again with a new token.
 - Before a token is checked, a host takes at most 60 connections per 10 seconds from one address
   (an IPv4 address, or an IPv6 /64); more are closed as they arrive. A load test that opens more
   connections than that from one machine needs hosts configured for it.
@@ -213,7 +218,9 @@ Since ck-exec 0.11 two more limits keep one player from filling what everyone sh
   `orgReservedMb`). Past either limit nothing new of the app is placed until
   some stop, whoever asks: a call to a hub key that is not running is answered `Unavailable` with
   a message naming the limit, and `execConnect` with a `nodeType` and `key` that would place one
-  fails. Running instances are never stopped for it. Within that, **one player's own calls hold
+  fails. Running instances are never stopped for it. When a hub's own start fails, the
+  answer is `Unavailable` with `start failed: app N, type T, key K:` and the reason (ck-exec
+  0.26.0; before, the reason alone). The key is cut at 64 bytes. Within that, **one player's own calls hold
   at most 64 instances of the app at once** (ck-exec 0.17): hubs their calls or subscriptions
   place at new keys, or an `execConnect` placing one beside them. Past it nothing more starts
   for that player, `Unavailable` naming the bound, while every other player still places; the
@@ -327,7 +334,9 @@ call and subscribe to any node type of the app, as a developer connection may. I
 reach the platform's `$` methods, and subscribing doesn't count as a player session. A hub that
 a server's call places counts toward no player's 64 instances. The host closes the connection
 with code `4403` when the org token that asked for it is revoked or expires, and when fleet
-sessions or org-managed players are switched off for your organization.
+sessions or org-managed players are switched off for your organization. From Application API
+v2.90.0 it also closes at once when the app is archived, and when your organization is frozen
+or closed.
 
 ### A server calls for itself or for a player
 
@@ -339,7 +348,8 @@ call for one player:
 | call-as | client → host | `0x05` rid `u32`, player `u64`, type `str8`, key `str16`, method `str8`, payload |
 
 `player` is the player's user id, which `FLEET_CARRY_RESULT` carries for each player a
-[fleet session](/management-api/fleet-sessions) carries. Naming player 0 is the server's own
+[fleet session](/management-api/fleet-sessions) carries, and which `mintManagedPlayerToken`
+answers as `userId` (Application API v2.90.0). Naming player 0 is the server's own
 call. A host accepts `0x05` only on a server connection: on a player's or a developer's
 connection it is an unknown frame, and the host closes the connection.
 
@@ -378,11 +388,17 @@ player `p`", and `Caller::Player(p)` means "the platform saw `p`'s own session".
 | Calls on all of an organization's server connections to one app through one host | 32,000 a second |
 | Server connections an organization holds to one app through one host | 256 |
 | Subscriptions on a connection, pings, and the largest message | As for a player's connection: 256, 60 per 10 seconds, and 4 MiB and 64 KiB |
+| Answers and pushes queued for one server connection | 16,384 messages and 16 MiB. Past either, the connection is closed |
+| Answers and pushes queued for all of an organization's server connections to one app through one host (ck-exec 0.26.0) | 256 MiB in total. Past it, the connection that is furthest behind is closed |
 
 These take the place of a player's 120 calls per 10 seconds and 16 connections. Subscribing
 and unsubscribing count as calls. A call past either budget is refused `Busy` before the
 handler runs: its message starts `rate limited`, names the limit it reached, and says how long
 to wait.
+
+A server that reads what it is sent stays far inside the queue limits: an answer or a push is
+at most 4 MiB. A connection closed for its queue connects again with a new token from
+`execConnectAsServer`, and what was queued for it is dropped.
 
 ## From an SDK
 
