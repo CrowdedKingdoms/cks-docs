@@ -29,10 +29,20 @@ byte-level layouts, use the canonical references:
    before the session is installed is silently dropped — this wait is not
    optional politeness.
 4. Exchange signed UDP traffic with the returned host and client port
-   (IPv4 by default; `Config::preferIpv6` opts into the IPv6 address).
+   (IPv4 by default; `Config::preferIpv6` opts into the IPv6 address). From 0.95.0 the
+   connection also reaches a server that has an `ip6` alone: it opens its socket to
+   `replication::connectAddress(server, preferIpv6)`.
 
 Connection state (`Idle` → `Connecting` → `Connected`, with `Reconnecting` /
 `Failed` / `Closed`) surfaces through a status callback and `state()`.
+
+**A refused assignment says why** (0.95.0). `connect()` still answers one `Errc`.
+`Connection::lastAssignmentFailure()` then holds an `ApiFailure`: the Application API's
+refusal `code`, its `retryAfterMs`, and its `message`. When `failure.platformBusy()` is true,
+wait `retryAfterMs` and connect again. `ReplicationClient::ConnectResult::failure` and
+`GameSession::failure` hold the same, and `crowdy::startGameSession` waits that long between
+its attempts when it is longer than `connectRetryDelayMs`. A session provider of your own
+reports the reason through `ISessionProvider::assignServerOrSayWhy`.
 
 ## Sends
 
@@ -62,9 +72,11 @@ message's **sequence number**:
   `Handlers::channelAudio` (or `WorldSessionConfig::onChannelAudio`), wherever they are.
   Needs the channel's `send_voice` and `use_voice_chat`; the payload is at most 1,024
   bytes, in any format (the `crowdy::media` voice helpers are optional)
-- `sendHeartbeat` — idle keep-alive for your own actor (send every ~2 s while
+- `sendHeartbeat`: idle keep-alive for your own actor (send every ~2 s while
   idle so presence never lapses). Since replication v0.37.0 idle players on different
-  servers see each other from the first full update after joining, whatever the heartbeats
+  servers see each other from the first full update after joining, whatever the heartbeats.
+  From replication v0.51.0 a keepalive is refused where the player has no `access`:
+  see [A refused keepalive is reported once](#a-refused-keepalive-is-reported-once)
 
 Payload bytes are copied into a pooled send buffer during the call, so they
 need not outlive it.
@@ -102,20 +114,53 @@ game thread:
 
 - **Bundle unpacking** — a single datagram can carry multiple notifications;
   the client unpacks them.
-- **Per-notification HMAC verification** — server-signed notifications are
-  verified in constant time and mismatches are dropped (counted in
-  `stats().hmacFailures`; `Config::verifyNotifications` disables this for
-  benchmarking only).
+- **Only what the realtime server signed for your app is delivered** (0.95.0). A
+  long-spatial notification (actor and voxel updates, voice, video, text, events,
+  single-actor messages, actor left, and chunk changed) reaches a handler when its own HMAC
+  verifies with the player's token, or when it is a member of a signed bundle that verifies.
+  Three kinds are dropped and counted:
+
+  | A notification | Counted in |
+  |---|---|
+  | whose HMAC does not verify | `stats().hmacFailures` |
+  | that nothing signed | `stats().unsignedNotifications` |
+  | that names another app than `Config::appId`, however it was signed | `stats().wrongApp` |
+
+  A dropped notification reaches no handler, counts as no received message, and answers no
+  `*AndWait`. The realtime servers sign every long-spatial notification they send a session,
+  and send a session only its own app's, so the last two counts stay 0. If one moves, tell
+  Crowded Kingdoms: the SDK's log line names the app, the message type, and the chunk.
+- **What still arrives without a signature of its own.** Channel messages, channel audio, and
+  error frames have no room for an HMAC, so they are delivered as before, alone or in a
+  bundle.
+- **`Config::verifyNotifications = false`** delivers a notification that nothing signed, and
+  one with a wrong HMAC. Set it only for a server of your own that sends the connection
+  notifications it does not sign. A connection whose `Config::appId` is 0 compares no app.
+- **One receive pass reads 1,024 datagrams at most** (`kReceivePassDatagrams`, 0.95.0). A
+  pass used to end only when the socket was empty, so `pump()` did not return while datagrams
+  arrived faster than the connection verified them. `pump()` returns the number it processed:
+  to read everything that is waiting, call it until it returns less than 1,024.
 - **Typed dispatch** — a `Handlers` struct with one callback per notification
   kind (actor update, voxel update, audio, **video**, text, client/server
   event, generic spatial, single-actor message, channel message,
   **actorLeft** with its `reason` byte, generic error, status).
-- **Error frames** — server-reported failures arrive as generic-error
+- **Error frames.** Server-reported failures arrive as generic-error
   notifications **correlated by sequence number** to the send that caused
-  them.
+  them. `GenericError::verified` (0.95.0) is true only for a frame inside a signed bundle
+  that verified. The realtime servers send a player's session each error frame alone, as 3
+  bytes with no HMAC, so it is false there. `GenericError::keepalive` is true for a frame
+  that answers a keepalive.
 
 Notification payloads are **spans into the receive buffer** — valid only
 during the callback. Copy anything you keep.
+
+**Receive speed.** The checks of 0.95.0 cost a player's connection under 4% against 0.93.0.
+`benchmarks/bench_receive.cpp` in the repository measures one connection that reads, verifies,
+and dispatches loopback bundles of 6 signed actor updates of 64 bytes, on one pinned core of
+our build machine, in a Release build (the fastest of 300 rounds of 1,000 datagrams, over 5
+runs). It read 2.07 to 2.16 million notifications a second in 0.93.0, 1.72 to 1.82 million in
+0.94.1, and 2.02 to 2.07 million in 0.95.0. Your machine and your notifications will give
+other numbers: run the benchmark to see yours.
 
 ## Threading modes
 
@@ -135,6 +180,20 @@ The connection manages its own health so gameplay code doesn't have to:
 - **Proactive token refresh.** The app-scoped token expires; the client
   refreshes it through the session provider ahead of expiry
   (`Config::refreshLeadMs`, default 5 minutes) and rotates the HMAC key.
+- **`TOKEN_EXPIRED` reassigns only when it is verified** (0.95.0). Through 0.94.1 any
+  `TOKEN_EXPIRED` frame reassigned the connection, and that frame is 3 unsigned bytes on a
+  player's session. Now only one inside a signed bundle that verifies reassigns. For an
+  unverified one, the connection asks its session provider for a fresh token
+  (`refreshToken`), at most once every 30 seconds (`kTokenCheckIntervalMs`), and reassigns
+  only if the answer says the current server does not know the new token.
+  `stats().unverifiedTokenExpired` counts them. Either kind still reaches
+  `Handlers::genericError` and settles the `*AndWait` whose sequence number it names. With
+  `Config::refreshLeadMs = 0` the connection asks nothing: call
+  `connection.requestReassignment()` from `Handlers::genericError` when the code is
+  `TokenExpired`, after your own token refresh.
+- **`disconnect()` returns whatever is arriving** (0.95.0). The network thread stops at the
+  16 datagrams it has in hand (`kReceiveBatchDatagrams`), so `disconnect()` returns within 100
+  milliseconds unless the session provider is in the middle of a call.
 - **Verified `COMMAND_RECONNECT`.** A server under load can ask the client to
   move. The command's HMAC is verified as server-originated, then the client
   re-assigns via `serverWithLeastClients` within the grace period. See
@@ -149,7 +208,37 @@ The connection manages its own health so gameplay code doesn't have to:
 
 Reconnects and drop counters are visible in `stats()` (datagrams and messages
 sent and received, bundles sent, HMAC failures, malformed frames, ring drops,
-reconnects).
+reconnects, and from 0.95.0 `unsignedNotifications`, `wrongApp`,
+`unverifiedTokenExpired`, `keepalivesRefused`, and `notPresentReports`).
+
+## A refused keepalive is reported once
+
+From replication server v0.51.0, a keepalive (`sendHeartbeat`, `CLIENT_ACTOR_HEARTBEAT`) is
+accepted only where the player's actor update would be
+([the rule](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be)). Where the player has no `access`, the server answers every keepalive
+`UNAUTHORIZED`, and the actor is not present there. An older server never refuses a
+keepalive, so with one the report is never made and nothing else differs.
+
+CrowdyCPP 0.95.0 makes one report for the actor and the place, an `ActorNotPresent` (`uuid`,
+`chunk`, `sequence`, `verified`):
+
+| Call | When |
+|---|---|
+| `Handlers::notPresent` | Once, at the first refused keepalive. `Connection::notPresent(uuid)` returns the report while it stands |
+| `Handlers::notPresentEnded`, `NotPresentEnd::Accepted` | A keepalive there had no refusal for 3 seconds, or the actor's own update came back from the server |
+| `Handlers::notPresentEnded`, `NotPresentEnd::Moved` | The actor's next keepalive or update named another chunk |
+| `Handlers::notPresentEnded`, `NotPresentEnd::Stopped` | No keepalive was sent for the actor there for 30 seconds |
+
+- **`Handlers::genericError` still receives every refusal**, with `GenericError::keepalive`
+  true. `stats().keepalivesRefused` counts them, and `stats().notPresentReports` counts
+  reports.
+- **Nothing else changes on such a refusal.** The connection's state, its server, and its
+  token stay as they are. A player's session is sent the refusal unsigned, so the report is
+  all that a forged one can cause.
+- **Keep sending keepalives at the rate you send them now**: never faster, and never stop.
+  Once access is granted, the next keepalive is accepted within about 6 seconds, with no new
+  sign-in. `LocalActorStore` keeps its rate whatever the server answers.
+- **Do not treat the player as present** in that place while the report stands.
 
 ## AndWait correlation
 
@@ -210,6 +299,9 @@ registries, and caches on top of it.
 An organization's own game server uses `crowdy::replication::FleetSession` in
 place of `Connection`: one session that carries all of the server's players.
 See [Run your own game servers with a fleet session](/management-api/fleet-sessions#crowdycpp).
+`FleetSession` has made the signature and app checks of the receive path since 0.94.0, under
+the same counter names, and reports a carried player's refused keepalive through
+`FleetHandlers::notPresent`.
 
 ## Webcam video
 

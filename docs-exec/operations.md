@@ -234,7 +234,8 @@ Since ck-exec 0.11 two more limits keep one player from filling what everyone sh
 Neither SDK retries a `Busy` call for you. CrowdyJS marks this refusal on the error
 (`CrowdyExecError.rateLimited`, with the wait in `retryAfterMs`), and CrowdyCPP on the reply
 (`ExecReply::rateLimited()`, `retryAfterMs()`), so a game can tell it from a full mailbox and
-wait as long as the message says.
+wait as long as the message says. From CrowdyJS 18.41.0 and CrowdyCPP 0.95.0 that wait is 30
+seconds at most.
 
 ## Usage and budgets
 
@@ -411,6 +412,7 @@ at most 4 MiB. A connection closed for its queue connects again with a new token
 | `activateVersion(appId, version)` | `activateVersion(appId, version)` |
 | `setEnabled(appId, enabled, nodeType?)` | `setEnabled(appId, enabled, nodeType)` |
 | `connectAsDeveloper(appId, { nodeType, key })` | `connectAsDeveloper(appId, ExecConnectOptions)` |
+| `orgComputeCeiling(orgId)` (18.41.0) | `orgComputeCeiling(orgId)` (0.95.0), with an `…Async` twin |
 
 Use CrowdyJS 18.1.0 or CrowdyCPP 0.55.0 or later on dev.
 

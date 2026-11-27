@@ -20,7 +20,9 @@ Fleet sessions need Application API v2.89.1, realtime servers v0.50.3, and ck-ex
 All three are in production since November 26, 2026. Crowded Kingdoms switches fleet sessions
 on for one organization at a time
 ([below](#what-you-need-before-the-first-session)). CrowdyCPP 0.94.1, CrowdyJS 18.40.0, and
-CrowdyPy 0.40.0 carry them. A server written in another language calls the Application API
+CrowdyPy 0.40.0 carry them. CrowdyCPP 0.95.0 and CrowdyJS 18.41.0 add what Application API
+v2.90.0 and realtime servers v0.51.0 brought. A server written in another language calls the
+Application API
 and speaks the
 [wire formats](/replication-api/wire-formats#fleet-sessions-messages-49-to-53) itself.
 :::
@@ -304,6 +306,11 @@ fleet token, and sends an unanswered carry again. Each sends the session's capab
 and counts a notification that names another app than the session's, and one that nothing
 signed.
 
+CrowdyCPP 0.95.0 and CrowdyJS 18.41.0 report a carried player's refused keepalive once, and
+name the session's server by `ip4` or `ip6` at a refresh. CrowdyCPP 0.95.0 also refuses a
+carry for a new player once the session's table is full, as CrowdyJS does. The notes under
+each SDK say how.
+
 ### CrowdyCPP
 
 `client.admin().fleetSessions()` wraps the three Application API calls,
@@ -370,6 +377,14 @@ fleet.close();
   result is `Carried` with the player's user id, or `NoLiveToken` (1), `OtherOrganization`
   (2), `ProofRefused` (3), or `NoRoom` (4). After you refresh a player's token, call `carry`
   with the new one. Once that carry is confirmed it replaces the entry the same user had.
+- **The session's table has a limit** (0.95.0). `FleetSession::tableLimit()` is `maxPlayers`
+  and 32 more rows (`kFleetTableMargin`). A carry for a new player while the table is full
+  ends `FleetCarryStatus::TableFull` at the next `poll()`, with nothing sent, and
+  `stats().carriesRefusedTableFull` counts it. A carry for a player the table already holds,
+  and one whose `replaces` names a player it holds, are never refused this way. Release the
+  players who left, or open another session. A `switch` over `FleetCarryStatus` without a
+  `default` needs the new case. `fleetConfigOf` sets `FleetConfig::maxPlayers` from the open's
+  answer, and `applyFleetRefresh` takes a refresh's (`setMaxPlayers`).
 - **Every send of `Connection`** has a `FleetSession` form that takes the carried player's
   `gameTokenId` first, `setSpeakers` included. A send for a player the session does not carry
   returns `Errc::NotCarried` and puts nothing on the wire.
@@ -383,6 +398,26 @@ fleet.close();
   order. `applyFleetRefresh` moves the session when the answer names another server, and the
   session then carries its players again. A refresh that answers `NOT_FOUND` means the session
   ended: open a new one. The SDK makes no Application API call on its own.
+- **A refresh names the address the session connected to** (0.95.0): the server's `ip4`, or
+  its `ip6` when it has no `ip4` or when `FleetConfig::transport.preferIpv6` is set. Through
+  0.94.1 it sent the `ip4` whatever the session used. Naming an `ip6` needs Application API
+  v2.90.0. `FleetSession::refreshInput()` returns what `refresh` sends, for a game server with
+  an HTTP client of its own, and `replication::fleetCurrentServer(server)` makes the
+  `FleetCurrentServer` from a session answer's server. The session also reaches a server
+  that has an `ip6` alone (`replication::connectAddress`).
+- **The silence timeout fires at every value** (0.95.0). Through 0.94.1 a
+  `watchdogSilenceMs` from 3,000 to about 3,300 never fired. Every value from 3,000 up now
+  fires between the timeout and one capabilities interval later.
+- **A refused keepalive is reported once** (0.95.0, realtime servers v0.51.0). Where a carried
+  player has no `access`, every keepalive for the player's actor
+  (`FleetSession::sendHeartbeat(player, ...)`) is answered `UNAUTHORIZED`.
+  `FleetHandlers::notPresent` is called once for the player, the actor, and the place, with
+  an `ActorNotPresent` (`uuid`, `chunk`, `sequence`, `verified`, `playerGameTokenId`), and
+  `FleetHandlers::notPresentEnded` once when that ends: `Accepted`, `Moved`, or `Stopped`.
+  `FleetSession::notPresent(player, uuid)` reads the report while it stands. A keepalive's
+  `UNAUTHORIZED` no longer reaches `FleetHandlers::sendRefused`: read it from `notPresent`.
+  The session reports only a refusal that verified, the carry stands, and the session carries
+  nobody again because of it. Keep the keepalives at the same rate.
 - **`fleet.stats()`** counts what the session dropped: `wrongApp` for a notification that names
   another app, and `unsignedNotifications` for one that nothing signed. Neither reaches a
   handler.

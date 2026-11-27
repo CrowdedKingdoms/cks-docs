@@ -100,6 +100,14 @@ exec->close();
 
 - `connect` returns at once; calls made while the connection opens wait for it.
   `connectAsync` calls back once it is open, or with the failure.
+- When the Application API refuses `execConnect`, `execConnectAsDeveloper`, or
+  `execConnectAsServer`, `ExecConnection::lastConnectFailure()` holds the refusal: its `code`,
+  its `retryAfterMs`, and its `message` (CrowdyCPP 0.95.0). A call that waited on the
+  connection still fails `Unavailable`, and its message names the code and the wait:
+  `ExecReply::platformBusy()` is true for `PLATFORM_BUSY`, and `retryAfterMs()` reads the
+  wait. `connectAsync`, `connectAsDeveloperAsync`, and `connectAsServerAsync` each have an
+  overload whose callback also receives the failure, and a connection over an `ExecDial` of
+  your own learns it through `explainDialFailures`.
 - Callbacks run through the client's dispatcher, like the SDK's other realtime callbacks, so
   they arrive on the thread that calls `poll()`. See the [quick start](/crowdycpp/quick-start).
 - Replies and pushes carry the raw payload. `value()` decodes it from MessagePack into a
@@ -204,7 +212,10 @@ Any other gateway is never dialed: the attempt fails `Unavailable` ("refusing th
 and the next reconnect asks `execConnect` again. `execGatewayRefusal(applicationApiUrl, gatewayUrl)`
 (CrowdyJS), `crowdy::domains::execGatewayRefusal` (CrowdyCPP) and
 `crowdypy.domains.exec.exec_gateway_refusal` (CrowdyPy) say why, for a tool that dials an endpoint
-itself; `ExecConnection.open(gatewayUrl, token)` dials the URL it is given.
+itself; `ExecConnection.open(gatewayUrl, token)` dials the URL it is given. From CrowdyJS
+18.41.0 and CrowdyCPP 0.95.0 the message names the refused gateway by its scheme, host, and
+port, and leaves out the path and the query, which can carry a connect token. Change a test
+that matched the whole URL.
 
 ## When the gateway refuses
 
