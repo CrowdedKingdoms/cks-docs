@@ -384,8 +384,11 @@ on and the tier keys above.
 | Assertion exchanges per client IP | 120 a minute |
 | Players per `provisionManagedPlayers` call | 500 |
 
-A Crowded Kingdoms operator can change your organization's first three. Over the player cap,
-sign-ins of new players answer `MANAGED_PLAYER_LIMIT`. A game server's fleet session has
+A Crowded Kingdoms operator can change your organization's first three:
+[What your organization can change](/overview/organization-limits#crowded-kingdoms-switches-org-managed-players-on-and-sets-their-limits)
+says how to read your values and what to send when you ask. Over the player cap,
+sign-ins of new players answer `MANAGED_PLAYER_LIMIT`, and a sign-in past the rate answers
+`RATE_LIMITED` (429). A game server's fleet session has
 [limits of its own](/management-api/fleet-sessions#each-session-has-a-known-limit-and-you-grow-by-adding-servers).
 
 ## Errors
