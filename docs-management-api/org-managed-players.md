@@ -86,7 +86,7 @@ const res = await fetch('https://ck.prod.crowdedkingdoms.com/graphql', {
   body: JSON.stringify({
     query: `mutation ($i: MintManagedPlayerTokenInput!) {
       mintManagedPlayerToken(input: $i) {
-        token gameTokenId appId expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl launchUrl
+        token gameTokenId userId appId expiresAt applicationApiUrl applicationApiWsUrl discoveryUrl launchUrl
       }
     }`,
     variables: {
@@ -116,6 +116,11 @@ game.portal.adoptAppToken(access);
 
 CrowdyCPP: `client.portal().adoptAppToken(response)`. CrowdyPy:
 `client.set_app_token(client.portal.adopt_app_token(response))`.
+
+`userId` in the answer is the player's user id, the id `me` returns (Application API v2.90.0).
+Every answer that carries an app token has it, so a server that signs a player in reads the
+player there and makes no `me` call. Select it only against v2.90.0 or later: an earlier API
+refuses the field.
 
 `ageYears` and `country` are the player's age and country as your organization knows them
 ([below](#age-country-and-minors)), and required; `region` too where the country is checked by
@@ -210,13 +215,37 @@ To stop a player:
 - `updateManagedPlayer(input: { orgId, externalId, disabled: true })` signs it out and refuses
   its sign-ins until you enable it again.
 - `deleteManagedPlayer(orgId, externalId)` deletes it: its sessions end, its `externalId` and
-  gamertag are removed from its account, and within minutes its content in your apps is erased:
+  gamertag are removed from its account, and its content in your apps is then erased:
   its projects, libraries and mods, what your apps' [hubs](/exec/players-and-safety#erasure) hold
   of it, its actors, avatars and saved state, its communication settings, contacts and blocks,
   its access, and its team and channel memberships (a team or channel it created that others are
   in stays, without an owner). Its edits to your worlds stay, under the account's id, and so do its recorded inputs
   until their retention ends and its usage records. The `externalId` is free again, so a later
   sign-in with it creates a new player.
+- `deleteManagedPlayers(input: { orgId, externalIds })` deletes up to 100 players in one call,
+  each as `deleteManagedPlayer` does (Application API v2.90.0). Use it when you remove many
+  players at once, for example after an event or a test: one call takes the place of 100.
+  - The answer counts `deleted`, `notFound`, and `held`, and names every `externalId` you sent
+    with its outcome: `DELETED`, `NOT_FOUND` when your organization has no such player, or
+    `LEGAL_HOLD` when a hold covers the player or your organization.
+  - A held player is kept as it was, and the others are still deleted. The call succeeds
+    when some players are held, so read the outcomes.
+  - More than 100 ids is refused with nobody deleted, and an id sent twice is taken once.
+  - A busy moment answers `PLATFORM_BUSY` with `extensions.retryAfterMs` and has deleted
+    nothing. Wait that long and send the same call again. Sending a call again is safe: a
+    player already deleted answers `NOT_FOUND`.
+  - It takes the same org token (`players:manage`) or admin session (`manage_players`) as
+    `deleteManagedPlayer`.
+
+  Measured on Crowded Kingdoms' internal dev environment, with Application API v2.90.0 and
+  ck-exec 0.26.0, in an app with a hub for each player: 60 calls deleted 6,000 players in 33
+  seconds, and the erasure of those players in the app's hubs finished 4 minutes later.
+- **What your apps' hubs hold is erased hub by hub.** The platform asks every hub of the app
+  that holds stored state, and a player's erasure is complete only when each one has been
+  asked. Stored state of a node type you no longer deploy, or of a hub your deployed code
+  cannot load, keeps the erasure of every deleted player of that app open. Read
+  [Erasure](/exec/players-and-safety#erasure) before you drop a node type that held player
+  data.
 - **To keep a player's data**, for example while a dispute or a legal matter is open, disable
   the player instead of deleting it. Disabling ends its access and keeps everything, its
   `externalId` included. While a legal hold covers your organization or the player,
@@ -246,7 +275,7 @@ With an org admin's session (`manage_players`), or from your server with an org 
 | `managedPlayer(orgId, externalId)` | one player, or null |
 | `provisionManagedPlayers(input: { orgId, players })` | create up to 500 players ahead of their first sign-in; existing ones are left as they are |
 | `updateManagedPlayer` | rename, disable or enable |
-| `endManagedPlayerSessions`, `deleteManagedPlayer` | as above |
+| `endManagedPlayerSessions`, `deleteManagedPlayer`, `deleteManagedPlayers` | as above |
 
 `orgManagedPlayerSettings`, `orgSigningKeys` and the key fields take an org admin's session.
 
@@ -262,6 +291,34 @@ sign-ins past that are answered `PLATFORM_BUSY` with `extensions.retryAfterMs` (
 2.88). Nothing was stored for them: sign the player in again after that wait. At a launch,
 start new players over a few minutes. Keep each player's session for as long as it is valid,
 so that a player who comes back needs no new sign-in.
+
+**Sign-ins take turns** (Application API v2.90.0). When your servers sign many players in at
+one instant, the platform runs a few sign-ins at a time and holds the rest in a line, and
+organizations take turns in it. A wave that the line clears in a second or two is served late,
+where v2.89.1 refused part of it.
+
+- **A sign-in the line cannot take is answered `PLATFORM_BUSY` at once**, before anything is
+  checked or stored, with `extensions.retryAfterMs`.
+- **`retryAfterMs` is from 200 ms to 10 seconds**, worked out from how many sign-ins are
+  waiting. Callers refused together are told different waits, so they come back in order.
+- **Wait that long, then send the same call again.** Do not send sooner.
+- `provisionManagedPlayers` and `deleteManagedPlayers` take their turn with new players'
+  first sign-ins, and are answered the same way.
+
+Crowded Kingdoms measured v2.90.0 beside v2.89.1 on November 27, 2026. Both ran on one shared
+internal build machine, each as one Application API process with its own database, and both
+were given the same load at the same instants. A *join* here is what a game server asks for
+one player: a sign-in, a session, and the game's first reads, then the same again 2.2 seconds
+later as the player is handed to another server. Read each row as a comparison of the two
+versions on that machine. Production was not measured, and other work ran on the machine, so
+the times are that machine's that hour.
+
+| Load | v2.89.1 | v2.90.0 |
+|---|---|---|
+| 60 joins inside 0.4 seconds, every 5 seconds, 101 times: 12,120 sign-ins | None refused. A sign-in took 255 ms at the median and 571 ms at the 99th percentile | None refused. 253 ms and 690 ms |
+| 120 joins inside 0.4 seconds, every 5 seconds, 40 times: 9,600 sign-ins | 2,525 sign-ins refused (26%) | None refused. 775 ms and 1,775 ms |
+| 240 new players at one instant, each waiting its `retryAfterMs` and asking again | `PLATFORM_BUSY` answered 353 times. The last player was signed in after 6.3 seconds | 204 times. 5.8 seconds |
+| 360 new players at one instant | 704 times. 7.9 seconds | 397 times. 7.5 seconds |
 
 ## Mods paid by your organization
 
@@ -406,7 +463,7 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`, and a sign-in past the ra
 | `MANAGED_PLAYER_LIMIT` | Your organization is at its player cap. |
 | `MANAGED_PLAYER_NOT_ALLOWED` | A managed player asked for a wallet, or for mods where your organization has not switched them on. |
 | `ACCOUNT_BLOCKED` | The player is disabled. |
-| `PLATFORM_BUSY` | The platform could not start the sign-in or the provisioning in time, most often because many new players arrived at once. Nothing was stored. Wait `extensions.retryAfterMs`, then send it again. 503. |
+| `PLATFORM_BUSY` | The platform could not start the sign-in, the provisioning or the deletion in time, most often because many players arrived at once. Nothing was stored or deleted. Wait `extensions.retryAfterMs` (200 ms to 10 seconds from Application API v2.90.0), then send it again. 503. |
 | `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. An open or escalated [safety report](/application-api/safety-reports) about the player sets one. |
 | `TERRITORY_NOT_SUPPORTED` | The country or region you sent (`extensions.country`, `extensions.region`) is one Crowded Kingdoms does not serve, or the country is checked by region and you sent no `region`. |
 | `AGE_REQUIREMENT_NOT_MET` | The player is under 13, or under the app's or the country's minimum age, or was refused so in the last 24 hours. Tell the player, without a reason or an age; do not retry with another age. |

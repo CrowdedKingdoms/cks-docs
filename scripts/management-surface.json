@@ -33,6 +33,7 @@
       "createOrganization",
       "createPortalAuthorizationCode",
       "deleteManagedPlayer",
+      "deleteManagedPlayers",
       "deleteMyAccount",
       "deleteOrgRole",
       "deleteQuota",

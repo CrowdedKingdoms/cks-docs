@@ -368,7 +368,11 @@ the operating system drops datagrams from anywhere else.
   (`CLIENT_MEDIA_SPEAKERS`, 47, under the player's `gameTokenId`), send-rate budget (500
   messages a second with bursts to 1,000, for each carried player), idle timeout, and input log.
 - A heartbeat for a carried player's actor carries that player's `gameTokenId`, like any other
-  message for the player.
+  message for the player. From v0.51.0 it is judged for that player: where the player has no
+  `access`, it is answered `UNAUTHORIZED` inside the session's signed bundle, and the player is
+  not present there
+  ([the rule](#a-keepalive-is-accepted-only-where-the-actors-update-would-be)). The session's
+  own keep-alive is not held to `access`.
 - A message that names a player the session does not carry, and any message other than those
   four under the session's own `gameTokenId`, is answered `GENERIC_ERROR_MESSAGE` with
   `UNAUTHORIZED` (`[3][seq][7]`). `CLIENT_CAPABILITIES` under a player's `gameTokenId` is
@@ -807,7 +811,8 @@ The server tracks each actor's **presence** (which chunk it occupies and that it
 When the player is actively moving you already send `ACTOR_UPDATE_REQUEST`s, which keep presence fresh. When the player is **idle** (not moving), you can keep the actor alive cheaply with the optional `CLIENT_ACTOR_HEARTBEAT` (opcode `26`):
 
 - It **reuses the long-spatial layout above** (same fields, same HMAC scheme), just with `messageType = 26`. Set the actor's current `chunk` + `uuid`; `distance`/`decay rate` are ignored (send `0`).
-- The server validates it like any spatial message (session + HMAC), then refreshes **only the sender's own actor presence and session** — there is **no fan-out** (other players are not notified) and no permission gate. It is purely a keep-alive.
+- The server validates it like any spatial message (session + HMAC), then refreshes **only the sender's own actor presence and session**. There is **no fan-out**: other players are not notified by it.
+- From server v0.51.0 the server accepts it only where it would accept the same actor's `ACTOR_UPDATE_REQUEST`: see [below](#a-keepalive-is-accepted-only-where-the-actors-update-would-be). Before v0.51.0 it passed no permission check.
 - It carries no game state, so it is much cheaper than a full actor update for an idle actor.
 - From server v0.48.0 it counts as the app's data in, like every other message the server accepts (about 151 bytes on the wire), except while the app is paused for funds. So does `CLIENT_CAPABILITIES`.
 
@@ -816,6 +821,42 @@ When the player is actively moving you already send `ACTOR_UPDATE_REQUEST`s, whi
 **Replication is each spatial message.** It is delivered at the rate you send it. The Buddy a recipient is connected to does not thin that stream. The only thinning is the `distance` and `decay rate` on the message.
 
 A reasonable client policy: send `ACTOR_UPDATE_REQUEST` as the actor moves, and when idle send a `CLIENT_ACTOR_HEARTBEAT` every couple of seconds (comfortably under the staleness window) so presence never lapses.
+
+### A keepalive is accepted only where the actor's update would be
+
+From replication server v0.51.0, a keepalive (`CLIENT_ACTOR_HEARTBEAT`, 26) passes the check an
+actor update passes: the player needs `access` for the chunk the keepalive names
+([Permissions](/replication-api/operations#permissions-always-enforced)). A place is private
+to keepalives exactly when it is private to updates. A plot inside a world whose world grid
+grants `access` stays open.
+
+Where the player has no `access`:
+
+- **Every keepalive is answered `UNAUTHORIZED`**, the error frame `[3][seq][7]`. It arrives
+  unsigned on a player's session, and inside the signed bundle of a
+  [fleet session](/management-api/fleet-sessions).
+- **The player is not present there.** The session is sent nothing of the place, and it stays
+  connected.
+- **Keep sending at the normal cadence.** Never send faster, and never stop. When access is
+  granted, the next keepalive is admitted within about 6 seconds, with no new sign-in.
+- **A refused keepalive is not gameplay input** for the app's idle timeout, and it is not
+  counted as data in. Its three-byte answer is data out.
+- **Access that is removed** takes effect at the session's next token refresh, at most 30
+  minutes later, as it does for updates.
+
+**What your game does.** Nothing, if its players only stand where they may enter. Otherwise
+expect `UNAUTHORIZED` in answer to the keepalive, and do not treat the player as present in
+that place.
+
+Four things are unchanged:
+
+- an app where every region is open;
+- a paused app, where keepalives are still accepted wherever the player has `access`;
+- an idle player's first keepalive after a move, a reconnect, or a token refresh;
+- a fleet session's own keepalive. A carried player's keepalive is judged for that player.
+
+Before v0.51.0 a keepalive was not held to `access`. A player without `access` to a region of
+their app could stay present there by keepalives, and was sent what happened there.
 
 **No particular keyframe cadence is needed to be seen across servers (server v0.37.0).** Two
 idle players on different servers see each other from the first full actor update after

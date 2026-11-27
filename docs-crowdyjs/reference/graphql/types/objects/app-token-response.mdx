@@ -23,6 +23,7 @@ type AppTokenResponse {
   token: String!
   gameTokenId: String!
   appId: String!
+  userId: BigInt!
   expiresAt: String!
   applicationApiUrl: String
   gameApiUrl: String @deprecated
@@ -48,6 +49,10 @@ Identifier of the underlying game&#x005F;token row, as a String.
 
 #### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
 The app this token is confined to, as a String.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The user the token signs in (BigInt as a decimal string): the id `me` returns as userId. A game server that signs a player in with mintManagedPlayerToken reads the player here and needs no `me` call. Every field that answers an app token carries it: mintAppToken, refreshAppToken, mintManagedPlayerToken, exchangeManagedPlayerAssertion, exchangePortalCode and signInWithMinecraft.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #expires-at */} 

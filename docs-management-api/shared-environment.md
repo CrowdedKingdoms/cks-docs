@@ -181,7 +181,9 @@ headers each frame carries, and it is counted after any compression the service
 applies. A `MESSAGE_BUNDLE` datagram carrying several messages is one frame and is
 metered once, in either direction. Keep-alives count as ingress too (from replication
 server v0.48.0): an idle player sending a heartbeat every 2 s sends about 0.3 MB an
-hour. A client-side byte counter will not match it. The full basis is in the
+hour. A heartbeat the server refuses because the player has no `access` where the actor
+stands (replication server v0.51.0) is not counted as ingress, and its three-byte answer is
+egress. A client-side byte counter will not match it. The full basis is in the
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
 
 **Estimating a game's bill.** The pricing page's
