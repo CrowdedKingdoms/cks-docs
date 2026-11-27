@@ -57,7 +57,8 @@ See [Application API best practices](/application-api/best-practices) and
   bundle.
 - An organization's own game server runs its
   [fleet session](/management-api/fleet-sessions#crowdyjs) in Node, from the entry point
-  `@crowdedkingdoms/crowdyjs/fleet`. The SDK refuses the org-token calls in a browser page.
+  `@crowdedkingdoms/crowdyjs/fleet` (18.40.0). The SDK refuses the org-token calls in a
+  browser page.
 - Refresh the app token before `expiresAt`.
 - Studio-admin surfaces belong in a trusted admin tool, not the shipped
   player client.

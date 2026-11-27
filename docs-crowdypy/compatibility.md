@@ -44,6 +44,11 @@ agent's policy.
   Org-Managed Players Addendum. The addendum fields on `managed_players.settings` and
   `org_legal_acceptance_required_of` are 0.17.0. See
   [Org-managed players](/management-api/org-managed-players).
+- **Fleet sessions** (`client.fleet_sessions`, `crowdypy.fleet.AsyncFleetSession` and
+  `FleetSession`, `exec.connect_as_server`, and `call_as`, 0.40.0) need Application API
+  v2.89.1, replication server v0.50.3, and ck-exec 0.25.0, and Crowded Kingdoms switches them
+  on for an organization. See
+  [Run your own game servers with a fleet session](/management-api/fleet-sessions#crowdypy).
 - The full list of what each release needs from the server is in the repository's
   [compatibility notes](https://github.com/CrowdedKingdoms/CrowdyPy/blob/prod/docs/compatibility.md).
 
