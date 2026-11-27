@@ -111,6 +111,14 @@ crowdy::CrowdyClient& game = *session.client;  // the app token's calls
 auto conn = session.connection;                 // build the WorldSession of step 4 on it
 ```
 
+From CrowdyCPP 0.95.0 the token names its player: `AppTokenResponse::userId` is the user the
+token signs in, as `users().me()` returns it, and `userIdInt64()` reads it as an integer.
+`session.token` carries it too, so a game server needs no `me` call to learn who it signed in.
+It needs Application API v2.90.0. When the session did not start because the Application API
+refused the server assignment, `session.failure` holds the refusal's `code`, `retryAfterMs`,
+and `message` (an `ApiFailure`), and `startGameSession` has already waited `retryAfterMs`
+between its attempts.
+
 With the app token, `game.safety()` holds the player's own controls (voice and video settings,
 a parent's consent, contacts, blocks and `fileReport`, each with an `Async` twin) and
 `game.admin().apps().recording(appId)` what the safety log records, for the notice and the
