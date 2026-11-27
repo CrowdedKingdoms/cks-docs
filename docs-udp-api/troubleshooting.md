@@ -96,6 +96,25 @@ this exact symptom:
   session-install packet.
 - A version/routing mismatch between game-api and Buddy.
 
+## Every keepalive is answered `UNAUTHORIZED`
+
+From replication server v0.51.0, a keepalive (`CLIENT_ACTOR_HEARTBEAT`, 26) is accepted only
+where the player's actor update would be. If each keepalive comes back as `[3][seq][7]`, the
+player has no `access` for the chunk it names. The player is not present there, and the
+session is sent nothing of the place.
+
+- **Check the player's access** for that chunk: their tier's `access` key, and the grid that
+  covers the chunk ([Grids and permissions](/application-api/grids-and-permissions)).
+- **Keep sending at the normal cadence**, never faster, and do not reconnect. The session is
+  still connected. After access is granted, the next keepalive is admitted within about 6
+  seconds.
+- **Do not show the player as present** in that place until a keepalive or an update there is
+  accepted.
+
+A server before v0.51.0 accepted the same keepalive, so a client that relied on keepalives to
+stay in a place its player may not enter sees this for the first time. See
+[A keepalive is accepted only where the actor's update would be](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be).
+
 ## Error codes
 
 If you receive a `GENERIC_ERROR_MESSAGE` (type `3`) you are at least getting a reply —

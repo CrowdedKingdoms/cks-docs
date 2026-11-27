@@ -1,0 +1,43 @@
+---
+id: delete-managed-players-input
+title: DeleteManagedPlayersInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The players of one organization to delete in one call.
+
+
+```graphql
+input DeleteManagedPlayersInput {
+  orgId: BigInt!
+  externalIds: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DeleteManagedPlayersInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+The organization (an org token's own, if one is used).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeleteManagedPlayersInput.<b>externalIds</b></code>](#external-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #external-ids */} 
+The ids your organization knows the players by: 1 to 100 of them, each 1 to 256 characters. One sent twice is deleted once.
+
+
+
+
+### Member Of
+
+[`deleteManagedPlayers`](/reference/graphql/operations/mutations/delete-managed-players.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

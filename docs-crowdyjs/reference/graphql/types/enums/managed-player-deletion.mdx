@@ -1,0 +1,48 @@
+---
+id: managed-player-deletion
+title: ManagedPlayerDeletion
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What deleteManagedPlayers did with one player.
+
+
+```graphql
+enum ManagedPlayerDeletion {
+  DELETED
+  NOT_FOUND
+  LEGAL_HOLD
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayerDeletion.<b>DELETED</b></code>](#deleted) {/* #deleted */} 
+The player is deleted: its sessions are ended, its externalId and gamertag are removed, and its content is erased within minutes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayerDeletion.<b>NOT&#x005F;FOUND</b></code>](#not-found) {/* #not-found */} 
+The organization has no managed player with that externalId. Nothing changed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayerDeletion.<b>LEGAL&#x005F;HOLD</b></code>](#legal-hold) {/* #legal-hold */} 
+A legal hold covers the player or the organization, or an open or escalated safety report about the player set one. The player is kept as it was: disable it with updateManagedPlayer.
+
+
+
+
+### Member Of
+
+[`ManagedPlayerDeletionResult`](/reference/graphql/types/objects/managed-player-deletion-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

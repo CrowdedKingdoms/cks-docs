@@ -25,6 +25,10 @@ Full sequence: [Authenticate and assign](/replication-api/authenticate-and-assig
 - Send a heartbeat at least every **4 seconds** while the actor is present,
   and some traffic at least every **60 seconds**.
   [Operations](/replication-api/operations).
+- When a heartbeat is answered `UNAUTHORIZED` (server v0.51.0), the player has no `access`
+  where the actor stands. Keep the same cadence, and do not treat the player as present
+  there. See
+  [the keepalive rule](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be).
 - Refresh the app token before `expiresAt`. An expired token yields
   `TOKEN_EXPIRED`; mint/refresh and re-assign.
 - On `COMMAND_RECONNECT` (type 22), verify the HMAC and call
