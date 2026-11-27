@@ -209,13 +209,10 @@ viewer function is ever detached.
   paragraph is the 30-minute run on realtime servers v0.50.3 (135,106 crossings), and since
   2026-11-27 the two runs on v0.51.0 beside it (135,092 crossings in 30 minutes at 75 a second;
   135,095 in 15 minutes at 150 a second). A count printed with a duration and a rate is the
-  measured window's, never the whole run's with its ramp. No page names
-  an SDK version for it yet:
-  when the SDKs release, name them in the guide's "What is switched on" box, in the changelog
-  entry, in `docs-crowdycpp/compatibility.md` and in `docs-crowdyjs/best-practices.md`, and add
-  `### CrowdyPy` beside `### CrowdyCPP` and `### CrowdyJS` under "An SDK does the same steps
-  for you". Both examples leave out how an SDK takes an unverified error frame, which was
-  still changing when they were written. The ck-exec page states
+  measured window's, never the whole run's with its ramp. The SDKs that
+  carry it are named in the guide's "What is switched on" box, under "An SDK does the same
+  steps for you" (`### CrowdyCPP`, `### CrowdyJS`, `### CrowdyPy`), in the changelog entry, in
+  `docs-crowdycpp/compatibility.md` and in `docs-crowdyjs/best-practices.md`. The ck-exec page states
   the `ckx-sdk` version once; `docs-exec/develop-locally.md` ("Versions") names the kit release
   when there is one.
 - **The pages for Application API v2.90.0, realtime servers v0.51.0 and ck-exec 0.26.0**
@@ -224,12 +221,21 @@ viewer function is ever detached.
   would be"), and every page that says what keeps an actor present points at it. The
   join path and `deleteManagedPlayers` are in `docs-management-api/org-managed-players.md`;
   the erasure rule is in `docs-exec/players-and-safety.md` ("An erasure is complete only
-  when every hub with stored state has been asked"). The changelog entry opens "On the
-  dev environment:"; change that sentence at each promotion, as the entries of 2026-11-02
-  and 2026-10-30 were. **CrowdyCPP 0.95.0 and CrowdyPy 0.41.0 were not released when
-  these were written**, so no page names them: when they are, add what they wrap to
-  `docs-crowdycpp/` and `docs-crowdypy/`, to the fleet guide's `### CrowdyCPP` and
-  `### CrowdyPy`, and to the changelog entry.
+  when every hub with stored state has been asked"). The changelog entry's first line
+  names the tiers and the versions ("On dev, test, and production since November 27,
+  2026: ..."), and it reads the same on every branch since 2026-11-27.
+  **CrowdyCPP 0.95.0 is on the pages** (2026-11-27): `docs-crowdycpp/` (the replication
+  client's receive path, lifecycle and "A refused keepalive is reported once", the world
+  session, the quick start, and the compatibility page's table and six cases), the fleet
+  guide's `### CrowdyCPP`, and one line each on the org-managed players page, the error
+  codes, the wire formats' SDK table, and ck-exec's operations and connect pages.
+  **CrowdyPy's release that binds the same changes was not out when these were written**,
+  so no page names it. When it is, the places are few on purpose: the changelog entry's
+  first line and one bullet after CrowdyCPP's; a row in the SDK table under the keepalive
+  rule in `docs-udp-api/wire-formats.md`; the two sentences of the fleet guide that name
+  the SDK versions and its `### CrowdyPy` notes; the "In the SDKs" lines for `userId` and
+  the bulk delete on the org-managed players page; the `retryAfterMs` sentence in
+  `docs/error-codes.md`; and `docs-crowdypy/`.
 - **The Minecraft server page is a draft** (`docs-minecraft/intro.md`, `draft: true`, 2026-11-04):
   it links the private mod repository's releases and describes features not publicly released.
   Its navbar item, footer column and `llms.txt` entry were removed with it; restore all three
