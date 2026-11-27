@@ -86,8 +86,10 @@ since November 26, 2026. The guide is [Run your own game servers with a fleet se
   of them, depending on which part of a realtime server each player was connected through. In a crowd of thousands
   spread over a wide area and moving, some updates were not delivered, and a player could be sent updates from a
   place they had left. Both are fixed in realtime servers v0.50.3.
-- **SDKs.** CrowdyCPP and CrowdyJS carry fleet sessions in releases that are still to come, and CrowdyPy follows.
-  The CrowdyJS session runs in Node only.
+- **SDKs.** CrowdyCPP 0.94.1, CrowdyJS 18.40.0, and CrowdyPy 0.40.0 carry fleet sessions:
+  `crowdy::replication::FleetSession`, `FleetSession` from `@crowdedkingdoms/crowdyjs/fleet`, and
+  `crowdypy.fleet.AsyncFleetSession`. The CrowdyJS session runs in Node only. Each SDK's steps are in
+  [the guide](/management-api/fleet-sessions#an-sdk-does-the-same-steps-for-you).
 - **What you do:** nothing, unless you run your own game servers. Then follow the guide, and build the hubs your
   servers call again with `ckx-sdk` 0.15.0.
 
