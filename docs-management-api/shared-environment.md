@@ -18,7 +18,8 @@ There are two deployment models in the platform:
   allowance.
 - **Dedicated environment** — self-serve dedicated and sandbox stacks were **retired**; private
   environments exist only by Enterprise Agreement. There is no stack to provision yourself and no
-  API for one; contact Crowded Kingdoms if you need one.
+  API for one; contact Crowded Kingdoms if you need one
+  ([what to send](/overview/organization-limits#a-dedicated-environment-needs-an-enterprise-agreement)).
   Every app uses the shared platform (`publishAppToShared`).
 
 So in practice there is one model, and this page describes it.
@@ -77,12 +78,14 @@ So in practice there is one model, and this page describes it.
   [Usage and budgets](/exec/operations#usage-and-budgets).
 - **ck-exec instance limits follow funding.** An organization that cannot be
   charged (no spendable wallet balance, no auto-billing) may run **16 hub
-  instances reserving 1 GB of memory** per datacenter at once **across all of its
-  apps**; an organization that can be charged gets **16,384 instances and 64 GB
-  for each app**. Past either limit the next instance is refused until some stop;
+  instances reserving 1,024 MB of memory** per datacenter at once **across all of its
+  apps**; an organization that can be charged gets **16,384 instances and 65,536 MB
+  for each app**, and Crowded Kingdoms can set a higher limit for it
+  ([how to ask](/overview/organization-limits#funding-raises-your-compute-limit-and-crowded-kingdoms-can-set-a-higher-one)).
+  Past either limit the next instance is refused until some stop;
   running ones are left alone. See
   [limits](/exec/operations#usage-and-budgets). An organization that holds its whole
-  1 GB ceiling all month reserves about 780 GB-hours, a little more than the quota,
+  1,024 MB ceiling all month reserves about 780 GB-hours, a little more than the quota,
   so without a funded wallet its apps are refused near the end of a 30- or 31-day
   month.
 - **Stored input logs have no free allowance.** An app records nothing until an
@@ -134,6 +137,9 @@ every tier.
   from December 1, 2026.
 - **A written agreement** can give an organization a larger free allowance for
   whole months; when it ends, the organization has the tier its conditions give it.
+  [What your organization can change](/overview/organization-limits#you-reach-two-free-data-tiers-yourself-and-crowded-kingdoms-decides-two-more)
+  says which tiers you reach yourself, which Crowded Kingdoms decides, and what to
+  send to ask for an agreement.
 - **Where to see it.** Studio's Plan and Usage tab, or `orgFreeTier(orgId)`
   (`view_billing`): `thisMonth` and `nextMonth` (each a `level` and its
   `gigabytes`), `earnedLevel`, each condition's state (`conditions`),
