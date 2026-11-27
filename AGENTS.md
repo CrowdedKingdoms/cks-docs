@@ -206,7 +206,10 @@ viewer function is ever detached.
   side in `docs-exec/operations.md` ("Your organization's game servers"), and the band rule in
   `docs-management-api/shared-environment.md` ("Data out for a fleet session"). Production serves
   it since 21:08 UTC on 2026-11-26, and the guide and the changelog entry say so. The measured
-  paragraph is the 30-minute run on realtime servers v0.50.3 (135,106 crossings). No page names
+  paragraph is the 30-minute run on realtime servers v0.50.3 (135,106 crossings), and since
+  2026-11-27 the two runs on v0.51.0 beside it (135,092 crossings in 30 minutes at 75 a second;
+  135,095 in 15 minutes at 150 a second). A count printed with a duration and a rate is the
+  measured window's, never the whole run's with its ramp. No page names
   an SDK version for it yet:
   when the SDKs release, name them in the guide's "What is switched on" box, in the changelog
   entry, in `docs-crowdycpp/compatibility.md` and in `docs-crowdyjs/best-practices.md`, and add

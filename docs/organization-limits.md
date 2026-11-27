@@ -310,11 +310,10 @@ time for these requests, so ask as early as you can.
 - **Measured.** Two runs on November 27, 2026, on Crowded Kingdoms' internal dev environment,
   with realtime servers v0.51.0 on three servers:
   - 100 fleet sessions carried 3,000 players for 30 minutes. The players made 135,092
-    crossings between game servers in those 30 minutes, 75 a second, and 140,616 in the whole
-    run. None was lost.
-  - 200 fleet sessions carried 6,000 players for 15 minutes. The players made 153,079
-    crossings in the run, at 150 a second. None was lost, and a carry was answered in 36 ms
-    at the median and in 57 ms at the 99th percentile.
+    crossings between game servers in those 30 minutes, 75 a second. None was lost.
+  - 200 fleet sessions carried 6,000 players for 15 minutes. The players made 135,095
+    crossings in those 15 minutes, 150 a second. None was lost, and a carry was answered in
+    36 ms at the median and in 57 ms at the 99th percentile.
 
   Those are two runs on one environment. No larger crowd, and no faster rate of crossing, has
   a published measurement
