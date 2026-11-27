@@ -150,6 +150,8 @@ The **Crowdy Mass Trace Collision** trait keeps its settings in an `FCrowdyMassT
 
 A config you assemble in code can set only the object type, with `UCrowdyMassTraceCollisionTrait::SetObjectType`.
 
+A derived row casts a shadow when the class's skinned mesh component has **Cast Shadow** and **Dynamic Shadow** on. To keep every derived row shadowless, for example to save shadow cost in a dense crowd, turn off **Derived Rows Cast Shadows** (`bDerivedRowsCastShadows`) in **Project Settings, Plugins, Crowdy Mass**, under **Remote Entities**. It is read when a class's crowd is first drawn in a map. As a guide, 300 rows at 1920x1080 added about 0.8 ms of GPU time, about half of it in the shadow depth pass. An authored config keeps its own **Cast Shadows**. On the tagged v2.29.0 plugin a derived row never casts a shadow and the setting does not exist; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2290).
+
 The result is cached per class, and one summary line names the mesh, the route and the material verdict.
 
 If no mesh resolves, nothing is derived and the row does not appear. The log says `nothing configures a Mass entity config for` the class, `and one could not be worked out from the class, so entities of it will not appear`, followed by what is missing and what to change.

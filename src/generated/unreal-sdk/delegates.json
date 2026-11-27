@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-11-23T17:16:40Z",
-  "sdk_version": "2.28.0",
+  "generated_from": "2026-11-27T17:15:38Z",
+  "sdk_version": "2.30.0",
   "table": "delegates",
   "columns": [
     {
@@ -2291,6 +2291,28 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyPlayers_GetMyAppState::OnError",
+      "owner": "UCrowdyPlayers_GetMyAppState",
+      "name": "OnError",
+      "type": "FPlayerAppStateAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPlayers_GetMyAppState::OnSuccess",
+      "owner": "UCrowdyPlayers_GetMyAppState",
+      "name": "OnSuccess",
+      "type": "FPlayerAppStateAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName::OnError",
       "owner": "UCrowdyPlayers_GetPlayerName",
       "name": "OnError",
@@ -2328,6 +2350,28 @@
       "owner": "UCrowdyPlayers_GetPlayerNames",
       "name": "OnSuccess",
       "type": "FPlayerProfilesAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPlayers_SetMyAppState::OnError",
+      "owner": "UCrowdyPlayers_SetMyAppState",
+      "name": "OnError",
+      "type": "FPlayerAppStateWriteAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPlayers_SetMyAppState::OnSuccess",
+      "owner": "UCrowdyPlayers_SetMyAppState",
+      "name": "OnSuccess",
+      "type": "FPlayerAppStateWriteAsyncResult",
       "category": "",
       "module": "CrowdyServices",
       "page": "services/teams",
@@ -3376,6 +3420,28 @@
       "category": "Crowdy SDK|Server Objects",
       "module": "CrowdyExec",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyMassEntitySubsystem::OnNearTierBindingChanged",
+      "owner": "UCrowdyMassEntitySubsystem",
+      "name": "OnNearTierBindingChanged",
+      "type": "FCrowdyMassNearTierActorBindingChanged",
+      "category": "Crowdy Mass|Near Tier",
+      "module": "CrowdyMass",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyMassNearTierComponent::OnEntityBindingChanged",
+      "owner": "UCrowdyMassNearTierComponent",
+      "name": "OnEntityBindingChanged",
+      "type": "FCrowdyMassNearTierBindingChanged",
+      "category": "Crowdy Mass|Near Tier",
+      "module": "CrowdyMass",
+      "page": "",
       "editor": false,
       "allowlist": ""
     },
