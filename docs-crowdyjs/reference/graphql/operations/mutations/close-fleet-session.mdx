@@ -1,0 +1,39 @@
+---
+id: close-fleet-session
+title: closeFleetSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+ORG TOKEN ONLY. End a fleet session now, when its game server stops: the realtime servers release the players it carries (their actors leave, as when a player's own session ends) and its place counts toward the organization's maxFleetSessions no longer. True when a session was ended; false when there was none by that id (already closed, or opened with another org token). A session that is neither closed nor refreshed ends by itself at expiresAt. The org token that opened the session, with scope fleet:session; to end the sessions another org token opened, revoke that token.
+
+
+```graphql
+closeFleetSession(
+  input: CloseFleetSessionInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>closeFleetSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CloseFleetSessionInput!</b></code>](/reference/graphql/types/inputs/close-fleet-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.
