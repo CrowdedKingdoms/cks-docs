@@ -19,9 +19,9 @@ device keeps using that player's own session and needs nothing here.
 Fleet sessions need Application API v2.89.1, realtime servers v0.50.3, and ck-exec 0.25.0.
 All three are in production since November 26, 2026. Crowded Kingdoms switches fleet sessions
 on for one organization at a time
-([below](#what-you-need-before-the-first-session)). CrowdyCPP and CrowdyJS carry them in
-releases that are still to come, and CrowdyPy follows. A server written in another language
-calls the Application API and speaks the
+([below](#what-you-need-before-the-first-session)). CrowdyCPP 0.94.1, CrowdyJS 18.40.0, and
+CrowdyPy 0.40.0 carry them. A server written in another language calls the Application API
+and speaks the
 [wire formats](/replication-api/wire-formats#fleet-sessions-messages-49-to-53) itself.
 :::
 
@@ -272,11 +272,12 @@ is carried elsewhere or goes idle.
 
 ## An SDK does the same steps for you
 
-Both SDKs take the org token as the client's bearer for the Application API calls, sign every
-message with the fleet token, and send an unanswered carry again. Both send the session's
-capabilities every 15 seconds and call a refresh due after 45 seconds without an
-acknowledgement. Both drop and count a notification that names another app than the session's,
-and one that nothing signed.
+CrowdyCPP 0.94.1, CrowdyJS 18.40.0, and CrowdyPy 0.40.0 carry fleet sessions. Each takes the
+org token as the client's bearer for the Application API calls, signs every message with the
+fleet token, and sends an unanswered carry again. Each sends the session's capabilities every
+15 seconds and calls a refresh due after 45 seconds without an acknowledgement. Each drops
+and counts a notification that names another app than the session's, and one that nothing
+signed.
 
 ### CrowdyCPP
 
@@ -446,6 +447,63 @@ fleet.close();
 - **On any connection that is not a server's, `callAs` is refused locally** with `Denied`, and
   nothing is sent. On Node before 22, pass `{ WebSocket }` from the `ws` package to
   `connectAsServer`, as for `connect`.
+
+### CrowdyPy
+
+The session is `AsyncFleetSession` for asyncio, or `FleetSession` for a loop that calls
+`poll()` every tick, both from `crowdypy.fleet`. It is CrowdyCPP's session, bound as a
+player's connection is: its network thread verifies every frame with the fleet token before
+Python sees it. `client.fleet_sessions` wraps the three Application API calls on the async
+client and on the blocking one.
+
+```python
+import os
+import crowdypy
+from crowdypy.fleet import AsyncFleetSession, FleetPlayerToken
+
+# A client for this server, holding the org token. Give it no token_store.
+api = crowdypy.AsyncCrowdyClient()
+api.set_token(os.environ["CK_ORG_TOKEN"])
+
+fleet = AsyncFleetSession(
+    await api.fleet_sessions.open(app_id),
+    handlers={
+        "actor_update": lambda n, players: world.apply(n),    # once for the session
+        "text": lambda n, players: chat.deliver(players, n),  # only these players
+        "released": lambda r: roster.remove(r.player_game_token_id),
+    },
+)
+await fleet.connect()
+
+# A player joined: `minted` is the answer of mintManagedPlayerToken.
+carry = await fleet.carry(minted)
+if carry.carried:
+    fleet.send_actor_update(carry.player_game_token_id, chunk, uuid, state)
+
+# The same player with a refreshed token (the answer of refreshAppToken): no release, no gap.
+await fleet.carry(
+    FleetPlayerToken(new_token, new_game_token_id, replaces=carry.player_game_token_id)
+)
+
+# In your loop.
+if fleet.refresh_due():
+    fleet.apply_refresh(await api.fleet_sessions.refresh(fleet.refresh_input()))
+
+# The server stops.
+await api.fleet_sessions.close({"appId": fleet.app_id, "gameTokenId": fleet.game_token_id})
+await fleet.close()
+```
+
+- **A carry's result** is `carry.carried`, or `carry.status` for a refusal. `carry_nowait`
+  starts a carry, and the `carry_result` handler receives how it ended.
+- **A send for a player the session does not carry** raises `FleetNotCarriedError`, and
+  nothing is sent.
+- **The hub connection** is `await api.exec.connect_as_server(app_id)`, with `call` for the
+  server and `call_as(user_id, ...)` for a player.
+- **Refusals from the Application API** have readers: `org_token_required_of`,
+  `fleet_session_limit_of`, `fleet_session_not_found_of`, and `platform_busy_of`.
+- **The org-token calls are refused locally** on a player's platform (a browser build, iOS,
+  or Android), before anything is sent.
 
 ## Each session has a known limit, and you grow by adding servers
 
