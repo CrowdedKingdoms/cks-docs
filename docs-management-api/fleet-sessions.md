@@ -40,9 +40,10 @@ percentile.
 
 We measured twice that crowd on November 27, 2026, on the same environment, with realtime
 servers v0.51.0 on three servers: 200 fleet sessions carried 6,000 players for 15 minutes. The
-players made 153,079 crossings in the run, at 150 a second. None was lost, and a carry was
+players made 135,095 crossings in those 15 minutes, 150 a second. None was lost, and a carry was
 answered in 36 ms at the median and in 57 ms at the 99th percentile. The 3,000-player load,
-run again that day on v0.51.0, made 135,092 crossings in its 30 minutes, and none was lost.
+run again that day on v0.51.0, made 135,092 crossings in its 30 minutes, 75 a second, and none
+was lost.
 No larger crowd, and no faster rate of crossing, has been measured.
 
 With a fleet session:
