@@ -32,7 +32,7 @@ type OrgCardRequirement {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgCardRequirement.<b>requiredFrom</b></code>](#required-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #required-from */} 
-The instant the requirement applies to this organization: the tier's start, or the start plus existingOrganizationGraceDays for an organization created before it. Null while it is off.
+The instant the requirement applies to this organization: its creation plus newOrganizationGraceDays, or, for an organization created before the tier's start, the start plus existingOrganizationGraceDays if that is later. Null while it is off.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgCardRequirement.<b>requiredNow</b></code>](#required-now)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #required-now */} 
