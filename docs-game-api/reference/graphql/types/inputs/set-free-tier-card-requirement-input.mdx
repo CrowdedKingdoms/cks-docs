@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A change to the free-tier card requirement: its start, off, or the grace for organizations created before the start.
+A change to the free-tier card requirement: its start, off, the grace for organizations created before the start, or the grace every organization has from its creation.
 
 
 ```graphql
@@ -23,6 +23,7 @@ input SetFreeTierCardRequirementInput {
   requiredFrom: DateTime
   off: Boolean
   existingOrganizationGraceDays: Int
+  newOrganizationGraceDays: Int
   reason: String!
 }
 ```
@@ -40,6 +41,10 @@ True switches the requirement off. Not with requiredFrom.
 
 #### [<code style={{ fontWeight: 'normal' }}>SetFreeTierCardRequirementInput.<b>existingOrganizationGraceDays</b></code>](#existing-organization-grace-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #existing-organization-grace-days */} 
 Days after requiredFrom that the requirement applies to an organization created before it, 0 to 365. Omit to leave unchanged (30 by default).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetFreeTierCardRequirementInput.<b>newOrganizationGraceDays</b></code>](#new-organization-grace-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #new-organization-grace-days */} 
+Days after its creation that any organization runs without a saved card, 0 to 365. Omit to leave unchanged (30 by default).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetFreeTierCardRequirementInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
