@@ -3892,21 +3892,25 @@ type PlayerTrialPoolSettings {
 }
 
 """
-The free-tier card requirement on this tier: from requiredFrom, an organization's apps run only while the organization has a saved card (saving one charges nothing) or an exemption, whatever its wallet holds; otherwise they are paused with runtimeDenialReason payment_method_required. An organization created before requiredFrom is asked existingOrganizationGraceDays later. Organizations only; player wallets are not asked.
+The free-tier card requirement on this tier. Once it has started (requiredFrom), an organization's apps run only while the organization has a saved card (saving one charges nothing) or an exemption, whatever its wallet holds; otherwise they are paused with runtimeDenialReason payment_method_required. Every organization runs without a card for newOrganizationGraceDays from its creation, and one created before requiredFrom for existingOrganizationGraceDays from requiredFrom if that is later. Organizations only; player wallets are not asked.
 """
 type FreeTierCardRequirement {
   """
-  The instant the requirement applies from, for an organization created from then on. Null while it is off on this tier.
+  The instant the requirement starts on this tier. Null while it is off. An organization's own date is orgCardRequirement.requiredFrom.
   """
   requiredFrom: DateTime
   """
-  Whether the requirement applies now to an organization created from requiredFrom on.
+  Whether the requirement has started on this tier. An organization is asked from its own date, which is later.
   """
   requiredNow: Boolean!
   """
   How many days after requiredFrom the requirement applies to an organization created before it.
   """
   existingOrganizationGraceDays: Int!
+  """
+  How many days after its creation any organization runs without a saved card (30: a card is needed from its 31st day).
+  """
+  newOrganizationGraceDays: Int!
 }
 
 """
@@ -3914,7 +3918,7 @@ Where one organization stands against the free-tier card requirement. met is wha
 """
 type OrgCardRequirement {
   """
-  The instant the requirement applies to this organization: the tier's start, or the start plus existingOrganizationGraceDays for an organization created before it. Null while it is off.
+  The instant the requirement applies to this organization: its creation plus newOrganizationGraceDays, or, for an organization created before the tier's start, the start plus existingOrganizationGraceDays if that is later. Null while it is off.
   """
   requiredFrom: DateTime
   """Whether the requirement applies to this organization now."""
@@ -9104,7 +9108,7 @@ type Query {
   """
   playerTrialPool: PlayerTrialPoolSettings!
   """
-  PUBLIC: no authentication required. Whether this tier asks an organization for a saved card before its apps run, from when, and how much later for an organization created before then. Read-only.
+  PUBLIC: no authentication required. Whether this tier asks an organization for a saved card before its apps run, from when, how long a new organization runs without one, and how much later an organization created before the start is asked. Read-only.
   """
   freeTierCardRequirement: FreeTierCardRequirement!
   """
@@ -11756,7 +11760,7 @@ type Mutation {
   """
   setPlayerTrialPool(input: SetPlayerTrialPoolInput!): PlayerTrialPoolSettings! @requiresPermission(scope: "operator", permission: "is_operator")
   """
-  Operator only. Sets when the free-tier card requirement applies on this tier (or switches it off) and the grace for organizations created before then, and records each change in billing_rate_changes (scope SHARED, metric free_tier_card). The usage gate applies it within about a minute.
+  Operator only. Sets when the free-tier card requirement starts on this tier (or switches it off), the grace for organizations created before then and the grace every organization has from its creation, and records each change in billing_rate_changes (scope SHARED, metric free_tier_card). The usage gate applies it within about a minute.
   """
   setFreeTierCardRequirement(input: SetFreeTierCardRequirementInput!): FreeTierCardRequirement! @requiresPermission(scope: "operator", permission: "is_operator")
   """
@@ -14011,7 +14015,7 @@ input SetPlayerTrialPoolInput {
 }
 
 """
-A change to the free-tier card requirement: its start, off, or the grace for organizations created before the start.
+A change to the free-tier card requirement: its start, off, the grace for organizations created before the start, or the grace every organization has from its creation.
 """
 input SetFreeTierCardRequirementInput {
   """The instant the requirement applies from. Not with off: true."""
@@ -14022,6 +14026,10 @@ input SetFreeTierCardRequirementInput {
   Days after requiredFrom that the requirement applies to an organization created before it, 0 to 365. Omit to leave unchanged (30 by default).
   """
   existingOrganizationGraceDays: Int
+  """
+  Days after its creation that any organization runs without a saved card, 0 to 365. Omit to leave unchanged (30 by default).
+  """
+  newOrganizationGraceDays: Int
   """Why, for the audit (billing_rate_changes)."""
   reason: String!
 }
