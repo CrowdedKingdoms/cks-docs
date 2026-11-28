@@ -117,8 +117,10 @@ game.portal.adoptAppToken(access);
 CrowdyCPP: `client.portal().adoptAppToken(response)`. CrowdyPy:
 `client.set_app_token(client.portal.adopt_app_token(response))`.
 
-The SDKs read `userId` from the answer: `AppTokenResponse.userId` in CrowdyJS 18.41.0, and
-`AppTokenResponse::userId` with `userIdInt64()` in CrowdyCPP 0.95.0.
+The SDKs read `userId` from the answer: `AppTokenResponse.userId` in CrowdyJS 18.41.0,
+`AppTokenResponse::userId` with `userIdInt64()` in CrowdyCPP 0.95.0, and
+`AppTokenResponse.user_id` in CrowdyPy 0.41.0, which `adopt_app_token` reads from the answer
+your server hands the device.
 
 `userId` in the answer is the player's user id, the id `me` returns (Application API v2.90.0).
 Every answer that carries an app token has it, so a server that signs a player in reads the
@@ -240,8 +242,9 @@ To stop a player:
   - It takes the same org token (`players:manage`) or admin session (`manage_players`) as
     `deleteManagedPlayer`.
   - In the SDKs it is `client.managedPlayers.deleteMany(orgId, externalIds)` (CrowdyJS
-    18.41.0) and `client.admin().managedPlayers().removeMany(orgId, externalIds)` (CrowdyCPP
-    0.95.0). Both refuse no ids, or more than 100, before any request.
+    18.41.0), `client.admin().managedPlayers().removeMany(orgId, externalIds)` (CrowdyCPP
+    0.95.0), and `client.managed_players.delete_many(org_id, external_ids)` (CrowdyPy 0.41.0).
+    Each refuses no ids, or more than 100, before any request.
 
   Measured on Crowded Kingdoms' internal dev environment, with Application API v2.90.0 and
   ck-exec 0.26.0, in an app with a hub for each player: 60 calls deleted 6,000 players in 33

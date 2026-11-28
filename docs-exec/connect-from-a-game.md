@@ -154,6 +154,11 @@ await exec_conn.close()
   to call the hub starts that call on another thread.
 - `call` and `call_raw` take a per-call `timeout` (seconds); `connect` takes `call_timeout`,
   `open_timeout` and `reconnect`.
+- When the Application API refuses the connect call, `last_connect_failure()` on the
+  connection (`AsyncExecConnection` and `ExecConnection`) returns the refusal as an
+  `ApiFailure`: `error`, `code`, `retry_after_ms`, `message`, `failed()`, and
+  `platform_busy()` (CrowdyPy 0.41.0). When `platform_busy()` is true, wait `retry_after_ms`
+  and connect again.
 
 ## When the host goes away
 
@@ -213,9 +218,10 @@ and the next reconnect asks `execConnect` again. `execGatewayRefusal(application
 (CrowdyJS), `crowdy::domains::execGatewayRefusal` (CrowdyCPP) and
 `crowdypy.domains.exec.exec_gateway_refusal` (CrowdyPy) say why, for a tool that dials an endpoint
 itself; `ExecConnection.open(gatewayUrl, token)` dials the URL it is given. From CrowdyJS
-18.41.0 and CrowdyCPP 0.95.0 the message names the refused gateway by its scheme, host, and
-port, and leaves out the path and the query, which can carry a connect token. Change a test
-that matched the whole URL.
+18.41.0, CrowdyCPP 0.95.0, and CrowdyPy 0.41.0 the message names the refused gateway by its
+scheme, host, and port, and leaves out the path and the query, which can carry a connect
+token. In CrowdyPy the error of a failed or closed hub connection never shows the connect
+token either. Change a test that matched the whole URL.
 
 ## When the gateway refuses
 

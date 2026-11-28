@@ -20,7 +20,8 @@ app token, waits for the session to be ready, then signs every datagram with
 that token. The handler names `subscribe` accepts are `actor_update`,
 `voxel_update`, `audio`, `video`, `actor_left`, `text`, `client_event`,
 `server_event`, `generic_spatial`, `single_actor_message`, `channel_message`,
-`generic_error`, `status` and `any`.
+`generic_error`, `status` and `any`. From 0.41.0 there are two more, `not_present` and
+`not_present_ended`, for [a keepalive the server refuses](#a-refused-keepalive-is-reported-once).
 
 **Sends** on `client.udp` cover actor updates, voxel updates, audio and video
 packets (`send_video_frame` fragments a whole frame), text, client events,
@@ -47,6 +48,87 @@ An organization's own game server uses `crowdypy.fleet.AsyncFleetSession` (or th
 `FleetSession`) in place of `client.udp`: one session that carries all of the server's
 players (0.40.0). See
 [Run your own game servers with a fleet session](/management-api/fleet-sessions#crowdypy).
+
+## A connection takes only what the realtime server signed for its app
+
+From CrowdyPy 0.41.0 a player's connection drops two kinds of notification before any handler
+runs, and `connection.stats()` counts each:
+
+| A notification | Counted in |
+|---|---|
+| that nothing signed | `unsigned_notifications` |
+| that names another app than the connection's, however it was signed | `wrong_app` |
+
+The realtime servers sign every spatial notification they send a session, and send a session
+only its own app's, so both counts stay 0. If one moves, tell Crowded Kingdoms. A connection
+made with `verify_notifications=False` still takes an unsigned notification.
+
+Three more things changed in 0.41.0 with no change to your code:
+
+- **A `TOKEN_EXPIRED` refusal reassigns only when it arrived inside a signed bundle.** For one
+  that arrived alone, the connection asks its session provider for a fresh token, at most once
+  every 30 seconds, and does what the answer says. `stats()` counts those in
+  `unverified_token_expired`. Through 0.40.0 the connection reassigned on either.
+- **`pump()` reads 1,024 datagrams at most** (`RECEIVE_PASS_DATAGRAMS`). In manual-pump mode,
+  call it until it returns fewer.
+- **`disconnect()` returns while datagrams are still arriving.** The network thread stops
+  reading at the 16 datagrams it has in hand.
+
+## A refused keepalive is reported once
+
+From replication server v0.51.0, a keepalive (`send_heartbeat`) is accepted only where the
+player's actor update would be ([the rule](/replication-api/wire-formats#a-keepalive-is-accepted-only-where-the-actors-update-would-be)). Where the player has no `access`, the
+server answers every keepalive `UNAUTHORIZED`, and the actor is not present there. An older
+server never refuses a keepalive, so with one no report is made.
+
+CrowdyPy 0.41.0 reports the refusal once for each actor and place:
+
+```python
+game.udp.subscribe(
+    {
+        "not_present": lambda report: hud.show_no_access(report.chunk),
+        # `end` is accepted, moved, or stopped.
+        "not_present_ended": lambda report, end: hud.clear(report.chunk),
+    }
+)
+report = game.udp.connection.not_present(my_uuid)  # the report that stands, or None
+```
+
+- **`report` is an `ActorNotPresent`**: `uuid`, `chunk`, `sequence`, and `verified`. `end` is
+  a `NotPresentEnd`: `accepted`, `moved`, or `stopped`.
+- **`generic_error` still receives every refusal.** `notification.keepalive` is true for one
+  that answers a keepalive. `stats()` counts them in `keepalives_refused`, and the reports in
+  `not_present_reports`.
+- **Keep sending keepalives at the same rate.** Once access is granted, the next one is
+  accepted within about 6 seconds, with no new sign-in.
+- **Do not treat the player as present** in that place while the report stands.
+- A [world session](/crowdypy/world-stores) reports the same through
+  `session.on("not_present", ...)` and `session.not_present()`.
+
+## A refused connection says why
+
+From CrowdyPy 0.41.0 a connection keeps the Application API's refusal of a server assignment
+as an `ApiFailure`: `error`, `code`, `retry_after_ms`, `message`, `failed()`, and
+`platform_busy()`.
+
+```python
+from crowdypy.errors import CrowdyReplicationError
+
+try:
+    await game.udp.connect(minted)
+except CrowdyReplicationError as error:
+    if error.failure and error.failure.platform_busy():
+        await asyncio.sleep(error.failure.retry_after_ms / 1000)  # then connect again
+```
+
+- `connection.last_assignment_failure()` returns the same `ApiFailure` after the first
+  connect, a later one, or a reassignment that failed.
+- `retry_after_ms` is 30,000 at most (`MAX_RETRY_AFTER_WAIT_MS`), whatever the server sent.
+  The platform's own hints run from 200 ms to 10 seconds.
+- `retry_after_ms_of(err)` and `platform_busy_of(err)` still return what the server sent:
+  pass it through `retry_wait_ms` before you wait on it.
+- A hub connection keeps its refusal the same way:
+  see [connect from a game](/exec/connect-from-a-game#crowdypy).
 
 ## Channel messages limited by distance
 

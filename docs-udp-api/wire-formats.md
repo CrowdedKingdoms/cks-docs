@@ -865,8 +865,10 @@ ends. They keep the keepalive rate as it was.
 |---|---|---|
 | CrowdyJS 18.41.0 | Sends no keepalive message: it keeps an actor present with actor updates | `FleetSession`'s `notPresent` and `notPresentEnded` handlers |
 | CrowdyCPP 0.95.0 | `Handlers::notPresent` and `notPresentEnded`; `WorldSessionConfig::onNotPresent` and `onNotPresentEnded` | `FleetHandlers::notPresent` and `notPresentEnded` |
+| CrowdyPy 0.41.0 | The `not_present` and `not_present_ended` handlers of `client.udp.subscribe`; `session.on("not_present", ...)` and `session.on("not_present_ended", ...)` | The `not_present` and `not_present_ended` handlers of the fleet session |
 
-See [the CrowdyCPP replication client](/crowdycpp/replication-client#a-refused-keepalive-is-reported-once)
+See [the CrowdyCPP replication client](/crowdycpp/replication-client#a-refused-keepalive-is-reported-once),
+[CrowdyPy's replication page](/crowdypy/replication#a-refused-keepalive-is-reported-once),
 and [the fleet guide](/management-api/fleet-sessions#an-sdk-does-the-same-steps-for-you).
 
 **No particular keyframe cadence is needed to be seen across servers (server v0.37.0).** Two
