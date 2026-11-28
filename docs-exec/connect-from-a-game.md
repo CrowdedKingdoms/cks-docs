@@ -198,7 +198,7 @@ about 15. A game can see it:
 | `extensions.code` | Why | What to do |
 |---|---|---|
 | `FORBIDDEN` | The session is not the app-scoped token of the app named | Connect with the app's own token |
-| `APP_PAUSED` | The app is paused for its budget. `extensions.reason` is `insufficient_funds`, `spend_cap`, `subscription_lapsed` or `compute_budget`. HTTP 403 | Tell the player the world is paused. It resumes when the owner funds it, raises the cap, renews, or the next minute is under the compute budget. Do not retry in a loop |
+| `APP_PAUSED` | The app is paused for its budget. `extensions.reason` is `insufficient_funds`, `payment_method_required`, `spend_cap`, `subscription_lapsed` or `compute_budget`. HTTP 403 | Tell the player the world is paused. It resumes when the owner funds it, saves a card, raises the cap, renews, or the next minute is under the compute budget. Do not retry in a loop |
 | `APP_DISABLED` | The whole app is switched off. HTTP 403 | It stays refused until its developer turns it on |
 | `TYPE_DISABLED` | The `nodeType` named on `execConnect` is switched off. HTTP 403 | It stays refused until its developer turns that type on |
 | `BAD_REQUEST` | `nodeType` is not 1–64 letters, digits, `-` or `_`, or `key` is longer than 256 characters | Fix the arguments |
