@@ -229,13 +229,20 @@ viewer function is ever detached.
   session, the quick start, and the compatibility page's table and six cases), the fleet
   guide's `### CrowdyCPP`, and one line each on the org-managed players page, the error
   codes, the wire formats' SDK table, and ck-exec's operations and connect pages.
-  **CrowdyPy's release that binds the same changes was not out when these were written**,
-  so no page names it. When it is, the places are few on purpose: the changelog entry's
-  first line and one bullet after CrowdyCPP's; a row in the SDK table under the keepalive
-  rule in `docs-udp-api/wire-formats.md`; the two sentences of the fleet guide that name
-  the SDK versions and its `### CrowdyPy` notes; the "In the SDKs" lines for `userId` and
-  the bulk delete on the org-managed players page; the `retryAfterMs` sentence in
-  `docs/error-codes.md`; and `docs-crowdypy/`.
+  **CrowdyPy 0.41.0 is on the pages too** (2026-11-28, the day it released): the
+  changelog entry's first line and a bullet after CrowdyCPP's; a row in the SDK table
+  under the keepalive rule in `docs-udp-api/wire-formats.md`; the two sentences of the
+  fleet guide that name the SDK versions, and its `### CrowdyPy` notes; the "In the SDKs"
+  lines for `userId` and the bulk delete on the org-managed players page (CrowdyPy's is
+  `delete_many`, CrowdyCPP's `removeMany`, CrowdyJS's `deleteMany`); the `retryAfterMs`
+  sentence in `docs/error-codes.md`; ck-exec's operations and connect pages; and
+  `docs-crowdypy/` (replication, world stores, compatibility). An SDK release that
+  follows a platform release goes in the same places.
+- **`docs/organization-limits.md` publishes numbers that live in the Application API.**
+  The page (`/overview/organization-limits`) states the defaults and limits an
+  organization can ask Crowded Kingdoms to change, as numbers read from `cks-game-api`. A
+  change to one of those defaults, or a new setting Crowded Kingdoms holds for an
+  organization, is a change to that page on the same tier. No gate reads it.
 - **The Minecraft server page is a draft** (`docs-minecraft/intro.md`, `draft: true`, 2026-11-04):
   it links the private mod repository's releases and describes features not publicly released.
   Its navbar item, footer column and `llms.txt` entry were removed with it; restore all three
