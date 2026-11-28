@@ -20,9 +20,9 @@ Fleet sessions need Application API v2.89.1, realtime servers v0.50.3, and ck-ex
 All three are in production since November 26, 2026. Crowded Kingdoms switches fleet sessions
 on for one organization at a time
 ([below](#what-you-need-before-the-first-session)). CrowdyCPP 0.94.1, CrowdyJS 18.40.0, and
-CrowdyPy 0.40.0 carry them. CrowdyCPP 0.95.0 and CrowdyJS 18.41.0 add what Application API
-v2.90.0 and realtime servers v0.51.0 brought. A server written in another language calls the
-Application API
+CrowdyPy 0.40.0 carry them. CrowdyCPP 0.95.0, CrowdyJS 18.41.0, and CrowdyPy 0.41.0 add what
+Application API v2.90.0 and realtime servers v0.51.0 brought. A server written in another
+language calls the Application API
 and speaks the
 [wire formats](/replication-api/wire-formats#fleet-sessions-messages-49-to-53) itself.
 :::
@@ -306,10 +306,10 @@ fleet token, and sends an unanswered carry again. Each sends the session's capab
 and counts a notification that names another app than the session's, and one that nothing
 signed.
 
-CrowdyCPP 0.95.0 and CrowdyJS 18.41.0 report a carried player's refused keepalive once, and
-name the session's server by `ip4` or `ip6` at a refresh. CrowdyCPP 0.95.0 also refuses a
-carry for a new player once the session's table is full, as CrowdyJS does. The notes under
-each SDK say how.
+CrowdyCPP 0.95.0, CrowdyJS 18.41.0, and CrowdyPy 0.41.0 report a carried player's refused
+keepalive once, and name the session's server by `ip4` or `ip6` at a refresh. CrowdyCPP
+0.95.0 and CrowdyPy 0.41.0 also refuse a carry for a new player once the session's table is
+full, as CrowdyJS does. The notes under each SDK say how.
 
 ### CrowdyCPP
 
@@ -576,6 +576,23 @@ await fleet.close()
   `fleet_session_limit_of`, `fleet_session_not_found_of`, and `platform_busy_of`.
 - **The org-token calls are refused locally** on a player's platform (a browser build, iOS,
   or Android), before anything is sent.
+- **The session's table has a limit** (0.41.0). `fleet.table_limit` is `max_players` and 32
+  more rows (`TABLE_MARGIN`). A carry for a new player past it ends
+  `FleetCarryOutcome.TABLE_FULL` with nothing sent, and `fleet.stats()` counts it in
+  `carries_refused_table_full`. Release the players who left, or open another session. Code
+  that branches on every `FleetCarryOutcome` needs the new case.
+- **`refresh_input()` names the address the session connected to** (0.41.0): the server's
+  `ip4`, or its `ip6` for a server with no `ip4` and for a session made with `prefer_ipv6`.
+  0.40.0 named no server when the server had no `ip4`. Naming an `ip6` needs Application API
+  v2.90.0.
+- **The silence timeout goes down to 3,000 ms** (`MIN_SILENCE_TIMEOUT_MS`, 0.41.0). 0.40.0
+  raised a shorter `silence_timeout_ms` to 4,500.
+- **A refused keepalive is reported once** (0.41.0, realtime servers v0.51.0). Where a carried
+  player has no `access`, the `not_present` handler is called once with an `ActorNotPresent`
+  (`uuid`, `chunk`, `sequence`, `verified`, `player_game_token_id`), and `not_present_ended`
+  once when that ends, with `accepted`, `moved`, or `stopped`. `fleet.not_present(player,
+  uuid)` returns the report that stands. `fleet.stats()` adds `keepalives_refused` and
+  `not_present_reports`. Keep the keepalives at the same rate.
 
 ## Each session has a known limit, and you grow by adding servers
 

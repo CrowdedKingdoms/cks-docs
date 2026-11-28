@@ -171,13 +171,15 @@ at different moments. From Application API v2.90.0, a managed player's sign-in,
 `provisionManagedPlayers` and `deleteManagedPlayers` take turns in a line, and a refusal from
 that line carries a wait from 200 ms to 10 seconds, worked out from how many are waiting: see
 [sign-ins take turns](/management-api/org-managed-players#administering-your-players). CrowdyJS, CrowdyCPP and CrowdyPy report it on the error, and wait for it
-in the reads they repeat themselves (a build's or a deploy's status). CrowdyJS 18.41.0 and
-CrowdyCPP 0.95.0 wait 30 seconds at most on a hint: `retryWaitMs(hint)` returns the hint up to
-30,000 ms, and the SDK's own waits go through it. `platformBusyOf` still holds what the API
-sent, so pass it through `retryWaitMs` before you wait on it. CrowdyCPP 0.95.0 also keeps the
-refusal of a server assignment and of a hub connection, with its code and its wait:
-`Connection::lastAssignmentFailure()` and `ExecConnection::lastConnectFailure()` hold an
-`ApiFailure`, and `platformBusy()` is true for this code.
+in the reads they repeat themselves (a build's or a deploy's status). CrowdyJS 18.41.0,
+CrowdyCPP 0.95.0, and CrowdyPy 0.41.0 wait 30 seconds at most on a hint: `retryWaitMs(hint)`
+(`retry_wait_ms` in CrowdyPy) returns the hint up to 30,000 ms, and the SDK's own waits go
+through it. `platformBusyOf` (`platform_busy_of`) still holds what the API sent, so pass it
+through that function before you wait on it. CrowdyCPP 0.95.0 and CrowdyPy 0.41.0 also keep
+the refusal of a server assignment and of a hub connection, with its code and its wait, as an
+`ApiFailure`: `Connection::lastAssignmentFailure()` and `ExecConnection::lastConnectFailure()`
+in CrowdyCPP, `connection.last_assignment_failure()` and `last_connect_failure()` in CrowdyPy.
+Its `platformBusy()` (`platform_busy()`) is true for this code.
 
 A pool timeout while the API looks up the caller's token is this code too. That is not
 `UNAUTHENTICATED`: the token was not rejected, so do not sign the player out.
