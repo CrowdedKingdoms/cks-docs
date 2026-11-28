@@ -36,6 +36,39 @@ deployments:
   replication server v0.50.3, and ck-exec 0.25.0, and Crowded Kingdoms switches them on for
   an organization. See
   [Run your own game servers with a fleet session](/management-api/fleet-sessions).
+- **CrowdyCPP 0.95.0 needs Application API v2.90.0** for every call that answers an app
+  token: `portal().mintAppToken`, `refresh`, `exchangeCode`, `completeEntry`,
+  `exchangeManagedPlayerAssertion`, and `signInWithMinecraft` select
+  `AppTokenResponse::userId`, which an earlier Application API refuses. Through 0.94.1 those
+  calls needed v2.85.0. What else 0.95.0 wraps, and what each call needs:
+
+  | Call | Needs |
+  |---|---|
+  | `admin().managedPlayers().removeMany(orgId, externalIds)`, up to 100 players a call | Application API v2.90.0 |
+  | `fleetSessions().refresh(session)` naming an `ip6` | Application API v2.90.0. Naming an `ip4` works with v2.89.0 |
+  | `fleetSessionsEnabled`, `maxFleetSessions`, and `maxFleetPlayers` on `managedPlayers().settings(orgId)` | Application API v2.89.0 |
+  | `exec().orgComputeCeiling(orgId)` | Application API v2.88.0, and `view_compute_diagnostics` on the organization |
+  | `Handlers::notPresent`, `FleetHandlers::notPresent`, and `WorldSessionConfig::onNotPresent` | Replication server v0.51.0. An older server never refuses a keepalive, so the report is never made |
+
+  Application API v2.90.0 and replication server v0.51.0 have been on every environment since
+  November 27, 2026. 0.95.0 works with replication server v0.50.3 and later.
+
+  Moving from 0.94.1, your code needs a change in six cases:
+
+  1. It sends a `Connection` notifications from a server of your own that does not sign them.
+     Sign them, or set `Config::verifyNotifications = false`
+     ([receive path](/crowdycpp/replication-client#receive-path)).
+  2. It set `Config::refreshLeadMs = 0` and relied on the connection to reassign on
+     `TOKEN_EXPIRED`. Call `connection.requestReassignment()` from `Handlers::genericError`
+     when the code is `TokenExpired`, after your own token refresh.
+  3. It expects one `pump()` to read everything that is waiting. Call `pump()` until it
+     returns less than 1,024.
+  4. It switches over `FleetCarryStatus` without a `default`. Add `TableFull`
+     ([fleet sessions](/management-api/fleet-sessions#crowdycpp)).
+  5. It reads a carried player's refused keepalive from `FleetHandlers::sendRefused`. Read it
+     from `FleetHandlers::notPresent`.
+  6. It counts on `WorldSession::errors()` holding every refused keepalive. It now holds the
+     first one of each report ([world session](/crowdycpp/world-session)).
 
 ## CrowdyJS parity
 
@@ -86,8 +119,10 @@ suites double as runnable, real-world usage examples for each surface.
 Each environment has its own releases, tagged in the
 [repository](https://github.com/CrowdedKingdoms/CrowdyCPP) as `dev/vX.Y.Z`,
 `test/vX.Y.Z` and `prod/vX.Y.Z`; build against the newest tag of the
-environment your game runs on. The CMake
-package config enforces `SameMajorVersion` compatibility for
-`find_package(CrowdyCPP)` consumers. Consumer-facing platform changes land in
+environment your game runs on. Until 1.0, a minor release may change the source
+or the ABI, and a patch release keeps both: read the SDK's `MIGRATION.md` and
+rebuild when you move between minors. The CMake package config enforces
+`SameMinorVersion` compatibility for `find_package(CrowdyCPP)` consumers, so a
+request for `0.95` accepts a newer `0.95.x` and no `0.96.x`. Consumer-facing platform changes land in
 the [changelog](/releases/intro); the committed schema snapshot ties each SDK
 release to a known Management + Application API surface.
