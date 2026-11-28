@@ -49,6 +49,30 @@ agent's policy.
   v2.89.1, replication server v0.50.3, and ck-exec 0.25.0, and Crowded Kingdoms switches them
   on for an organization. See
   [Run your own game servers with a fleet session](/management-api/fleet-sessions#crowdypy).
+- **CrowdyPy 0.41.0 needs Application API v2.90.0** for every call that answers an app token:
+  `portal.mint_app_token`, `exchange_code`, `refresh`, `exchange_managed_player_assertion`, and
+  `sign_in_with_minecraft` select `userId` (`AppTokenResponse.user_id`), and an older
+  Application API answers them with a GraphQL validation error. What else 0.41.0 wraps, and
+  what each call needs:
+
+  | Call | Needs |
+  |---|---|
+  | `client.managed_players.delete_many(org_id, external_ids)`, 1 to 100 players a call | Application API v2.90.0 |
+  | `fleet.refresh_input()` naming an `ip6` | Application API v2.90.0 |
+  | `fleetSessionsEnabled`, `maxFleetSessions`, and `maxFleetPlayers` in `client.managed_players.settings(org_id)` | Application API v2.89.0 |
+  | `client.exec.org_compute_ceiling(org_id)` | Application API v2.88.0, and `view_compute_diagnostics` on the organization |
+  | The `not_present` and `not_present_ended` handlers | Replication server v0.51.0. An older server never refuses a keepalive, so no report is made |
+
+  Application API v2.90.0 and replication server v0.51.0 have been on every environment since
+  November 27, 2026. CrowdyPy 0.41.0 followed on November 28, 2026, and vendors CrowdyCPP
+  0.95.0.
+
+  Moving from 0.40.0, your code needs a change in two cases:
+
+  1. It branches on every `FleetCarryOutcome`. Add `TABLE_FULL`
+     ([fleet sessions](/management-api/fleet-sessions#crowdypy)).
+  2. It passed a fleet session a `silence_timeout_ms` under 4,500. 0.40.0 raised it to 4,500.
+     The floor is now 3,000, so the session orders a move sooner.
 - The full list of what each release needs from the server is in the repository's
   [compatibility notes](https://github.com/CrowdedKingdoms/CrowdyPy/blob/dev/docs/compatibility.md).
 
