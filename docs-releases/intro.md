@@ -9,7 +9,7 @@ title: Changelog
 Notable, consumer-facing changes to the public Crowded Kingdoms APIs (Management API,
 Game API, Replication API) and SDKs. Newest first.
 
-The intent is that a breaking change ships with a deprecation window — the field keeps
+The intent is that a breaking change ships with a deprecation window: the field keeps
 working and is marked `@deprecated` in the schema (visible in the
 [reference](/management-api/reference/graphql-overview) and the downloadable SDL) until
 a stated removal date. **Four removals did not get one**, and each is called out in
@@ -39,9 +39,23 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-27 (Unreal SDK v2.30.0: crowd row shadows, voice channels in Studio, directional channel voice)
+
+Four changes; nothing breaks, and derived crowd rows now cast shadows by default. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-27-sdk-v2300).
+
+- **Crowd rows cast shadows.** A row built from an actor class casts one when the class's mesh does;
+  **Derived Rows Cast Shadows** turns that off for a dense crowd.
+- **Channels whose members can talk.** Crowdy Studio's **Create channel** card has **Members can speak**, and
+  `-op=createchannel` takes `-memberscanspeak`.
+- **Pick a channel name in the editor.** An `FString` property marked `meta = (CrowdyChannelPicker)` gets the
+  **Pick** menu of your app's channels.
+- **Hear where a channel speaker stands.** **Directional Channel Voice**, with an optional **Channel Attenuation**,
+  plays room voice from each speaker's position.
+
 ## 2026-11-27 (a keepalive is held to `access`; sign-ins take turns; players are deleted 100 at a time; an erasure finishes whatever the number of hubs)
 
-On the dev and test environments since November 27, 2026: Application API v2.90.0, realtime servers v0.51.0, ck-exec 0.26.0, and CrowdyJS 18.41.0.
+On dev, test, and production since November 27, 2026: Application API v2.90.0, realtime servers v0.51.0, ck-exec 0.26.1, CrowdyJS 18.41.0, and CrowdyCPP 0.95.0. CrowdyPy 0.41.0 followed on November 28, 2026.
 
 - **Realtime servers v0.51.0: a keepalive is accepted only where the player's actor update would be.** A place is
   private to keepalives (`CLIENT_ACTOR_HEARTBEAT`, 26) exactly when it is private to updates. Where the player has no
@@ -106,6 +120,30 @@ On the dev and test environments since November 27, 2026: Application API v2.90.
   names `ip4` or `ip6` at a refresh. See [the SDK overview](/crowdyjs/readme#the-client-checks-what-it-receives-before-a-handler-runs).
   **What you do:** update. 18.41.0 needs Application API v2.90.0 or later, because every call that answers an app
   token selects `userId`.
+- **CrowdyCPP 0.95.0.** A player's `Connection` delivers only what the realtime server signed for its app, and
+  counts what it drops (`stats().unsignedNotifications`, `wrongApp`). It reassigns on `TOKEN_EXPIRED` only when the
+  frame is verified. One `pump()` reads 1,024 datagrams at most, and `disconnect()` returns within 100 milliseconds.
+  A refused keepalive is reported once (`Handlers::notPresent`, `FleetHandlers::notPresent`,
+  `WorldSessionConfig::onNotPresent`). A refused server assignment or hub connection keeps the Application API's
+  code and wait (`ApiFailure`), and the SDK waits 30 seconds at most on a `retryAfterMs`. New:
+  `AppTokenResponse::userId`, `admin().managedPlayers().removeMany`, `exec().orgComputeCeiling`, a fleet refresh
+  that names `ip4` or `ip6`, and a fleet session's table limit (`FleetCarryStatus::TableFull`). See
+  [the replication client](/crowdycpp/replication-client#receive-path).
+  **What you do:** update and rebuild. 0.95.0 needs Application API v2.90.0 or later, because every call that
+  answers an app token selects `userId`. Six kinds of code need a change:
+  [compatibility](/crowdycpp/compatibility#server-compatibility) lists them.
+- **CrowdyPy 0.41.0**, released on November 28, 2026. It vendors CrowdyCPP 0.95.0, so a player's connection drops
+  and counts what nothing signed and what names another app (`unsigned_notifications` and `wrong_app` in
+  `connection.stats()`), and reassigns on `TOKEN_EXPIRED` only when the refusal arrived inside a signed bundle. A
+  refused keepalive is reported once, through the `not_present` and `not_present_ended` handlers of `client.udp`,
+  of a world session (`session.on`), and of a fleet session. A refused server assignment or hub connection keeps
+  the Application API's code and wait (`ApiFailure`), and a wait on a server's `retryAfterMs` ends at 30 seconds.
+  New: `AppTokenResponse.user_id`, `client.managed_players.delete_many`, `client.exec.org_compute_ceiling`, a
+  fleet refresh that names `ip4` or `ip6`, and a fleet session's table limit (`FleetCarryOutcome.TABLE_FULL`).
+  See [CrowdyPy's replication page](/crowdypy/replication#a-connection-takes-only-what-the-realtime-server-signed-for-its-app).
+  **What you do:** update. 0.41.0 needs Application API v2.90.0 or later, because every call that answers an app
+  token selects `userId`. Two kinds of code need a change:
+  [compatibility](/crowdypy/compatibility#server-compatibility) lists them.
 
 ## 2026-11-27 (a new page: what your organization can change, and what to ask Crowded Kingdoms for)
 
@@ -178,6 +216,31 @@ since November 26, 2026. The guide is [Run your own game servers with a fleet se
   [the guide](/management-api/fleet-sessions#an-sdk-does-the-same-steps-for-you).
 - **What you do:** nothing, unless you run your own game servers. Then follow the guide, and build the hubs your
   servers call again with `ckx-sdk` 0.15.0.
+
+## 2026-11-26 (Unreal SDK v2.29.0: microphone choice, voice volume, private player state)
+
+Five additions; nothing breaks. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-26-sdk-v2290).
+
+- **Choose the microphone and turn every voice down.** **Get Voice Input Devices** and **Set Voice Input Device**
+  pick the microphone voice chat captures from; **Set Voice Playback Volume** scales every other player's voice.
+- **Know who is already there.** **Get Tracked Remote Entities** lists the remote entities the actor tracker holds.
+- **Know when a near tier actor stands for an entity.** **On Entity Binding Changed** on the near tier component,
+  and **On Near Tier Binding Changed** for every near tier actor in the world.
+- **Private per-player state.** The async nodes **Get My App State** and **Set My App State** keep one private
+  value per player in your app, readable only by that player.
+- **What you do:** nothing.
+
+## 2026-11-26 (Unreal SDK v2.28.2: a class with a near tier shell promotes)
+
+A patch release. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-11-26-sdk-v2282).
+
+- **A class with a near tier shell and no authored Mass entity config now promotes.** Its rows stayed at the farthest
+  level of detail, so a row that came close never became its shell. Now the nearest rows are promoted. An authored
+  config for a class with a shell gets the same fix, and one that cannot promote is reported in the log.
+- **What you do:** nothing. A class you gave an authored config only to make it promote can go back to the derived
+  one.
 
 ## 2026-11-25 (a busy answer says how long to wait, and compute holds up under hubs that save often)
 

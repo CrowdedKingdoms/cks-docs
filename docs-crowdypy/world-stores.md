@@ -41,6 +41,14 @@ Session events (0.8.0): `session.on("voxel_update", ...)` for every inbound voxe
 send's); `session.on("generic_spatial", ...)` for message type 140; and
 `session.on("channel_audio", ...)` for channel voice.
 
+From 0.41.0, `session.on("not_present", ...)` and `session.on("not_present_ended", ...)` say
+once that the session's keepalive was refused where its actor stands, and when that ended.
+`session.not_present()` returns the report that stands, or `None`. From replication server
+v0.51.0 that is what having no `access` in a place looks like: the actor is not present
+there. `session.errors` records one `heartbeat` error for a report. Through 0.40.0 it
+recorded each refusal, as an error of an unknown or a stale kind. See
+[A refused keepalive is reported once](/crowdypy/replication#a-refused-keepalive-is-reported-once).
+
 ## Codecs
 
 `json_codec`, `raw_codec` and `text_codec` cover most states. `struct_codec`
