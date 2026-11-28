@@ -51,6 +51,22 @@ So in practice there is one model, and this page describes it.
   much of it is used (`usedUnits`) in `allowancePools`.
 - **Egress and ingress follow the organization's tier** from December 1, 2026; the
   rest of the quota is the same at every tier. See [Free data tiers](#free-data-tiers).
+- **An organization needs a saved card from its 31st day** (from December 1, 2026).
+  For its first 30 days its apps run without one. After that they run only while
+  the organization has a card saved, whatever its wallet holds and whatever its
+  tier. Saving a card charges nothing and does not turn on auto-billing; a card is
+  charged only when you fund the wallet with it or turn on auto-billing. An
+  organization that existed on December 1, 2026 has until December 31, 2026.
+  Players are not asked. `orgCardRequirement(orgId)` (`view_billing`) gives your
+  organization's own date (`requiredFrom`) and whether it meets the requirement
+  (`met`): a saved card (`cardOnFile`) or an exemption (`exempt`). The owner is
+  emailed a week before the date. From the date on, the apps of an organization
+  with neither are denied with `payment_method_required` (see
+  [What "access denied" means](#what-access-denied-means)).
+  `freeTierCardRequirement` (no sign-in needed) returns when the requirement
+  started (`requiredFrom`) and the two periods: `newOrganizationGraceDays` (30)
+  from an organization's creation, and `existingOrganizationGraceDays` (30) from
+  the start for an organization created before it.
 - **An organization that cannot be charged may have 10 apps** (no spendable wallet
   balance, no auto-billing): creating an 11th, or restoring an archived app past
   10, is refused with `APP_LIMIT_REACHED` until it funds its wallet, turns on
@@ -442,6 +458,12 @@ other than `active` and a `runtimeDenialReason`:
   example). (An app still inside its allowances is not denied at all, so this
   reason covers both "out of allowance" and "out of money" — they are the same
   situation.)
+- `payment_method_required` — the organization is past its 31st day (see
+  [Free tier](#free-tier)) and has no saved card and no exemption, so none of its
+  apps run, whatever its wallet holds. Save a card on the organization's **Plan
+  and Usage** tab in Studio (or with `setupSharedPaymentMethod`); saving one
+  charges nothing, and the apps resume within about a minute. With a card, an app
+  past a free allowance with an empty wallet is `insufficient_funds`.
 - `spend_cap` — an hourly or daily spend cap, or the app's monthly budget, was
   reached. Raise it or wait for the hour, day or month to end.
 - `subscription_lapsed` — retired with the paid app slot; no current app can carry
@@ -477,7 +499,7 @@ client why so it can say "this world is paused" instead of showing an empty one:
   its organization has no funds (insufficient_funds)").
 
 Everything resumes by itself within a minute of the app becoming `active` again:
-fund the wallet, raise the cap, or renew.
+fund the wallet, raise the cap, save a card, or renew.
 
 ## Connecting clients
 

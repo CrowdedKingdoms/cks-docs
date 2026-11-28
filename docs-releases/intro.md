@@ -39,6 +39,24 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-12-01 (a saved card from an organization's 31st day)
+
+On production since December 1, 2026: Application API v2.91.0 and Studio v1.72.0 carry it, and the
+[Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) states it.
+
+- **An organization's first 30 days need no card.** From its 31st day its apps run only while it has a card
+  saved, whatever its wallet holds and whatever its free data tier. Saving a card charges nothing and does not
+  turn on auto-billing. Players are not asked.
+- **An organization that existed on December 1, 2026 has until December 31, 2026.**
+- **The owner is emailed a week before the date.** On the date, an organization with no saved card has its apps
+  paused: `runtimeDenialReason` is `payment_method_required`, and clients get `APP_PAUSED` with that reason.
+  They resume within about a minute of a card being saved.
+- **In the API:** `orgCardRequirement(orgId)` gives an organization's own date and whether it meets the
+  requirement; the public `freeTierCardRequirement` gives the start and the two periods
+  (`newOrganizationGraceDays`, new in v2.91.0, and `existingOrganizationGraceDays`).
+  See [the free tier](/management-api/shared-environment#free-tier) and
+  [what "access denied" means](/management-api/shared-environment#what-access-denied-means).
+
 ## 2026-11-27 (Unreal SDK v2.30.0: crowd row shadows, voice channels in Studio, directional channel voice)
 
 Four changes; nothing breaks, and derived crowd rows now cast shadows by default. Per-item detail:
