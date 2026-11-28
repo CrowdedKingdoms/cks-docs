@@ -41,7 +41,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 ## 2026-11-27 (a keepalive is held to `access`; sign-ins take turns; players are deleted 100 at a time; an erasure finishes whatever the number of hubs)
 
-On dev, test, and production since November 27, 2026: Application API v2.90.0, realtime servers v0.51.0, ck-exec 0.26.1, and CrowdyJS 18.41.0.
+On dev, test, and production since November 27, 2026: Application API v2.90.0, realtime servers v0.51.0, ck-exec 0.26.1, CrowdyJS 18.41.0, and CrowdyCPP 0.95.0. CrowdyPy 0.41.0 followed on November 28, 2026.
 
 - **Realtime servers v0.51.0: a keepalive is accepted only where the player's actor update would be.** A place is
   private to keepalives (`CLIENT_ACTOR_HEARTBEAT`, 26) exactly when it is private to updates. Where the player has no
@@ -106,6 +106,30 @@ On dev, test, and production since November 27, 2026: Application API v2.90.0, r
   names `ip4` or `ip6` at a refresh. See [the SDK overview](/crowdyjs/readme#the-client-checks-what-it-receives-before-a-handler-runs).
   **What you do:** update. 18.41.0 needs Application API v2.90.0 or later, because every call that answers an app
   token selects `userId`.
+- **CrowdyCPP 0.95.0.** A player's `Connection` delivers only what the realtime server signed for its app, and
+  counts what it drops (`stats().unsignedNotifications`, `wrongApp`). It reassigns on `TOKEN_EXPIRED` only when the
+  frame is verified. One `pump()` reads 1,024 datagrams at most, and `disconnect()` returns within 100 milliseconds.
+  A refused keepalive is reported once (`Handlers::notPresent`, `FleetHandlers::notPresent`,
+  `WorldSessionConfig::onNotPresent`). A refused server assignment or hub connection keeps the Application API's
+  code and wait (`ApiFailure`), and the SDK waits 30 seconds at most on a `retryAfterMs`. New:
+  `AppTokenResponse::userId`, `admin().managedPlayers().removeMany`, `exec().orgComputeCeiling`, a fleet refresh
+  that names `ip4` or `ip6`, and a fleet session's table limit (`FleetCarryStatus::TableFull`). See
+  [the replication client](/crowdycpp/replication-client#receive-path).
+  **What you do:** update and rebuild. 0.95.0 needs Application API v2.90.0 or later, because every call that
+  answers an app token selects `userId`. Six kinds of code need a change:
+  [compatibility](/crowdycpp/compatibility#server-compatibility) lists them.
+- **CrowdyPy 0.41.0**, released on November 28, 2026. It vendors CrowdyCPP 0.95.0, so a player's connection drops
+  and counts what nothing signed and what names another app (`unsigned_notifications` and `wrong_app` in
+  `connection.stats()`), and reassigns on `TOKEN_EXPIRED` only when the refusal arrived inside a signed bundle. A
+  refused keepalive is reported once, through the `not_present` and `not_present_ended` handlers of `client.udp`,
+  of a world session (`session.on`), and of a fleet session. A refused server assignment or hub connection keeps
+  the Application API's code and wait (`ApiFailure`), and a wait on a server's `retryAfterMs` ends at 30 seconds.
+  New: `AppTokenResponse.user_id`, `client.managed_players.delete_many`, `client.exec.org_compute_ceiling`, a
+  fleet refresh that names `ip4` or `ip6`, and a fleet session's table limit (`FleetCarryOutcome.TABLE_FULL`).
+  See [CrowdyPy's replication page](/crowdypy/replication#a-connection-takes-only-what-the-realtime-server-signed-for-its-app).
+  **What you do:** update. 0.41.0 needs Application API v2.90.0 or later, because every call that answers an app
+  token selects `userId`. Two kinds of code need a change:
+  [compatibility](/crowdypy/compatibility#server-compatibility) lists them.
 
 ## 2026-11-27 (a new page: what your organization can change, and what to ask Crowded Kingdoms for)
 

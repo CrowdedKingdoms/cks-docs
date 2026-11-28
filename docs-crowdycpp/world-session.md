@@ -39,7 +39,12 @@ thread that reads them — so reads are plain snapshots with no locking.
   replication v0.37.0 two idle players on different servers see each other at the
   first keyframe after joining (3 s with these defaults); no faster cadence is needed.
   That keyframe is when an idle actor first appears. Updates after that arrive at the
-  send rate, including for a player on another server.
+  send rate, including for a player on another server. Where the player has no `access`,
+  replication v0.51.0 refuses the heartbeat and the actor is not present:
+  `WorldSessionConfig::onNotPresent` and `onNotPresentEnded` say so once, and
+  `WorldSession::notPresent()` reads the report for the session's own actor (0.95.0; see
+  [A refused keepalive is reported once](/crowdycpp/replication-client#a-refused-keepalive-is-reported-once)).
+  The store keeps its heartbeat rate whatever the server answers.
 - **Chunk moves send immediately**: `moveTo(chunk)` does not wait for the
   next send slot — crossing a chunk boundary should never lag.
 - **Acks**: your own updates echo back from the server; `lastAck()` exposes
@@ -236,7 +241,11 @@ with `-DCROWDY_WITH_OPUS=ON` to get `OpusVoiceEncoder` / `OpusVoiceDecoder`
 - **`errors()`** (`ErrorStore`) correlates server error frames with **what
   you sent**: the sequence-numbered error is attributed to the send kind
   (actor update, voxel update, text, …) that used that sequence, with
-  `recent()`, `lastFor(kind)`, and an `onError` callback.
+  `recent()`, `lastFor(kind)`, and an `onError` callback. From 0.95.0 it records the first
+  refused heartbeat of a not-present report, as a `SendKind::Heartbeat` error. Through 0.94.1
+  it recorded every one, each as an error of unknown kind, and passed each to the actor store
+  and the chunk store. Code that counted refused heartbeats in `errors()` reads
+  `onNotPresent` and `notPresent()` for the rest.
 
 ## Host tracking
 
