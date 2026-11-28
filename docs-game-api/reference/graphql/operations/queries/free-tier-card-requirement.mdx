@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-PUBLIC: no authentication required. Whether this tier asks an organization for a saved card before its apps run, from when, and how much later for an organization created before then. Read-only.
+PUBLIC: no authentication required. Whether this tier asks an organization for a saved card before its apps run, from when, how long a new organization runs without one, and how much later an organization created before the start is asked. Read-only.
 
 
 ```graphql
@@ -26,4 +26,4 @@ freeTierCardRequirement: FreeTierCardRequirement!
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>FreeTierCardRequirement</b></code>](/reference/graphql/types/objects/free-tier-card-requirement.mdx) <Badge class="badge badge--secondary " text="object"/> 
-The free-tier card requirement on this tier: from requiredFrom, an organization's apps run only while the organization has a saved card (saving one charges nothing) or an exemption, whatever its wallet holds; otherwise they are paused with runtimeDenialReason payment&#x005F;method&#x005F;required. An organization created before requiredFrom is asked existingOrganizationGraceDays later. Organizations only; player wallets are not asked.
+The free-tier card requirement on this tier. Once it has started (requiredFrom), an organization's apps run only while the organization has a saved card (saving one charges nothing) or an exemption, whatever its wallet holds; otherwise they are paused with runtimeDenialReason payment&#x005F;method&#x005F;required. Every organization runs without a card for newOrganizationGraceDays from its creation, and one created before requiredFrom for existingOrganizationGraceDays from requiredFrom if that is later. Organizations only; player wallets are not asked.
